@@ -1,0 +1,166 @@
+---
+---
+
+<div id="building-wrap" class="w-full h-full relative">
+  <canvas id="building-canvas" class="w-full h-full block"></canvas>
+  <div
+    id="building-loader"
+    class="absolute inset-0 flex items-center justify-center pointer-events-none"
+  >
+    <div class="w-[2px] h-[48px] bg-white/20 relative overflow-hidden rounded-full">
+      <div class="absolute inset-x-0 top-0 h-1/2 bg-white/60 animate-pulse"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+
+const canvas = document.getElementById("building-canvas") as HTMLCanvasElement;
+const loaderEl = document.getElementById("building-loader") as HTMLElement;
+
+// ─── RENDERER ─────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.3;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+// ─── SCENE & CAMERA ───────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 1000);
+
+// ─── LIGHTING ─────────────────────────────────────────────────────────────────
+// Soft sky ambient
+scene.add(new THREE.AmbientLight(0x8899bb, 0.7));
+
+// Golden-hour key light from upper-right
+const sun = new THREE.DirectionalLight(0xfff0d0, 2.8);
+sun.position.set(8, 14, 10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 200;
+sun.shadow.camera.left  = -30;
+sun.shadow.camera.right =  30;
+sun.shadow.camera.top   =  30;
+sun.shadow.camera.bottom = -30;
+sun.shadow.bias = -0.001;
+scene.add(sun);
+
+// Cool sky fill from opposite side
+const skyFill = new THREE.DirectionalLight(0x90b0d0, 0.8);
+skyFill.position.set(-8, 10, -6);
+scene.add(skyFill);
+
+// Warm bounce from ground
+scene.add(new THREE.HemisphereLight(0x7799bb, 0x664433, 0.5));
+
+// Warm interior fill (visible through glass)
+const intLight = new THREE.PointLight(0xf0a040, 2.5, 80);
+intLight.position.set(0, 5, 5);
+scene.add(intLight);
+
+// ─── LOAD GLB ─────────────────────────────────────────────────────────────────
+const draco = new DRACOLoader();
+draco.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
+
+const loader = new GLTFLoader();
+loader.setDRACOLoader(draco);
+
+const pivot = new THREE.Group();
+scene.add(pivot);
+
+loader.load(
+  "/3d/GLB.glb",
+  (gltf) => {
+    const model = gltf.scene;
+
+    // Enable shadows on all meshes and enhance materials
+    model.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+
+        if (child.material instanceof THREE.MeshStandardMaterial) {
+          child.material.envMapIntensity = 1.2;
+        }
+      }
+    });
+
+    // Center model at origin
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    const size   = box.getSize(new THREE.Vector3());
+    model.position.sub(center); // center horizontally and vertically
+
+    // Position camera to frame the model
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const fovRad = (camera.fov * Math.PI) / 180;
+    const dist = (maxDim / 2) / Math.tan(fovRad / 2) * 1.55;
+
+    camera.position.set(dist * 0.55, dist * 0.28, dist * 0.85);
+    camera.lookAt(0, 0, 0);
+    camera.near = maxDim * 0.001;
+    camera.far  = maxDim * 10;
+    camera.updateProjectionMatrix();
+
+    // Position sun shadow camera to cover the model
+    sun.shadow.camera.left   = -maxDim;
+    sun.shadow.camera.right  =  maxDim;
+    sun.shadow.camera.top    =  maxDim;
+    sun.shadow.camera.bottom = -maxDim;
+    sun.shadow.camera.far    =  maxDim * 4;
+    sun.shadow.camera.updateProjectionMatrix();
+    sun.position.multiplyScalar(maxDim / 15);
+    intLight.position.set(0, size.y * 0.4, size.z * 0.3);
+    intLight.distance = maxDim * 3;
+
+    pivot.add(model);
+
+    // Hide loader
+    loaderEl.style.display = "none";
+  },
+  undefined,
+  (err) => console.error("GLB load error:", err),
+);
+
+// ─── GROUND SHADOW PLANE ──────────────────────────────────────────────────────
+const shadowPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(200, 200),
+  new THREE.ShadowMaterial({ opacity: 0.3, transparent: true }),
+);
+shadowPlane.rotation.x = -Math.PI / 2;
+shadowPlane.position.y = -0.01;
+shadowPlane.receiveShadow = true;
+scene.add(shadowPlane);
+
+// ─── RESIZE ───────────────────────────────────────────────────────────────────
+function resize() {
+  const w = canvas.parentElement!.clientWidth;
+  const h = canvas.parentElement!.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+resize();
+window.addEventListener("resize", resize);
+
+// ─── RENDER LOOP ──────────────────────────────────────────────────────────────
+let raf: number;
+function animate() {
+  raf = requestAnimationFrame(animate);
+  pivot.rotation.y += 0.0025;
+  renderer.render(scene, camera);
+}
+animate();
+
+document.addEventListener("astro:before-swap", () => {
+  cancelAnimationFrame(raf);
+  renderer.dispose();
+});
+</script>

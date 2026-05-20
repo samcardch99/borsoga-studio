@@ -1,0 +1,100 @@
+---
+import BuildingScene from "./BuildingScene.astro";
+---
+
+<!--
+  Unidades rem calibradas para 1440px HD (1rem = 10px).
+  El root font-size escala en global.css a 17.78px en 2K y 26.67px en 4K,
+  por lo que todos los rem del componente se reescalan proporcionalmente
+  sin cambiar ninguna clase aquí.
+-->
+<section
+  data-navbar-dark
+  class="relative w-full h-svh min-h-[600px] bg-black text-white font-poppins overflow-hidden flex flex-col"
+>
+  <!-- Main content -->
+  <div
+    class="relative z-10 flex-1 grid grid-cols-1 md:grid-cols-2 px-[4rem] pt-[2vh] pb-[7vh] gap-[3rem]"
+  >
+    <!-- Left: location + headline -->
+    <div class="flex flex-col justify-center pb-[3vh]">
+      <!-- location: 1.4rem (14px en HD) -->
+      <p class="m-0 mb-[1.5rem] font-light text-[1.4rem] tracking-[0.01em]">
+        [ Borsoga Studio · Miami, FL · Working globally ]
+      </p>
+      <!-- headline: 9rem (90px en HD · 160px en 2K · 240px en 4K) -->
+      <h1
+        id="cover-h1"
+        class="m-0 font-semibold text-[9rem] leading-[1.13] text-white/19"
+      >
+        <span>Digit</span><span
+          >al spaces<br />for the <em class="font-extralight italic">unbuilt</em
+          ><br />imagination.</span
+        >
+      </h1>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div
+      class="absolute bottom-[3vh] left-1/2 -translate-x-1/2 z-10 flex items-center gap-[1.2rem]"
+    >
+      <span class="font-light text-[1rem] tracking-[0.15em]">SCROLL</span>
+      <div class="relative h-[5vh] w-px bg-white/30 overflow-visible">
+        <div
+          class="scroll-dot absolute left-1/2 w-[0.8rem] h-[0.8rem] bg-white rounded-full -translate-x-1/2"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes scroll-dot {
+    0% {
+      top: -0.4rem;
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      top: 5vh;
+      opacity: 0;
+    }
+  }
+
+  .scroll-dot {
+    animation: scroll-dot 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+
+  /* Chars start at white/19 and animate to full white via GSAP */
+  #cover-h1 .char {
+    color: rgba(255, 255, 255, 0.19);
+    display: inline-block;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(SplitText);
+
+  const h1 = document.getElementById("cover-h1");
+  const split = new SplitText(h1, { type: "chars", charsClass: "char" });
+
+  gsap.to(split.chars, {
+    color: "white",
+    duration: 0.1,
+    stagger: {
+      each: 0.07,
+      from: "start",
+    },
+    ease: "none",
+    delay: 0.3,
+  });
+</script>

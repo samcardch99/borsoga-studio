@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@theme {
+  --font-poppins: 'Poppins', sans-serif;
+  --breakpoint-2k: 2560px;
+  --breakpoint-4k: 3840px;
+}
+
+/* 1rem = 10px — baseline calibrado para 1440px HD */
+:root {
+  font-size: 10px;
+}
+
+/* 2K (2560px) — factor: 2560 / 1440 = 1.778 */
+@media (min-width: 2560px) {
+  :root {
+    font-size: 17.78px;
+  }
+}
+
+/* 4K (3840px) — factor: 3840 / 1440 = 2.667 */
+@media (min-width: 3840px) {
+  :root {
+    font-size: 26.67px;
+  }
+}

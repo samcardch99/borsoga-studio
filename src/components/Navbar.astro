@@ -1,0 +1,131 @@
+---
+import logoSrc from "../assets/logo.svg?url";
+import RightUpArrow from "../assets/icons/right_up.svg";
+---
+
+<!-- Navbar — padding H: 4rem (40px en HD) -->
+<nav
+    id="main-nav"
+    data-theme="light"
+    class="fixed z-100 border-[0.5px] backdrop-blur-xl border-b-white bg-transparent w-full flex items-center justify-between px-16 py-[2vh] transition-colors duration-300"
+>
+    <a href="/" aria-label="Borsoga Studio">
+        <img src={logoSrc} alt="Borsoga Studio" class="nav-logo h-[3.8rem] w-auto transition-[filter] duration-300" />
+    </a>
+
+    <ul
+        class="absolute left-1/2 -translate-x-1/2 hidden md:flex gap-16 list-none m-0 p-0"
+    >
+        <li>
+            <a
+                href="#work"
+                class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
+            >
+                Work
+            </a>
+        </li>
+        <li>
+            <a
+                href="#capabilities"
+                class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
+            >
+                Capabilities
+            </a>
+        </li>
+        <li>
+            <a
+                href="#contact"
+                class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
+            >
+                Contact
+            </a>
+        </li>
+    </ul>
+
+    <!-- button: 1.6rem text, padding 1.4/2.8rem -->
+    <a
+        href="#contact"
+        class="inline-flex items-center gap-2 no-underline font-light text-2xl py-3 px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-[#0613ff] text-white"
+    >
+        BEGIN A DIALOGUE
+        <RightUpArrow class="h-8" />
+    </a>
+</nav>
+
+<style>
+    /* Light theme (sobre secciones oscuras) — textos blancos */
+    #main-nav[data-theme="light"] .nav-link {
+        color: white;
+    }
+    #main-nav[data-theme="light"] .nav-logo {
+        filter: none;
+    }
+    #main-nav[data-theme="light"] {
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Dark theme (sobre secciones claras) — textos negros */
+    #main-nav[data-theme="dark"] .nav-link {
+        color: black;
+    }
+    #main-nav[data-theme="dark"] .nav-logo {
+        /* El SVG del logo tiene fills en blanco; invert lo convierte a negro */
+        filter: invert(1);
+    }
+    #main-nav[data-theme="dark"] {
+        border-bottom-color: rgba(0, 0, 0, 0.12);
+    }
+</style>
+
+<script>
+    function initNavTheme() {
+        const nav = document.getElementById("main-nav");
+        if (!nav) return;
+
+        const darkSections = document.querySelectorAll<HTMLElement>("[data-navbar-dark]");
+        if (!darkSections.length) {
+            nav.dataset.theme = "dark";
+            return;
+        }
+
+        // Observa qué sección oscura está tocando el área del navbar (top 10% de la ventana)
+        const observer = new IntersectionObserver(
+            () => {
+                // Contamos cuántas secciones oscuras están intersectando el rootMargin
+                const anyDark = Array.from(darkSections).some((el) => {
+                    const rect = el.getBoundingClientRect();
+                    const navH = nav.offsetHeight;
+                    // La sección cubre la zona del navbar si su top está sobre el navbar
+                    // y su bottom aún no ha pasado el navbar
+                    return rect.top <= navH && rect.bottom > navH;
+                });
+
+                nav.dataset.theme = anyDark ? "light" : "dark";
+            },
+            {
+                // Zona que coincide con la altura del navbar (aprox 10vh)
+                rootMargin: "-10% 0px -90% 0px",
+                threshold: 0,
+            },
+        );
+
+        // También actualizamos en scroll directo para mayor precisión
+        function updateTheme() {
+            const navH = nav!.offsetHeight;
+            const anyDark = Array.from(darkSections).some((el) => {
+                const rect = el.getBoundingClientRect();
+                return rect.top <= navH && rect.bottom > navH;
+            });
+            nav!.dataset.theme = anyDark ? "light" : "dark";
+        }
+
+        darkSections.forEach((el) => observer.observe(el));
+        window.addEventListener("scroll", updateTheme, { passive: true });
+        updateTheme(); // estado inicial
+    }
+
+    // Astro view transitions
+    document.addEventListener("astro:page-load", initNavTheme);
+    if (document.readyState !== "loading") initNavTheme();
+    else document.addEventListener("DOMContentLoaded", initNavTheme);
+</script>
