@@ -15,7 +15,7 @@ export default function Form() {
         username: z.string().min(2, "Please enter a valid name"),
         email: z.string().email("Please enter a valid email"),
         phone: z.string().min(5, "Please enter a valid phone number"),
-        message: z.string().min(10, "The message must be at least 10 characters long"),
+        message: z.string().min(10, "At least 10 characters"),
       }),
     []
   );
@@ -35,13 +35,12 @@ export default function Form() {
   const messageValue = watch("message");
 
   useEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    textarea.style.height = "auto";
-    const maxHeight = 24 * 4;
-    const newHeight = Math.min(textarea.scrollHeight, maxHeight);
-    textarea.style.height = `${newHeight}px`;
-    textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const max = parseFloat(getComputedStyle(el).lineHeight || "24") * 4;
+    el.style.height = `${Math.min(el.scrollHeight, max)}px`;
+    el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
   }, [messageValue]);
 
   const onSubmit = async () => {
@@ -63,83 +62,69 @@ export default function Form() {
 
   const { ref: registerRef, ...registerProps } = register("message");
 
-  const fieldClass =
-    "w-full bg-transparent border-b border-white/20 text-white placeholder:text-white/40 pb-2 outline-none text-[0.9rem] tracking-widest font-light";
-  const labelClass = "block text-white/40 text-[0.7rem] tracking-widest mb-1 uppercase";
-  const errorClass = "text-red-400 text-xs mt-1";
-
   return (
     <>
       <Toaster theme="dark" position="bottom-right" />
-      <form
-        ref={formRef}
-        onSubmit={handleSubmit(onSubmit)}
-        className="w-full flex flex-col gap-8"
-      >
-        <div>
-          <label className={labelClass}>Name</label>
+      <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="form-contact">
+
+        <div className="form-field">
+          <span className="form-label">NAME</span>
           <input
             {...register("username")}
             name="username"
-            placeholder="ALEX CARTER"
-            className={fieldClass}
+            placeholder="Alex Carter"
+            className="form-input"
           />
-          {errors.username && <p className={errorClass}>{errors.username.message}</p>}
+          {errors.username && <p className="form-error">{errors.username.message}</p>}
         </div>
 
-        <div>
-          <label className={labelClass}>Phone</label>
+        <div className="form-field">
+          <span className="form-label">PHONE</span>
           <input
             {...register("phone")}
             name="phone"
             type="tel"
             placeholder="+1 234 567 8910"
-            className={fieldClass}
+            className="form-input"
           />
-          {errors.phone && <p className={errorClass}>{errors.phone.message}</p>}
+          {errors.phone && <p className="form-error">{errors.phone.message}</p>}
         </div>
 
-        <div>
-          <label className={labelClass}>Email</label>
+        <div className="form-field">
+          <span className="form-label">PROJECT NOTES</span>
+          <textarea
+            {...registerProps}
+            name="message"
+            ref={(e) => { registerRef(e); textareaRef.current = e; }}
+            placeholder="Tell about the space, the brief..."
+            rows={1}
+            className="form-input form-input--textarea"
+          />
+          {errors.message && <p className="form-error">{errors.message.message}</p>}
+        </div>
+
+        <div className="form-field">
+          <span className="form-label">EMAIL</span>
           <input
             {...register("email")}
             name="email"
             type="email"
             placeholder="hello@borsoga.com"
-            className={fieldClass}
+            className="form-input"
           />
-          {errors.email && <p className={errorClass}>{errors.email.message}</p>}
+          {errors.email && <p className="form-error">{errors.email.message}</p>}
         </div>
 
-        <div>
-          <label className={labelClass}>Project Notes</label>
-          <textarea
-            {...registerProps}
-            name="message"
-            ref={(e) => {
-              registerRef(e);
-              textareaRef.current = e;
-            }}
-            placeholder="Tell about the space, the brief..."
-            rows={1}
-            className={`${fieldClass} resize-none leading-6 italic`}
-            style={{ minHeight: "28px" }}
-          />
-          {errors.message && <p className={errorClass}>{errors.message.message}</p>}
-        </div>
-
-        <div className="flex justify-end pt-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="footer__send-btn inline-flex items-center gap-3 bg-white text-black text-[0.75rem] tracking-widest font-light py-4 px-7 rounded-full cursor-pointer transition-opacity duration-200 hover:opacity-80 disabled:opacity-40 whitespace-nowrap"
-          >
+        <div className="form-submit">
+          <button type="submit" disabled={isSubmitting} className="form-btn">
             {isSubmitting ? "SENDING..." : "SEND TRANSMISSION"}
-            <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <svg width="1em" height="1em" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
+                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
         </div>
+
       </form>
     </>
   );
