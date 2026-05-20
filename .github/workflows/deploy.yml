@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Build
 
 on:
   push:
@@ -7,43 +7,25 @@ on:
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
-      - name: Build
-        run: npm run build
+      - run: npm run build
 
-      # Publica el contenido de dist/ en la rama "build"
-      - name: Publish to branch build
+      - name: Publish dist to branch build
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: build
-          force_orphan: true        # la rama build contiene solo el último build
+          force_orphan: true
           commit_message: "build: ${{ github.sha }}"
-
-  deploy:
-    name: Trigger Hostinger webhook
-    runs-on: ubuntu-latest
-    needs: build         # espera a que el build termine y se publique en la rama
-
-    steps:
-      - name: Call deploy webhook
-        run: |
-          curl -fsSL \
-            -X POST \
-            "${{ secrets.HOSTINGER_WEBHOOK_URL }}"
