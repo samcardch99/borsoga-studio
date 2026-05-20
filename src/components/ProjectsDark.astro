@@ -1,0 +1,649 @@
+---
+const projects = [
+  {
+    uid: "villa-sunset",
+    title: "Villa Sunset",
+    href: "/works/villa-sunset/",
+    thumb: "/projects/img-sunset.png",
+    secondary: "/projects/img-sunset.png",
+  },
+  {
+    uid: "cristinzio",
+    title: "Apt. Cristinzio",
+    href: "/works/cristinzio/",
+    thumb: "/projects/img-cristinzio.png",
+    secondary: "/projects/img-cristinzio.png",
+  },
+  {
+    uid: "villa",
+    title: "Kitchen II",
+    href: "/works/villa/",
+    thumb: "/projects/img-villa.png",
+    secondary: "/projects/img-villa.png",
+  },
+  {
+    uid: "tommys-building",
+    title: "Tommy's Building",
+    href: "/works/tommys-building/",
+    thumb: "/projects/img-tommys-building.png",
+  },
+  {
+    uid: "batroom-iii",
+    title: "Batroom III",
+    href: "/works/batroom-iii/",
+    thumb: "/projects/img-batroom-iii.png",
+  },
+];
+---
+
+<section data-navbar-dark class="projects projects--dark section">
+  <div class="projects__container">
+    <!-- Mobile header -->
+    <div class="projects__mobile-header">
+      <p>We are</p>
+      <h1>Borsoga Studio,<br />Architecture Studio</h1>
+      <p>from Miami, FL</p>
+    </div>
+
+    <!-- 16-col grid -->
+    <div class="projects__grid">
+      <!-- LEFT — "Projects" heading sticky (desktop) -->
+      <div class="projects__left">
+        <h2 class="projects__intro pb-20!" aria-label="Projects">Projects</h2>
+      </div>
+
+      <!-- CENTER — image stack -->
+      <div class="projects__wrapper" data-animation="gallery">
+        {
+          projects.map((p, i) => (
+            <>
+              {/* Primary item — visible on both */}
+              <div
+                class="projects__item projects__item--primary"
+                data-project-index={i}
+              >
+                <a
+                  class="projects__item-link"
+                  href={p.href}
+                  aria-label={`See ${p.title}`}
+                >
+                  <div
+                    class="projects__item__image projects__item__thumb"
+                    data-project-uid={p.uid}
+                  >
+                    <img
+                      src={p.thumb}
+                      alt={p.title}
+                      loading={i === 0 ? "eager" : "lazy"}
+                      width="520"
+                      height="370"
+                    />
+                  </div>
+                </a>
+                <p class="projects__title projects__title--mobile">
+                  <a href={p.href}>{p.title}</a>
+                </p>
+              </div>
+
+              {/* Secondary item — desktop only, rendered only when a distinct secondary image exists */}
+              {p.secondary && p.secondary !== p.thumb && (
+                <div
+                  class="projects__item projects__item--secondary"
+                  data-project-index={i}
+                >
+                  <a
+                    class="projects__item-link"
+                    href={p.href}
+                    aria-label={`See ${p.title}`}
+                  >
+                    <div class="projects__item__image" data-project-uid={p.uid}>
+                      <img
+                        src={p.secondary}
+                        alt={p.title}
+                        loading="lazy"
+                        width="520"
+                        height="370"
+                      />
+                    </div>
+                  </a>
+                </div>
+              )}
+            </>
+          ))
+        }
+      </div>
+
+      <!-- RIGHT — sticky title list + CTA (desktop) -->
+      <div class="projects__titles">
+        <div class="projects__titles__wrapper pb-20!">
+          {
+            projects.map((p, i) => (
+              <h2
+                class="projects__title projects__title--desktop"
+                data-project-uid={p.uid}
+                style={`opacity: ${i === 0 ? 1 : 0.2};`}
+              >
+                <a href={p.href}>{p.title}</a>
+              </h2>
+            ))
+          }
+          <a
+            href="/works/"
+            class="projects__view-all"
+            aria-label="View all projects"
+          >
+            <span>VIEW ALL PROJECTS</span>
+            <svg
+              class="projects__view-all__arrow"
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── Dark variant overrides ── */
+  .projects--dark {
+    background: #000;
+    color: #fff;
+  }
+  .projects--dark .projects__mobile-header,
+  .projects--dark .projects__intro,
+  .projects--dark .projects__title--mobile a,
+  .projects--dark .projects__title--desktop a {
+    color: #fff;
+  }
+  .projects--dark .projects__view-all {
+    background: #fff;
+    color: #000;
+  }
+  .projects--dark .projects__view-all path {
+    stroke: #000;
+  }
+
+  /* ── Section ── */
+  .projects.section {
+    position: relative;
+    padding-top: 6.25rem;
+    padding-bottom: 4rem;
+  }
+
+  /* ── Container ── */
+  .projects__container {
+    padding: 0 1.04rem;
+  }
+
+  /* ── Mobile header ── */
+  .projects__mobile-header {
+    margin-bottom: 6.25rem;
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1.15;
+  }
+  .projects__mobile-header h1 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  /* ── Grid (mobile: single column) ── */
+  .projects__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    column-gap: 0.625rem;
+  }
+
+  .projects__left {
+    display: none;
+  }
+
+  .projects__wrapper {
+    grid-column: 1 / -1;
+    position: relative;
+  }
+
+  .projects__titles {
+    display: none;
+  }
+
+  /* ── Items ── */
+  .projects__item {
+    margin-bottom: 1.25rem;
+  }
+  .projects__item--secondary {
+    display: none;
+  }
+
+  .projects__item-link {
+    display: block;
+  }
+
+  .projects__item__image {
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 520 / 370;
+  }
+  .projects__item__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Mobile titles ── */
+  .projects__title--mobile {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+  }
+  .projects__title--mobile a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .projects__title--desktop {
+    display: none;
+  }
+
+  /* ── DESKTOP (≥640px) ── */
+  @media (min-width: 640px) {
+    .projects.section {
+      padding-top: 0;
+      padding-bottom: 10rem;
+      margin-bottom: 20svh;
+      top: 20svh;
+      position: relative;
+    }
+
+    .projects__mobile-header {
+      display: none;
+    }
+
+    .projects__left {
+      display: flex;
+      grid-column: 1 / span 3;
+      position: relative;
+      align-items: flex-end;
+      min-height: 100%;
+    }
+
+    .projects__intro {
+      position: sticky;
+      bottom: 1.25rem;
+      font-size: 6.75rem;
+      font-weight: 500;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .projects__wrapper {
+      grid-column: 7 / span 6;
+      display: block;
+    }
+
+    .projects__item {
+      margin-bottom: 0.75rem;
+    }
+
+    .projects__item--primary .projects__item__image {
+      width: 17.55vw;
+    }
+
+    .projects__item--secondary {
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+    .projects__item--secondary .projects__item__image {
+      width: 17.55vw;
+    }
+
+    .projects__title--mobile {
+      display: none;
+    }
+
+    .projects__titles {
+      display: flex;
+      grid-column: 14 / span 2;
+      position: relative;
+      align-items: flex-end;
+      min-height: 100%;
+    }
+
+    .projects__titles__wrapper {
+      position: sticky;
+      bottom: 1.25rem;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .projects__title--desktop {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 500;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+    }
+    .projects__title--desktop:hover {
+      opacity: 0.5 !important;
+    }
+    .projects__title--desktop a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .projects__view-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+      padding: 0.6rem 1.1rem 0.6rem 1.25rem;
+      border-radius: 9999px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      transition: opacity 0.2s ease;
+    }
+    .projects__view-all:hover {
+      opacity: 0.75;
+    }
+    .projects__view-all__arrow {
+      flex-shrink: 0;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  class ProjectsSection {
+    dom: Element | null;
+    projects: HTMLElement[];
+    titles: HTMLElement[];
+    timeline: gsap.core.Timeline | null;
+    resizeHandler: (() => void) | null;
+    lastViewport: { width: number; height: number } | null;
+
+    constructor() {
+      this.dom = document.querySelector(".projects.section");
+      this.projects = [];
+      this.titles = [];
+      this.timeline = null;
+      this.resizeHandler = null;
+      this.lastViewport =
+        typeof window !== "undefined"
+          ? { width: window.innerWidth, height: window.innerHeight }
+          : null;
+    }
+
+    getMediaRatio(el: Element): number | null {
+      const img = el.querySelector("img, video");
+      if (!img) return null;
+      if (img instanceof HTMLImageElement) {
+        const w = img.naturalWidth || img.width;
+        const h = img.naturalHeight || img.height;
+        if (w && h) return h / w;
+      }
+      if (img instanceof HTMLVideoElement) {
+        const w = img.videoWidth || img.clientWidth;
+        const h = img.videoHeight || img.clientHeight;
+        if (w && h) return h / w;
+      }
+      return null;
+    }
+
+    getDesktopTitles(): HTMLElement[] {
+      const container = this.dom?.querySelector(".projects__titles");
+      return container
+        ? Array.from(
+            container.querySelectorAll<HTMLElement>(
+              ".projects__title--desktop",
+            ),
+          )
+        : [];
+    }
+
+    destroyTimeline() {
+      this.timeline?.scrollTrigger?.kill();
+      this.timeline?.kill();
+      this.timeline = null;
+    }
+
+    cleanupDomState() {
+      if (!this.dom) return;
+      if (!this.projects.length)
+        this.projects = Array.from(
+          this.dom.querySelectorAll<HTMLElement>(".projects__item"),
+        );
+      if (!this.titles.length) this.titles = this.getDesktopTitles();
+      this.projects.forEach((item) => {
+        const img = item.querySelector<HTMLElement>(".projects__item__image");
+        if (img) gsap.set(img, { clearProps: "width,transform,willChange" });
+        gsap.set(item, { clearProps: "height,willChange" });
+      });
+      this.titles.forEach((t) => gsap.set(t, { clearProps: "opacity" }));
+      this.titles = [];
+    }
+
+    setup() {
+      if (!this.dom || typeof window === "undefined" || window.innerWidth < 640)
+        return;
+
+      this.projects = Array.from(
+        this.dom.querySelectorAll<HTMLElement>(".projects__item"),
+      );
+      this.titles = this.getDesktopTitles();
+
+      if (!this.projects.length || !this.titles.length) return;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: this.dom,
+          start: "top 55%",
+          end: "bottom center-=0.5%",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+      this.timeline = tl;
+
+      // Track first and last DOM item per project index
+      const firstByIndex = new Map<number, HTMLElement>();
+      const lastByIndex = new Map<number, HTMLElement>();
+      this.projects.forEach((item) => {
+        const idx = Number(item.dataset.projectIndex ?? 0);
+        if (!firstByIndex.has(idx)) firstByIndex.set(idx, item);
+        lastByIndex.set(idx, item);
+      });
+
+      // Scale constants (same as Joffrey): collapsed = 17.55vw, expanded = 36vw
+      const IMAGE_VW = 17.55;
+      const EXPANDED_VW = 36;
+      const scaleFactor = EXPANDED_VW / IMAGE_VW;
+      const imageWidthStr = `${IMAGE_VW}vw`;
+
+      const collapsedH: number[] = [];
+      const expandedH: number[] = [];
+
+      // Set initial state
+      this.projects.forEach((item, i) => {
+        const img = item.querySelector<HTMLElement>(".projects__item__image");
+        if (!img) return;
+        const isFirstItem = i === 0;
+        const scale = isFirstItem ? scaleFactor : 1;
+
+        gsap.set(img, {
+          width: imageWidthStr,
+          transformOrigin: "left top",
+          scaleX: scale,
+          scaleY: scale,
+          force3D: true,
+        });
+
+        const elW = img.getBoundingClientRect().width || img.offsetWidth;
+        const ratio = this.getMediaRatio(img);
+        const elH = img.getBoundingClientRect().height;
+        const fromRatio = ratio && elW ? elW * ratio : 0;
+        const collapsed =
+          (elH || fromRatio || item.getBoundingClientRect().height) / scale;
+        const expanded = collapsed * scaleFactor;
+
+        collapsedH[i] = collapsed;
+        expandedH[i] = expanded;
+
+        gsap.set(item, {
+          height: scale === 1 ? collapsed : expanded,
+          willChange: "height",
+        });
+      });
+
+      // Initial title opacities
+      const firstIdx = Number(this.projects[0]?.dataset.projectIndex ?? 0);
+      this.titles.forEach((t, i) => {
+        gsap.set(t, { opacity: i === firstIdx ? 1 : 0.2 });
+      });
+
+      // Build the scrubbed scroll timeline
+      this.projects.forEach((item, i) => {
+        const img = item.querySelector<HTMLElement>(".projects__item__image");
+        const projectIdx = Number(item.dataset.projectIndex ?? i);
+        const title = this.titles[projectIdx];
+        const collapsed = collapsedH[i] ?? 0;
+        const expanded = expandedH[i] ?? collapsed * scaleFactor;
+
+        if (!img || !title) return;
+
+        const isFirst = firstByIndex.get(projectIdx) === item;
+        const isLast = lastByIndex.get(projectIdx) === item;
+
+        // Expand phase
+        tl.to(
+          img,
+          {
+            scaleX: scaleFactor,
+            scaleY: scaleFactor,
+            force3D: true,
+            duration: 0.8,
+            ease: "none",
+          },
+          i,
+        );
+        if (isFirst)
+          tl.to(title, { opacity: 1, duration: 0.4, ease: "none" }, "<");
+        tl.to(item, { height: expanded, duration: 0.8, ease: "none" }, "<");
+
+        // Collapse phase
+        tl.to(
+          img,
+          {
+            scaleX: 1,
+            scaleY: 1,
+            force3D: true,
+            duration: 1.5,
+            ease: "none",
+            delay: 0.3,
+          },
+          ">",
+        );
+        if (isLast)
+          tl.to(title, { opacity: 0.2, duration: 0.4, ease: "none" }, "<");
+        tl.to(item, { height: collapsed, duration: 1.5, ease: "none" }, "<");
+      });
+    }
+
+    init() {
+      if (!this.dom || typeof window === "undefined") return;
+      this.setup();
+
+      const debounce = (fn: () => void, ms = 200) => {
+        let t: ReturnType<typeof setTimeout>;
+        return () => {
+          clearTimeout(t);
+          t = setTimeout(fn, ms);
+        };
+      };
+
+      this.resizeHandler = debounce(() => {
+        if (this.shouldResetOnResize()) this.reset();
+      }, 200);
+      window.addEventListener("resize", this.resizeHandler);
+    }
+
+    reset() {
+      this.destroyTimeline();
+      this.cleanupDomState();
+      this.setup();
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    }
+
+    shouldResetOnResize(): boolean {
+      if (typeof window === "undefined") return false;
+      if (!this.lastViewport) {
+        this.lastViewport = {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+        return true;
+      }
+      const { width: pw, height: ph } = this.lastViewport;
+      const nw = window.innerWidth;
+      const nh = window.innerHeight;
+      const widthChanged = Math.abs(nw - pw) > 10;
+      const orientationChanged = nw > nh !== pw > ph;
+      const bigHeightChange = Math.abs(nh - ph) > 120;
+      this.lastViewport = { width: nw, height: nh };
+      return widthChanged || orientationChanged || bigHeightChange;
+    }
+
+    destroy() {
+      this.destroyTimeline();
+      this.cleanupDomState();
+      if (this.resizeHandler && typeof window !== "undefined") {
+        window.removeEventListener("resize", this.resizeHandler);
+        this.resizeHandler = null;
+      }
+      this.dom = null;
+    }
+  }
+
+  let instance: ProjectsSection | null = null;
+
+  function boot() {
+    instance?.destroy();
+    instance = new ProjectsSection();
+    instance.init();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+
+  document.addEventListener("astro:page-load", boot);
+</script>

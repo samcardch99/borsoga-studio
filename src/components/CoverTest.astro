@@ -1,0 +1,200 @@
+---
+
+---
+
+<section data-navbar-dark class="ct" id="cover-test">
+  <img class="ct__frame" id="ct-frame" src="/frames-jpg/1.00000.jpg" alt="" />
+
+  <div class="ct__copy">
+    <h2 class="ct__heading ct__heading--1">
+      Digital spaces<br />for the <em>unbuilt</em><br />imagination.
+    </h2>
+    <h2 class="ct__heading ct__heading--2">
+      Architecture<br />beyond<br /><em>boundaries.</em>
+    </h2>
+    <h2 class="ct__heading ct__heading--3">
+      Where vision<br />meets<br /><em>reality.</em>
+    </h2>
+    <h2 class="ct__heading ct__heading--4">
+      Let's begin<br />a <em>dialogue.</em>
+    </h2>
+  </div>
+
+</section>
+
+<style>
+  .ct {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .ct__frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .ct::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 30%),
+      linear-gradient(to top, #000 0%, transparent 35%);
+    pointer-events: none;
+  }
+
+  .ct__copy {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .ct__heading {
+    position: absolute;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(2rem, 5vw, 7.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: #fff;
+    opacity: 0;
+  }
+  .ct__heading em {
+    font-style: italic;
+    font-weight: 200;
+  }
+
+  /* Heading 1 — bottom-left */
+  .ct__heading--1 {
+    bottom: clamp(2.5rem, 6vh, 6rem);
+    left: clamp(1.5rem, 4vw, 5rem);
+  }
+
+  /* Heading 2 — top-right */
+  .ct__heading--2 {
+    top: clamp(5rem, 10vh, 9rem);
+    right: clamp(1.5rem, 4vw, 5rem);
+    text-align: right;
+  }
+
+  /* Heading 3 — centered vertically, left */
+  .ct__heading--3 {
+    top: 50%;
+    transform: translateY(-50%);
+    left: clamp(1.5rem, 4vw, 5rem);
+  }
+
+  /* Heading 4 — bottom-right */
+  .ct__heading--4 {
+    bottom: clamp(2.5rem, 6vh, 6rem);
+    right: clamp(1.5rem, 4vw, 5rem);
+    text-align: right;
+  }
+
+  .ct__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    z-index: 3;
+  }
+  .ct__progress-bar {
+    height: 100%;
+    width: 0%;
+    background: rgba(255, 255, 255, 0.6);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const FRAME_COUNT = 181;
+  const PIN_MULTIPLIER = 4;
+
+  // [fade-in-start, fully-visible-start, fully-visible-end, fade-out-end]
+  const STAGES: [number, number, number, number][] = [
+    [0.00, 0.05, 0.18, 0.26],
+    [0.22, 0.30, 0.48, 0.56],
+    [0.52, 0.60, 0.74, 0.82],
+    [0.78, 0.86, 1.00, 1.00],
+  ];
+
+  function clamp01(v: number) {
+    return Math.max(0, Math.min(1, v));
+  }
+
+  function stageOpacity(
+    p: number,
+    [fi, ps, pe, fo]: [number, number, number, number],
+  ): number {
+    if (p <= fi || p >= fo) return 0;
+    if (p < ps) return clamp01((p - fi) / (ps - fi));
+    if (p > pe) return clamp01(1 - (p - pe) / (fo - pe));
+    return 1;
+  }
+
+  const section = document.getElementById("cover-test") as HTMLElement;
+  const frameImg = document.getElementById("ct-frame") as HTMLImageElement;
+
+  const headings = [
+    document.querySelector<HTMLElement>(".ct__heading--1"),
+    document.querySelector<HTMLElement>(".ct__heading--2"),
+    document.querySelector<HTMLElement>(".ct__heading--3"),
+    document.querySelector<HTMLElement>(".ct__heading--4"),
+  ];
+
+  // Preload all frames
+  const frames: HTMLImageElement[] = [];
+
+  function padIndex(i: number): string {
+    return i.toString().padStart(5, "0");
+  }
+
+  function onProgress(p: number) {
+    const idx = Math.round(p * (FRAME_COUNT - 1));
+    const f = frames[idx];
+    if (f && f.complete && frameImg.src !== f.src) {
+      frameImg.src = f.src;
+    }
+    headings.forEach((h, i) => {
+      if (h) h.style.opacity = String(stageOpacity(p, STAGES[i]));
+    });
+
+  }
+
+  function init() {
+    if (headings[0]) headings[0].style.opacity = "1";
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: () => `+=${(PIN_MULTIPLIER - 1) * window.innerHeight}`,
+      pin: true,
+      scrub: true,
+      onUpdate: (self) => onProgress(self.progress),
+    });
+  }
+
+  // Preload all frames in background
+  for (let i = 0; i < FRAME_COUNT; i++) {
+    const img = new Image();
+    img.src = `/frames-jpg/1.${padIndex(i)}.jpg`;
+    frames.push(img);
+  }
+
+  // Init once — frames stream in as they load
+  init();
+</script>
