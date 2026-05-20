@@ -1,5 +1,6 @@
 ---
 import BuildingScene from "./BuildingScene.astro";
+import RightUpArrow from "../assets/icons/right_up.svg";
 ---
 
 <!--
@@ -34,6 +35,26 @@ import BuildingScene from "./BuildingScene.astro";
       </h1>
     </div>
 
+    <!-- Right: description + CTA -->
+    <div class="flex items-start md:items-end justify-center gap-8">
+      <div class="flex items-center justify-center h-fit w-full">
+        <!-- description: 1.4rem, max-w 46rem (460px en HD · 818px en 2K · 1227px en 4K) -->
+        <p
+          class="m-0 font-light text-[1.4rem] leading-[1.9] text-left max-w-184"
+        >
+          We combine 3D visualization, immersive environments, custom web
+          platforms, and brand identity to translate concepts into absolute
+          visual clarity.
+        </p>
+        <a
+          href="#work"
+          class="inline-flex items-center gap-2 no-underline font-light text-xl py-4 px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-white text-black"
+        >
+          VIEW OUR WORK
+          <RightUpArrow class="h-8 aspect-square" />
+        </a>
+      </div>
+    </div>
     <!-- Scroll indicator -->
     <div
       class="absolute bottom-[3vh] left-1/2 -translate-x-1/2 z-10 flex items-center gap-[1.2rem]"
