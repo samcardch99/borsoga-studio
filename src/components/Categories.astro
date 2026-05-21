@@ -45,18 +45,17 @@ const categories = [
     description:
       "A memorable project deserves a unique space to live online. We design and build fast, intuitive websites where clients can easily explore floor plans, interact with the space, and understand the property from anywhere.",
     tags: ["FLOOR PLAN UI", "BESPOKE SITES", "PERFORMANCE & SEO"],
-    bgColor: "#b6a7a2",
-    textColor: "#1a1a1a",
-    tagBorder: "rgba(0,0,0,0.5)",
-    ctaBg: "#000",
-    ctaColor: "#fff",
-    bgStyle: "background-color:#b6a7a2;",
+    bgColor: "#e8e4de",
+    textColor: "#fff",
+    tagBorder: "rgba(255,255,255,0.6)",
+    ctaBg: "#fff",
+    ctaColor: "#000",
+    bgStyle: "background-color:#e8e4de;",
     noGradient: true,
     customGradient: undefined as string | undefined,
     contentBlur: undefined as string | undefined,
-    bgImg: "/categories/cat3-bg.jpg",
-    bgImgStyle:
-      "position:absolute;left:29.65%;top:0;width:82.74%;height:100%;object-fit:cover;object-position:left center;pointer-events:none;",
+    bgImg: undefined as string | undefined,
+    bgImgStyle: undefined as string | undefined,
   },
   {
     id: "brand",
@@ -126,6 +125,34 @@ const categories = [
                   class="cat__parallax-fg"
                   style={cat.bgImgStyle}
                 />
+              )}
+              {i === 2 && (
+                <>
+                  <img
+                    src="/categories/fondo.png"
+                    alt=""
+                    id="cat-s3-bg"
+                    class="cat__s3-layer cat__s3-bg"
+                  />
+                  <img
+                    src="/categories/laptop1.png"
+                    alt=""
+                    id="cat-s3-laptop1"
+                    class="cat__s3-layer cat__s3-fg"
+                  />
+                  <img
+                    src="/categories/laptop2.png"
+                    alt=""
+                    id="cat-s3-laptop2"
+                    class="cat__s3-layer cat__s3-fg"
+                  />
+                  <img
+                    src="/categories/piedra.png"
+                    alt=""
+                    id="cat-s3-piedra"
+                    class="cat__s3-layer cat__s3-fg"
+                  />
+                </>
               )}
             </div>
 
@@ -316,6 +343,32 @@ const categories = [
     scale: 1.2;
     transform-origin: center center;
   }
+
+  /* ── Parallax slide 3: fondo + laptops + piedra ── */
+  .cat__s3-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .cat__s3-bg {
+    scale: 1.12;
+    z-index: 0;
+  }
+  .cat__s3-fg {
+    scale: 1.05;
+    z-index: 1;
+    object-position: 15% center;
+  }
+  #cat-s3-piedra  { z-index: 2; }
+  #cat-s3-laptop1 { z-index: 3; }
+  #cat-s3-laptop2 { z-index: 4; }
+  [data-cat-index="2"] .cat__content,
+  [data-cat-index="2"] .cat__cta { z-index: 10; }
 
   /* ── Content panel ── */
   .cat__content {
@@ -622,116 +675,118 @@ const categories = [
     }),
   );
 
-  // ── Mouse parallax for slide 2: two layers at different depths ──
-  const bgEl = document.getElementById("cat-parallax-bg") as HTMLElement | null;
-  const fgEl = document.querySelector<HTMLElement>(".cat__parallax-fg");
+  // ── Mouse parallax: slide 2 (bg + recorte) and slide 3 (fondo + laptops + piedra) ──
+  function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
 
-  if (bgEl && fgEl) {
-    const BG_STRENGTH = 16;
-    const FG_STRENGTH = 7;
+  // Slide 2 elements
+  const s2bg = document.getElementById("cat-parallax-bg") as HTMLElement | null;
+  const s2fg = document.querySelector<HTMLElement>(".cat__parallax-fg");
+  // Slide 3 elements
+  const s3bg     = document.getElementById("cat-s3-bg")     as HTMLElement | null;
+  const s3laptop1 = document.getElementById("cat-s3-laptop1") as HTMLElement | null;
+  const s3laptop2 = document.getElementById("cat-s3-laptop2") as HTMLElement | null;
+  const s3piedra  = document.getElementById("cat-s3-piedra")  as HTMLElement | null;
 
-    let bgTX = 0,
-      bgTY = 0,
-      bgX = 0,
-      bgY = 0;
-    let fgTX = 0,
-      fgTY = 0,
-      fgX = 0,
-      fgY = 0;
+  const BG_STRENGTH  = 16;
+  const FG_STRENGTH  = 7;
+  const FG2_STRENGTH = 10; // mid-layer for laptop2 / piedra
 
-    // Mouse override: when true, mousemove updates targets; when false, demo controls them
-    let mouseActive = false;
-    let demoTween: gsap.core.Tween | null = null;
+  // Shared lerped positions — index 0=bg, 1=fg1, 2=fg2, 3=fg3
+  type Layer = { tx: number; ty: number; x: number; y: number; el: HTMLElement | null; strength: number };
+  const s2layers: Layer[] = [
+    { tx: 0, ty: 0, x: 0, y: 0, el: s2bg,  strength: BG_STRENGTH },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s2fg,  strength: FG_STRENGTH },
+  ];
+  const s3layers: Layer[] = [
+    { tx: 0, ty: 0, x: 0, y: 0, el: s3bg,     strength: BG_STRENGTH  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s3laptop1, strength: FG_STRENGTH  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s3laptop2, strength: FG2_STRENGTH },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s3piedra,  strength: FG2_STRENGTH },
+  ];
 
-    function lerp(a: number, b: number, t: number) {
-      return a + (b - a) * t;
+  let mouseActive = false;
+  let demoTween: gsap.core.Tween | null = null;
+  const demoProxy = { t: 0 };
+  const ARC_NX = 1.0;
+
+  function setLayerTargets(layers: Layer[], nx: number, ny: number) {
+    for (const l of layers) {
+      l.tx = -nx * l.strength;
+      l.ty =  ny * l.strength;
     }
-
-    function tick() {
-      bgX = lerp(bgX, bgTX, 0.06);
-      bgY = lerp(bgY, bgTY, 0.06);
-      fgX = lerp(fgX, fgTX, 0.06);
-      fgY = lerp(fgY, fgTY, 0.06);
-      bgEl.style.translate = `${bgX}px ${bgY}px`;
-      fgEl.style.translate = `${fgX}px ${fgY}px`;
-      requestAnimationFrame(tick);
-    }
-
-    // Proxy object that GSAP animates; tick() reads bgTX/bgTY/fgTX/fgTY each frame
-    // Single arc: centre → peak → back to centre
-    const demoProxy = { t: 0 };
-    const ARC_NX = 1.0;
-    const ARC_NY = 0;
-
-    function applyDemo() {
-      bgTX = -ARC_NX * demoProxy.t * BG_STRENGTH;
-      bgTY =  ARC_NY * demoProxy.t * BG_STRENGTH;
-      fgTX = -ARC_NX * demoProxy.t * FG_STRENGTH;
-      fgTY =  ARC_NY * demoProxy.t * FG_STRENGTH;
-    }
-
-    function playDemoParallax() {
-      if (demoTween) demoTween.kill();
-      mouseActive = false;
-      demoProxy.t = 0;
-
-      demoTween = gsap.to(demoProxy, {
-        t: 1,
-        duration: 2.0,
-        ease: "power2.out",
-        onUpdate: applyDemo,
-        onComplete() { demoTween = null; },
-      });
-    }
-
-    function stopDemo() {
-      if (demoTween) {
-        demoTween.kill();
-        demoTween = null;
-      }
-      mouseActive = true;
-    }
-
-    window.addEventListener(
-      "mousemove",
-      (e) => {
-        if (currentSlide !== 1 || !enterComplete) {
-          bgTX = bgTY = fgTX = fgTY = 0;
-          mouseActive = false;
-          return;
-        }
-        // First mouse movement kills the demo and takes over
-        if (!mouseActive) stopDemo();
-        const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-        const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-        bgTX = -nx * BG_STRENGTH;
-        bgTY = ny * BG_STRENGTH;
-        fgTX = -nx * FG_STRENGTH;
-        fgTY = ny * FG_STRENGTH;
-      },
-      { passive: true },
-    );
-
-    window.addEventListener(
-      "mouseleave",
-      () => {
-        bgTX = bgTY = fgTX = fgTY = 0;
-      },
-      { passive: true },
-    );
-
-    // Hook into setSlide to trigger demo when slide 2 becomes active
-    const _origSetSlide = setSlide;
-    (window as any).__catSetSlide = (idx: number) => {
-      if (idx === 1) {
-        playDemoParallax();
-      } else {
-        stopDemo();
-        bgTX = bgTY = fgTX = fgTY = 0;
-        mouseActive = false;
-      }
-    };
-
-    tick();
   }
+
+  function resetLayerTargets(layers: Layer[]) {
+    for (const l of layers) { l.tx = 0; l.ty = 0; }
+  }
+
+  function applyDemo() {
+    const active = currentSlide === 1 ? s2layers : s3layers;
+    for (const l of active) {
+      l.tx = -ARC_NX * demoProxy.t * l.strength;
+      l.ty = 0;
+    }
+  }
+
+  function playDemoParallax() {
+    if (demoTween) demoTween.kill();
+    mouseActive = false;
+    demoProxy.t = 0;
+    demoTween = gsap.to(demoProxy, {
+      t: 1,
+      duration: 2.0,
+      ease: "power2.out",
+      onUpdate: applyDemo,
+      onComplete() { demoTween = null; },
+    });
+  }
+
+  function stopDemo() {
+    if (demoTween) { demoTween.kill(); demoTween = null; }
+    mouseActive = true;
+  }
+
+  function tick() {
+    const allLayers = [...s2layers, ...s3layers];
+    for (const l of allLayers) {
+      if (!l.el) continue;
+      l.x = lerp(l.x, l.tx, 0.06);
+      l.y = lerp(l.y, l.ty, 0.06);
+      l.el.style.translate = `${l.x}px ${l.y}px`;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener("mousemove", (e) => {
+    const isParallaxSlide = (currentSlide === 1 || currentSlide === 2) && enterComplete;
+    if (!isParallaxSlide) {
+      resetLayerTargets(s2layers);
+      resetLayerTargets(s3layers);
+      mouseActive = false;
+      return;
+    }
+    if (!mouseActive) stopDemo();
+    const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
+    const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+    if (currentSlide === 1) setLayerTargets(s2layers, nx, ny);
+    if (currentSlide === 2) setLayerTargets(s3layers, nx, ny);
+  }, { passive: true });
+
+  window.addEventListener("mouseleave", () => {
+    resetLayerTargets(s2layers);
+    resetLayerTargets(s3layers);
+  }, { passive: true });
+
+  (window as any).__catSetSlide = (idx: number) => {
+    if (idx === 1 || idx === 2) {
+      playDemoParallax();
+    } else {
+      stopDemo();
+      resetLayerTargets(s2layers);
+      resetLayerTargets(s3layers);
+      mouseActive = false;
+    }
+  };
+
+  tick();
 </script>
