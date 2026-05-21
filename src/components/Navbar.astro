@@ -7,7 +7,8 @@ import RightUpArrow from "../assets/icons/right_up.svg";
 <nav
     id="main-nav"
     data-theme="light"
-    class="fixed z-100 border-[0.5px] backdrop-blur-xl border-b-white bg-transparent w-full flex items-center justify-between px-16 py-[2vh] transition-colors duration-300"
+    data-frosted="true"
+    class="fixed z-100 w-full flex items-center justify-between px-16 py-[2vh] transition-all duration-500"
 >
     <a href="/" aria-label="Borsoga Studio">
         <img src={logoSrc} alt="Borsoga Studio" class="nav-logo h-[3.8rem] w-auto transition-[filter] duration-300" />
@@ -53,6 +54,21 @@ import RightUpArrow from "../assets/icons/right_up.svg";
 </nav>
 
 <style>
+    /* Frosted state (default) */
+    #main-nav[data-frosted="true"] {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid transparent;
+    }
+
+    /* Transparent state — sobre categories */
+    #main-nav[data-frosted="false"] {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-bottom: none !important;
+        background: transparent !important;
+    }
+
     /* Light theme (sobre secciones oscuras) — textos blancos */
     #main-nav[data-theme="light"] .nav-link {
         color: white;
@@ -60,7 +76,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     #main-nav[data-theme="light"] .nav-logo {
         filter: none;
     }
-    #main-nav[data-theme="light"] {
+    #main-nav[data-frosted="true"][data-theme="light"] {
         border-bottom-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -69,11 +85,16 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         color: black;
     }
     #main-nav[data-theme="dark"] .nav-logo {
-        /* El SVG del logo tiene fills en blanco; invert lo convierte a negro */
         filter: invert(1);
     }
-    #main-nav[data-theme="dark"] {
+    #main-nav[data-frosted="true"][data-theme="dark"] {
         border-bottom-color: rgba(0, 0, 0, 0.12);
+    }
+
+    /* BEGIN A DIALOGUE button — siempre visible */
+    #main-nav[data-theme="dark"] .nav-cta {
+        background: #0613ff;
+        color: white;
     }
 </style>
 
@@ -82,46 +103,30 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         const nav = document.getElementById("main-nav");
         if (!nav) return;
 
-        const darkSections = document.querySelectorAll<HTMLElement>("[data-navbar-dark]");
-        if (!darkSections.length) {
-            nav.dataset.theme = "dark";
-            return;
-        }
+        const darkSections        = document.querySelectorAll<HTMLElement>("[data-navbar-dark]");
+        const transparentSections = document.querySelectorAll<HTMLElement>("[data-navbar-transparent]");
 
-        // Observa qué sección oscura está tocando el área del navbar (top 10% de la ventana)
-        const observer = new IntersectionObserver(
-            () => {
-                // Contamos cuántas secciones oscuras están intersectando el rootMargin
-                const anyDark = Array.from(darkSections).some((el) => {
-                    const rect = el.getBoundingClientRect();
-                    const navH = nav.offsetHeight;
-                    // La sección cubre la zona del navbar si su top está sobre el navbar
-                    // y su bottom aún no ha pasado el navbar
-                    return rect.top <= navH && rect.bottom > navH;
-                });
-
-                nav.dataset.theme = anyDark ? "light" : "dark";
-            },
-            {
-                // Zona que coincide con la altura del navbar (aprox 10vh)
-                rootMargin: "-10% 0px -90% 0px",
-                threshold: 0,
-            },
-        );
-
-        // También actualizamos en scroll directo para mayor precisión
         function updateTheme() {
             const navH = nav!.offsetHeight;
+
             const anyDark = Array.from(darkSections).some((el) => {
                 const rect = el.getBoundingClientRect();
                 return rect.top <= navH && rect.bottom > navH;
             });
-            nav!.dataset.theme = anyDark ? "light" : "dark";
+
+            const anyTransparent = Array.from(transparentSections).some((el) => {
+                const rect = el.getBoundingClientRect();
+                return rect.top <= navH && rect.bottom > navH;
+            });
+
+            nav!.dataset.theme   = anyDark ? "light" : "dark";
+            nav!.dataset.frosted = anyTransparent ? "false" : "true";
         }
 
-        darkSections.forEach((el) => observer.observe(el));
+        if (!darkSections.length) nav.dataset.theme = "dark";
+
         window.addEventListener("scroll", updateTheme, { passive: true });
-        updateTheme(); // estado inicial
+        updateTheme();
     }
 
     // Astro view transitions

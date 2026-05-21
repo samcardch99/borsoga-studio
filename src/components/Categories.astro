@@ -1,0 +1,525 @@
+---
+const categories = [
+  {
+    id: "arch-viz",
+    title: "Architectural Visualization",
+    description:
+      "We translate ideas, concepts, sketches, and architectural plans into accurate, atmospheric imagery and animations. We focus on natural light, true human scale, and the honest representation of materials to evoke the exact emotion of the space.",
+    tags: ["V-RAY", "RHINO"],
+    bgColor: "#f7f7f7",
+    textColor: "#1a1a1a",
+    tagBorder: "rgba(0,0,0,0.5)",
+    ctaBg: "#000",
+    ctaColor: "#fff",
+    bgStyle: "background-image:url('/categories/cat1-bg.jpg');background-size:cover;background-position:60% center;",
+    noGradient: false,
+    customGradient: "linear-gradient(to right, rgba(245,242,238,0.82) 0%, rgba(245,242,238,0.55) 35%, rgba(245,242,238,0.15) 55%, transparent 65%)",
+    contentBlur: "6px",
+    bgImg: undefined as string | undefined,
+    bgImgStyle: undefined as string | undefined,
+  },
+  {
+    id: "immersive",
+    title: "Interactive &\nImmersive Spaces",
+    description:
+      "Buyers don't just want to see a space; they want to experience it. We develop real-time immersive environments and interactive 3D walkthroughs, allowing users to navigate and feel the atmosphere of a project before it physically exists.",
+    tags: ["FLOOR PLAN UI", "BESPOKE SITES", "PERFORMANCE & SEO"],
+    bgColor: "#f6f5f1",
+    textColor: "#1a1a1a",
+    tagBorder: "rgba(0,0,0,0.5)",
+    ctaBg: "#000",
+    ctaColor: "#fff",
+    bgStyle: "background-color:#f6f5f1;",
+    noGradient: true,
+    customGradient: undefined as string | undefined,
+    contentBlur: undefined as string | undefined,
+    bgImg: "/categories/cat2-bg.jpg",
+    bgImgStyle: "position:absolute;left:21.71%;top:-63.58%;width:78.29%;height:177.69%;object-fit:cover;pointer-events:none;",
+  },
+  {
+    id: "web",
+    title: "Custom Web Platforms",
+    description:
+      "A memorable project deserves a unique space to live online. We design and build fast, intuitive websites where clients can easily explore floor plans, interact with the space, and understand the property from anywhere.",
+    tags: ["FLOOR PLAN UI", "BESPOKE SITES", "PERFORMANCE & SEO"],
+    bgColor: "#b6a7a2",
+    textColor: "#1a1a1a",
+    tagBorder: "rgba(0,0,0,0.5)",
+    ctaBg: "#000",
+    ctaColor: "#fff",
+    bgStyle: "background-color:#b6a7a2;",
+    noGradient: true,
+    customGradient: undefined as string | undefined,
+    contentBlur: undefined as string | undefined,
+    bgImg: "/categories/cat3-bg.jpg",
+    bgImgStyle: "position:absolute;left:29.65%;top:0;width:82.74%;height:100%;object-fit:cover;object-position:left center;pointer-events:none;",
+  },
+  {
+    id: "brand",
+    title: "Brand Identity",
+    description:
+      "We build identities for the entire built environment. Whether you are launching an architectural practice, a new development, or a product line, we design the naming, visual systems, and presentation decks that give your vision its own distinct voice.",
+    tags: ["NAMING", "VISUAL SYSTEMS", "PRESENTATION DECKS", "GUIDELINES"],
+    bgColor: "#1a1a1a",
+    textColor: "#fff",
+    tagBorder: "rgba(255,255,255,0.6)",
+    ctaBg: "#fff",
+    ctaColor: "#000",
+    bgStyle: "background-image:url('/categories/cat4-bg.jpg');background-size:cover;background-position:center center;",
+    noGradient: true,
+    customGradient: undefined as string | undefined,
+    contentBlur: undefined as string | undefined,
+    bgImg: undefined as string | undefined,
+    bgImgStyle: undefined as string | undefined,
+  },
+];
+---
+
+<section class="cat" id="categories" data-navbar-transparent>
+  <div class="cat__sticky">
+
+    <!-- Left column — parallax text, flanking the card -->
+    <div class="cat__flank cat__flank--left" id="cat-flank-left">
+      <p class="cat__flank-label">What we do</p>
+      <p class="cat__flank-heading">Everything<br />aligned to<br />produce a<br />clear vision.</p>
+    </div>
+
+    <!-- Card shell -->
+    <div class="cat__card-wrap" id="cat-card-wrap">
+      <div class="cat__border" id="cat-border"></div>
+
+      {categories.map((cat, i) => (
+        <div
+          class={`cat__slide${i === 0 ? " is-active cat__slide--first" : ""}`}
+          data-cat-index={i}
+          style={`--cat-bg:${cat.bgColor};--cat-text:${cat.textColor};--cat-tag-border:${cat.tagBorder};--cat-cta-bg:${cat.ctaBg};--cat-cta-color:${cat.ctaColor};`}
+        >
+          <div class="cat__bg" style={cat.bgStyle}>
+            {cat.bgImg && <img src={cat.bgImg} alt="" style={cat.bgImgStyle} />}
+          </div>
+
+          <div class="cat__content">
+            <h3 class="cat__title"><span class="cat__title-inner">{cat.title}</span></h3>
+            <p class="cat__desc">{cat.description}</p>
+            <ul class="cat__tags">
+              {cat.tags.map(tag => <li class="cat__tag">{tag}</li>)}
+            </ul>
+            <a href="/works/" class="cat__cta">
+              VIEW OUR WORK
+              <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <path d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      ))}
+
+      <div class="cat__dots">
+        {categories.map((_, i) => (
+          <button class={`cat__dot${i === 0 ? " is-active" : ""}`} data-cat-dot={i} aria-label={`Category ${i + 1}`} />
+        ))}
+      </div>
+    </div>
+
+    <!-- Right column — parallax text -->
+    <div class="cat__flank cat__flank--right" id="cat-flank-right">
+      <p class="cat__flank-label">Services</p>
+      <ul class="cat__flank-list">
+        <li>Arch. Visualization</li>
+        <li>Immersive Spaces</li>
+        <li>Web Platforms</li>
+        <li>Brand Identity</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* ── Section ── */
+  .cat {
+    position: relative;
+    background: #000;
+  }
+
+  /* ── Sticky viewport — pinned by GSAP, not CSS ── */
+  .cat__sticky {
+    position: relative;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  /* ── Flanking columns ── */
+  .cat__flank {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    /* above the card so they can overlap it slightly */
+    z-index: 20;
+    pointer-events: none;
+    /* fade-out driven by JS opacity, but use CSS transition for smoothness */
+    transition: opacity 0.5s ease;
+  }
+  /* anchored near the edge — width extends inward past the card edge */
+  .cat__flank--left  {
+    left: 0;
+    padding-left: clamp(1.5rem, 3vw, 4rem);
+    /* wide enough to intrude a bit over the photo */
+    width: clamp(14rem, 18vw, 22rem);
+    text-align: left;
+  }
+  .cat__flank--right {
+    right: 0;
+    padding-right: clamp(1.5rem, 3vw, 4rem);
+    width: clamp(14rem, 18vw, 22rem);
+    text-align: right;
+  }
+
+  .cat__flank-label {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.6rem, 0.7vw, 0.8rem);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+  .cat__flank-heading {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.9rem, 1.3vw, 1.7rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: rgba(255,255,255,0.9);
+  }
+  .cat__flank-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .cat__flank-list li {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.65rem, 0.85vw, 1rem);
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Card shell ── */
+  .cat__card-wrap {
+    position: relative;
+    width: 100vw;
+    height: 100svh;
+    overflow: hidden;
+    transform: scale(0.66);
+    transform-origin: center bottom;
+    opacity: 0.8;
+    z-index: 5;
+  }
+
+  /* ── Border top ── */
+  .cat__border {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1.5px;
+    background: rgba(255,255,255,0.3);
+    transform: scaleX(0);
+    transform-origin: left center;
+    z-index: 10;
+  }
+
+  /* ── Slides ── */
+  .cat__slide {
+    position: absolute;
+    inset: 0;
+    background-color: var(--cat-bg);
+    color: var(--cat-text);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .cat__slide.is-active { opacity: 1; }
+
+  /* ── Blur overlay — solo slide 1 ── */
+  .cat__slide--first::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 55%;
+    background: linear-gradient(to right, rgba(245,242,238,0.82) 0%, rgba(245,242,238,0.55) 45%, rgba(245,242,238,0.1) 75%, transparent 100%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    -webkit-mask-image: linear-gradient(to right, black 0%, black 50%, transparent 100%);
+    mask-image: linear-gradient(to right, black 0%, black 50%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+    /* oculto hasta scale=1 */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .cat__slide--first.blur-ready::before { opacity: 1; }
+  .cat__slide--first .cat__content { z-index: 2; }
+
+  /* ── Background image ── */
+  .cat__bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  /* ── Content panel ── */
+  .cat__content {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: clamp(280px, 42%, 580px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(2rem, 3.5vw, 4.5rem) clamp(1.5rem, 3vw, 4rem);
+    background: transparent;
+  }
+
+  .cat__title {
+    margin: 0 0 clamp(0.6rem, 1.2vw, 1.4rem);
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.4rem, 2.2vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    white-space: pre-line;
+    overflow: hidden;
+  }
+  /* Clip container for title mask reveal */
+  .cat__title-inner {
+    display: block;
+  }
+  .cat__desc {
+    margin: 0 0 clamp(0.8rem, 1.5vw, 2rem);
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.65rem, 0.85vw, 1rem);
+    font-weight: 300;
+    line-height: 1.75;
+    max-width: 40ch;
+  }
+  .cat__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    list-style: none;
+    margin: 0 0 clamp(1.2rem, 2vw, 2.5rem);
+    padding: 0;
+  }
+  .cat__tag {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.5rem, 0.65vw, 0.75rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    padding: 0.4em 1em;
+    border-radius: 9999px;
+    border: 1px solid var(--cat-tag-border);
+    white-space: nowrap;
+  }
+  .cat__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.6rem, 0.75vw, 0.9rem);
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--cat-cta-color);
+    background: var(--cat-cta-bg);
+    text-decoration: none;
+    padding: 0.65em 1.4em;
+    border-radius: 9999px;
+    transition: opacity 0.2s;
+  }
+  .cat__cta:hover { opacity: 0.75; }
+
+  /* ── Content reveal states — all slides start hidden ── */
+  .cat__title-inner,
+  .cat__desc,
+  .cat__tags,
+  .cat__cta {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Reveal class — JS adds .content-in on the slide when it becomes active */
+  .cat__slide.content-in .cat__title-inner {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+  .cat__slide.content-in .cat__desc {
+    opacity: 0.75;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+  }
+  .cat__slide.content-in .cat__tags {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.22s;
+  }
+  .cat__slide.content-in .cat__cta {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.34s;
+  }
+
+  /* ── Nav dots ── */
+  .cat__dots {
+    position: absolute;
+    bottom: clamp(0.8rem, 1.5vw, 1.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.45rem;
+    z-index: 10;
+  }
+  .cat__dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(200,200,200,0.35);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .cat__dot.is-active {
+    background: rgba(200,200,200,0.8);
+    transform: scale(1.5);
+  }
+
+  @media (max-width: 640px) {
+    .cat__flank { display: none; }
+    .cat__content { width: 100%; padding: 1.5rem; }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const cardWrap  = document.getElementById("cat-card-wrap") as HTMLElement;
+  const border    = document.getElementById("cat-border") as HTMLElement;
+  const flankL    = document.getElementById("cat-flank-left") as HTMLElement;
+  const flankR    = document.getElementById("cat-flank-right") as HTMLElement;
+  const slides    = Array.from(document.querySelectorAll<HTMLElement>(".cat__slide"));
+  const dots      = Array.from(document.querySelectorAll<HTMLElement>(".cat__dot"));
+  const slide1    = document.querySelector<HTMLElement>(".cat__slide--first");
+
+  const N            = slides.length;
+  const VH           = () => window.innerHeight;
+  const ENTER_SCROLL = () => VH() * 0.8;
+  const SLIDE_SCROLL = () => VH() * 0.75;
+  const TOTAL        = () => ENTER_SCROLL() + N * SLIDE_SCROLL();
+
+  // Flanks start further out (overlap photo edge), then disappear at scale≥0.9
+  const FLANK_START_X = 60; // px: inward parallax offset at scale=0.66
+  // scale=0.9 threshold → enterP where scale=0.9: (0.9-0.66)/0.34 = 0.706
+  const FLANK_HIDE_EP  = 0.70;
+  const FLANK_FADE_EP  = 0.85; // fully gone by here
+
+  let currentSlide = 0;
+  let enterComplete = false;
+
+  function revealSlide(idx: number) {
+    // Small rAF delay so the slide is already opacity:1 before content animates in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        slides[idx].classList.add("content-in");
+      });
+    });
+  }
+
+  function hideSlide(idx: number) {
+    slides[idx].classList.remove("content-in");
+  }
+
+  function setSlide(idx: number) {
+    if (idx === currentSlide) return;
+    slides[currentSlide].classList.remove("is-active");
+    dots[currentSlide].classList.remove("is-active");
+    hideSlide(currentSlide);
+    currentSlide = idx;
+    slides[currentSlide].classList.add("is-active");
+    dots[currentSlide].classList.add("is-active");
+    revealSlide(currentSlide);
+  }
+
+  function onProgress(p: number) {
+    const total    = TOTAL();
+    const enterEnd = ENTER_SCROLL() / total;
+    const enterP   = Math.min(1, p / enterEnd);
+
+    // Card scale + opacity
+    const scale   = 0.66 + 0.34 * enterP;
+    const opacity = 0.8 + 0.2  * enterP;
+    gsap.set(cardWrap, { scale, opacity, transformOrigin: "center bottom" });
+    gsap.set(border, { scaleX: enterP });
+
+    // Parallax: flanks drift inward at 35% card rate (slower = depth)
+    const flankX = FLANK_START_X * (1 - enterP) * 0.35;
+
+    // Opacity: visible until FLANK_HIDE_EP, then fade out by FLANK_FADE_EP
+    let flankOpacity: number;
+    if (enterP <= FLANK_HIDE_EP) {
+      flankOpacity = 0.3 + 0.7 * (enterP / FLANK_HIDE_EP);
+    } else {
+      flankOpacity = Math.max(0, 1 - (enterP - FLANK_HIDE_EP) / (FLANK_FADE_EP - FLANK_HIDE_EP));
+    }
+
+    gsap.set(flankL, { x:  flankX });
+    gsap.set(flankR, { x: -flankX });
+    flankL.style.opacity = String(flankOpacity);
+    flankR.style.opacity = String(flankOpacity);
+
+    // Enter complete: reveal slide 1 content + blur overlay
+    if (enterP >= 1 && !enterComplete) {
+      enterComplete = true;
+      slide1?.classList.add("blur-ready");
+      revealSlide(0);
+    } else if (enterP < 1 && enterComplete) {
+      enterComplete = false;
+      slide1?.classList.remove("blur-ready");
+      hideSlide(0);
+    }
+
+    // Slide switching after enter
+    if (enterP >= 1) {
+      const slideP = (p - enterEnd) / (1 - enterEnd);
+      setSlide(Math.min(N - 1, Math.floor(slideP * N)));
+    } else {
+      setSlide(0);
+    }
+  }
+
+  ScrollTrigger.create({
+    trigger: ".cat__sticky",
+    start: "top top",
+    end: () => `+=${TOTAL()}`,
+    pin: true,
+    scrub: true,
+    onUpdate: (self) => onProgress(self.progress),
+  });
+
+  dots.forEach((dot, i) => dot.addEventListener("click", () => {
+    if (enterComplete) setSlide(i);
+  }));
+</script>

@@ -50,7 +50,6 @@ import "../styles/global.css";
 	let rafId: number | null = null;
 
 	function initLenis() {
-		// Cleanup anterior
 		if (lenis) {
 			gsap.ticker.remove(rafId as unknown as gsap.Callback);
 			lenis.destroy();
@@ -61,34 +60,19 @@ import "../styles/global.css";
 		lenis = new Lenis({
 			duration: 1.2,
 			easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-			lerp: 0.1,
 			smoothWheel: true,
 			wheelMultiplier: 1.2,
 			touchMultiplier: 1,
+			// autoRaf: false — we drive it manually via GSAP ticker
+			autoRaf: false,
 		});
 
 		window.lenis = lenis;
 
-		// Proxy: ScrollTrigger reads scroll position from Lenis
-		ScrollTrigger.scrollerProxy(document.body, {
-			scrollTop(value?: number) {
-				if (arguments.length && value !== undefined) {
-					lenis!.scrollTo(value, { immediate: true });
-				}
-				return lenis!.scroll;
-			},
-			getBoundingClientRect() {
-				return {
-					top: 0,
-					left: 0,
-					width: window.innerWidth,
-					height: window.innerHeight,
-				};
-			},
-		});
+		// Lenis fires ScrollTrigger.update on every virtual scroll tick
+		lenis.on("scroll", ScrollTrigger.update);
 
-		lenis.on("scroll", () => ScrollTrigger.update());
-
+		// GSAP ticker drives Lenis RAF
 		const ticker = (time: number) => {
 			lenis!.raf(time * 1000);
 		};
