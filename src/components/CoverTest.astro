@@ -178,7 +178,7 @@
   function init() {
     if (headings[0]) headings[0].style.opacity = "1";
 
-    ScrollTrigger.create({
+    const doCreate = () => ScrollTrigger.create({
       trigger: section,
       start: "top top",
       end: () => `+=${(PIN_MULTIPLIER - 1) * window.innerHeight}`,
@@ -186,6 +186,11 @@
       scrub: true,
       onUpdate: (self) => onProgress(self.progress),
     });
+    if ((window as any).lenisReady) {
+      doCreate();
+    } else {
+      window.addEventListener("lenis:ready", doCreate, { once: true });
+    }
   }
 
   // Preload all frames in background

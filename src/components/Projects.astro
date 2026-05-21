@@ -584,7 +584,7 @@ const projects = [
 
     init() {
       if (!this.dom || typeof window === "undefined") return;
-      this.setup();
+      requestAnimationFrame(() => requestAnimationFrame(() => this.setup()));
 
       const debounce = (fn: () => void, ms = 200) => {
         let t: ReturnType<typeof setTimeout>;
@@ -645,11 +645,5 @@ const projects = [
     instance.init();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
-
-  document.addEventListener("astro:page-load", boot);
+  boot();
 </script>

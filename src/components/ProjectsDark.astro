@@ -494,14 +494,14 @@ const projects = [
       this.projects.forEach((item, i) => {
         const img = item.querySelector<HTMLElement>(".projects__item__image");
         if (!img) return;
-        const isFirstItem = i === 0;
-        const scale = isFirstItem ? scaleFactor : 1;
+        const isFirst = i === 0;
+        const initScale = isFirst ? scaleFactor : 1;
 
         gsap.set(img, {
           width: imageWidthStr,
           transformOrigin: "left top",
-          scaleX: scale,
-          scaleY: scale,
+          scaleX: initScale,
+          scaleY: initScale,
           force3D: true,
         });
 
@@ -510,14 +510,14 @@ const projects = [
         const elH = img.getBoundingClientRect().height;
         const fromRatio = ratio && elW ? elW * ratio : 0;
         const collapsed =
-          (elH || fromRatio || item.getBoundingClientRect().height) / scale;
+          (elH || fromRatio || item.getBoundingClientRect().height) / initScale;
         const expanded = collapsed * scaleFactor;
 
         collapsedH[i] = collapsed;
         expandedH[i] = expanded;
 
         gsap.set(item, {
-          height: scale === 1 ? collapsed : expanded,
+          height: initScale === 1 ? collapsed : expanded,
           willChange: "height",
         });
       });
@@ -542,34 +542,13 @@ const projects = [
         const isLast = lastByIndex.get(projectIdx) === item;
 
         // Expand phase
-        tl.to(
-          img,
-          {
-            scaleX: scaleFactor,
-            scaleY: scaleFactor,
-            force3D: true,
-            duration: 0.8,
-            ease: "none",
-          },
-          i,
-        );
+        tl.to(img, { scaleX: scaleFactor, scaleY: scaleFactor, force3D: true, duration: 0.8, ease: "none" }, i);
         if (isFirst)
           tl.to(title, { opacity: 1, duration: 0.4, ease: "none" }, "<");
         tl.to(item, { height: expanded, duration: 0.8, ease: "none" }, "<");
 
         // Collapse phase
-        tl.to(
-          img,
-          {
-            scaleX: 1,
-            scaleY: 1,
-            force3D: true,
-            duration: 1.5,
-            ease: "none",
-            delay: 0.3,
-          },
-          ">",
-        );
+        tl.to(img, { scaleX: 1, scaleY: 1, force3D: true, duration: 1.5, ease: "none", delay: 0.3 }, ">");
         if (isLast)
           tl.to(title, { opacity: 0.2, duration: 0.4, ease: "none" }, "<");
         tl.to(item, { height: collapsed, duration: 1.5, ease: "none" }, "<");
@@ -578,7 +557,8 @@ const projects = [
 
     init() {
       if (!this.dom || typeof window === "undefined") return;
-      this.setup();
+      // Two rAFs: first ensures layout is painted, second ensures proxy is registered
+      requestAnimationFrame(() => requestAnimationFrame(() => this.setup()));
 
       const debounce = (fn: () => void, ms = 200) => {
         let t: ReturnType<typeof setTimeout>;
@@ -639,11 +619,5 @@ const projects = [
     instance.init();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot);
-  } else {
-    boot();
-  }
-
-  document.addEventListener("astro:page-load", boot);
+  boot();
 </script>
