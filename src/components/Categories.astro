@@ -112,7 +112,20 @@ const categories = [
           >
             <div class="cat__bg" style={cat.bgStyle}>
               {cat.bgImg && (
-                <img src={cat.bgImg} alt="" style={cat.bgImgStyle} />
+                <img
+                  src={cat.bgImg}
+                  alt=""
+                  id={i === 1 ? "cat-parallax-bg" : undefined}
+                  style={cat.bgImgStyle}
+                />
+              )}
+              {i === 1 && (
+                <img
+                  src="/categories/recorte.png"
+                  alt=""
+                  class="cat__parallax-fg"
+                  style={cat.bgImgStyle}
+                />
               )}
             </div>
 
@@ -126,25 +139,26 @@ const categories = [
                   <li class="cat__tag">{tag}</li>
                 ))}
               </ul>
-              <a href="/works/" class="cat__cta">
-                VIEW OUR WORK
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
             </div>
+
+            <a href="/works/" class="cat__cta">
+              VIEW OUR WORK
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 18 18"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
           </div>
         ))
       }
@@ -161,7 +175,6 @@ const categories = [
         }
       </div>
     </div>
-
   </div>
 </section>
 
@@ -191,7 +204,9 @@ const categories = [
     gap: 1.2rem;
     z-index: 20;
     pointer-events: none;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
+    transition:
+      opacity 0.35s ease,
+      visibility 0.35s ease;
   }
   .cat__flank--left {
     left: clamp(2rem, 5vw, 7rem);
@@ -278,42 +293,6 @@ const categories = [
     opacity: 1;
   }
 
-  /* ── Blur overlay — solo slide 1 ── */
-  .cat__slide--first::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    width: 55%;
-    background: linear-gradient(
-      to right,
-      rgba(245, 242, 238, 0.82) 0%,
-      rgba(245, 242, 238, 0.55) 45%,
-      rgba(245, 242, 238, 0.1) 75%,
-      transparent 100%
-    );
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    -webkit-mask-image: linear-gradient(
-      to right,
-      black 0%,
-      black 50%,
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      black 0%,
-      black 50%,
-      transparent 100%
-    );
-    pointer-events: none;
-    z-index: 1;
-    /* oculto hasta scale=1 */
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-  .cat__slide--first.blur-ready::before {
-    opacity: 1;
-  }
   .cat__slide--first .cat__content {
     z-index: 2;
   }
@@ -325,75 +304,93 @@ const categories = [
     overflow: hidden;
   }
 
+  /* ── Parallax slide 2: fg static, bg moves ── */
+  .cat__parallax-fg {
+    scale: 1.08;
+    transform-origin: center center;
+    z-index: 2;
+    pointer-events: none;
+  }
+  #cat-parallax-bg {
+    will-change: transform;
+    scale: 1.2;
+    transform-origin: center center;
+  }
+
   /* ── Content panel ── */
   .cat__content {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
-    width: clamp(280px, 42%, 580px);
+    width: clamp(280px, 44%, 620px);
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: clamp(2rem, 3.5vw, 4.5rem) clamp(1.5rem, 3vw, 4rem);
+    justify-content: center;
+    padding: 0 clamp(1.5rem, 3vw, 4rem);
+    padding-left: clamp(2rem, 3vw, 4rem);
     background: transparent;
   }
 
+  /* Figma: título 48px en frame 2526px → ~1.9vw, desc 24px → ~0.95vw, tags 28px → ~1.1vw */
   .cat__title {
-    margin: 0 0 clamp(0.6rem, 1.2vw, 1.4rem);
+    margin: 0 0 clamp(0.8rem, 1.4vw, 1.8rem);
     font-family: "Poppins", sans-serif;
-    font-size: clamp(1.4rem, 2.2vw, 3.2rem);
+    font-size: clamp(1.6rem, 1.9vw, 2.8rem);
     font-weight: 600;
     line-height: 1.1;
     letter-spacing: -0.02em;
     white-space: pre-line;
     overflow: hidden;
   }
-  /* Clip container for title mask reveal */
   .cat__title-inner {
     display: block;
   }
   .cat__desc {
-    margin: 0 0 clamp(0.8rem, 1.5vw, 2rem);
+    margin: 0 0 clamp(1rem, 1.8vw, 2.4rem);
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.65rem, 0.85vw, 1rem);
+    font-size: clamp(0.75rem, 0.95vw, 1.2rem);
     font-weight: 300;
-    line-height: 1.75;
-    max-width: 40ch;
+    line-height: 1.65;
+    max-width: 38ch;
   }
   .cat__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
+    gap: 0.5rem;
     list-style: none;
-    margin: 0 0 clamp(1.2rem, 2vw, 2.5rem);
+    margin: 0;
     padding: 0;
   }
   .cat__tag {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.5rem, 0.65vw, 0.75rem);
+    font-size: clamp(0.6rem, 0.75vw, 0.95rem);
     font-weight: 300;
     letter-spacing: 0.06em;
-    padding: 0.4em 1em;
+    padding: 0.45em 1.2em;
     border-radius: 9999px;
     border: 1px solid var(--cat-tag-border);
     white-space: nowrap;
   }
+  /* CTA — absolute, vertically centered, right side */
   .cat__cta {
+    position: absolute;
+    top: 50%;
+    right: clamp(2rem, 3.5vw, 4.5rem);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    width: fit-content;
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.6rem, 0.75vw, 0.9rem);
+    font-size: clamp(0.75rem, 1vw, 1.2rem);
     font-weight: 300;
     letter-spacing: 0.1em;
     color: var(--cat-cta-color);
     background: var(--cat-cta-bg);
     text-decoration: none;
-    padding: 0.65em 1.4em;
+    padding: 0.8em 1.8em;
     border-radius: 9999px;
     transition: opacity 0.2s;
+    z-index: 3;
   }
   .cat__cta:hover {
     opacity: 0.75;
@@ -402,10 +399,16 @@ const categories = [
   /* ── Content reveal states — all slides start hidden ── */
   .cat__title-inner,
   .cat__desc,
-  .cat__tags,
-  .cat__cta {
+  .cat__tags {
     opacity: 0;
     transform: translateY(18px);
+    transition:
+      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cat__cta {
+    opacity: 0;
+    transform: translateY(calc(-50% + 18px));
     transition:
       opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
       transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
@@ -429,7 +432,7 @@ const categories = [
   }
   .cat__slide.content-in .cat__cta {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(-50%);
     transition-delay: 0.34s;
   }
 
@@ -478,36 +481,50 @@ const categories = [
   gsap.registerPlugin(ScrollTrigger);
 
   const cardWrap = document.getElementById("cat-card-wrap") as HTMLElement;
-  const border   = document.getElementById("cat-border") as HTMLElement;
-  const flankL   = document.getElementById("cat-flank-left") as HTMLElement;
-  const flankR   = document.getElementById("cat-flank-right") as HTMLElement;
-  const slides   = Array.from(document.querySelectorAll<HTMLElement>(".cat__slide"));
-  const dots     = Array.from(document.querySelectorAll<HTMLElement>(".cat__dot"));
-  const slide1   = document.querySelector<HTMLElement>(".cat__slide--first");
+  const border = document.getElementById("cat-border") as HTMLElement;
+  const flankL = document.getElementById("cat-flank-left") as HTMLElement;
+  const flankR = document.getElementById("cat-flank-right") as HTMLElement;
+  const slides = Array.from(
+    document.querySelectorAll<HTMLElement>(".cat__slide"),
+  );
+  const dots = Array.from(document.querySelectorAll<HTMLElement>(".cat__dot"));
 
-  const N            = slides.length;
-  const VH           = () => window.innerHeight;
+  const N = slides.length;
+  const VH = () => window.innerHeight;
   const ENTER_SCROLL = () => VH() * 0.8;
   const SLIDE_SCROLL = () => VH() * 0.75;
-  const TOTAL        = () => ENTER_SCROLL() + N * SLIDE_SCROLL();
+  const TOTAL = () => ENTER_SCROLL() + N * SLIDE_SCROLL();
 
-  const SCALE_START   = 0.4;
-  const SCALE_RANGE   = 0.6;
-  // Max horizontal push: flanks drift outward this many px as card grows
-  const PARALLAX_X    = 40;
-  // Fade-out window: flanks start fading at this enterP and are gone at 1.0
-  const FADE_START    = 0.72;
+  const SCALE_START = 0.4;
+  const SCALE_RANGE = 0.6;
+  const PARALLAX_X = 40;
+  const FADE_START = 0.72;
+
+  // true = slide has dark bg → navbar needs light (white) text
+  const SLIDE_IS_DARK = [false, false, false, true];
+
+  const catSection = document.getElementById("categories") as HTMLElement;
+
+  function updateNavbarTheme(idx: number) {
+    if (SLIDE_IS_DARK[idx]) {
+      catSection.setAttribute("data-navbar-dark", "");
+    } else {
+      catSection.removeAttribute("data-navbar-dark");
+    }
+  }
 
   // Centre the flanks vertically via GSAP (keeps transform clean)
   gsap.set([flankL, flankR], { yPercent: -50 });
 
-  let currentSlide  = 0;
+  let currentSlide = 0;
   let enterComplete = false;
 
   function revealSlide(idx: number) {
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      slides[idx].classList.add("content-in");
-    }));
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        slides[idx].classList.add("content-in");
+      }),
+    );
   }
 
   function hideSlide(idx: number) {
@@ -516,6 +533,7 @@ const categories = [
 
   function setSlide(idx: number) {
     if (idx === currentSlide) return;
+    const prev = currentSlide;
     slides[currentSlide].classList.remove("is-active");
     dots[currentSlide].classList.remove("is-active");
     hideSlide(currentSlide);
@@ -523,34 +541,54 @@ const categories = [
     slides[currentSlide].classList.add("is-active");
     dots[currentSlide].classList.add("is-active");
     revealSlide(currentSlide);
+    updateNavbarTheme(currentSlide);
+    // Notify parallax system of slide change
+    if ((window as any).__catSetSlide) (window as any).__catSetSlide(idx);
   }
 
   function onProgress(p: number) {
     const enterEnd = ENTER_SCROLL() / TOTAL();
-    const enterP   = Math.min(1, p / enterEnd);
+    const enterP = Math.min(1, p / enterEnd);
 
-    gsap.set(cardWrap, { scale: SCALE_START + SCALE_RANGE * enterP, opacity: 0.8 + 0.2 * enterP, transformOrigin: "center center" });
-    gsap.set(border,   { scaleX: enterP });
+    gsap.set(cardWrap, {
+      scale: SCALE_START + SCALE_RANGE * enterP,
+      opacity: 0.8 + 0.2 * enterP,
+      transformOrigin: "center center",
+    });
+    gsap.set(border, { scaleX: enterP });
 
     // Parallax: flanks drift outward as card grows
     const drift = PARALLAX_X * enterP;
     // Opacity: visible until FADE_START, then fade to 0 at enterP=1
-    const opacity = enterP < FADE_START
-      ? 1
-      : Math.max(0, 1 - (enterP - FADE_START) / (1 - FADE_START));
+    const opacity =
+      enterP < FADE_START
+        ? 1
+        : Math.max(0, 1 - (enterP - FADE_START) / (1 - FADE_START));
     const visible = opacity > 0;
 
-    gsap.set(flankL, { x: -drift, opacity, visibility: visible ? "visible" : "hidden" });
-    gsap.set(flankR, { x:  drift, opacity, visibility: visible ? "visible" : "hidden" });
+    gsap.set(flankL, {
+      x: -drift,
+      opacity,
+      visibility: visible ? "visible" : "hidden",
+    });
+    gsap.set(flankR, {
+      x: drift,
+      opacity,
+      visibility: visible ? "visible" : "hidden",
+    });
 
     if (enterP >= 1 && !enterComplete) {
       enterComplete = true;
-      slide1?.classList.add("blur-ready");
       revealSlide(0);
+      updateNavbarTheme(currentSlide);
+      catSection.removeAttribute("data-navbar-transparent");
+      if (currentSlide === 1 && (window as any).__catSetSlide)
+        (window as any).__catSetSlide(1);
     } else if (enterP < 1 && enterComplete) {
       enterComplete = false;
-      slide1?.classList.remove("blur-ready");
       hideSlide(0);
+      catSection.removeAttribute("data-navbar-dark");
+      catSection.setAttribute("data-navbar-transparent", "");
     }
 
     if (enterP >= 1) {
@@ -579,6 +617,121 @@ const categories = [
   }
 
   dots.forEach((dot, i) =>
-    dot.addEventListener("click", () => { if (enterComplete) setSlide(i); })
+    dot.addEventListener("click", () => {
+      if (enterComplete) setSlide(i);
+    }),
   );
+
+  // ── Mouse parallax for slide 2: two layers at different depths ──
+  const bgEl = document.getElementById("cat-parallax-bg") as HTMLElement | null;
+  const fgEl = document.querySelector<HTMLElement>(".cat__parallax-fg");
+
+  if (bgEl && fgEl) {
+    const BG_STRENGTH = 16;
+    const FG_STRENGTH = 7;
+
+    let bgTX = 0,
+      bgTY = 0,
+      bgX = 0,
+      bgY = 0;
+    let fgTX = 0,
+      fgTY = 0,
+      fgX = 0,
+      fgY = 0;
+
+    // Mouse override: when true, mousemove updates targets; when false, demo controls them
+    let mouseActive = false;
+    let demoTween: gsap.core.Tween | null = null;
+
+    function lerp(a: number, b: number, t: number) {
+      return a + (b - a) * t;
+    }
+
+    function tick() {
+      bgX = lerp(bgX, bgTX, 0.06);
+      bgY = lerp(bgY, bgTY, 0.06);
+      fgX = lerp(fgX, fgTX, 0.06);
+      fgY = lerp(fgY, fgTY, 0.06);
+      bgEl.style.translate = `${bgX}px ${bgY}px`;
+      fgEl.style.translate = `${fgX}px ${fgY}px`;
+      requestAnimationFrame(tick);
+    }
+
+    // Proxy object that GSAP animates; tick() reads bgTX/bgTY/fgTX/fgTY each frame
+    // Single arc: centre → peak → back to centre
+    const demoProxy = { t: 0 };
+    const ARC_NX = 1.0;
+    const ARC_NY = 0;
+
+    function applyDemo() {
+      bgTX = -ARC_NX * demoProxy.t * BG_STRENGTH;
+      bgTY =  ARC_NY * demoProxy.t * BG_STRENGTH;
+      fgTX = -ARC_NX * demoProxy.t * FG_STRENGTH;
+      fgTY =  ARC_NY * demoProxy.t * FG_STRENGTH;
+    }
+
+    function playDemoParallax() {
+      if (demoTween) demoTween.kill();
+      mouseActive = false;
+      demoProxy.t = 0;
+
+      demoTween = gsap.to(demoProxy, {
+        t: 1,
+        duration: 2.0,
+        ease: "power2.out",
+        onUpdate: applyDemo,
+        onComplete() { demoTween = null; },
+      });
+    }
+
+    function stopDemo() {
+      if (demoTween) {
+        demoTween.kill();
+        demoTween = null;
+      }
+      mouseActive = true;
+    }
+
+    window.addEventListener(
+      "mousemove",
+      (e) => {
+        if (currentSlide !== 1 || !enterComplete) {
+          bgTX = bgTY = fgTX = fgTY = 0;
+          mouseActive = false;
+          return;
+        }
+        // First mouse movement kills the demo and takes over
+        if (!mouseActive) stopDemo();
+        const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+        const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+        bgTX = -nx * BG_STRENGTH;
+        bgTY = ny * BG_STRENGTH;
+        fgTX = -nx * FG_STRENGTH;
+        fgTY = ny * FG_STRENGTH;
+      },
+      { passive: true },
+    );
+
+    window.addEventListener(
+      "mouseleave",
+      () => {
+        bgTX = bgTY = fgTX = fgTY = 0;
+      },
+      { passive: true },
+    );
+
+    // Hook into setSlide to trigger demo when slide 2 becomes active
+    const _origSetSlide = setSlide;
+    (window as any).__catSetSlide = (idx: number) => {
+      if (idx === 1) {
+        playDemoParallax();
+      } else {
+        stopDemo();
+        bgTX = bgTY = fgTX = fgTY = 0;
+        mouseActive = false;
+      }
+    };
+
+    tick();
+  }
 </script>
