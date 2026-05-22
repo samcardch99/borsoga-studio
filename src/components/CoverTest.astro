@@ -3,7 +3,7 @@
 ---
 
 <section data-navbar-dark class="ct" id="cover-test">
-  <img class="ct__frame" id="ct-frame" src="/frames-jpg/1.00000.jpg" alt="" />
+  <img class="ct__frame" id="ct-frame" src="/new-frames-webp/1-1.jpg" alt="" />
 
   <div class="ct__copy">
     <h2 class="ct__heading ct__heading--1">
@@ -159,14 +159,10 @@
   // Preload all frames
   const frames: HTMLImageElement[] = [];
 
-  function padIndex(i: number): string {
-    return i.toString().padStart(5, "0");
-  }
-
-  function onProgress(p: number) {
+function onProgress(p: number) {
     const idx = Math.round(p * (FRAME_COUNT - 1));
     const f = frames[idx];
-    if (f && f.complete && frameImg.src !== f.src) {
+    if (f?.complete && frameImg.src !== f.src) {
       frameImg.src = f.src;
     }
     headings.forEach((h, i) => {
@@ -194,9 +190,9 @@
   }
 
   // Preload all frames in background
-  for (let i = 0; i < FRAME_COUNT; i++) {
+  for (let i = 1; i <= FRAME_COUNT; i++) {
     const img = new Image();
-    img.src = `/frames-jpg/1.${padIndex(i)}.jpg`;
+    img.src = `/new-frames-webp/1-${i}.jpg`;
     frames.push(img);
   }
 

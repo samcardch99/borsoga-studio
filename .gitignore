@@ -27,3 +27,9 @@ pnpm-debug.log*
 # large 3D assets (>50MB) — serve via LFS or external CDN
 *.glb
 *.gltf
+
+# raw unoptimized frame sequences
+public/new-frames/
+public/frames/
+public/frames-jpg/
+public/frames-webp/
