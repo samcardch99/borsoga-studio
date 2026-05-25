@@ -6,17 +6,15 @@ const categories = [
     description:
       "We translate ideas, concepts, sketches, and architectural plans into accurate, atmospheric imagery and animations. We focus on natural light, true human scale, and the honest representation of materials to evoke the exact emotion of the space.",
     tags: ["V-RAY", "RHINO"],
-    bgColor: "#f7f7f7",
-    textColor: "#1a1a1a",
-    tagBorder: "rgba(0,0,0,0.5)",
-    ctaBg: "#000",
-    ctaColor: "#fff",
-    bgStyle:
-      "background-image:url('/categories/cat1-bg.jpg');background-size:cover;background-position:60% center;",
-    noGradient: false,
-    customGradient:
-      "linear-gradient(to right, rgba(245,242,238,0.82) 0%, rgba(245,242,238,0.55) 35%, rgba(245,242,238,0.15) 55%, transparent 65%)",
-    contentBlur: "6px",
+    bgColor: "#0a0a0a",
+    textColor: "#fff",
+    tagBorder: "rgba(255,255,255,0.5)",
+    ctaBg: "#fff",
+    ctaColor: "#000",
+    bgStyle: "background-color:#0a0a0a;",
+    noGradient: true,
+    customGradient: undefined as string | undefined,
+    contentBlur: undefined as string | undefined,
     bgImg: undefined as string | undefined,
     bgImgStyle: undefined as string | undefined,
   },
@@ -110,6 +108,19 @@ const categories = [
             style={`--cat-bg:${cat.bgColor};--cat-text:${cat.textColor};--cat-tag-border:${cat.tagBorder};--cat-cta-bg:${cat.ctaBg};--cat-cta-color:${cat.ctaColor};`}
           >
             <div class="cat__bg" style={cat.bgStyle}>
+              {i === 0 && (
+                <>
+                  {[1,2,3,4,5].map((n) => (
+                    <img
+                      src={`/categories/animated-architecture-opt/${n}.jpg`}
+                      alt=""
+                      class="cat__light-frame"
+                      data-light-frame={n}
+                      style={n === 1 ? "opacity:1" : "opacity:0"}
+                    />
+                  ))}
+                </>
+              )}
               {cat.bgImg && (
                 <img
                   src={cat.bgImg}
@@ -344,6 +355,18 @@ const categories = [
     transform-origin: center center;
   }
 
+  /* ── Lighting frames slide 1 ── */
+  .cat__light-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+    will-change: opacity;
+  }
+
   /* ── Parallax slide 3: fondo + laptops + piedra ── */
   .cat__s3-layer {
     position: absolute;
@@ -533,6 +556,8 @@ const categories = [
 
   gsap.registerPlugin(ScrollTrigger);
 
+  function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
+
   const cardWrap = document.getElementById("cat-card-wrap") as HTMLElement;
   const border = document.getElementById("cat-border") as HTMLElement;
   const flankL = document.getElementById("cat-flank-left") as HTMLElement;
@@ -635,6 +660,8 @@ const categories = [
       revealSlide(0);
       updateNavbarTheme(currentSlide);
       catSection.removeAttribute("data-navbar-transparent");
+      if (currentSlide === 0 && (window as any).__catLightingIntro)
+        (window as any).__catLightingIntro();
       if (currentSlide === 1 && (window as any).__catSetSlide)
         (window as any).__catSetSlide(1);
     } else if (enterP < 1 && enterComplete) {
@@ -675,8 +702,74 @@ const categories = [
     }),
   );
 
+  // ── Slide 1: cinematic lighting via mouse X position ──
+  {
+    const FRAME_COUNT = 5;
+    const lightFrames = Array.from(
+      document.querySelectorAll<HTMLImageElement>(".cat__light-frame")
+    );
+
+    // Preload frames 2-5 (frame 1 is already in HTML)
+    lightFrames.forEach(f => { if (!f.complete) f.decode?.(); });
+
+    let lightX = 0;      // lerped current position (0=dark, 1=bright)
+    let lightTarget = 0; // mouse target
+    let introTween: gsap.core.Tween | null = null;
+    let mouseHasMoved = false;
+
+    function applyLighting(nx: number) {
+      const fi = nx * (FRAME_COUNT - 1);
+      lightFrames.forEach((img, i) => {
+        const dist = Math.abs(i - fi);
+        img.style.opacity = String(Math.max(0, 1 - dist));
+      });
+    }
+
+    function playLightingIntro() {
+      mouseHasMoved = false;
+      lightX = 0;
+      lightTarget = 0;
+      applyLighting(0);
+      if (introTween) introTween.kill();
+      const proxy = { v: 0 };
+      introTween = gsap.to(proxy, {
+        v: 1,
+        duration: 2.8,
+        ease: "power2.inOut",
+        onUpdate() {
+          if (mouseHasMoved) { introTween?.kill(); introTween = null; return; }
+          lightX = proxy.v;
+          applyLighting(lightX);
+        },
+        onComplete() {
+          lightTarget = 1;
+          introTween = null;
+        },
+      });
+    }
+
+    function lightTick() {
+      if (currentSlide === 0 && enterComplete && !introTween) {
+        lightX = lerp(lightX, lightTarget, 0.04);
+        applyLighting(lightX);
+      }
+      requestAnimationFrame(lightTick);
+    }
+
+    window.addEventListener("mousemove", (e) => {
+      if (currentSlide !== 0 || !enterComplete) return;
+      mouseHasMoved = true;
+      if (introTween) { introTween.kill(); introTween = null; }
+      lightTarget = e.clientX / window.innerWidth;
+    }, { passive: true });
+
+    // Called by the enterComplete block when slide 1 fills the viewport
+    (window as any).__catLightingIntro = playLightingIntro;
+
+    lightTick();
+  }
+
   // ── Mouse parallax: slide 2 (bg + recorte) and slide 3 (fondo + laptops + piedra) ──
-  function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
 
   // Slide 2 elements
   const s2bg = document.getElementById("cat-parallax-bg") as HTMLElement | null;
