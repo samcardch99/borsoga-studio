@@ -66,8 +66,7 @@ const categories = [
     tagBorder: "rgba(255,255,255,0.6)",
     ctaBg: "#fff",
     ctaColor: "#000",
-    bgStyle:
-      "background-image:url('/categories/cat4-bg.jpg');background-size:cover;background-position:center center;",
+    bgStyle: "background-color:#1a1a1a;",
     noGradient: true,
     customGradient: undefined as string | undefined,
     contentBlur: undefined as string | undefined,
@@ -162,6 +161,28 @@ const categories = [
                     alt=""
                     id="cat-s3-piedra"
                     class="cat__s3-layer cat__s3-fg"
+                  />
+                </>
+              )}
+              {i === 3 && (
+                <>
+                  <img
+                    src="/categories/branding1.png"
+                    alt=""
+                    id="cat-s4-bg"
+                    class="cat__s4-layer cat__s4-bg"
+                  />
+                  <img
+                    src="/categories/branding2.png"
+                    alt=""
+                    id="cat-s4-mid"
+                    class="cat__s4-layer cat__s4-mid"
+                  />
+                  <img
+                    src="/categories/branding3.png"
+                    alt=""
+                    id="cat-s4-top"
+                    class="cat__s4-layer cat__s4-top"
                   />
                 </>
               )}
@@ -392,6 +413,23 @@ const categories = [
   #cat-s3-laptop2 { z-index: 4; }
   [data-cat-index="2"] .cat__content,
   [data-cat-index="2"] .cat__cta { z-index: 10; }
+
+  /* ── Parallax slide 4: branding layers ── */
+  .cat__s4-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .cat__s4-bg  { scale: 1.12; z-index: 0; }
+  .cat__s4-mid { scale: 1.05; z-index: 1; }
+  .cat__s4-top { scale: 1.05; z-index: 2; }
+  [data-cat-index="3"] .cat__content,
+  [data-cat-index="3"] .cat__cta { z-index: 10; }
 
   /* ── Content panel ── */
   .cat__content {
@@ -774,6 +812,10 @@ const categories = [
   const s3laptop1 = document.getElementById("cat-s3-laptop1") as HTMLElement | null;
   const s3laptop2 = document.getElementById("cat-s3-laptop2") as HTMLElement | null;
   const s3piedra  = document.getElementById("cat-s3-piedra")  as HTMLElement | null;
+  // Slide 4 elements
+  const s4bg  = document.getElementById("cat-s4-bg")  as HTMLElement | null;
+  const s4mid = document.getElementById("cat-s4-mid") as HTMLElement | null;
+  const s4top = document.getElementById("cat-s4-top") as HTMLElement | null;
 
   const BG_STRENGTH  = 16;
   const FG_STRENGTH  = 7;
@@ -790,6 +832,11 @@ const categories = [
     { tx: 0, ty: 0, x: 0, y: 0, el: s3laptop1, strength: FG_STRENGTH  },
     { tx: 0, ty: 0, x: 0, y: 0, el: s3laptop2, strength: FG2_STRENGTH },
     { tx: 0, ty: 0, x: 0, y: 0, el: s3piedra,  strength: FG2_STRENGTH },
+  ];
+  const s4layers: Layer[] = [
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4bg,  strength: BG_STRENGTH  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4mid, strength: FG_STRENGTH  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4top, strength: FG2_STRENGTH },
   ];
 
   let mouseActive = false;
@@ -809,7 +856,7 @@ const categories = [
   }
 
   function applyDemo() {
-    const active = currentSlide === 1 ? s2layers : s3layers;
+    const active = currentSlide === 1 ? s2layers : currentSlide === 2 ? s3layers : s4layers;
     for (const l of active) {
       l.tx = -ARC_NX * demoProxy.t * l.strength;
       l.ty = 0;
@@ -835,7 +882,7 @@ const categories = [
   }
 
   function tick() {
-    const allLayers = [...s2layers, ...s3layers];
+    const allLayers = [...s2layers, ...s3layers, ...s4layers];
     for (const l of allLayers) {
       if (!l.el) continue;
       l.x = lerp(l.x, l.tx, 0.06);
@@ -846,10 +893,11 @@ const categories = [
   }
 
   window.addEventListener("mousemove", (e) => {
-    const isParallaxSlide = (currentSlide === 1 || currentSlide === 2) && enterComplete;
+    const isParallaxSlide = (currentSlide === 1 || currentSlide === 2 || currentSlide === 3) && enterComplete;
     if (!isParallaxSlide) {
       resetLayerTargets(s2layers);
       resetLayerTargets(s3layers);
+      resetLayerTargets(s4layers);
       mouseActive = false;
       return;
     }
@@ -858,20 +906,23 @@ const categories = [
     const ny = (e.clientY / window.innerHeight - 0.5) * 2;
     if (currentSlide === 1) setLayerTargets(s2layers, nx, ny);
     if (currentSlide === 2) setLayerTargets(s3layers, nx, ny);
+    if (currentSlide === 3) setLayerTargets(s4layers, nx, ny);
   }, { passive: true });
 
   window.addEventListener("mouseleave", () => {
     resetLayerTargets(s2layers);
     resetLayerTargets(s3layers);
+    resetLayerTargets(s4layers);
   }, { passive: true });
 
   (window as any).__catSetSlide = (idx: number) => {
-    if (idx === 1 || idx === 2) {
+    if (idx === 1 || idx === 2 || idx === 3) {
       playDemoParallax();
     } else {
       stopDemo();
       resetLayerTargets(s2layers);
       resetLayerTargets(s3layers);
+      resetLayerTargets(s4layers);
       mouseActive = false;
     }
   };

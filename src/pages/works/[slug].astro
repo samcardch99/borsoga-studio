@@ -1,0 +1,699 @@
+---
+import type { GetStaticPaths } from "astro";
+import { projects, type ProjectData } from "../../data/projects";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+
+export const getStaticPaths: GetStaticPaths = () =>
+  projects.map((p, i) => ({
+    params: { slug: p.slug },
+    props: { project: p, next: projects[(i + 1) % projects.length] },
+  }));
+
+type Props = { project: ProjectData; next: ProjectData };
+const { project, next } = Astro.props;
+const imgs = project.images;
+---
+
+<Layout>
+  <!-- Transition mask: white wipe that reveals on enter / covers on exit -->
+  <div class="pd-mask" id="pd-mask" aria-hidden="true"></div>
+
+  <div class="pd">
+    <Navbar />
+
+    <!-- ──────────────────────────────────────────────────────────────
+         HERO SECTION — same structure in all 3 layouts
+         Line → Title → Meta (discipline/scope left, client/desc right)
+    ─────────────────────────────────────────────────────────────── -->
+    <section class="pd-hero">
+      <div class="pd-line" id="pd-line-top"></div>
+
+      <div class="pd-hero__content">
+        <!-- Large title — clip-reveal from bottom -->
+        <div class="pd-hero__clip">
+          <h1 class="pd-hero__title" id="pd-title">{project.title}</h1>
+        </div>
+
+        <!-- Meta row — 2 columns below title -->
+        <div class="pd-hero__meta" id="pd-meta">
+          <!-- LEFT: Discipline + Scope -->
+          <div class="pd-hero__meta-left">
+            <p class="pd-meta__label">Discipline</p>
+            <p class="pd-meta__value">{project.discipline}</p>
+            <p class="pd-meta__label pd-meta__label--mt">Scope</p>
+            <p class="pd-meta__value">{project.scope}</p>
+          </div>
+          <!-- RIGHT: Optional client + Description -->
+          <div class="pd-hero__meta-right">
+            {project.client && (
+              <>
+                <p class="pd-meta__label pd-meta__label--right">Client</p>
+                <p class="pd-meta__value pd-meta__value--right">{project.client}</p>
+                <div style="height:1.2rem"></div>
+              </>
+            )}
+            <p class="pd-meta__label pd-meta__label--right">Description</p>
+            <p class="pd-meta__value pd-meta__value--right">{project.description}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────────────────────────────────────────────────────────
+         IMAGE 1: Full-width hero image (all layouts)
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="pd-img pd-img--hero pd-par">
+      <img src={imgs[0]} alt={project.title} loading="eager" decoding="async" />
+    </div>
+
+    <!-- ──────────────────────────────────────────────────────────────
+         SPLIT SECTION: Image left (50%) + Project Narrative right
+         (all layouts)
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="pd-split" data-reveal>
+      <div class="pd-split__img pd-par">
+        <img src={imgs[1]} alt={project.title} loading="lazy" decoding="async" />
+      </div>
+      <div class="pd-split__text">
+        <p class="pd-section-label">Project Narrative</p>
+        <p class="pd-section-body">{project.narrative}</p>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────────────────────
+         DUO SECTION: Two equal images side by side (all layouts)
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="pd-duo" data-reveal>
+      <div class="pd-par">
+        <img src={imgs[2]} alt={project.title} loading="lazy" decoding="async" />
+      </div>
+      <div class="pd-par">
+        <img src={imgs[3]} alt={project.title} loading="lazy" decoding="async" />
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────────────────────────
+         pd2 + pd3: Full-width 4th image
+    ─────────────────────────────────────────────────────────────── -->
+    {(project.layout === "pd2" || project.layout === "pd3") && imgs[4] && (
+      <div class="pd-img pd-img--full pd-par" data-reveal>
+        <img src={imgs[4]} alt={project.title} loading="lazy" decoding="async" />
+      </div>
+    )}
+
+    <!-- ──────────────────────────────────────────────────────────────
+         pd2 only: Portrait image (left) + Closing line (lower right)
+         Portrait image is tall and left-aligned; closing appears
+         at the bottom-right as the portrait nears its end.
+    ─────────────────────────────────────────────────────────────── -->
+    {project.layout === "pd2" && imgs[5] && (
+      <div class="pd-portrait-row" data-reveal>
+        <div class="pd-par pd-par--portrait">
+          <img src={imgs[5]} alt={project.title} loading="lazy" decoding="async" />
+        </div>
+        <div class="pd-portrait-closing">
+          <p class="pd-section-label pd-section-label--right">Closing Line</p>
+          <p class="pd-section-body pd-section-body--right">{project.closingLine}</p>
+        </div>
+      </div>
+    )}
+
+    <!-- ──────────────────────────────────────────────────────────────
+         pd1 + pd3: Closing line as separate section (right-aligned)
+    ─────────────────────────────────────────────────────────────── -->
+    {(project.layout === "pd1" || project.layout === "pd3") && (
+      <div class="pd-closing" data-reveal>
+        <div class="pd-closing__inner">
+          <p class="pd-section-label pd-section-label--right">Closing Line</p>
+          <p class="pd-section-body pd-section-body--right">{project.closingLine}</p>
+        </div>
+      </div>
+    )}
+
+    <!-- ──────────────────────────────────────────────────────────────
+         NEXT PROJECT — studiodado-style sticky scroll reveal
+         Line → "NEXT PROJECT" label + large title right
+         → 270svh scroll area where sticky image slides up
+    ─────────────────────────────────────────────────────────────── -->
+    <section class="pd-next">
+      <div class="pd-next__head">
+        <div class="pd-line pd-line--next" id="pd-line-next"></div>
+        <div class="pd-next__labels">
+          <span class="pd-next__label" id="pd-next-label">NEXT PROJECT</span>
+          <a
+            href={`/works/${next.slug}/`}
+            class="pd-next__title"
+            id="pd-next-link"
+            data-next-href={`/works/${next.slug}/`}
+          >{next.title}</a>
+        </div>
+      </div>
+
+      <!-- Sticky scroll reveal — image slides up from below -->
+      <div class="pd-next__area">
+        <div class="pd-next__sticky">
+          <a
+            href={`/works/${next.slug}/`}
+            id="pd-next-reveal"
+            class="pd-next__reveal"
+            data-next-href={`/works/${next.slug}/`}
+            aria-label={`Go to ${next.title}`}
+          >
+            <img
+              src={next.images[0]}
+              alt={next.title}
+              class="pd-next__img"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="pd-next__overlay"></div>
+            <div class="pd-next__info">
+              <span class="pd-next__info-label">NEXT PROJECT</span>
+              <p class="pd-next__info-title">{next.title}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  /* ── Mask ── */
+  .pd-mask {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  /* ── Page wrapper ── */
+  .pd { background: #fff; color: #000; min-height: 100svh; }
+
+  /* ── Horizontal lines ── */
+  .pd-line {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.15);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* ── HERO ────────────────────────────────────────────────────── */
+  .pd-hero {
+    padding: clamp(2rem, 4vw, 6rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+  }
+
+  .pd-hero__content { padding-top: clamp(1.2rem, 2.5vw, 3.5rem); }
+
+  /* Title clip container */
+  .pd-hero__clip { overflow: hidden; padding-bottom: 0.06em; }
+
+  .pd-hero__title {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(2rem, 3.8vw, 6.5rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #000;
+    text-transform: uppercase;
+    transform: translateY(110%);
+    opacity: 0;
+  }
+
+  /* Meta row — 2 columns */
+  .pd-hero__meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 8rem);
+    padding: clamp(1rem, 2vw, 2.5rem) 0 clamp(2.5rem, 4vw, 6rem);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  .pd-meta__label {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.6rem, 0.72vw, 0.82rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 0.15rem;
+    color: #000;
+  }
+  .pd-meta__label--mt { margin-top: 0.9rem; }
+  .pd-meta__label--right { text-align: right; }
+
+  .pd-meta__value {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.65rem, 0.78vw, 0.9rem);
+    font-weight: 300;
+    line-height: 1.55;
+    color: #333;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .pd-meta__value--right { text-align: right; }
+
+  .pd-hero__meta-right { display: flex; flex-direction: column; align-items: flex-end; }
+
+  /* ── PARALLAX wrapper ── */
+  .pd-par { overflow: hidden; }
+  .pd-par img {
+    width: 100%;
+    height: 116%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transform: translateY(-8%);
+    will-change: transform;
+  }
+
+  /* ── HERO IMAGE ── */
+  .pd-img--hero {
+    height: clamp(50vh, 70svh, 88svh);
+    /* No side padding — true full width */
+  }
+
+  /* ── SPLIT SECTION — image left + narrative right ── */
+  .pd-split {
+    display: grid;
+    grid-template-columns: 52fr 48fr;
+    gap: clamp(1.5rem, 2.5vw, 4rem);
+    padding: clamp(2rem, 4vw, 7rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    align-items: center;
+  }
+
+  .pd-split__img { height: clamp(320px, 50svh, 700px); }
+
+  .pd-split__text {
+    padding: clamp(1rem, 2vw, 3rem) 0;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  /* ── DUO SECTION — two equal images ── */
+  .pd-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.5rem, 1.5vw, 2rem);
+    padding: clamp(1.5rem, 3vw, 5rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+  }
+  .pd-duo .pd-par { height: clamp(260px, 40svh, 600px); }
+
+  /* ── FULL-WIDTH 4th image (pd2, pd3) ── */
+  .pd-img--full {
+    height: clamp(50vh, 68svh, 85svh);
+    margin-top: clamp(1.5rem, 3vw, 5rem);
+  }
+
+  /* ── PORTRAIT + CLOSING row (pd2) ── */
+  .pd-portrait-row {
+    display: grid;
+    grid-template-columns: 45fr 55fr;
+    gap: clamp(1rem, 2vw, 3rem);
+    padding: clamp(1.5rem, 3vw, 5rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    align-items: end;
+  }
+
+  .pd-par--portrait { height: clamp(450px, 62svh, 900px); }
+
+  .pd-portrait-closing {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: clamp(1.5rem, 3vw, 4rem);
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  /* ── CLOSING SECTION (pd1, pd3) ── */
+  .pd-closing {
+    padding: clamp(3rem, 6vw, 9rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .pd-closing__inner {
+    max-width: clamp(280px, 32vw, 500px);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* ── SECTION TEXT LABELS + BODIES ── */
+  .pd-section-label {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.6rem, 0.72vw, 0.82rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 0.7rem;
+    color: #000;
+  }
+  .pd-section-label--right { text-align: right; }
+
+  .pd-section-body {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.7rem, 0.88vw, 1rem);
+    font-weight: 300;
+    line-height: 1.8;
+    color: #333;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .pd-section-body--right { text-align: right; }
+
+  /* ── NEXT PROJECT ─────────────────────────────────────────────── */
+  .pd-next { margin-top: clamp(4rem, 8vw, 12rem); }
+
+  .pd-next__head {
+    padding: 0 clamp(1.2rem, 3.3vw, 4.5rem) clamp(1.5rem, 3vw, 4rem);
+  }
+
+  .pd-line--next { margin-bottom: clamp(1.2rem, 2.5vw, 3.5rem); }
+
+  .pd-next__labels {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.4rem, 1vw, 1.2rem);
+  }
+
+  .pd-next__label {
+    display: block;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.6rem, 0.78vw, 0.9rem);
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #888;
+    opacity: 0;
+  }
+
+  .pd-next__title {
+    font-family: "Poppins", sans-serif;
+    /* Title aligns RIGHT — Figma shows it anchored to the right edge */
+    font-size: clamp(2rem, 3.8vw, 6.5rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    line-height: 1.05;
+    display: block;
+    text-align: right;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+  }
+  .pd-next__title:hover { opacity: 0.5 !important; }
+
+  /* Sticky scroll area — 270svh so user scrolls through it */
+  .pd-next__area { height: 270svh; position: relative; }
+
+  .pd-next__sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .pd-next__reveal {
+    position: absolute;
+    inset: 0;
+    transform: translateY(100%);
+    will-change: transform;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .pd-next__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .pd-next__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.38);
+    pointer-events: none;
+  }
+
+  .pd-next__info {
+    position: absolute;
+    bottom: clamp(2rem, 5vw, 6rem);
+    left: clamp(1.2rem, 3.3vw, 4.5rem);
+    color: #fff;
+    pointer-events: none;
+  }
+  .pd-next__info-label {
+    display: block;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.6rem, 0.78vw, 0.9rem);
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.72;
+  }
+  .pd-next__info-title {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.6rem, 4vw, 6rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1.05;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 700px) {
+    .pd-hero__meta,
+    .pd-split,
+    .pd-duo,
+    .pd-portrait-row { grid-template-columns: 1fr; }
+
+    .pd-split__img,
+    .pd-duo .pd-par,
+    .pd-par--portrait { height: clamp(220px, 55vw, 420px); }
+
+    .pd-hero__meta-right { align-items: flex-start; }
+    .pd-meta__label--right,
+    .pd-meta__value--right,
+    .pd-section-label--right,
+    .pd-section-body--right { text-align: left; }
+    .pd-next__title { text-align: left; }
+    .pd-closing { justify-content: flex-start; }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Enter: white mask wipes away from top ──────────────────────
+
+  function initMaskEnter() {
+    const mask = document.getElementById("pd-mask");
+    if (!mask) return;
+    gsap.fromTo(
+      mask,
+      { scaleY: 1, transformOrigin: "top center" },
+      {
+        scaleY: 0,
+        duration: 1.05,
+        ease: "expo.inOut",
+        delay: 0.05,
+        onComplete() {
+          mask.style.display = "none";
+        },
+      }
+    );
+  }
+
+  // ── Hero: line → title clip → meta ────────────────────────────
+
+  function initHeroEntrance() {
+    const lineTop = document.getElementById("pd-line-top");
+    const title   = document.getElementById("pd-title");
+    const meta    = document.getElementById("pd-meta");
+
+    const tl = gsap.timeline({ delay: 0.55 });
+
+    if (lineTop)
+      tl.to(lineTop, { scaleX: 1, duration: 0.85, ease: "power3.inOut" });
+
+    if (title)
+      tl.to(title,
+        { y: "0%", opacity: 1, duration: 1.15, ease: "expo.out" },
+        "-=0.5"
+      );
+
+    if (meta)
+      tl.to(meta,
+        { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" },
+        "-=0.75"
+      );
+  }
+
+  // ── Parallax on all .pd-par images ────────────────────────────
+
+  function initParallax() {
+    document.querySelectorAll<HTMLElement>(".pd-par").forEach((wrap) => {
+      const img = wrap.querySelector<HTMLElement>("img");
+      if (!img) return;
+      gsap.fromTo(
+        img,
+        { yPercent: -8 },
+        {
+          yPercent: 8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrap,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
+    });
+  }
+
+  // ── Scroll reveal ─────────────────────────────────────────────
+
+  function initReveal() {
+    // Image blocks that fade + rise on scroll
+    document.querySelectorAll<HTMLElement>(
+      "[data-reveal] .pd-par, .pd-img--full"
+    ).forEach((el) => {
+      gsap.from(el, {
+        opacity: 0,
+        y: 45,
+        duration: 1.1,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 88%" },
+      });
+    });
+
+    // Text blocks
+    document.querySelectorAll<HTMLElement>(
+      ".pd-split__text, .pd-closing__inner, .pd-portrait-closing"
+    ).forEach((el) => {
+      gsap.to(el, {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 84%" },
+      });
+    });
+
+    // Next project line
+    const lineNext = document.getElementById("pd-line-next");
+    if (lineNext)
+      gsap.to(lineNext, {
+        scaleX: 1,
+        duration: 0.85,
+        ease: "power3.inOut",
+        scrollTrigger: { trigger: lineNext, start: "top 92%" },
+      });
+
+    // Next project label + title
+    const nextHead = document.querySelector<HTMLElement>(".pd-next__labels");
+    if (nextHead) {
+      gsap.to("#pd-next-label", {
+        opacity: 1,
+        duration: 0.65,
+        ease: "power2.out",
+        scrollTrigger: { trigger: nextHead, start: "top 90%" },
+      });
+      gsap.to(".pd-next__title", {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: "expo.out",
+        delay: 0.08,
+        scrollTrigger: { trigger: nextHead, start: "top 88%" },
+      });
+    }
+  }
+
+  // ── Next project sticky scroll reveal ─────────────────────────
+
+  function initNextReveal() {
+    const area   = document.querySelector<HTMLElement>(".pd-next__area");
+    const reveal = document.getElementById("pd-next-reveal");
+    if (!area || !reveal) return;
+
+    // Reveal slides up from translateY(100%) to 0 as user scrolls through the area
+    gsap.to(reveal, {
+      y: "0%",
+      ease: "none",
+      scrollTrigger: {
+        trigger: area,
+        start: "top bottom",
+        end: "bottom bottom",
+        scrub: 1.2,
+      },
+    });
+  }
+
+  // ── Page exit transition ──────────────────────────────────────
+
+  function navigateTo(href: string) {
+    const mask = document.getElementById("pd-mask");
+    if (!mask) { window.location.href = href; return; }
+
+    gsap.set(mask, {
+      display: "block",
+      scaleY: 0,
+      transformOrigin: "bottom center",
+    });
+
+    gsap.to(mask, {
+      scaleY: 1,
+      duration: 0.78,
+      ease: "expo.inOut",
+      onComplete() { window.location.href = href; },
+    });
+  }
+
+  function initExitTransition() {
+    ["pd-next-link", "pd-next-reveal"].forEach((id) => {
+      const el = document.getElementById(id) as HTMLAnchorElement | null;
+      if (!el) return;
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        navigateTo(el.dataset.nextHref || el.href);
+      });
+    });
+  }
+
+  // ── Boot ─────────────────────────────────────────────────────
+
+  function boot() {
+    initMaskEnter();
+    initHeroEntrance();
+    initParallax();
+    initReveal();
+    initNextReveal();
+    initExitTransition();
+  }
+
+  if ((window as any).lenisReady) {
+    boot();
+  } else {
+    window.addEventListener("lenis:ready", boot, { once: true });
+  }
+</script>
