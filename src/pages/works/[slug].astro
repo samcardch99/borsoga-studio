@@ -1,180 +1,176 @@
 ---
-import type { GetStaticPaths } from "astro";
-import { projects, type ProjectData } from "../../data/projects";
+import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import Navbar from "../../components/Navbar.astro";
+import NavbarInterior from "../../components/helpers/NavbarInterior.astro";
 import Footer from "../../components/Footer.astro";
 
-export const getStaticPaths: GetStaticPaths = () =>
-  projects.map((p, i) => ({
-    params: { slug: p.slug },
-    props: { project: p, next: projects[(i + 1) % projects.length] },
+export async function getStaticPaths() {
+  const all = (await getCollection("projects")).sort(
+    (a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) =>
+      a.data.order - b.data.order,
+  );
+  return all.map((project: CollectionEntry<"projects">, i: number) => ({
+    params: { slug: project.id, },
+    props: { project, next: all[(i + 1) % all.length] },
   }));
+}
 
-type Props = { project: ProjectData; next: ProjectData };
+type Props = {
+  project: CollectionEntry<"projects">;
+  next: CollectionEntry<"projects">;
+};
+
 const { project, next } = Astro.props;
-const imgs = project.images;
+const d = project.data;
+const imgs = d.images;
+const narrative = project.body.trim();
 ---
 
-<Layout>
+<Layout showChrome={false}>
   <!-- Transition mask: white wipe that reveals on enter / covers on exit -->
   <div class="pd-mask" id="pd-mask" aria-hidden="true"></div>
 
   <div class="pd">
-    <Navbar />
+    <NavbarInterior />
 
     <!-- ──────────────────────────────────────────────────────────────
-         HERO SECTION — same structure in all 3 layouts
-         Line → Title → Meta (discipline/scope left, client/desc right)
+         HERO SECTION
     ─────────────────────────────────────────────────────────────── -->
     <section class="pd-hero">
       <div class="pd-line" id="pd-line-top"></div>
 
       <div class="pd-hero__content">
-        <!-- Large title — clip-reveal from bottom -->
         <div class="pd-hero__clip">
-          <h1 class="pd-hero__title" id="pd-title">{project.title}</h1>
+          <h1 class="pd-hero__title" id="pd-title">{d.title}</h1>
         </div>
 
-        <!-- Meta row — 2 columns below title -->
         <div class="pd-hero__meta" id="pd-meta">
           <!-- LEFT: Discipline + Scope -->
           <div class="pd-hero__meta-left">
             <p class="pd-meta__label">Discipline</p>
-            <p class="pd-meta__value">{project.discipline}</p>
+            <p class="pd-meta__value">{d.discipline}</p>
             <p class="pd-meta__label pd-meta__label--mt">Scope</p>
-            <p class="pd-meta__value">{project.scope}</p>
+            <p class="pd-meta__value">{d.scope}</p>
           </div>
-          <!-- RIGHT: Optional client + Description -->
+          <!-- RIGHT: Client (optional) + Description -->
           <div class="pd-hero__meta-right">
-            {project.client && (
+            {d.client && (
               <>
                 <p class="pd-meta__label pd-meta__label--right">Client</p>
-                <p class="pd-meta__value pd-meta__value--right">{project.client}</p>
+                <p class="pd-meta__value pd-meta__value--right">{d.client}</p>
                 <div style="height:1.2rem"></div>
               </>
             )}
             <p class="pd-meta__label pd-meta__label--right">Description</p>
-            <p class="pd-meta__value pd-meta__value--right">{project.description}</p>
+            <p class="pd-meta__value pd-meta__value--right">{d.description}</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ──────────────────────────────────────────────────────────────
-         IMAGE 1: Full-width hero image (all layouts)
-    ─────────────────────────────────────────────────────────────── -->
+    <!-- Full-width hero image -->
     <div class="pd-img pd-img--hero pd-par">
-      <img src={imgs[0]} alt={project.title} loading="eager" decoding="async" />
+      <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────
-         SPLIT SECTION: Image left (50%) + Project Narrative right
-         (all layouts)
-    ─────────────────────────────────────────────────────────────── -->
+    <!-- Split: image left + narrative right -->
     <div class="pd-split" data-reveal>
       <div class="pd-split__img pd-par">
-        <img src={imgs[1]} alt={project.title} loading="lazy" decoding="async" />
+        <img src={imgs[1]} alt={d.title} loading="lazy" decoding="async" />
       </div>
       <div class="pd-split__text">
         <p class="pd-section-label">Project Narrative</p>
-        <p class="pd-section-body">{project.narrative}</p>
+        <p class="pd-section-body">{narrative}</p>
       </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────
-         DUO SECTION: Two equal images side by side (all layouts)
-    ─────────────────────────────────────────────────────────────── -->
+    <!-- Duo: two equal images -->
     <div class="pd-duo" data-reveal>
       <div class="pd-par">
-        <img src={imgs[2]} alt={project.title} loading="lazy" decoding="async" />
+        <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" />
       </div>
       <div class="pd-par">
-        <img src={imgs[3]} alt={project.title} loading="lazy" decoding="async" />
+        <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" />
       </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────
-         pd2 + pd3: Full-width 4th image
-    ─────────────────────────────────────────────────────────────── -->
-    {(project.layout === "pd2" || project.layout === "pd3") && imgs[4] && (
+    <!-- pd2 + pd3: full-width 4th image -->
+    {(d.layout === "pd2" || d.layout === "pd3") && imgs[4] && (
       <div class="pd-img pd-img--full pd-par" data-reveal>
-        <img src={imgs[4]} alt={project.title} loading="lazy" decoding="async" />
+        <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" />
       </div>
     )}
 
-    <!-- ──────────────────────────────────────────────────────────────
-         pd2 only: Portrait image (left) + Closing line (lower right)
-         Portrait image is tall and left-aligned; closing appears
-         at the bottom-right as the portrait nears its end.
-    ─────────────────────────────────────────────────────────────── -->
-    {project.layout === "pd2" && imgs[5] && (
+    <!-- pd2 only: portrait (left) + closing line (lower right) -->
+    {d.layout === "pd2" && imgs[5] && (
       <div class="pd-portrait-row" data-reveal>
         <div class="pd-par pd-par--portrait">
-          <img src={imgs[5]} alt={project.title} loading="lazy" decoding="async" />
+          <img src={imgs[5]} alt={d.title} loading="lazy" decoding="async" />
         </div>
         <div class="pd-portrait-closing">
           <p class="pd-section-label pd-section-label--right">Closing Line</p>
-          <p class="pd-section-body pd-section-body--right">{project.closingLine}</p>
+          <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
         </div>
       </div>
     )}
 
-    <!-- ──────────────────────────────────────────────────────────────
-         pd1 + pd3: Closing line as separate section (right-aligned)
-    ─────────────────────────────────────────────────────────────── -->
-    {(project.layout === "pd1" || project.layout === "pd3") && (
+    <!-- pd1 + pd3: closing line as separate right-aligned section -->
+    {(d.layout === "pd1" || d.layout === "pd3") && (
       <div class="pd-closing" data-reveal>
         <div class="pd-closing__inner">
           <p class="pd-section-label pd-section-label--right">Closing Line</p>
-          <p class="pd-section-body pd-section-body--right">{project.closingLine}</p>
+          <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
         </div>
       </div>
     )}
 
     <!-- ──────────────────────────────────────────────────────────────
-         NEXT PROJECT — studiodado-style sticky scroll reveal
-         Line → "NEXT PROJECT" label + large title right
-         → 270svh scroll area where sticky image slides up
+         NEXT PROJECT — 300svh pin zone
+         Page pins → progress bar fills → next page rises from below
     ─────────────────────────────────────────────────────────────── -->
-    <section class="pd-next">
-      <div class="pd-next__head">
-        <div class="pd-line pd-line--next" id="pd-line-next"></div>
-        <div class="pd-next__labels">
+    <section class="pd-next" id="pd-next-section">
+      <!-- Sticky: sticks to viewport top for the full 300svh duration -->
+      <div class="pd-next__pin">
+
+        <!-- Progress bar: fills left→right as you scroll through the pin -->
+        <div class="pd-next__progress" aria-hidden="true">
+          <div class="pd-next__progress-bg"></div>
+          <div class="pd-next__progress-fill" id="pd-progress-fill"></div>
+        </div>
+
+        <!-- NEXT PROJECT header — visible on the white background -->
+        <div class="pd-next__head">
           <span class="pd-next__label" id="pd-next-label">NEXT PROJECT</span>
           <a
-            href={`/works/${next.slug}/`}
+            href={`/works/${next.id}/`}
             class="pd-next__title"
             id="pd-next-link"
-            data-next-href={`/works/${next.slug}/`}
-          >{next.title}</a>
+            data-next-href={`/works/${next.id}/`}
+          >{next.data.title}</a>
         </div>
-      </div>
 
-      <!-- Sticky scroll reveal — image slides up from below -->
-      <div class="pd-next__area">
-        <div class="pd-next__sticky">
-          <a
-            href={`/works/${next.slug}/`}
-            id="pd-next-reveal"
-            class="pd-next__reveal"
-            data-next-href={`/works/${next.slug}/`}
-            aria-label={`Go to ${next.title}`}
-          >
-            <img
-              src={next.images[0]}
-              alt={next.title}
-              class="pd-next__img"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="pd-next__overlay"></div>
-            <div class="pd-next__info">
-              <span class="pd-next__info-label">NEXT PROJECT</span>
-              <p class="pd-next__info-title">{next.title}</p>
-            </div>
-          </a>
-        </div>
+        <!-- The rising "page below" — slides up from translateY(100%) to 0% -->
+        <a
+          href={`/works/${next.id}/`}
+          class="pd-next__cover"
+          id="pd-next-cover"
+          data-next-href={`/works/${next.id}/`}
+          aria-label={`Go to ${next.data.title}`}
+        >
+          <img
+            src={next.data.images[0]}
+            alt={next.data.title}
+            class="pd-next__cover-img"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="pd-next__cover-overlay"></div>
+          <div class="pd-next__cover-info">
+            <span class="pd-next__cover-label">NEXT PROJECT</span>
+            <p class="pd-next__cover-title">{next.data.title}</p>
+          </div>
+        </a>
+
       </div>
     </section>
 
@@ -183,14 +179,13 @@ const imgs = project.images;
 </Layout>
 
 <style>
-  /* ── Mask ── */
+  /* ── Mask — starts opaque white, fades out on enter (studiodado pattern) ── */
   .pd-mask {
     position: fixed;
     inset: 0;
     background: #fff;
     z-index: 9999;
     pointer-events: none;
-    will-change: transform;
   }
 
   /* ── Page wrapper ── */
@@ -206,28 +201,26 @@ const imgs = project.images;
 
   /* ── HERO ────────────────────────────────────────────────────── */
   .pd-hero {
-    padding: clamp(2rem, 4vw, 6rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    padding: clamp(8rem, 12vh, 11rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
   }
 
   .pd-hero__content { padding-top: clamp(1.2rem, 2.5vw, 3.5rem); }
 
-  /* Title clip container */
   .pd-hero__clip { overflow: hidden; padding-bottom: 0.06em; }
 
   .pd-hero__title {
     margin: 0;
     font-family: "Poppins", sans-serif;
-    font-size: clamp(2rem, 3.8vw, 6.5rem);
-    font-weight: 500;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.4rem, 4.8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     color: #000;
     text-transform: uppercase;
     transform: translateY(110%);
     opacity: 0;
   }
 
-  /* Meta row — 2 columns */
   .pd-hero__meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -239,25 +232,25 @@ const imgs = project.images;
 
   .pd-meta__label {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.6rem, 0.72vw, 0.82rem);
+    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin: 0 0 0.15rem;
+    margin: 0 0 0.3rem;
     color: #000;
   }
-  .pd-meta__label--mt { margin-top: 0.9rem; }
+  .pd-meta__label--mt { margin-top: 1.4rem; }
   .pd-meta__label--right { text-align: right; }
 
   .pd-meta__value {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.65rem, 0.78vw, 0.9rem);
+    font-size: clamp(1rem, 1.25vw, 1.5rem);
     font-weight: 300;
     line-height: 1.55;
     color: #333;
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: -0.01em;
   }
   .pd-meta__value--right { text-align: right; }
 
@@ -276,12 +269,9 @@ const imgs = project.images;
   }
 
   /* ── HERO IMAGE ── */
-  .pd-img--hero {
-    height: clamp(50vh, 70svh, 88svh);
-    /* No side padding — true full width */
-  }
+  .pd-img--hero { height: clamp(50vh, 70svh, 88svh); }
 
-  /* ── SPLIT SECTION — image left + narrative right ── */
+  /* ── SPLIT SECTION ── */
   .pd-split {
     display: grid;
     grid-template-columns: 52fr 48fr;
@@ -298,7 +288,7 @@ const imgs = project.images;
     transform: translateY(24px);
   }
 
-  /* ── DUO SECTION — two equal images ── */
+  /* ── DUO SECTION ── */
   .pd-duo {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -345,86 +335,115 @@ const imgs = project.images;
     transform: translateY(20px);
   }
 
-  /* ── SECTION TEXT LABELS + BODIES ── */
+  /* ── SECTION TEXT ── */
   .pd-section-label {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.6rem, 0.72vw, 0.82rem);
+    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin: 0 0 0.7rem;
+    margin: 0 0 0.9rem;
     color: #000;
   }
   .pd-section-label--right { text-align: right; }
 
   .pd-section-body {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.7rem, 0.88vw, 1rem);
+    font-size: clamp(1.05rem, 1.35vw, 1.6rem);
     font-weight: 300;
-    line-height: 1.8;
+    line-height: 1.75;
     color: #333;
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: -0.01em;
   }
   .pd-section-body--right { text-align: right; }
 
-  /* ── NEXT PROJECT ─────────────────────────────────────────────── */
-  .pd-next { margin-top: clamp(4rem, 8vw, 12rem); }
+  /* ── NEXT PROJECT — 300svh pin zone ───────────────────────────── */
 
-  .pd-next__head {
-    padding: 0 clamp(1.2rem, 3.3vw, 4.5rem) clamp(1.5rem, 3vw, 4rem);
+  /* Outer section: tall enough for the full pin scroll */
+  .pd-next {
+    height: 300svh;
+    position: relative;
+    margin-top: clamp(4rem, 8vw, 12rem);
   }
 
-  .pd-line--next { margin-bottom: clamp(1.2rem, 2.5vw, 3.5rem); }
+  /* Sticky container: sticks to top for the entire 300svh pin */
+  .pd-next__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    background: #fff;
+  }
 
-  .pd-next__labels {
+  /* ── Progress bar (thin line at top — fills left → right) ── */
+  .pd-next__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 10;
+  }
+  .pd-next__progress-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.1);
+  }
+  .pd-next__progress-fill {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+  }
+
+  /* ── Header: NEXT PROJECT label + large title ── */
+  .pd-next__head {
+    position: absolute;
+    top: clamp(2rem, 4vw, 5rem);
+    left: clamp(1.2rem, 3.3vw, 4.5rem);
+    right: clamp(1.2rem, 3.3vw, 4.5rem);
     display: flex;
     flex-direction: column;
-    gap: clamp(0.4rem, 1vw, 1.2rem);
+    gap: clamp(0.5rem, 1.2vw, 1.5rem);
+    pointer-events: none;
   }
 
   .pd-next__label {
     display: block;
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.6rem, 0.78vw, 0.9rem);
+    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
     font-weight: 300;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #888;
     opacity: 0;
+    transform: translateY(12px);
   }
 
   .pd-next__title {
     font-family: "Poppins", sans-serif;
-    /* Title aligns RIGHT — Figma shows it anchored to the right edge */
-    font-size: clamp(2rem, 3.8vw, 6.5rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.4rem, 4.8vw, 7rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
     text-transform: uppercase;
     color: #000;
     text-decoration: none;
-    line-height: 1.05;
+    line-height: 1.02;
     display: block;
     text-align: right;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.3s ease;
+    pointer-events: auto;
     cursor: pointer;
   }
-  .pd-next__title:hover { opacity: 0.5 !important; }
+  .pd-next__title:hover { opacity: 0.5 !important; transition: opacity 0.2s; }
 
-  /* Sticky scroll area — 270svh so user scrolls through it */
-  .pd-next__area { height: 270svh; position: relative; }
-
-  .pd-next__sticky {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    overflow: hidden;
-  }
-
-  .pd-next__reveal {
+  /* ── Rising cover: the "page below" — starts fully below viewport ── */
+  .pd-next__cover {
     position: absolute;
     inset: 0;
     transform: translateY(100%);
@@ -434,45 +453,45 @@ const imgs = project.images;
     cursor: pointer;
   }
 
-  .pd-next__img {
+  .pd-next__cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
 
-  .pd-next__overlay {
+  .pd-next__cover-overlay {
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.38);
     pointer-events: none;
   }
 
-  .pd-next__info {
+  .pd-next__cover-info {
     position: absolute;
     bottom: clamp(2rem, 5vw, 6rem);
     left: clamp(1.2rem, 3.3vw, 4.5rem);
     color: #fff;
     pointer-events: none;
   }
-  .pd-next__info-label {
+  .pd-next__cover-label {
     display: block;
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.6rem, 0.78vw, 0.9rem);
+    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
     font-weight: 300;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     opacity: 0.72;
   }
-  .pd-next__info-title {
+  .pd-next__cover-title {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(1.6rem, 4vw, 6rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.4rem, 4.8vw, 7rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
     text-transform: uppercase;
     margin: 0;
-    line-height: 1.05;
+    line-height: 1.02;
   }
 
   /* ── MOBILE ── */
@@ -502,59 +521,92 @@ const imgs = project.images;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // ── Enter: white mask wipes away from top ──────────────────────
+  // ─────────────────────────────────────────────────────────────────
+  // ENTER ANIMATION — studiodado exact pattern:
+  //   mask (white, starts opaque) fades out in 0.5s power1
+  //   hero line, title, meta all start at t=0 simultaneously
+  //   hero image scales from 1.05→1 as mask reveals it
+  // ─────────────────────────────────────────────────────────────────
 
-  function initMaskEnter() {
-    const mask = document.getElementById("pd-mask");
-    if (!mask) return;
-    gsap.fromTo(
-      mask,
-      { scaleY: 1, transformOrigin: "top center" },
-      {
-        scaleY: 0,
-        duration: 1.05,
-        ease: "expo.inOut",
-        delay: 0.05,
-        onComplete() {
-          mask.style.display = "none";
-        },
-      }
-    );
-  }
-
-  // ── Hero: line → title clip → meta ────────────────────────────
-
-  function initHeroEntrance() {
+  function initEnter() {
+    const mask    = document.getElementById("pd-mask") as HTMLElement | null;
     const lineTop = document.getElementById("pd-line-top");
     const title   = document.getElementById("pd-title");
     const meta    = document.getElementById("pd-meta");
+    const heroImg = document.querySelector<HTMLElement>(".pd-img--hero img");
 
-    const tl = gsap.timeline({ delay: 0.55 });
+    // Mask starts opaque by CSS — fade it out 0.5s power1 (studiodado exact)
+    const tl = gsap.timeline();
 
+    if (mask)
+      tl.fromTo(mask,
+        { opacity: 1, visibility: "visible" },
+        { opacity: 0, duration: 0.5, ease: "power1",
+          onComplete() { mask.style.display = "none"; } },
+        0,
+      );
+
+    // Hero image: slight scale-out as mask reveals (studiodado: scale 1.1→1)
+    if (heroImg)
+      tl.from(heroImg, { scale: 1.06, duration: 1.0, ease: "power3.out" }, 0);
+
+    // Separator line
     if (lineTop)
-      tl.to(lineTop, { scaleX: 1, duration: 0.85, ease: "power3.inOut" });
+      tl.to(lineTop, { scaleX: 1, duration: 0.7, ease: "power3.inOut" }, 0);
 
+    // Title (studiodado: y:80→0, power3, duration:1.25)
     if (title)
-      tl.to(title,
-        { y: "0%", opacity: 1, duration: 1.15, ease: "expo.out" },
-        "-=0.5"
-      );
+      tl.to(title, { y: "0%", opacity: 1, duration: 1.1, ease: "expo.out" }, 0.08);
 
+    // Meta row (studiodado: y:80→0, power3, stagger:0.1, duration:1.25)
     if (meta)
-      tl.to(meta,
-        { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" },
-        "-=0.75"
-      );
+      tl.to(meta, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.22);
   }
 
-  // ── Parallax on all .pd-par images ────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
+  // LEAVE ANIMATION — studiodado exact pattern:
+  //   mask fades from 0→1 (power1, 0.5s)
+  //   onComplete → scroll reset to 0 → navigate
+  // ─────────────────────────────────────────────────────────────────
+
+  let isNavigating = false;
+
+  function navigateTo(href: string) {
+    if (isNavigating) return;
+    isNavigating = true;
+
+    const mask = document.getElementById("pd-mask") as HTMLElement | null;
+    if (!mask) { window.location.href = href; return; }
+
+    // Bring mask back: visible but transparent
+    mask.style.display = "block";
+    mask.style.visibility = "visible";
+
+    gsap.fromTo(mask,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power1",
+        onComplete() {
+          // Hidden behind white — safe to reset scroll (studiodado pattern)
+          if ((window as any).lenis) (window as any).lenis.scrollTo(0, { immediate: true });
+          window.scrollTo(0, 0);
+          window.location.href = href;
+        },
+      },
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // PARALLAX on all .pd-par images
+  // ─────────────────────────────────────────────────────────────────
 
   function initParallax() {
     document.querySelectorAll<HTMLElement>(".pd-par").forEach((wrap) => {
       const img = wrap.querySelector<HTMLElement>("img");
       if (!img) return;
-      gsap.fromTo(
-        img,
+      gsap.fromTo(img,
         { yPercent: -8 },
         {
           yPercent: 8,
@@ -565,130 +617,107 @@ const imgs = project.images;
             end: "bottom top",
             scrub: true,
           },
-        }
+        },
       );
     });
   }
 
-  // ── Scroll reveal ─────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
+  // SCROLL REVEAL — images + text blocks (content sections only)
+  // ─────────────────────────────────────────────────────────────────
 
   function initReveal() {
-    // Image blocks that fade + rise on scroll
     document.querySelectorAll<HTMLElement>(
-      "[data-reveal] .pd-par, .pd-img--full"
+      "[data-reveal] .pd-par, .pd-img--full",
     ).forEach((el) => {
       gsap.from(el, {
-        opacity: 0,
-        y: 45,
-        duration: 1.1,
-        ease: "power3.out",
+        opacity: 0, y: 45, duration: 1.1, ease: "power3.out",
         scrollTrigger: { trigger: el, start: "top 88%" },
       });
     });
 
-    // Text blocks
     document.querySelectorAll<HTMLElement>(
-      ".pd-split__text, .pd-closing__inner, .pd-portrait-closing"
+      ".pd-split__text, .pd-closing__inner, .pd-portrait-closing",
     ).forEach((el) => {
       gsap.to(el, {
-        y: 0,
-        opacity: 1,
-        duration: 1.0,
-        ease: "power3.out",
+        y: 0, opacity: 1, duration: 1.0, ease: "power3.out",
         scrollTrigger: { trigger: el, start: "top 84%" },
       });
     });
+  }
 
-    // Next project line
-    const lineNext = document.getElementById("pd-line-next");
-    if (lineNext)
-      gsap.to(lineNext, {
-        scaleX: 1,
-        duration: 0.85,
-        ease: "power3.inOut",
-        scrollTrigger: { trigger: lineNext, start: "top 92%" },
-      });
+  // ─────────────────────────────────────────────────────────────────
+  // NEXT PROJECT pin zone
+  //   - section is 300svh, inner div is sticky (CSS pin)
+  //   - ScrollTrigger scrubs: progress bar + label + title + rising cover
+  //   - start: "top top"  end: "bottom bottom"  scrub: true
+  //   - at progress >= 0.99 → navigateTo
+  // ─────────────────────────────────────────────────────────────────
 
-    // Next project label + title
-    const nextHead = document.querySelector<HTMLElement>(".pd-next__labels");
-    if (nextHead) {
-      gsap.to("#pd-next-label", {
-        opacity: 1,
-        duration: 0.65,
-        ease: "power2.out",
-        scrollTrigger: { trigger: nextHead, start: "top 90%" },
-      });
-      gsap.to(".pd-next__title", {
-        y: 0,
-        opacity: 1,
-        duration: 1.0,
-        ease: "expo.out",
-        delay: 0.08,
-        scrollTrigger: { trigger: nextHead, start: "top 88%" },
+  function initNextSection() {
+    const section     = document.getElementById("pd-next-section");
+    const fill        = document.getElementById("pd-progress-fill");
+    const cover       = document.getElementById("pd-next-cover") as HTMLElement | null;
+    const label       = document.getElementById("pd-next-label");
+    const title       = document.querySelector<HTMLElement>(".pd-next__title");
+    if (!section || !fill || !cover) return;
+
+    const nextHref = cover.dataset.nextHref!;
+    let triggered = false;
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",      // pin activates when section hits viewport top
+        end: "bottom bottom",  // stays pinned until section bottom passes viewport bottom
+        scrub: true,           // 1-to-1 scroll mapping (no lag)
+        onUpdate(self) {
+          if (self.progress >= 0.99 && !triggered) {
+            triggered = true;
+            navigateTo(nextHref);
+          }
+        },
+      },
+    });
+
+    // 1. Progress bar fills left→right (full duration, linear)
+    tl.to(fill, { scaleX: 1, ease: "none", duration: 1 }, 0);
+
+    // 2. "NEXT PROJECT" label fades + rises (quick, at scroll start)
+    if (label) tl.to(label, { opacity: 1, y: 0, duration: 0.15, ease: "power3.out" }, 0);
+
+    // 3. Next project title fades + rises (quick)
+    if (title) tl.to(title, { opacity: 1, y: 0, duration: 0.15, ease: "expo.out" }, 0.04);
+
+    // 4. Cover rises from below — the "page under the other" effect
+    //    Starts slightly after label appears, covers full viewport by end
+    tl.to(cover, { y: "0%", ease: "none", duration: 0.8 }, 0.18);
+
+    // Click handler on cover (in case user clicks before 99%)
+    cover.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!triggered) { triggered = true; navigateTo(nextHref); }
+    });
+
+    // Also intercept the text title link
+    const titleLink = document.getElementById("pd-next-link") as HTMLAnchorElement | null;
+    if (titleLink) {
+      titleLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!triggered) { triggered = true; navigateTo(nextHref); }
       });
     }
   }
 
-  // ── Next project sticky scroll reveal ─────────────────────────
-
-  function initNextReveal() {
-    const area   = document.querySelector<HTMLElement>(".pd-next__area");
-    const reveal = document.getElementById("pd-next-reveal");
-    if (!area || !reveal) return;
-
-    // Reveal slides up from translateY(100%) to 0 as user scrolls through the area
-    gsap.to(reveal, {
-      y: "0%",
-      ease: "none",
-      scrollTrigger: {
-        trigger: area,
-        start: "top bottom",
-        end: "bottom bottom",
-        scrub: 1.2,
-      },
-    });
-  }
-
-  // ── Page exit transition ──────────────────────────────────────
-
-  function navigateTo(href: string) {
-    const mask = document.getElementById("pd-mask");
-    if (!mask) { window.location.href = href; return; }
-
-    gsap.set(mask, {
-      display: "block",
-      scaleY: 0,
-      transformOrigin: "bottom center",
-    });
-
-    gsap.to(mask, {
-      scaleY: 1,
-      duration: 0.78,
-      ease: "expo.inOut",
-      onComplete() { window.location.href = href; },
-    });
-  }
-
-  function initExitTransition() {
-    ["pd-next-link", "pd-next-reveal"].forEach((id) => {
-      const el = document.getElementById(id) as HTMLAnchorElement | null;
-      if (!el) return;
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-        navigateTo(el.dataset.nextHref || el.href);
-      });
-    });
-  }
-
-  // ── Boot ─────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────────
+  // BOOT
+  // ─────────────────────────────────────────────────────────────────
 
   function boot() {
-    initMaskEnter();
-    initHeroEntrance();
+    initEnter();
     initParallax();
     initReveal();
-    initNextReveal();
-    initExitTransition();
+    initNextSection();
   }
 
   if ((window as any).lenisReady) {

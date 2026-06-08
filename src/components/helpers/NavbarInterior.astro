@@ -1,0 +1,119 @@
+---
+import logoSrc from "../../assets/logo.svg?url";
+import RightUpArrow from "../../assets/icons/right_up.svg";
+---
+
+<nav id="interior-nav" class="interior-nav fixed z-100 w-full flex items-center justify-between px-16 py-[2vh]">
+  <a href="/" aria-label="Borsoga Studio">
+    <img
+      src={logoSrc}
+      alt="Borsoga Studio"
+      class="interior-nav__logo h-[3.8rem] w-auto"
+    />
+  </a>
+
+  <ul class="absolute left-1/2 -translate-x-1/2 hidden md:flex gap-16 list-none m-0 p-0">
+    <li>
+      <a href="/#work" class="interior-nav__link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
+        Work
+      </a>
+    </li>
+    <li>
+      <a href="/#capabilities" class="interior-nav__link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
+        Capabilities
+      </a>
+    </li>
+    <li>
+      <a href="/#contact" class="interior-nav__link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
+        Contact
+      </a>
+    </li>
+  </ul>
+
+  <a
+    href="/#contact"
+    class="inline-flex items-center gap-2 no-underline font-light text-2xl py-3 px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-[#7152FF] text-white"
+  >
+    BEGIN A DIALOGUE
+    <RightUpArrow class="h-8" />
+  </a>
+</nav>
+
+<style>
+  .interior-nav {
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.09);
+    transform: translateY(0);
+    transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  /* Slide out of viewport when scrolling down */
+  .interior-nav.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  /* Always dark — logo inverted to black, links black */
+  .interior-nav__logo {
+    filter: invert(1);
+    transition: opacity 0.2s;
+  }
+  .interior-nav__logo:hover {
+    opacity: 0.65;
+  }
+
+  .interior-nav__link {
+    color: #000;
+  }
+</style>
+
+<script>
+  function initInteriorNav() {
+    const nav = document.getElementById("interior-nav");
+    if (!nav) return;
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    /* Small dead-zone at the very top — never hide within first navH px */
+    const getNavH = () => nav.offsetHeight;
+
+    function update(y: number) {
+      const navH = getNavH();
+
+      if (y > lastY && y > navH) {
+        /* Scrolling down — hide */
+        nav!.classList.add("is-hidden");
+      } else {
+        /* Scrolling up or near top — show */
+        nav!.classList.remove("is-hidden");
+      }
+      lastY = y;
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update(window.scrollY);
+        ticking = false;
+      });
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    /* Lenis fires native scroll events, so no extra wiring needed.
+       But also hook into it directly if available for smoother sync. */
+    const lenis = (window as any).lenis;
+    if (lenis) {
+      lenis.on("scroll", ({ scroll }: { scroll: number }) => {
+        update(scroll);
+      });
+    }
+  }
+
+  document.addEventListener("astro:page-load", initInteriorNav);
+  if (document.readyState !== "loading") initInteriorNav();
+  else document.addEventListener("DOMContentLoaded", initInteriorNav);
+</script>

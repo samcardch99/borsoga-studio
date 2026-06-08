@@ -1,54 +1,17 @@
 ---
-const projects = [
-  {
-    uid: "cristinzio-residence",
-    title: "Cristinzio Residence",
-    href: "/works/cristinzio-residence/",
-    thumb: "/projects/interior-visualization-1/5.jpg",
-  },
-  {
-    uid: "interior-iii",
-    title: "Interior III",
-    href: "/works/interior-iii/",
-    thumb: "/projects/interior-3/img-6414.jpg",
-  },
-  {
-    uid: "kitchen-3",
-    title: "Kitchen III",
-    href: "/works/kitchen-3/",
-    thumb: "/projects/kitchen-3/1.jpg",
-  },
-  {
-    uid: "residence-2",
-    title: "Residence II",
-    href: "/works/residence-2/",
-    thumb: "/projects/residence-2/1.jpg",
-  },
-  {
-    uid: "residence-4",
-    title: "Residence IV",
-    href: "/works/residence-4/",
-    thumb: "/projects/residence-4/img-6984.jpg",
-  },
-  {
-    uid: "kitchen-4",
-    title: "Kitchen IV",
-    href: "/works/kitchen-4/",
-    thumb: "/projects/kitchen-4/2.jpg",
-  },
-  {
-    uid: "kitchen-5",
-    title: "Kitchen V",
-    href: "/works/kitchen-5/",
-    thumb: "/projects/kitchen-5/1.jpg",
-  },
-  {
-    uid: "kitchen-8",
-    title: "Kitchen VIII",
-    href: "/works/kitchen-8/",
-    thumb: "/projects/kitchen-8/1.jpg",
-  },
-];
+import { getCollection, type CollectionEntry } from "astro:content";
+
+type Project = CollectionEntry<"projects">;
+
+const raw = await getCollection("projects");
+const projects = raw
+  .sort((a: Project, b: Project) => a.data.order - b.data.order)
+  .map((p: Project) => ({
+    uid: p.id,
+    title: p.data.title,
+    href: `/works/${p.id}/`,
+    thumb: p.data.images[0],
+  }));
 ---
 
 <section class="projects section border-b border-black">
