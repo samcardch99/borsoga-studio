@@ -27,8 +27,9 @@ const narrative = project.body.trim();
 ---
 
 <Layout showChrome={false}>
-  <!-- Transition mask: white wipe that reveals on enter / covers on exit -->
-  <div class="pd-mask" id="pd-mask" aria-hidden="true"></div>
+  <!-- Page transition overlay: opaque on load → fades out (page appears);
+       fades in before navigating (old page disappears) -->
+  <div class="pd-fade" id="pd-fade" aria-hidden="true"></div>
 
   <div class="pd">
     <NavbarInterior />
@@ -125,52 +126,43 @@ const narrative = project.body.trim();
     )}
 
     <!-- ──────────────────────────────────────────────────────────────
-         NEXT PROJECT — 300svh pin zone
-         Page pins → progress bar fills → next page rises from below
+         NEXT PROJECT — 300svh pin zone (studiodado pattern)
+         Page pins → progress bar fills (ease-out) → auto-navigate at end.
+         Shows a static preview: label (left) + title (right) + image below.
     ─────────────────────────────────────────────────────────────── -->
     <section class="pd-next" id="pd-next-section">
       <!-- Sticky: sticks to viewport top for the full 300svh duration -->
       <div class="pd-next__pin">
-
-        <!-- Progress bar: fills left→right as you scroll through the pin -->
-        <div class="pd-next__progress" aria-hidden="true">
-          <div class="pd-next__progress-bg"></div>
-          <div class="pd-next__progress-fill" id="pd-progress-fill"></div>
-        </div>
-
-        <!-- NEXT PROJECT header — visible on the white background -->
-        <div class="pd-next__head">
-          <span class="pd-next__label" id="pd-next-label">NEXT PROJECT</span>
-          <a
-            href={`/works/${next.id}/`}
-            class="pd-next__title"
-            id="pd-next-link"
-            data-next-href={`/works/${next.id}/`}
-          >{next.data.title}</a>
-        </div>
-
-        <!-- The rising "page below" — slides up from translateY(100%) to 0% -->
         <a
           href={`/works/${next.id}/`}
-          class="pd-next__cover"
-          id="pd-next-cover"
+          class="pd-next__link"
+          id="pd-next-link"
           data-next-href={`/works/${next.id}/`}
           aria-label={`Go to ${next.data.title}`}
         >
-          <img
-            src={next.data.images[0]}
-            alt={next.data.title}
-            class="pd-next__cover-img"
-            loading="lazy"
-            decoding="async"
-          />
-          <div class="pd-next__cover-overlay"></div>
-          <div class="pd-next__cover-info">
-            <span class="pd-next__cover-label">NEXT PROJECT</span>
-            <p class="pd-next__cover-title">{next.data.title}</p>
+          <!-- Progress bar: fills left→right as you scroll through the pin -->
+          <div class="pd-next__progress" aria-hidden="true">
+            <div class="pd-next__progress-bg"></div>
+            <div class="pd-next__progress-fill" id="pd-progress-fill"></div>
+          </div>
+
+          <!-- Header: label (left) + title (right) -->
+          <div class="pd-next__head">
+            <span class="pd-next__label" id="pd-next-label">NEXT PROJECT</span>
+            <h2 class="pd-next__title">{next.data.title}</h2>
+          </div>
+
+          <!-- Static preview image — fills remaining height, cropped by fold -->
+          <div class="pd-next__media">
+            <img
+              src={next.data.images[0]}
+              alt={next.data.title}
+              class="pd-next__media-img"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </a>
-
       </div>
     </section>
 
@@ -179,8 +171,9 @@ const narrative = project.body.trim();
 </Layout>
 
 <style>
-  /* ── Mask — starts opaque white, fades out on enter (studiodado pattern) ── */
-  .pd-mask {
+  /* ── Page transition overlay — opaque by default (covers on load), JS
+        fades it out on enter and back in on leave ── */
+  .pd-fade {
     position: fixed;
     inset: 0;
     background: #fff;
@@ -377,14 +370,22 @@ const narrative = project.body.trim();
     background: #fff;
   }
 
-  /* ── Progress bar (thin line at top — fills left → right) ── */
+  /* The whole preview is one link: progress + header + image */
+  .pd-next__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    cursor: pointer;
+    padding: clamp(7rem, 13vh, 11rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+  }
+
+  /* ── Progress bar (thin line — fills left → right) ── */
   .pd-next__progress {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    z-index: 10;
+    position: relative;
+    width: 100%;
+    height: 1px;
+    flex: none;
   }
   .pd-next__progress-bg {
     position: absolute;
@@ -400,26 +401,24 @@ const narrative = project.body.trim();
     will-change: transform;
   }
 
-  /* ── Header: NEXT PROJECT label + large title ── */
+  /* ── Header: label (left) + large title (right) ── */
   .pd-next__head {
-    position: absolute;
-    top: clamp(2rem, 4vw, 5rem);
-    left: clamp(1.2rem, 3.3vw, 4.5rem);
-    right: clamp(1.2rem, 3.3vw, 4.5rem);
-    display: flex;
-    flex-direction: column;
-    gap: clamp(0.5rem, 1.2vw, 1.5rem);
-    pointer-events: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: clamp(1rem, 4vw, 6rem);
+    padding: clamp(1.5rem, 3vw, 3rem) 0 0;
+    flex: none;
   }
 
   .pd-next__label {
-    display: block;
     font-family: "Poppins", sans-serif;
     font-size: clamp(0.9rem, 1.05vw, 1.35rem);
     font-weight: 300;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #888;
+    margin: 0;
     opacity: 0;
     transform: translateY(12px);
   }
@@ -431,75 +430,41 @@ const narrative = project.body.trim();
     letter-spacing: -0.03em;
     text-transform: uppercase;
     color: #000;
-    text-decoration: none;
     line-height: 1.02;
-    display: block;
+    margin: 0;
     text-align: right;
     opacity: 0;
     transform: translateY(20px);
-    pointer-events: auto;
-    cursor: pointer;
-  }
-  .pd-next__title:hover { opacity: 0.5 !important; transition: opacity 0.2s; }
-
-  /* ── Rising cover: the "page below" — starts fully below viewport ── */
-  .pd-next__cover {
-    position: absolute;
-    inset: 0;
-    transform: translateY(100%);
-    will-change: transform;
-    display: block;
-    text-decoration: none;
-    cursor: pointer;
   }
 
-  .pd-next__cover-img {
+  /* ── Static preview image — fills remaining height, cropped by fold ── */
+  .pd-next__media {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: clamp(1.5rem, 4vw, 4rem);
+    overflow: hidden;
+  }
+  .pd-next__media-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
     display: block;
+    opacity: 0;
+    will-change: transform;
   }
 
-  .pd-next__cover-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.38);
-    pointer-events: none;
-  }
-
-  .pd-next__cover-info {
-    position: absolute;
-    bottom: clamp(2rem, 5vw, 6rem);
-    left: clamp(1.2rem, 3.3vw, 4.5rem);
-    color: #fff;
-    pointer-events: none;
-  }
-  .pd-next__cover-label {
-    display: block;
-    font-family: "Poppins", sans-serif;
-    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
-    font-weight: 300;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 0.8rem;
-    opacity: 0.72;
-  }
-  .pd-next__cover-title {
-    font-family: "Poppins", sans-serif;
-    font-size: clamp(2.4rem, 4.8vw, 7rem);
-    font-weight: 300;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    margin: 0;
-    line-height: 1.02;
-  }
+  /* Hover (whole link) — only once the preview has revealed (.is-ready) */
+  .pd-next__link.is-ready:hover .pd-next__title { opacity: 0.5; transition: opacity 0.3s; }
+  .pd-next__link.is-ready:hover .pd-next__media-img { transform: scale(1.03); transition: transform 0.7s ease; }
 
   /* ── MOBILE ── */
   @media (max-width: 700px) {
     .pd-hero__meta,
     .pd-split,
     .pd-duo,
-    .pd-portrait-row { grid-template-columns: 1fr; }
+    .pd-portrait-row,
+    .pd-next__head { grid-template-columns: 1fr; }
 
     .pd-split__img,
     .pd-duo .pd-par,
@@ -510,6 +475,7 @@ const narrative = project.body.trim();
     .pd-meta__value--right,
     .pd-section-label--right,
     .pd-section-body--right { text-align: left; }
+    .pd-next__head { gap: clamp(0.6rem, 2vw, 1.2rem); }
     .pd-next__title { text-align: left; }
     .pd-closing { justify-content: flex-start; }
   }
@@ -522,51 +488,39 @@ const narrative = project.body.trim();
   gsap.registerPlugin(ScrollTrigger);
 
   // ─────────────────────────────────────────────────────────────────
-  // ENTER ANIMATION — studiodado exact pattern:
-  //   mask (white, starts opaque) fades out in 0.5s power1
-  //   hero line, title, meta all start at t=0 simultaneously
-  //   hero image scales from 1.05→1 as mask reveals it
+  // ENTER ANIMATION — fade the transition overlay out (page appears),
+  // then hero separator line + title rise + meta fade in
   // ─────────────────────────────────────────────────────────────────
 
   function initEnter() {
-    const mask    = document.getElementById("pd-mask") as HTMLElement | null;
+    const fade    = document.getElementById("pd-fade") as HTMLElement | null;
     const lineTop = document.getElementById("pd-line-top");
     const title   = document.getElementById("pd-title");
     const meta    = document.getElementById("pd-meta");
-    const heroImg = document.querySelector<HTMLElement>(".pd-img--hero img");
 
-    // Mask starts opaque by CSS — fade it out 0.5s power1 (studiodado exact)
     const tl = gsap.timeline();
 
-    if (mask)
-      tl.fromTo(mask,
-        { opacity: 1, visibility: "visible" },
-        { opacity: 0, duration: 0.5, ease: "power1",
-          onComplete() { mask.style.display = "none"; } },
-        0,
-      );
-
-    // Hero image: slight scale-out as mask reveals (studiodado: scale 1.1→1)
-    if (heroImg)
-      tl.from(heroImg, { scale: 1.06, duration: 1.0, ease: "power3.out" }, 0);
+    // Reveal the page: fade the transition overlay out
+    if (fade)
+      tl.to(fade, { opacity: 0, duration: 0.6, ease: "power2.out",
+        onComplete() { fade.style.display = "none"; } }, 0);
 
     // Separator line
     if (lineTop)
       tl.to(lineTop, { scaleX: 1, duration: 0.7, ease: "power3.inOut" }, 0);
 
-    // Title (studiodado: y:80→0, power3, duration:1.25)
+    // Title rises into view
     if (title)
       tl.to(title, { y: "0%", opacity: 1, duration: 1.1, ease: "expo.out" }, 0.08);
 
-    // Meta row (studiodado: y:80→0, power3, stagger:0.1, duration:1.25)
+    // Meta row fades in
     if (meta)
       tl.to(meta, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.22);
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // LEAVE ANIMATION — studiodado exact pattern:
-  //   mask fades from 0→1 (power1, 0.5s)
-  //   onComplete → scroll reset to 0 → navigate
+  // NAVIGATION — fade the overlay in (old page disappears), then navigate.
+  // The next page fades the overlay back out on enter (next appears).
   // ─────────────────────────────────────────────────────────────────
 
   let isNavigating = false;
@@ -575,27 +529,21 @@ const narrative = project.body.trim();
     if (isNavigating) return;
     isNavigating = true;
 
-    const mask = document.getElementById("pd-mask") as HTMLElement | null;
-    if (!mask) { window.location.href = href; return; }
+    const fade = document.getElementById("pd-fade") as HTMLElement | null;
+    if (!fade) { window.location.href = href; return; }
 
-    // Bring mask back: visible but transparent
-    mask.style.display = "block";
-    mask.style.visibility = "visible";
-
-    gsap.fromTo(mask,
-      { opacity: 0 },
-      {
-        opacity: 1,
-        duration: 0.5,
-        ease: "power1",
-        onComplete() {
-          // Hidden behind white — safe to reset scroll (studiodado pattern)
-          if ((window as any).lenis) (window as any).lenis.scrollTo(0, { immediate: true });
-          window.scrollTo(0, 0);
-          window.location.href = href;
-        },
+    fade.style.display = "block";
+    gsap.to(fade, {
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.in",
+      onComplete() {
+        // Old page fully covered — reset scroll and navigate
+        if ((window as any).lenis) (window as any).lenis.scrollTo(0, { immediate: true });
+        window.scrollTo(0, 0);
+        window.location.href = href;
       },
-    );
+    });
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -628,15 +576,6 @@ const narrative = project.body.trim();
 
   function initReveal() {
     document.querySelectorAll<HTMLElement>(
-      "[data-reveal] .pd-par, .pd-img--full",
-    ).forEach((el) => {
-      gsap.from(el, {
-        opacity: 0, y: 45, duration: 1.1, ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 88%" },
-      });
-    });
-
-    document.querySelectorAll<HTMLElement>(
       ".pd-split__text, .pd-closing__inner, .pd-portrait-closing",
     ).forEach((el) => {
       gsap.to(el, {
@@ -647,25 +586,40 @@ const narrative = project.body.trim();
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // NEXT PROJECT pin zone
+  // NEXT PROJECT pin zone (studiodado pattern)
   //   - section is 300svh, inner div is sticky (CSS pin)
-  //   - ScrollTrigger scrubs: progress bar + label + title + rising cover
-  //   - start: "top top"  end: "bottom bottom"  scrub: true
-  //   - at progress >= 0.99 → navigateTo
+  //   - label + title + image reveal ONCE when the section scrolls in
+  //   - progress bar fills with ease-out as you scroll the pin (scrub)
+  //   - at progress >= 0.99 → navigateTo (plain navigation)
   // ─────────────────────────────────────────────────────────────────
 
   function initNextSection() {
-    const section     = document.getElementById("pd-next-section");
-    const fill        = document.getElementById("pd-progress-fill");
-    const cover       = document.getElementById("pd-next-cover") as HTMLElement | null;
-    const label       = document.getElementById("pd-next-label");
-    const title       = document.querySelector<HTMLElement>(".pd-next__title");
-    if (!section || !fill || !cover) return;
+    const section = document.getElementById("pd-next-section");
+    const fill    = document.getElementById("pd-progress-fill");
+    const link    = document.getElementById("pd-next-link") as HTMLAnchorElement | null;
+    const label   = document.getElementById("pd-next-label");
+    const title   = document.querySelector<HTMLElement>(".pd-next__title");
+    const media   = document.querySelector<HTMLElement>(".pd-next__media-img");
+    if (!section || !fill || !link) return;
 
-    const nextHref = cover.dataset.nextHref!;
+    const nextHref = link.dataset.nextHref!;
     let triggered = false;
 
-    const tl = gsap.timeline({
+    // One-time reveal of the preview (label + title + image) when it scrolls in.
+    // Hover is only enabled once this finishes (.is-ready).
+    const reveal = gsap.timeline({
+      scrollTrigger: { trigger: section, start: "top 70%" },
+      onComplete() { link.classList.add("is-ready"); },
+    });
+    if (media) reveal.fromTo(media, { opacity: 0 }, { opacity: 1, duration: 1.1, ease: "power2.out" }, 0);
+    if (label) reveal.to(label, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.05);
+    if (title) reveal.to(title, { opacity: 1, y: 0, duration: 0.9, ease: "expo.out" }, 0.12);
+
+    // Progress bar fills as you scroll the pin — ease-out (studiodado: 1-(1-p)²).
+    // With scrub, the tween's ease maps scroll progress → scaleX.
+    gsap.to(fill, {
+      scaleX: 1,
+      ease: "power2.out",
       scrollTrigger: {
         trigger: section,
         start: "top top",      // pin activates when section hits viewport top
@@ -680,33 +634,11 @@ const narrative = project.body.trim();
       },
     });
 
-    // 1. Progress bar fills left→right (full duration, linear)
-    tl.to(fill, { scaleX: 1, ease: "none", duration: 1 }, 0);
-
-    // 2. "NEXT PROJECT" label fades + rises (quick, at scroll start)
-    if (label) tl.to(label, { opacity: 1, y: 0, duration: 0.15, ease: "power3.out" }, 0);
-
-    // 3. Next project title fades + rises (quick)
-    if (title) tl.to(title, { opacity: 1, y: 0, duration: 0.15, ease: "expo.out" }, 0.04);
-
-    // 4. Cover rises from below — the "page under the other" effect
-    //    Starts slightly after label appears, covers full viewport by end
-    tl.to(cover, { y: "0%", ease: "none", duration: 0.8 }, 0.18);
-
-    // Click handler on cover (in case user clicks before 99%)
-    cover.addEventListener("click", (e) => {
+    // Click anywhere on the preview → navigate with the mask transition
+    link.addEventListener("click", (e) => {
       e.preventDefault();
       if (!triggered) { triggered = true; navigateTo(nextHref); }
     });
-
-    // Also intercept the text title link
-    const titleLink = document.getElementById("pd-next-link") as HTMLAnchorElement | null;
-    if (titleLink) {
-      titleLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (!triggered) { triggered = true; navigateTo(nextHref); }
-      });
-    }
   }
 
   // ─────────────────────────────────────────────────────────────────
