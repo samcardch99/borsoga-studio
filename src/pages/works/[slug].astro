@@ -27,10 +27,6 @@ const narrative = project.body.trim();
 ---
 
 <Layout showChrome={false}>
-  <!-- Page transition overlay: opaque on load → fades out (page appears);
-       fades in before navigating (old page disappears) -->
-  <div class="pd-fade" id="pd-fade" aria-hidden="true"></div>
-
   <div class="pd">
     <NavbarInterior />
 
@@ -171,16 +167,6 @@ const narrative = project.body.trim();
 </Layout>
 
 <style>
-  /* ── Page transition overlay — opaque by default (covers on load), JS
-        fades it out on enter and back in on leave ── */
-  .pd-fade {
-    position: fixed;
-    inset: 0;
-    background: #fff;
-    z-index: 9999;
-    pointer-events: none;
-  }
-
   /* ── Page wrapper ── */
   .pd { background: #fff; color: #000; min-height: 100svh; }
 
@@ -262,7 +248,10 @@ const narrative = project.body.trim();
   }
 
   /* ── HERO IMAGE ── */
-  .pd-img--hero { height: clamp(50vh, 70svh, 88svh); }
+  .pd-img--hero {
+    height: clamp(56vh, 78svh, 92svh);
+    padding: 0 clamp(1.2rem, 3.3vw, 4.5rem);
+  }
 
   /* ── SPLIT SECTION ── */
   .pd-split {
@@ -273,7 +262,7 @@ const narrative = project.body.trim();
     align-items: center;
   }
 
-  .pd-split__img { height: clamp(320px, 50svh, 700px); }
+  .pd-split__img { height: clamp(360px, 58svh, 800px); }
 
   .pd-split__text {
     padding: clamp(1rem, 2vw, 3rem) 0;
@@ -288,12 +277,13 @@ const narrative = project.body.trim();
     gap: clamp(0.5rem, 1.5vw, 2rem);
     padding: clamp(1.5rem, 3vw, 5rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
   }
-  .pd-duo .pd-par { height: clamp(260px, 40svh, 600px); }
+  .pd-duo .pd-par { height: clamp(300px, 48svh, 700px); }
 
   /* ── FULL-WIDTH 4th image (pd2, pd3) ── */
   .pd-img--full {
-    height: clamp(50vh, 68svh, 85svh);
+    height: clamp(56vh, 78svh, 92svh);
     margin-top: clamp(1.5rem, 3vw, 5rem);
+    padding: 0 clamp(1.2rem, 3.3vw, 4.5rem);
   }
 
   /* ── PORTRAIT + CLOSING row (pd2) ── */
@@ -305,7 +295,7 @@ const narrative = project.body.trim();
     align-items: end;
   }
 
-  .pd-par--portrait { height: clamp(450px, 62svh, 900px); }
+  .pd-par--portrait { height: clamp(500px, 70svh, 1000px); }
 
   .pd-portrait-closing {
     display: flex;
@@ -468,7 +458,7 @@ const narrative = project.body.trim();
 
     .pd-split__img,
     .pd-duo .pd-par,
-    .pd-par--portrait { height: clamp(220px, 55vw, 420px); }
+    .pd-par--portrait { height: clamp(260px, 64vw, 500px); }
 
     .pd-hero__meta-right { align-items: flex-start; }
     .pd-meta__label--right,
@@ -484,66 +474,35 @@ const narrative = project.body.trim();
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { navigate } from "astro:transitions/client";
 
   gsap.registerPlugin(ScrollTrigger);
 
+  let enterTl: gsap.core.Timeline | null = null;
+
   // ─────────────────────────────────────────────────────────────────
-  // ENTER ANIMATION — fade the transition overlay out (page appears),
-  // then hero separator line + title rise + meta fade in
+  // ENTER ANIMATION — hero separator line + title rise + meta fade in.
+  // The page-to-page cross-fade is handled natively by <ClientRouter />.
   // ─────────────────────────────────────────────────────────────────
 
   function initEnter() {
-    const fade    = document.getElementById("pd-fade") as HTMLElement | null;
     const lineTop = document.getElementById("pd-line-top");
     const title   = document.getElementById("pd-title");
     const meta    = document.getElementById("pd-meta");
 
-    const tl = gsap.timeline();
-
-    // Reveal the page: fade the transition overlay out
-    if (fade)
-      tl.to(fade, { opacity: 0, duration: 0.6, ease: "power2.out",
-        onComplete() { fade.style.display = "none"; } }, 0);
+    enterTl = gsap.timeline();
 
     // Separator line
     if (lineTop)
-      tl.to(lineTop, { scaleX: 1, duration: 0.7, ease: "power3.inOut" }, 0);
+      enterTl.to(lineTop, { scaleX: 1, duration: 0.7, ease: "power3.inOut" }, 0);
 
     // Title rises into view
     if (title)
-      tl.to(title, { y: "0%", opacity: 1, duration: 1.1, ease: "expo.out" }, 0.08);
+      enterTl.to(title, { y: "0%", opacity: 1, duration: 1.1, ease: "expo.out" }, 0.08);
 
     // Meta row fades in
     if (meta)
-      tl.to(meta, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.22);
-  }
-
-  // ─────────────────────────────────────────────────────────────────
-  // NAVIGATION — fade the overlay in (old page disappears), then navigate.
-  // The next page fades the overlay back out on enter (next appears).
-  // ─────────────────────────────────────────────────────────────────
-
-  let isNavigating = false;
-
-  function navigateTo(href: string) {
-    if (isNavigating) return;
-    isNavigating = true;
-
-    const fade = document.getElementById("pd-fade") as HTMLElement | null;
-    if (!fade) { window.location.href = href; return; }
-
-    fade.style.display = "block";
-    gsap.to(fade, {
-      opacity: 1,
-      duration: 0.5,
-      ease: "power2.in",
-      onComplete() {
-        // Old page fully covered — reset scroll and navigate
-        if ((window as any).lenis) (window as any).lenis.scrollTo(0, { immediate: true });
-        window.scrollTo(0, 0);
-        window.location.href = href;
-      },
-    });
+      enterTl.to(meta, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.22);
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -590,7 +549,7 @@ const narrative = project.body.trim();
   //   - section is 300svh, inner div is sticky (CSS pin)
   //   - label + title + image reveal ONCE when the section scrolls in
   //   - progress bar fills with ease-out as you scroll the pin (scrub)
-  //   - at progress >= 0.99 → navigateTo (plain navigation)
+  //   - at progress >= 0.99 → navigate() (soft View Transition, no reload)
   // ─────────────────────────────────────────────────────────────────
 
   function initNextSection() {
@@ -628,33 +587,40 @@ const narrative = project.body.trim();
         onUpdate(self) {
           if (self.progress >= 0.99 && !triggered) {
             triggered = true;
-            navigateTo(nextHref);
+            navigate(nextHref);   // soft, no-reload View Transition
           }
         },
       },
     });
 
-    // Click anywhere on the preview → navigate with the mask transition
+    // Click anywhere on the preview → soft navigate (View Transition)
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      if (!triggered) { triggered = true; navigateTo(nextHref); }
+      if (!triggered) { triggered = true; navigate(nextHref); }
     });
   }
 
   // ─────────────────────────────────────────────────────────────────
-  // BOOT
+  // LIFECYCLE — re-init on every (soft) navigation, clean up before leaving.
+  // <ClientRouter /> keeps the JS runtime alive, so module scripts run ONCE;
+  // all setup must hang off astro:page-load and tear down on astro:before-swap,
+  // otherwise stale ScrollTriggers pile up and the next page never animates.
   // ─────────────────────────────────────────────────────────────────
 
-  function boot() {
+  function init() {
     initEnter();
     initParallax();
     initReveal();
     initNextSection();
+    ScrollTrigger.refresh();
   }
 
-  if ((window as any).lenisReady) {
-    boot();
-  } else {
-    window.addEventListener("lenis:ready", boot, { once: true });
+  function cleanup() {
+    enterTl?.kill();
+    enterTl = null;
+    ScrollTrigger.getAll().forEach((t) => t.kill());
   }
+
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", cleanup);
 </script>
