@@ -8,12 +8,12 @@ year: "2024"
 layout: "pd2"
 order: 2
 images:
-  - "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6461.jpg"
-  - "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6414.jpg"
-  - "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6415.jpg"
-  - "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6416.jpg"
-  - "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6458.jpg"
-  - "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6459.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6461.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6414.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6415.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6416.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6458.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6459.jpg"
 ---
 
 The design articulates two interior areas through continuous millwork, vertical storage, and integrated work surfaces. In the kitchen, wood is combined with light veined stone and backlit modules to create a technical plane for preparation, storage, and display. In the closet, dark glass, black frames, and linear lighting organize clothing and accessories through controlled depth and transparency. Borsoga developed the interior design, 3D modeling, and visualization to represent the relationship between millwork, stone, glass, and artificial light emission.
