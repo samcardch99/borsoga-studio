@@ -74,6 +74,17 @@ const categories = [
     bgImgStyle: undefined as string | undefined,
   },
 ];
+
+// ── Mobile / tablet (≤1024px) — stacked sections.
+// All 4 categories, each a full-bleed background image with overlaid text +
+// classification tags. Text / tag / CTA colours come from the desktop data
+// (Immersive Spaces is a light section → dark text, like on desktop).
+const mobileCategories = [
+  { ...categories[0], img: "/categories/animated-architecture-opt/3.jpg", fgImg: undefined as string | undefined, dark: true }, // Arch. Viz (clean kitchen render)
+  { ...categories[1], img: "/categories/mobile/immersive-bg.jpg", fgImg: "/categories/mobile/immersive-fg.png", dark: false }, // Immersive — light section
+  { ...categories[2], img: "/categories/mobile/web.jpg",   fgImg: undefined as string | undefined, dark: true }, // Web Platforms
+  { ...categories[3], img: "/categories/mobile/brand.jpg", fgImg: undefined as string | undefined, dark: true }, // Brand Identity
+];
 ---
 
 <section class="cat" id="categories" data-navbar-transparent>
@@ -166,24 +177,12 @@ const categories = [
               )}
               {i === 3 && (
                 <>
-                  <img
-                    src="/categories/branding1.png"
-                    alt=""
-                    id="cat-s4-bg"
-                    class="cat__s4-layer cat__s4-bg"
-                  />
-                  <img
-                    src="/categories/branding2.png"
-                    alt=""
-                    id="cat-s4-mid"
-                    class="cat__s4-layer cat__s4-mid"
-                  />
-                  <img
-                    src="/categories/branding3.png"
-                    alt=""
-                    id="cat-s4-top"
-                    class="cat__s4-layer cat__s4-top"
-                  />
+                  <img src="/categories/cat-4/0.webp" alt="" id="cat-s4-l0" class="cat__s4-layer cat__s4-l0" loading="eager" />
+                  <img src="/categories/cat-4/1.webp" alt="" id="cat-s4-l1" class="cat__s4-layer cat__s4-l1" loading="lazy" />
+                  <img src="/categories/cat-4/2.webp" alt="" id="cat-s4-l2" class="cat__s4-layer cat__s4-l2" loading="lazy" />
+                  <img src="/categories/cat-4/3.webp" alt="" id="cat-s4-l3" class="cat__s4-layer cat__s4-l3" loading="lazy" />
+                  <img src="/categories/cat-4/4.webp" alt="" id="cat-s4-l4" class="cat__s4-layer cat__s4-l4" loading="lazy" />
+                  <img src="/categories/cat-4/5.webp" alt="" id="cat-s4-l5" class="cat__s4-layer cat__s4-l5" loading="lazy" />
                 </>
               )}
             </div>
@@ -234,6 +233,48 @@ const categories = [
         }
       </div>
     </div>
+  </div>
+
+  <!-- ── Mobile / tablet — stacked category sections (Figma) ── -->
+  <div class="cat__mobile">
+    {
+      mobileCategories.map((cat) => (
+        <section
+          class:list={["catm", { "catm--light": !cat.dark }]}
+          data-navbar-dark={cat.dark ? "" : undefined}
+          style={`--catm-text:${cat.textColor};--catm-tag-border:${cat.tagBorder};--catm-cta-bg:${cat.ctaBg};--catm-cta-color:${cat.ctaColor};`}
+        >
+          <img class="catm__bg" src={cat.img} alt="" loading="lazy" decoding="async" />
+          {cat.fgImg && (
+            <img class="catm__fg" src={cat.fgImg} alt="" loading="lazy" decoding="async" />
+          )}
+          <div class="catm__overlay" />
+          <div class="catm__content">
+            <h3 class="catm__title">{cat.title}</h3>
+            <div class="catm__bottom">
+              <p class="catm__desc">{cat.description}</p>
+              <ul class="catm__tags">
+                {cat.tags.map((tag) => (
+                  <li class="catm__tag">{tag}</li>
+                ))}
+              </ul>
+              <a href="/works/" class="catm__cta">
+                VIEW OUR WORK
+                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                  <path
+                    d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </section>
+      ))
+    }
   </div>
 </section>
 
@@ -414,7 +455,7 @@ const categories = [
   [data-cat-index="2"] .cat__content,
   [data-cat-index="2"] .cat__cta { z-index: 10; }
 
-  /* ── Parallax slide 4: branding layers ── */
+  /* ── Parallax slide 4: branding layers (0=fondo … 5=frente) ── */
   .cat__s4-layer {
     position: absolute;
     inset: 0;
@@ -425,9 +466,12 @@ const categories = [
     pointer-events: none;
     will-change: transform;
   }
-  .cat__s4-bg  { scale: 1.12; z-index: 0; }
-  .cat__s4-mid { scale: 1.05; z-index: 1; }
-  .cat__s4-top { scale: 1.05; z-index: 2; }
+  .cat__s4-l0 { scale: 1.15; z-index: 0; }
+  .cat__s4-l1 { scale: 1.12; z-index: 1; }
+  .cat__s4-l2 { scale: 1.09; z-index: 2; }
+  .cat__s4-l3 { scale: 1.06; z-index: 3; }
+  .cat__s4-l4 { scale: 1.04; z-index: 4; }
+  .cat__s4-l5 { scale: 1.02; z-index: 5; }
   [data-cat-index="3"] .cat__content,
   [data-cat-index="3"] .cat__cta { z-index: 10; }
 
@@ -577,14 +621,146 @@ const categories = [
     transform: scale(1.5);
   }
 
-  @media (max-width: 640px) {
-    .cat__flank {
-      display: none;
-    }
-    .cat__content {
-      width: 100%;
-      padding: 1.5rem;
-    }
+  /* ════════════════════════════════════════════════════════════════
+     MOBILE / TABLET (≤1024px) — stacked category sections (Figma).
+     The desktop pinned card animation is hidden here; the GSAP script
+     is also guarded to only run at ≥1025px.
+     ════════════════════════════════════════════════════════════════ */
+  .cat__mobile { display: none; }
+
+  @media (max-width: 1024px) {
+    .cat__sticky { display: none; }
+    .cat__mobile { display: block; }
+    .cat { background: #0a0a0a; }
+  }
+
+  .catm {
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+    background: #0a0a0a;
+    color: var(--catm-text, #fff);
+    display: flex;
+  }
+  .catm--light {
+    background: #f6f5f1;
+  }
+  .catm__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+  }
+  /* foreground cut-out (immersive — people in VR) layered over the bg */
+  .catm__fg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .catm__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0) 28%,
+      rgba(0, 0, 0, 0) 55%,
+      rgba(0, 0, 0, 0.62) 100%
+    );
+    pointer-events: none;
+  }
+  /* light section (immersive) — whiten top & bottom so the dark text reads */
+  .catm--light .catm__overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(246, 245, 241, 0.55) 0%,
+      rgba(246, 245, 241, 0.07) 22%,
+      rgba(246, 245, 241, 0.07) 50%,
+      rgba(246, 245, 241, 0.65) 100%
+    );
+  }
+  .catm__content {
+    position: relative;
+    z-index: 3;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(9rem, 15vh, 13rem) clamp(2.4rem, 5vw, 4rem)
+      clamp(2.8rem, 5vh, 4.5rem);
+  }
+  /* push description / tags / CTA to the bottom; title (if any) stays on top */
+  .catm__bottom {
+    margin-top: auto;
+  }
+  .catm__title {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(2.8rem, 8.5vw, 4.8rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    white-space: pre-line;
+    max-width: 11em;
+  }
+  .catm__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.6rem, 3.5vh, 2.6rem);
+  }
+  .catm__desc {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.3rem, 3.4vw, 2rem);
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 44ch;
+  }
+  .catm__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .catm__tag {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    padding: 0.5em 1.3em;
+    border-radius: 9999px;
+    border: 1px solid var(--catm-tag-border, rgba(255, 255, 255, 0.5));
+    white-space: nowrap;
+  }
+  .catm__cta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.2rem, 2.8vw, 1.6rem);
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: var(--catm-cta-color, #000);
+    background: var(--catm-cta-bg, #fff);
+    text-decoration: none;
+    padding: 0.7em 1.6em;
+    border-radius: 9999px;
+    transition: opacity 0.2s;
+    margin-top: clamp(0.6rem, 1.5vh, 1.4rem);
+  }
+  .catm__cta:hover {
+    opacity: 0.8;
   }
 </style>
 
@@ -593,6 +769,10 @@ const categories = [
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
+
+  // Desktop only — mobile/tablet (≤1024px) use the stacked .cat__mobile layout,
+  // so the pinned card animation (and its parallax/lighting) must NOT initialise.
+  if (window.innerWidth >= 1025) {
 
   function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
 
@@ -813,9 +993,12 @@ const categories = [
   const s3laptop2 = document.getElementById("cat-s3-laptop2") as HTMLElement | null;
   const s3piedra  = document.getElementById("cat-s3-piedra")  as HTMLElement | null;
   // Slide 4 elements
-  const s4bg  = document.getElementById("cat-s4-bg")  as HTMLElement | null;
-  const s4mid = document.getElementById("cat-s4-mid") as HTMLElement | null;
-  const s4top = document.getElementById("cat-s4-top") as HTMLElement | null;
+  const s4l0 = document.getElementById("cat-s4-l0") as HTMLElement | null;
+  const s4l1 = document.getElementById("cat-s4-l1") as HTMLElement | null;
+  const s4l2 = document.getElementById("cat-s4-l2") as HTMLElement | null;
+  const s4l3 = document.getElementById("cat-s4-l3") as HTMLElement | null;
+  const s4l4 = document.getElementById("cat-s4-l4") as HTMLElement | null;
+  const s4l5 = document.getElementById("cat-s4-l5") as HTMLElement | null;
 
   const BG_STRENGTH  = 16;
   const FG_STRENGTH  = 7;
@@ -834,9 +1017,12 @@ const categories = [
     { tx: 0, ty: 0, x: 0, y: 0, el: s3piedra,  strength: FG2_STRENGTH },
   ];
   const s4layers: Layer[] = [
-    { tx: 0, ty: 0, x: 0, y: 0, el: s4bg,  strength: BG_STRENGTH  },
-    { tx: 0, ty: 0, x: 0, y: 0, el: s4mid, strength: FG_STRENGTH  },
-    { tx: 0, ty: 0, x: 0, y: 0, el: s4top, strength: FG2_STRENGTH },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4l0, strength: 18 },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4l1, strength: 14 },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4l2, strength: 10 },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4l3, strength: 7  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4l4, strength: 5  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: s4l5, strength: 3  },
   ];
 
   let mouseActive = false;
@@ -928,4 +1114,6 @@ const categories = [
   };
 
   tick();
+
+  } // end desktop-only guard (window.innerWidth >= 1025)
 </script>

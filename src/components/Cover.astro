@@ -14,36 +14,41 @@ import DecorSpiral from "../assets/decor-spiral.svg";
   class="relative w-full h-svh min-h-[600px] bg-black text-white font-poppins overflow-hidden flex flex-col"
 >
   <!-- Decorative breathing spiral — top-right corner -->
-  <DecorSpiral class="cover-spiral" aria-hidden="true" />
+  <DecorSpiral class="cover-spiral w-full translate-x-[-35%] scale-170  translate-y-[15%] md:translate-y-0 md:translate-x-[-22%] md:rotate-5 md:scale-155 md:w-full lg:translate-y-[10%] lg:translate-x-[-10%] lg:rotate-0 lg:scale-[1.2] lg:scale-140 lg:w-[clamp(40rem,48vw,70rem)]" aria-hidden="true" />
 
-  <!-- Main content -->
+  <!--
+    Main content — responsive:
+      · base  (<768px)  mobile  → single column, centered block
+      · md    (768px+)  tablet  → single column, larger type
+      · lg    (1025px+) desktop → two-column grid (original layout)
+  -->
   <div
-    class="relative z-10 flex-1 grid grid-cols-1 md:grid-cols-2 px-[4rem] pt-[2vh] pb-[7vh] gap-[3rem]"
+    class="relative z-10 flex-1 flex flex-col justify-evenly gap-[6vh] md:gap-[9vh] px-[2.4rem] md:px-[4.2rem] lg:px-[4rem] py-[calc(3.8rem+4vh)] lg:grid lg:grid-cols-2 lg:gap-[3rem]"
   >
-    <!-- Left: location + headline -->
-    <div class="flex flex-col justify-center pb-[3vh]">
-      <!-- location: 1.4rem (14px en HD) -->
-      <p class="m-0 mb-[1.5rem] font-light text-[1.4rem] tracking-[0.01em]">
+    <!-- Location + headline -->
+    <div class="flex flex-col justify-start lg:justify-center lg:pb-[3vh]">
+      <!-- location -->
+      <p
+        class="z-120 m-0 mb-[1.2rem] md:mb-[1.6rem] lg:mb-[1.5rem] font-light text-[1.3rem] md:text-[2rem] lg:text-[1.4rem] tracking-[0.01em]"
+      >
         [ Borsoga Studio · Miami, FL · Working globally ]
       </p>
-      <!-- headline: 9rem (90px en HD · 160px en 2K · 240px en 4K) -->
+      <!-- headline — mobile ≈43px · tablet 64px · desktop 90px -->
       <h1
         id="cover-h1"
-        class="m-0 font-semibold text-[9rem] leading-[1.13] text-white/19"
-      >
-        <span>Digital spaces</span><span
-          >for the <em class="font-extralight italic">unbuilt</em><br
-          />imagination.</span
-        >
-      </h1>
+        class="z-120 m-0 font-semibold leading-[1.13] text-white/19 text-[clamp(3.6rem,10.8vw,4.8rem)] md:text-[6.4rem] lg:text-[6.25vw]"
+      >Digital spaces<br />for the <em class="font-extralight italic"
+          >unbuilt</em><br />imagination.</h1>
     </div>
 
-    <!-- Right: description + CTA -->
-    <div class="flex items-start md:items-end justify-center gap-8">
-      <div class="flex items-center justify-center h-fit w-full">
-        <!-- description: 1.4rem, max-w 46rem (460px en HD · 818px en 2K · 1227px en 4K) -->
+    <!-- Description + CTA — right-aligned & stacked on mobile/tablet,
+         side-by-side & bottom-aligned on desktop -->
+    <div class="flex items-end justify-center">
+      <div
+        class="flex flex-col items-end gap-[2.4rem] md:gap-[3rem] w-full lg:flex-row lg:items-center lg:justify-center lg:gap-8"
+      >
         <p
-          class="m-0 font-light text-[1.4rem] leading-[1.9] text-left max-w-184"
+          class="m-0 font-light leading-[1.9] text-right lg:text-left text-[1.3rem] md:text-[2rem] lg:text-[1.4rem] max-w-[30rem] md:max-w-[46rem] lg:max-w-184"
         >
           We combine 3D visualization, immersive environments, custom web
           platforms, and brand identity to translate concepts into absolute
@@ -51,16 +56,17 @@ import DecorSpiral from "../assets/decor-spiral.svg";
         </p>
         <a
           href="#work"
-          class="inline-flex items-center gap-2 no-underline font-light text-xl py-4 px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-white text-black"
+          class="inline-flex items-center gap-1 md:gap-2 no-underline font-light text-[1.2rem] md:text-[1.6rem] lg:text-2xl py-[0.6rem] px-[1.4rem] md:py-[0.8rem] md:px-[1.8rem] lg:py-3 lg:px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-white text-black"
         >
           VIEW OUR WORK
-          <RightUpArrow class="h-8 aspect-square" />
+          <RightUpArrow class="h-[1.3rem] md:h-[1.6rem] lg:h-8" />
         </a>
       </div>
     </div>
-    <!-- Scroll indicator -->
+
+    <!-- Scroll indicator — desktop only -->
     <div
-      class="absolute bottom-[3vh] left-1/2 -translate-x-1/2 z-10 flex items-center gap-[1.2rem]"
+      class="hidden lg:flex absolute bottom-[3vh] left-1/2 -translate-x-1/2 z-10 items-center gap-[1.2rem]"
     >
       <span class="font-light text-[1rem] tracking-[0.15em]">SCROLL</span>
       <div class="relative h-[5vh] w-px bg-white/30 overflow-visible">
@@ -79,13 +85,18 @@ import DecorSpiral from "../assets/decor-spiral.svg";
     position: absolute;
     top: 0rem;
     right: 0rem;
-    width: clamp(40rem, 48vw, 70rem);
+    
     height: auto;
     z-index: 110; /* sobre el banner del navbar (z-100) */
     opacity: 0.9;
     pointer-events: none;
     transform-origin: center center;
     will-change: transform, opacity;
+  }
+
+  /* Mobile & tablet — the spiral is a more prominent decorative element */
+  @media (max-width: 1024px) {
+
   }
 
   @keyframes scroll-dot {

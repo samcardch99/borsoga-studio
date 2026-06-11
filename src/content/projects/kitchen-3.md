@@ -9,11 +9,11 @@ year: "2025"
 layout: "pd3"
 order: 3
 images:
-  - "/projects/kitchen-3/1.jpg"
-  - "/projects/kitchen-3/1_2.jpg"
-  - "/projects/kitchen-3/1_3.jpg"
-  - "/projects/kitchen-3/1_4.jpg"
-  - "/projects/kitchen-3/1_5.jpg"
+  - "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1.jpg"
+  - "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_2.jpg"
+  - "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_3.jpg"
+  - "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_4.jpg"
+  - "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_5.jpg"
 ---
 
 The visualization represents a corner residential building organized through horizontal concrete planes and vertically oriented white volumes. Narrow glass openings and black window frames reinforce the façade proportion and define the rhythm between levels. Exterior lighting activates the building base and surrounding vegetation to separate the main volume from its immediate urban context. Borsoga developed the 3D modeling and visualization to represent the project's scale, materiality, and urban presence.

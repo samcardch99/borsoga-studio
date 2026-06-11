@@ -115,7 +115,7 @@ export default function Form() {
           {errors.email && <p className="form-error">{errors.email.message}</p>}
         </div>
 
-        <div className="form-submit">
+        <div className="form-submit pt-10 pb-16 lg:py-[clamp(0.75rem,1.5vw,2.5rem)]">
           <button type="submit" disabled={isSubmitting} className="form-btn">
             {isSubmitting ? "SENDING..." : "SEND TRANSMISSION"}
             <svg width="1em" height="1em" viewBox="0 0 18 18" fill="none" aria-hidden="true">

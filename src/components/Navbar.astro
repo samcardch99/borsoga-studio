@@ -1,5 +1,6 @@
 ---
 import logoSrc from "../assets/logo.svg?url";
+import logoStackedSrc from "../assets/logo-stacked.svg?url";
 import RightUpArrow from "../assets/icons/right_up.svg";
 ---
 
@@ -8,14 +9,24 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     id="main-nav"
     data-theme="light"
     data-frosted="true"
-    class="fixed z-100 w-full flex items-center justify-between px-16 py-[2vh] transition-all duration-500"
+    class="fixed z-100 w-full flex items-center justify-between px-[2.4rem] md:px-[4.2rem] lg:px-16 py-[2vh] transition-all duration-500"
 >
     <a href="/" aria-label="Borsoga Studio">
-        <img src={logoSrc} alt="Borsoga Studio" class="nav-logo h-[3.8rem] w-auto transition-[filter] duration-300" />
+        <!-- stacked mark on mobile/tablet, horizontal wordmark on desktop (from Figma) -->
+        <img
+            src={logoStackedSrc}
+            alt="Borsoga Studio"
+            class="nav-logo block lg:hidden h-[3.8rem] w-auto transition-[filter] duration-300"
+        />
+        <img
+            src={logoSrc}
+            alt="Borsoga Studio"
+            class="nav-logo hidden lg:block h-[3.8rem] w-auto transition-[filter] duration-300"
+        />
     </a>
 
     <ul
-        class="absolute left-1/2 -translate-x-1/2 hidden md:flex gap-16 list-none m-0 p-0"
+        class="absolute left-1/2 -translate-x-1/2 hidden lg:flex gap-16 list-none m-0 p-0"
     >
         <li>
             <a
@@ -52,16 +63,16 @@ import RightUpArrow from "../assets/icons/right_up.svg";
   bloquear clics sobre el logo / links del nav que quedan debajo.
 -->
 <div
-    class="nav-cta-layer fixed top-0 left-0 z-120 w-full px-16 py-[2vh] flex justify-end pointer-events-none"
+    class="nav-cta-layer fixed top-0 left-0 z-120 w-full px-[2.4rem] md:px-[4.2rem] lg:px-16 py-[2vh] flex justify-end pointer-events-none"
 >
     <div class="min-h-[3.8rem] flex items-center">
-        <!-- button: 1.6rem text, padding 1.4/2.8rem -->
+        <!-- BEGIN A DIALOGUE — smaller on mobile/tablet, full on desktop -->
         <a
             href="#contact"
-            class="pointer-events-auto inline-flex items-center gap-2 no-underline font-light text-2xl py-3 px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-[#7152FF] text-white"
+            class="nav-cta pointer-events-auto inline-flex items-center gap-1 md:gap-2 no-underline font-light text-[1.2rem] md:text-[1.6rem] lg:text-2xl py-[0.6rem] px-[1.4rem] md:py-[0.8rem] md:px-[1.8rem] lg:py-3 lg:px-6 rounded-full whitespace-nowrap tracking-wider hover:opacity-90"
         >
             BEGIN A DIALOGUE
-            <RightUpArrow class="h-8" />
+            <RightUpArrow class="h-[1.3rem] md:h-[1.6rem] lg:h-8" />
         </a>
     </div>
 </div>
@@ -104,10 +115,35 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         border-bottom-color: rgba(0, 0, 0, 0.12);
     }
 
-    /* BEGIN A DIALOGUE button — siempre visible */
-    #main-nav[data-theme="dark"] .nav-cta {
-        background: #0613ff;
-        color: white;
+    /* BEGIN A DIALOGUE button (vive en .nav-cta-layer, hermana de #main-nav).
+       Contrasta con la sección: tema oscuro (sobre fondo claro) → fondo negro /
+       texto blanco; tema claro (sobre fondo oscuro) → fondo blanco / texto negro.
+       La flecha usa currentColor, así que sigue el color del texto. */
+    .nav-cta {
+        background: #fff;
+        color: #000;
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease,
+            opacity 0.2s ease;
+    }
+    #main-nav[data-theme="dark"] ~ .nav-cta-layer .nav-cta {
+        background: #000;
+        color: #fff;
+    }
+    #main-nav[data-theme="light"] ~ .nav-cta-layer .nav-cta {
+        background: #fff;
+        color: #000;
+    }
+
+    /* Mobile & tablet — siempre frosted, nunca transparente.
+       Se necesita background explícito porque blur sobre fondo sólido
+       no produce efecto visual sin color de fondo. */
+    @media (max-width: 1024px) {
+        #main-nav[data-frosted="false"] {
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+        }
     }
 </style>
 

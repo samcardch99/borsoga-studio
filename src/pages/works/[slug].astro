@@ -41,6 +41,12 @@ const narrative = project.body.trim();
           <h1 class="pd-hero__title" id="pd-title">{d.title}</h1>
         </div>
 
+        <!-- Hero image — sits between the title and the meta on mobile/tablet
+             (Figma order); on desktop CSS `order` pushes it below the meta. -->
+        <div class="pd-img pd-img--hero pd-par">
+          <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
+        </div>
+
         <div class="pd-hero__meta" id="pd-meta">
           <!-- LEFT: Discipline + Scope -->
           <div class="pd-hero__meta-left">
@@ -64,11 +70,6 @@ const narrative = project.body.trim();
         </div>
       </div>
     </section>
-
-    <!-- Full-width hero image -->
-    <div class="pd-img pd-img--hero pd-par">
-      <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
-    </div>
 
     <!-- Split: image left + narrative right -->
     <div class="pd-split" data-reveal>
@@ -168,7 +169,12 @@ const narrative = project.body.trim();
 
 <style>
   /* ── Page wrapper ── */
-  .pd { background: #fff; color: #000; min-height: 100svh; }
+  .pd {
+    background: #fff;
+    color: #000;
+    min-height: 100svh;
+    padding-inline: clamp(2.4rem, 3.3vw, 4.5rem);
+  }
 
   /* ── Horizontal lines ── */
   .pd-line {
@@ -180,10 +186,14 @@ const narrative = project.body.trim();
 
   /* ── HERO ────────────────────────────────────────────────────── */
   .pd-hero {
-    padding: clamp(8rem, 12vh, 11rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    padding: clamp(8rem, 12vh, 11rem) 0 0;
   }
 
-  .pd-hero__content { padding-top: clamp(1.2rem, 2.5vw, 3.5rem); }
+  .pd-hero__content {
+    padding-top: clamp(1.2rem, 2.5vw, 3.5rem);
+    display: flex;
+    flex-direction: column;
+  }
 
   .pd-hero__clip { overflow: hidden; padding-bottom: 0.06em; }
 
@@ -239,30 +249,29 @@ const narrative = project.body.trim();
   .pd-par { overflow: hidden; }
   .pd-par img {
     width: 100%;
-    height: 116%;
-    object-fit: cover;
-    object-position: center;
+    height: auto;
     display: block;
-    transform: translateY(-8%);
     will-change: transform;
   }
 
-  /* ── HERO IMAGE ── */
-  .pd-img--hero {
-    height: clamp(56vh, 78svh, 92svh);
-    padding: 0 clamp(1.2rem, 3.3vw, 4.5rem);
+  /* ── HERO IMAGE — now lives inside .pd-hero__content (gets its side
+     padding from .pd-hero). On desktop `order` drops it below the meta. ── */
+  .pd-img--hero {}
+  @media (min-width: 1025px) {
+    .pd-hero__meta { order: 1; }
+    .pd-img--hero { order: 2; }
   }
 
   /* ── SPLIT SECTION ── */
   .pd-split {
     display: grid;
-    grid-template-columns: 52fr 48fr;
+    grid-template-columns: 1fr 1fr;
     gap: clamp(1.5rem, 2.5vw, 4rem);
-    padding: clamp(2rem, 4vw, 7rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    padding: clamp(2rem, 4vw, 7rem) 0 0;
     align-items: center;
   }
 
-  .pd-split__img { height: clamp(360px, 58svh, 800px); }
+  .pd-split__img {}
 
   .pd-split__text {
     padding: clamp(1rem, 2vw, 3rem) 0;
@@ -275,15 +284,13 @@ const narrative = project.body.trim();
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(0.5rem, 1.5vw, 2rem);
-    padding: clamp(1.5rem, 3vw, 5rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    padding: clamp(1.5rem, 3vw, 5rem) 0 0;
   }
-  .pd-duo .pd-par { height: clamp(300px, 48svh, 700px); }
+  .pd-duo .pd-par {}
 
   /* ── FULL-WIDTH 4th image (pd2, pd3) ── */
   .pd-img--full {
-    height: clamp(56vh, 78svh, 92svh);
     margin-top: clamp(1.5rem, 3vw, 5rem);
-    padding: 0 clamp(1.2rem, 3.3vw, 4.5rem);
   }
 
   /* ── PORTRAIT + CLOSING row (pd2) ── */
@@ -291,11 +298,11 @@ const narrative = project.body.trim();
     display: grid;
     grid-template-columns: 45fr 55fr;
     gap: clamp(1rem, 2vw, 3rem);
-    padding: clamp(1.5rem, 3vw, 5rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    padding: clamp(1.5rem, 3vw, 5rem) 0 0;
     align-items: end;
   }
 
-  .pd-par--portrait { height: clamp(500px, 70svh, 1000px); }
+  .pd-par--portrait {}
 
   .pd-portrait-closing {
     display: flex;
@@ -308,7 +315,7 @@ const narrative = project.body.trim();
 
   /* ── CLOSING SECTION (pd1, pd3) ── */
   .pd-closing {
-    padding: clamp(3rem, 6vw, 9rem) clamp(1.2rem, 3.3vw, 4.5rem) 0;
+    padding: clamp(3rem, 6vw, 9rem) 0 0;
     display: flex;
     justify-content: flex-end;
   }
@@ -349,6 +356,7 @@ const narrative = project.body.trim();
     height: 300svh;
     position: relative;
     margin-top: clamp(4rem, 8vw, 12rem);
+    margin-inline: calc(-1 * clamp(2.4rem, 3.3vw, 4.5rem));
   }
 
   /* Sticky container: sticks to top for the entire 300svh pin */
@@ -448,26 +456,63 @@ const narrative = project.body.trim();
   .pd-next__link.is-ready:hover .pd-next__title { opacity: 0.5; transition: opacity 0.3s; }
   .pd-next__link.is-ready:hover .pd-next__media-img { transform: scale(1.03); transition: transform 0.7s ease; }
 
-  /* ── MOBILE ── */
-  @media (max-width: 700px) {
+  /* ── MOBILE & TABLET (≤1024px) — single-column stack (Figma INTERIOR PROYECTOS) ──
+     Order: title → hero image → meta. Body text ~20px (labels = values),
+     all images landscape (~16:9), looser vertical rhythm. */
+  @media (max-width: 1024px) {
     .pd-hero__meta,
     .pd-split,
     .pd-duo,
     .pd-portrait-row,
     .pd-next__head { grid-template-columns: 1fr; }
 
-    .pd-split__img,
-    .pd-duo .pd-par,
-    .pd-par--portrait { height: clamp(260px, 64vw, 500px); }
+    /* Title — Figma 32px */
+    .pd-hero__title { font-size: clamp(2.2rem, 5.6vw, 3.6rem); }
 
+    /* Hero image — landscape, sits between title & meta, with breathing room */
+    .pd-img--hero {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      margin: clamp(1.6rem, 4vw, 2.6rem) 0 clamp(2rem, 5vw, 3.2rem);
+    }
+
+    /* Meta — stacked, left-aligned */
+    .pd-hero__meta {
+      gap: clamp(1.4rem, 3.6vw, 2.2rem);
+      padding-top: 0;
+      padding-bottom: 0;
+    }
     .pd-hero__meta-right { align-items: flex-start; }
     .pd-meta__label--right,
     .pd-meta__value--right,
     .pd-section-label--right,
     .pd-section-body--right { text-align: left; }
-    .pd-next__head { gap: clamp(0.6rem, 2vw, 1.2rem); }
-    .pd-next__title { text-align: left; }
-    .pd-closing { justify-content: flex-start; }
+
+    /* Body text → Figma's ~20px (labels = values, bold vs regular) */
+    .pd-meta__label,
+    .pd-section-label { font-size: clamp(1.3rem, 3.3vw, 1.85rem); }
+    .pd-meta__value,
+    .pd-section-body { font-size: clamp(1.3rem, 3.3vw, 1.85rem); line-height: 1.55; }
+
+    /* All content images → forced 16:9 on mobile */
+    .pd-img--hero,
+    .pd-split__img,
+    .pd-duo .pd-par,
+    .pd-par--portrait,
+    .pd-img--full { aspect-ratio: 16 / 9; }
+    .pd-par img { height: 100%; object-fit: cover; object-position: center; }
+
+    /* Section spacing — looser so blocks breathe */
+    .pd-split { padding-top: clamp(2.6rem, 6vw, 4rem); gap: clamp(1.4rem, 4vw, 2.4rem); }
+    .pd-duo { padding-top: clamp(1.8rem, 4vw, 2.8rem); gap: clamp(1.2rem, 3vw, 2rem); }
+    .pd-img--full { margin-top: clamp(1.8rem, 4vw, 2.8rem); }
+    .pd-portrait-row { padding-top: clamp(1.8rem, 4vw, 2.8rem); gap: clamp(1.6rem, 4vw, 2.4rem); }
+    .pd-portrait-closing { padding-bottom: 0; }
+    .pd-closing { padding-top: clamp(2.6rem, 6vw, 4rem); justify-content: flex-start; }
+
+    /* Next project */
+    .pd-next__head { gap: clamp(0.8rem, 3vw, 1.6rem); }
+    .pd-next__title { text-align: left; font-size: clamp(2.2rem, 5.6vw, 3.6rem); }
   }
 </style>
 
@@ -514,9 +559,10 @@ const narrative = project.body.trim();
       const img = wrap.querySelector<HTMLElement>("img");
       if (!img) return;
       gsap.fromTo(img,
-        { yPercent: -8 },
+        { scale: 1.12, yPercent: -5 },
         {
-          yPercent: 8,
+          scale: 1.12,
+          yPercent: 5,
           ease: "none",
           scrollTrigger: {
             trigger: wrap,

@@ -156,7 +156,17 @@ const projects = raw
 
   /* ── Container ── */
   .projects__container {
-    padding: 0 1.04rem;
+    padding: 0 2.4rem;
+  }
+  @media (min-width: 768px) {
+    .projects__container {
+      padding: 0 4.2rem;
+    }
+  }
+  @media (min-width: 1025px) {
+    .projects__container {
+      padding: 0 4rem;
+    }
   }
 
   /* ── Mobile header ── */
@@ -344,14 +354,14 @@ const projects = raw
       align-items: center;
       gap: 0.5rem;
       margin-top: 1.25rem;
-      padding: 0.6rem 1.1rem 0.6rem 1.25rem;
-      background: #7152FF;
+      padding: 0.75rem 1.5rem;
+      background: black;
       color: white;
       border-radius: 9999px;
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 1.5rem;
       font-weight: 300;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       white-space: nowrap;
       transition: opacity 0.2s ease;
     }
@@ -360,6 +370,8 @@ const projects = raw
     }
     .projects__view-all__arrow {
       flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
     }
   }
 </style>

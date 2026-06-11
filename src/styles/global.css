@@ -2,6 +2,10 @@
 
 @theme {
   --font-poppins: 'Poppins', sans-serif;
+  /* desktop empieza en 1025px (en vez del 1024 por defecto) → todos los `lg:` */
+  --breakpoint-md: 768px;
+  
+  --breakpoint-lg: 1025px;
   --breakpoint-2k: 2560px;
   --breakpoint-4k: 3840px;
 }

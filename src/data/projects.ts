@@ -17,7 +17,7 @@ export interface ProjectData {
 export const projects: ProjectData[] = [
   // ── Layout pd1: hero + split + duo + closing ────────────────────
   {
-    slug: "cristinzio-residence",
+    slug: "RAL-1011-FIVE-PARK-APARTMENT",
     title: "RAL 1011 // FIVE PARK APARTMENT",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "3D Modeling · Interior Visualization · Material Development · Lighting Setup · Still Rendering",
@@ -30,17 +30,17 @@ export const projects: ProjectData[] = [
     year: "2025",
     layout: "pd1",
     images: [
-      "/projects/interior-visualization-1/cristinzio-b.jpg",
-      "/projects/interior-visualization-1/5.jpg",
-      "/projects/interior-visualization-1/cristinzio-c.jpg",
-      "/projects/interior-visualization-1/cristinzio-d.jpg",
+      "/projects/RAL-1011-FIVE-PARK-APARTMENT/cristinzio-b.jpg",
+      "/projects/RAL-1011-FIVE-PARK-APARTMENT/5.jpg",
+      "/projects/RAL-1011-FIVE-PARK-APARTMENT/cristinzio-c.jpg",
+      "/projects/RAL-1011-FIVE-PARK-APARTMENT/cristinzio-d.jpg",
     ],
   },
 
   // ── Layout pd2: hero + split + duo + full + portrait+closing ────
   {
-    slug: "interior-iii",
-    title: "RAL 7030 // OAK MARBLE BATHROOM",
+    slug: "RAL-8003-WOOD-VEIN-KITCHEN-CLOSET",
+    title: "RAL-8003-WOOD-VEIN-KITCHEN-CLOSET",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "Interior Design · 3D Modeling · Material Selection · Lighting Design · Interior Visualization · Still Rendering",
     description:
@@ -52,12 +52,12 @@ export const projects: ProjectData[] = [
     year: "2024",
     layout: "pd2",
     images: [
-      "/projects/interior-3/img-6461.jpg",
-      "/projects/interior-3/img-6414.jpg",
-      "/projects/interior-3/img-6415.jpg",
-      "/projects/interior-3/img-6416.jpg",
-      "/projects/interior-3/img-6458.jpg",
-      "/projects/interior-3/img-6459.jpg",
+      "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6461.jpg",
+      "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6414.jpg",
+      "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6415.jpg",
+      "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6416.jpg",
+      "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6458.jpg",
+      "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6459.jpg",
     ],
   },
 
@@ -77,19 +77,19 @@ export const projects: ProjectData[] = [
     year: "2025",
     layout: "pd3",
     images: [
-      "/projects/kitchen-3/1.jpg",
-      "/projects/kitchen-3/1_2.jpg",
-      "/projects/kitchen-3/1_3.jpg",
-      "/projects/kitchen-3/1_4.jpg",
-      "/projects/kitchen-3/1_5.jpg",
-      "/projects/kitchen-3/1_6.jpg",
+      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1.jpg",
+      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_2.jpg",
+      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_3.jpg",
+      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_4.jpg",
+      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_5.jpg",
+      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_6.jpg",
     ],
   },
 
   // ── Remaining projects — pd1 layout ─────────────────────────────
   {
     slug: "residence-2",
-    title: "RESIDENCE II",
+    title: "RAL 7006 // COCONUT GROVE RESIDENCE",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "3D Modeling · Interior Visualization · Material Development · Lighting Setup · Still Rendering",
     description:
@@ -101,15 +101,15 @@ export const projects: ProjectData[] = [
     year: "2025",
     layout: "pd1",
     images: [
-      "/projects/residence-2/1.jpg",
-      "/projects/residence-2/2.jpg",
-      "/projects/residence-2/5.jpg",
-      "/projects/residence-2/7.jpg",
+      "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg",
+      "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/2.jpg",
+      "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/5.jpg",
+      "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/7.jpg",
     ],
   },
   {
     slug: "residence-4",
-    title: "RESIDENCE IV",
+    title: "RAL 1013 // CRYSTAL RIVER RESIDENCE",
     discipline: "Architectural Visualization & Photography",
     scope: "Photography · Interior Documentation · Material Study · Still Rendering",
     description:
@@ -121,15 +121,15 @@ export const projects: ProjectData[] = [
     year: "2024",
     layout: "pd1",
     images: [
-      "/projects/residence-4/rlzw8338.jpeg",
-      "/projects/residence-4/img-6984.jpg",
-      "/projects/residence-4/vfdb4845.jpeg",
-      "/projects/residence-4/img-e6985.jpg",
+      "/projects/RAL-1013-CRYSTAL-RIVER-RESIDENCE/rlzw8338.jpeg",
+      "/projects/RAL-1013-CRYSTAL-RIVER-RESIDENCE/img-6984.jpg",
+      "/projects/RAL-1013-CRYSTAL-RIVER-RESIDENCE/vfdb4845.jpeg",
+      "/projects/RAL-1013-CRYSTAL-RIVER-RESIDENCE/img-e6985.jpg",
     ],
   },
   {
-    slug: "kitchen-4",
-    title: "KITCHEN IV",
+    slug: "RAL-1002-DOUBLE-ISLAND-KITCHEN",
+    title: "RAL 1002 // DOUBLE ISLAND KITCHEN",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "3D Modeling · Interior Visualization · Material Development · Lighting Setup · Still Rendering",
     description:
@@ -141,15 +141,15 @@ export const projects: ProjectData[] = [
     year: "2025",
     layout: "pd1",
     images: [
-      "/projects/kitchen-4/2.jpg",
-      "/projects/kitchen-4/3.jpg",
-      "/projects/kitchen-4/4.jpg",
-      "/projects/kitchen-4/6.jpg",
+      "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/2.jpg",
+      "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/3.jpg",
+      "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/4.jpg",
+      "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/6.jpg",
     ],
   },
   {
-    slug: "kitchen-5",
-    title: "KITCHEN V",
+    slug: "RAL-7022-UMBRA-STONE-KITCHEN",
+    title: "RAL 7022 // UMBRA STONE KITCHEN",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "3D Modeling · Interior Visualization · Material Development · Lighting Setup · Still Rendering",
     description:
@@ -161,10 +161,10 @@ export const projects: ProjectData[] = [
     year: "2025",
     layout: "pd1",
     images: [
-      "/projects/kitchen-5/1.jpg",
-      "/projects/kitchen-5/2.jpg",
-      "/projects/kitchen-5/3.jpg",
-      "/projects/kitchen-5/4.jpg",
+      "/projects/RAL-7022-UMBRA-STONE-KITCHEN/1.jpg",
+      "/projects/RAL-7022-UMBRA-STONE-KITCHEN/2.jpg",
+      "/projects/RAL-7022-UMBRA-STONE-KITCHEN/3.jpg",
+      "/projects/RAL-7022-UMBRA-STONE-KITCHEN/4.jpg",
     ],
   },
   {
@@ -181,10 +181,31 @@ export const projects: ProjectData[] = [
     year: "2026",
     layout: "pd1",
     images: [
-      "/projects/kitchen-8/1.jpg",
-      "/projects/kitchen-8/2.jpg",
-      "/projects/kitchen-8/3.jpg",
-      "/projects/kitchen-8/4.jpg",
+      "/projects/KITCHEN-VIII/1.jpg",
+      "/projects/KITCHEN-VIII/2.jpg",
+      "/projects/KITCHEN-VIII/3.jpg",
+      "/projects/KITCHEN-VIII/4.jpg",
+    ],
+  },
+  {
+    slug: "RAL-1015-POOL-PAVILION",
+    title: "RAL 1015 // POOL PAVILION",
+    discipline: "Concept Design, Architectural Visualization & 3D Modeling",
+    scope: "Concept Design · 3D Modeling · Exterior Visualization · Pool Area Design · Material Study · Landscape Integration · Lighting Setup · Still Rendering",
+    description:
+      "Exterior pool area defined by an ivory pavilion, light metal roof, beige surfaces, reflective water, and tropical vegetation.",
+    narrative:
+      "The concept organizes the exterior area through a central pool, lounge zones, service bars, and a covered pavilion oriented toward the water. The ivory structure is combined with a light metal roof, vertical panels, beige surfaces, and light furniture to maintain a unified reading of the composition. Point lighting across the pavilion, pool edges, and landscape reinforces spatial depth during afternoon and evening scenes. Borsoga developed the concept design, 3D modeling, and exterior visualization to represent the relationship between pool, light structure, functional areas, and perimeter vegetation.",
+    closingLine:
+      "Exterior area defined by light structure, shade control, and visual continuity between pool, pavilion, and tropical landscape.",
+    year: "2025",
+    layout: "pd3",
+    images: [
+      "/projects/RAL-1015-POOL-PAVILION/1.jpg",
+      "/projects/RAL-1015-POOL-PAVILION/2.jpg",
+      "/projects/RAL-1015-POOL-PAVILION/3.jpg",
+      "/projects/RAL-1015-POOL-PAVILION/4.jpg",
+      "/projects/RAL-1015-POOL-PAVILION/5.jpg",
     ],
   },
 ];

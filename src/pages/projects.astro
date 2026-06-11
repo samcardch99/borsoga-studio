@@ -3,23 +3,23 @@ import Layout from "../layouts/Layout.astro";
 import Projects from "../components/Projects.astro";
 const projectsList = [
   {
-    id: "cristinzio-residence",
+    id: "RAL-1011-FIVE-PARK-APARTMENT",
     num: "01",
-    title: "CRISTINZIO RESIDENCE",
+    title: "RAL 1011 // FIVE PARK APARTMENT",
     tagline: "Residential apartment, CGI rendering & visualization",
-    href: "/works/cristinzio-residence/",
+    href: "/works/RAL-1011-FIVE-PARK-APARTMENT/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/interior-visualization-1/5.jpg",
+    image: "/projects/RAL-1011-FIVE-PARK-APARTMENT/5.jpg",
     categories: ["visualization"],
   },
   {
-    id: "interior-iii",
+    id: "RAL-8003-WOOD-VEIN-KITCHEN-CLOSET",
     num: "02",
-    title: "INTERIOR III",
+    title: "RAL 8003 // WOOD VEIN KITCHEN & CLOSET",
     tagline: "Interior space, photography & material study",
-    href: "/works/interior-iii/",
+    href: "/works/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/interior-3/img-6414.jpg",
+    image: "/projects/RAL-7030-OAK-MARBLE-BATHROOM/img-6414.jpg",
     categories: ["visualization"],
   },
   {
@@ -29,47 +29,47 @@ const projectsList = [
     tagline: "Contemporary kitchen, detailed material rendering",
     href: "/works/kitchen-3/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/kitchen-3/1.jpg",
+    image: "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1.jpg",
     categories: ["visualization"],
   },
   {
     id: "residence-2",
     num: "04",
-    title: "RESIDENCE II",
+    title: "RAL 7006 // COCONUT GROVE RESIDENCE",
     tagline: "Residential project, full interior CGI series",
     href: "/works/residence-2/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/residence-2/1.jpg",
+    image: "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg",
     categories: ["visualization"],
   },
   {
     id: "residence-4",
     num: "05",
-    title: "RESIDENCE IV",
+    title: "RAL 1013 // CRYSTAL RIVER RESIDENCE",
     tagline: "Residence interior, photography & CGI study",
     href: "/works/residence-4/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/residence-4/img-6984.jpg",
+    image: "/projects/RAL-1013-CRYSTAL-RIVER-RESIDENCE/img-6984.jpg",
     categories: ["visualization"],
   },
   {
-    id: "kitchen-4",
+    id: "RAL-1002-DOUBLE-ISLAND-KITCHEN",
     num: "06",
-    title: "KITCHEN IV",
+    title: "RAL 1002 // DOUBLE ISLAND KITCHEN",
     tagline: "Kitchen interior, high-res CGI rendering",
-    href: "/works/kitchen-4/",
+    href: "/works/RAL-1002-DOUBLE-ISLAND-KITCHEN/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/kitchen-4/2.jpg",
+    image: "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/2.jpg",
     categories: ["visualization"],
   },
   {
-    id: "kitchen-5",
+    id: "RAL-7022-UMBRA-STONE-KITCHEN",
     num: "07",
-    title: "KITCHEN V",
+    title: "RAL 7022 // UMBRA STONE KITCHEN",
     tagline: "Kitchen design, material & detail study",
-    href: "/works/kitchen-5/",
+    href: "/works/RAL-7022-UMBRA-STONE-KITCHEN/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/kitchen-5/1.jpg",
+    image: "/projects/RAL-7022-UMBRA-STONE-KITCHEN/1.jpg",
     categories: ["visualization"],
   },
   {
@@ -79,7 +79,17 @@ const projectsList = [
     tagline: "Kitchen visualization, CGI & viewport captures",
     href: "/works/kitchen-8/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
-    image: "/projects/kitchen-8/1.jpg",
+    image: "/projects/KITCHEN-VIII/1.jpg",
+    categories: ["visualization"],
+  },
+  {
+    id: "RAL-1015-POOL-PAVILION",
+    num: "09",
+    title: "RAL 1015 // POOL PAVILION",
+    tagline: "Exterior pool area, concept design & visualization",
+    href: "/works/RAL-1015-POOL-PAVILION/",
+    tags: ["#EXTERIOR DESIGN", "#VISUALIZATION"],
+    image: "/projects/RAL-1015-POOL-PAVILION/1.jpg",
     categories: ["visualization"],
   },
 ];
@@ -431,36 +441,48 @@ const projectsList = [
     transform: translate(0, -50%) scale(1.14) rotate(-1deg);
   }
 
-  /* ── Mobile ── */
-  @media (max-width: 700px) {
+  /* ── MOBILE & TABLET (≤1024px) — Figma "PROYECTOS INTERIOR" listing ──
+     Rows show num + name + tags (no tagline / hover preview / arrow);
+     big number, smaller name & tags; touch = no custom cursor. */
+  @media (max-width: 1024px) {
     .sw { cursor: auto; }
     .sw__cur { display: none !important; }
+
+    /* clear the fixed navbar + roomier side gutters */
+    .sw__inner {
+      padding: clamp(8rem, 22vw, 11rem) clamp(2.4rem, 6vw, 4rem)
+        clamp(4rem, 10vw, 8rem);
+    }
+
+    /* header: title, then filters, stacked */
     .sw__top {
       flex-direction: column;
       align-items: flex-start;
-      gap: 2rem;
+      gap: clamp(1.6rem, 4vw, 2.6rem);
+      padding-bottom: clamp(2rem, 5vw, 3.5rem);
     }
     .sw__filters {
       justify-content: flex-start;
       opacity: 1;
     }
+
+    /* rows: num | name | tags */
     .sw__row-inner {
-      grid-template-columns: 2.5rem 1fr 2rem;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: clamp(1rem, 3vw, 2rem);
+      align-items: center;
+      padding: clamp(1.2rem, 3.2vw, 2.2rem) 0;
     }
     .sw__tagline,
-    .sw__tags { display: none; }
+    .sw__arrow,
     .sw__preview { display: none; }
-  }
-  @media (max-width: 1100px) and (min-width: 701px) {
-    .sw__preview { display: none; }
-    .sw__row-inner {
-      grid-template-columns:
-        clamp(2.2rem, 5vw, 8rem)
-        1fr
-        1fr
-        auto
-        2.5rem;
-    }
+    .sw__tags { display: flex; }
+
+    /* sizing — Figma: big number, smaller name & tags */
+    .sw__title { font-size: clamp(3.6rem, 11vw, 6rem); }
+    .sw__num { font-size: clamp(1.4rem, 4vw, 2.4rem); }
+    .sw__name { font-size: clamp(1.1rem, 2.6vw, 1.7rem); white-space: normal; }
+    .sw__tag { font-size: clamp(0.75rem, 1.8vw, 1.05rem); }
   }
 </style>
 
