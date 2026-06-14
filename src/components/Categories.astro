@@ -56,6 +56,24 @@ const categories = [
     bgImgStyle: undefined as string | undefined,
   },
   {
+    id: "apps",
+    title: "Custom App Development",
+    description:
+      "Beyond the screen, we engineer the experience. We design and build tailored web platforms and native mobile applications, turning complex ideas into fast, reliable, and intuitive products crafted to scale with your vision across every device.",
+    tags: ["REACT", "FLUTTER", "NEXT.JS", "WEB & MOBILE"],
+    bgColor: "#e8e8ea",
+    textColor: "#1a1a1a",
+    tagBorder: "rgba(0,0,0,0.5)",
+    ctaBg: "#000",
+    ctaColor: "#fff",
+    bgStyle: "background-color:#e8e8ea;",
+    noGradient: true,
+    customGradient: undefined as string | undefined,
+    contentBlur: undefined as string | undefined,
+    bgImg: undefined as string | undefined,
+    bgImgStyle: undefined as string | undefined,
+  },
+  {
     id: "brand",
     title: "Brand Identity",
     description:
@@ -104,15 +122,20 @@ const mobileCategories = [
       { src: "/categories/laptop2.png", depth: 3 },
     ] as CatLayer[],
   },
-  { // Brand Identity — stacked branding layers
-    ...categories[3], dark: true,
+  { // Custom App Development — light gradient fondo + two phone mockups
+    ...categories[3], dark: false,
     layers: [
-      { src: "/categories/cat-4/0.webp", depth: 0 },
-      { src: "/categories/cat-4/1.webp", depth: 0.8 },
-      { src: "/categories/cat-4/2.webp", depth: 1.4 },
-      { src: "/categories/cat-4/3.webp", depth: 2 },
-      { src: "/categories/cat-4/4.webp", depth: 2.6 },
-      { src: "/categories/cat-4/5.webp", depth: 3.2 },
+      { src: "/categories/apps/fondo.png",   depth: 0 },
+      { src: "/categories/apps/movil-1.png", depth: 1.8 },
+      { src: "/categories/apps/movil-2.png", depth: 2.6 },
+    ] as CatLayer[],
+  },
+  { // Brand Identity — dark fondo + two branding mockups
+    ...categories[4], dark: true,
+    layers: [
+      { src: "/categories/branding-mobile/fondo.png",   depth: 0 },
+      { src: "/categories/branding-mobile/movil-1.png", depth: 1.8 },
+      { src: "/categories/branding-mobile/movil-2.png", depth: 2.6 },
     ] as CatLayer[],
   },
 ];
@@ -133,6 +156,7 @@ const mobileCategories = [
         <li>Arch. Visualization</li>
         <li>Immersive Spaces</li>
         <li>Web Platforms</li>
+        <li>App Development</li>
         <li>Brand Identity</li>
       </ul>
     </div>
@@ -208,6 +232,15 @@ const mobileCategories = [
               )}
               {i === 3 && (
                 <>
+                  <img src="/categories/apps/fondo.png" alt="" id="cat-apps-bg" class="cat__apps-layer cat__apps-bg" loading="eager" />
+                  <img src="/categories/apps/1.png" alt="" id="cat-apps-l1" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/2.png" alt="" id="cat-apps-l2" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/3.png" alt="" id="cat-apps-l3" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/4.png" alt="" id="cat-apps-l4" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                </>
+              )}
+              {i === 4 && (
+                <>
                   <img src="/categories/cat-4/0.webp" alt="" id="cat-s4-l0" class="cat__s4-layer cat__s4-l0" loading="eager" />
                   <img src="/categories/cat-4/1.webp" alt="" id="cat-s4-l1" class="cat__s4-layer cat__s4-l1" loading="lazy" />
                   <img src="/categories/cat-4/2.webp" alt="" id="cat-s4-l2" class="cat__s4-layer cat__s4-l2" loading="lazy" />
@@ -271,7 +304,7 @@ const mobileCategories = [
     {
       mobileCategories.map((cat) => (
         <section
-          class:list={["catm", { "catm--light": !cat.dark }]}
+          class:list={["catm", `catm--${cat.id}`, { "catm--light": !cat.dark }]}
           data-navbar-dark={cat.dark ? "" : undefined}
           style={`--catm-text:${cat.textColor};--catm-tag-border:${cat.tagBorder};--catm-cta-bg:${cat.ctaBg};--catm-cta-color:${cat.ctaColor};`}
         >
@@ -498,7 +531,27 @@ const mobileCategories = [
   [data-cat-index="2"] .cat__content,
   [data-cat-index="2"] .cat__cta { z-index: 10; }
 
-  /* ── Parallax slide 4: branding layers (0=fondo … 5=frente) ── */
+  /* ── Parallax slide 4: app development (fondo + layers 1…4 front) ── */
+  .cat__apps-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .cat__apps-bg { scale: 1.12; z-index: 0; }
+  .cat__apps-fg { scale: 1.05; }
+  #cat-apps-l1 { z-index: 1; }
+  #cat-apps-l2 { z-index: 2; }
+  #cat-apps-l3 { z-index: 3; }
+  #cat-apps-l4 { z-index: 4; }
+  [data-cat-index="3"] .cat__content,
+  [data-cat-index="3"] .cat__cta { z-index: 10; }
+
+  /* ── Parallax slide 5: branding layers (0=fondo … 5=frente) ── */
   .cat__s4-layer {
     position: absolute;
     inset: 0;
@@ -515,8 +568,8 @@ const mobileCategories = [
   .cat__s4-l3 { scale: 1.06; z-index: 3; }
   .cat__s4-l4 { scale: 1.04; z-index: 4; }
   .cat__s4-l5 { scale: 1.02; z-index: 5; }
-  [data-cat-index="3"] .cat__content,
-  [data-cat-index="3"] .cat__cta { z-index: 10; }
+  [data-cat-index="4"] .cat__content,
+  [data-cat-index="4"] .cat__cta { z-index: 10; }
 
   /* ── Content panel ── */
   .cat__content {
@@ -702,6 +755,18 @@ const mobileCategories = [
     transform-origin: center center;
     will-change: transform;
   }
+  /* Web card — laptop scene: pull the foreground layers back (contain) so the
+     full composition reads across the x-axis instead of being cropped. */
+  .catm--web .catm__layer {
+    object-fit: contain;
+    transform: scale(1.04);
+  }
+  /* …but the background layer (fondo, depth 0) stretches to cover the whole
+     section, so there are no empty bands behind the contained foreground. */
+  .catm--web .catm__layer[data-depth="0"] {
+    object-fit: cover;
+    transform: scale(1.12);
+  }
   .catm__overlay {
     position: absolute;
     inset: 0;
@@ -834,7 +899,7 @@ const mobileCategories = [
   const FADE_START = 0.72;
 
   // true = slide has dark bg → navbar needs light (white) text
-  const SLIDE_IS_DARK = [false, false, false, true];
+  const SLIDE_IS_DARK = [false, false, false, false, true];
 
   const catSection = document.getElementById("categories") as HTMLElement;
 
@@ -1029,7 +1094,13 @@ const mobileCategories = [
   const s3laptop1 = document.getElementById("cat-s3-laptop1") as HTMLElement | null;
   const s3laptop2 = document.getElementById("cat-s3-laptop2") as HTMLElement | null;
   const s3piedra  = document.getElementById("cat-s3-piedra")  as HTMLElement | null;
-  // Slide 4 elements
+  // Slide 4 elements (app development): fondo + layers 1…4 (front)
+  const sAppsBg = document.getElementById("cat-apps-bg") as HTMLElement | null;
+  const sAppsL1 = document.getElementById("cat-apps-l1") as HTMLElement | null;
+  const sAppsL2 = document.getElementById("cat-apps-l2") as HTMLElement | null;
+  const sAppsL3 = document.getElementById("cat-apps-l3") as HTMLElement | null;
+  const sAppsL4 = document.getElementById("cat-apps-l4") as HTMLElement | null;
+  // Slide 5 elements (brand)
   const s4l0 = document.getElementById("cat-s4-l0") as HTMLElement | null;
   const s4l1 = document.getElementById("cat-s4-l1") as HTMLElement | null;
   const s4l2 = document.getElementById("cat-s4-l2") as HTMLElement | null;
@@ -1052,6 +1123,13 @@ const mobileCategories = [
     { tx: 0, ty: 0, x: 0, y: 0, el: s3laptop1, strength: FG_STRENGTH  },
     { tx: 0, ty: 0, x: 0, y: 0, el: s3laptop2, strength: FG2_STRENGTH },
     { tx: 0, ty: 0, x: 0, y: 0, el: s3piedra,  strength: FG2_STRENGTH },
+  ];
+  const sAppsLayers: Layer[] = [
+    { tx: 0, ty: 0, x: 0, y: 0, el: sAppsBg, strength: 16 },
+    { tx: 0, ty: 0, x: 0, y: 0, el: sAppsL1, strength: 12 },
+    { tx: 0, ty: 0, x: 0, y: 0, el: sAppsL2, strength: 9  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: sAppsL3, strength: 6  },
+    { tx: 0, ty: 0, x: 0, y: 0, el: sAppsL4, strength: 3  },
   ];
   const s4layers: Layer[] = [
     { tx: 0, ty: 0, x: 0, y: 0, el: s4l0, strength: 18 },
@@ -1079,7 +1157,10 @@ const mobileCategories = [
   }
 
   function applyDemo() {
-    const active = currentSlide === 1 ? s2layers : currentSlide === 2 ? s3layers : s4layers;
+    const active = currentSlide === 1 ? s2layers
+      : currentSlide === 2 ? s3layers
+      : currentSlide === 3 ? sAppsLayers
+      : s4layers;
     for (const l of active) {
       l.tx = -ARC_NX * demoProxy.t * l.strength;
       l.ty = 0;
@@ -1105,7 +1186,7 @@ const mobileCategories = [
   }
 
   function tick() {
-    const allLayers = [...s2layers, ...s3layers, ...s4layers];
+    const allLayers = [...s2layers, ...s3layers, ...sAppsLayers, ...s4layers];
     for (const l of allLayers) {
       if (!l.el) continue;
       l.x = lerp(l.x, l.tx, 0.06);
@@ -1116,10 +1197,11 @@ const mobileCategories = [
   }
 
   window.addEventListener("mousemove", (e) => {
-    const isParallaxSlide = (currentSlide === 1 || currentSlide === 2 || currentSlide === 3) && enterComplete;
+    const isParallaxSlide = (currentSlide === 1 || currentSlide === 2 || currentSlide === 3 || currentSlide === 4) && enterComplete;
     if (!isParallaxSlide) {
       resetLayerTargets(s2layers);
       resetLayerTargets(s3layers);
+      resetLayerTargets(sAppsLayers);
       resetLayerTargets(s4layers);
       mouseActive = false;
       return;
@@ -1129,22 +1211,25 @@ const mobileCategories = [
     const ny = (e.clientY / window.innerHeight - 0.5) * 2;
     if (currentSlide === 1) setLayerTargets(s2layers, nx, ny);
     if (currentSlide === 2) setLayerTargets(s3layers, nx, ny);
-    if (currentSlide === 3) setLayerTargets(s4layers, nx, ny);
+    if (currentSlide === 3) setLayerTargets(sAppsLayers, nx, ny);
+    if (currentSlide === 4) setLayerTargets(s4layers, nx, ny);
   }, { passive: true });
 
   window.addEventListener("mouseleave", () => {
     resetLayerTargets(s2layers);
     resetLayerTargets(s3layers);
+    resetLayerTargets(sAppsLayers);
     resetLayerTargets(s4layers);
   }, { passive: true });
 
   (window as any).__catSetSlide = (idx: number) => {
-    if (idx === 1 || idx === 2 || idx === 3) {
+    if (idx === 1 || idx === 2 || idx === 3 || idx === 4) {
       playDemoParallax();
     } else {
       stopDemo();
       resetLayerTargets(s2layers);
       resetLayerTargets(s3layers);
+      resetLayerTargets(sAppsLayers);
       resetLayerTargets(s4layers);
       mouseActive = false;
     }
@@ -1161,19 +1246,20 @@ const mobileCategories = [
       document.querySelectorAll<HTMLElement>(".catm").forEach((section) => {
         section.querySelectorAll<HTMLElement>(".catm__layer").forEach((layer) => {
           const depth = parseFloat(layer.dataset.depth || "0");
-          const amp = 4 + depth * 4; // yPercent amplitude (bg≈4 … fg up to ~17)
+          const amp = 2 + depth * 2; // gentle yPercent amplitude (bg≈2 … fg up to ~8)
+          // Scale stays under CSS control (per-card) — animating only yPercent
+          // lets GSAP preserve the layer's CSS transform: scale().
           gsap.fromTo(
             layer,
-            { yPercent: amp, scale: 1.18 },
+            { yPercent: amp },
             {
               yPercent: -amp,
-              scale: 1.18,
               ease: "none",
               scrollTrigger: {
                 trigger: section,
                 start: "top bottom",
                 end: "bottom top",
-                scrub: true,
+                scrub: 0.6,
               },
             },
           );
