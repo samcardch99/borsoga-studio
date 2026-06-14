@@ -1,5 +1,6 @@
 ---
 title: "RAL 7022 // UMBRA STONE KITCHEN"
+verticalLayout: true
 discipline: "Architectural Visualization & 3D Modeling"
 scope: "3D Modeling • Interior Visualization • Material Development • Lighting Setup • Still Rendering"
 description: "A material and detail study for a contemporary kitchen, exploring how finishes and textures contribute to spatial quality."

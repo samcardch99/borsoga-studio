@@ -10,16 +10,13 @@
   --breakpoint-4k: 3840px;
 }
 
-/* 1rem = 10px — baseline calibrado para 1440px HD */
+/* 1rem = 10px — baseline calibrado para 1440px HD.
+   Hasta 1440px el root se mantiene en 10px (móvil / tablet / desktop estándar).
+   Entre 1440px y 2K (2560px) escala de forma fluida y proporcional al viewport
+   (0.6944vw = 10px @1440 y 17.78px @2560), así TODO lo definido en rem/vw
+   conserva su proporción en pantallas grandes en lugar de saltar de golpe. */
 :root {
-  font-size: 10px;
-}
-
-/* 2K (2560px) — factor: 2560 / 1440 = 1.778 */
-@media (min-width: 2560px) {
-  :root {
-    font-size: 17.78px;
-  }
+  font-size: clamp(10px, 0.6944vw, 17.78px);
 }
 
 /* 4K (3840px) — factor: 3840 / 1440 = 2.667 */

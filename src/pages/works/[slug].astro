@@ -10,7 +10,7 @@ export async function getStaticPaths() {
       a.data.order - b.data.order,
   );
   return all.map((project: CollectionEntry<"projects">, i: number) => ({
-    params: { slug: project.id, },
+    params: { slug: project.id.toLowerCase(), },
     props: { project, next: all[(i + 1) % all.length] },
   }));
 }
@@ -42,10 +42,13 @@ const narrative = project.body.trim();
         </div>
 
         <!-- Hero image — sits between the title and the meta on mobile/tablet
-             (Figma order); on desktop CSS `order` pushes it below the meta. -->
-        <div class="pd-img pd-img--hero pd-par">
-          <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
-        </div>
+             (Figma order); on desktop CSS `order` pushes it below the meta.
+             The vertical-pictures template has no hero image (Figma frame). -->
+        {!d.verticalLayout && (
+          <div class="pd-img pd-img--hero pd-par">
+            <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
+          </div>
+        )}
 
         <div class="pd-hero__meta" id="pd-meta">
           <!-- LEFT: Discipline + Scope -->
@@ -71,55 +74,123 @@ const narrative = project.body.trim();
       </div>
     </section>
 
-    <!-- Split: image left + narrative right -->
-    <div class="pd-split" data-reveal>
-      <div class="pd-split__img pd-par">
-        <img src={imgs[1]} alt={d.title} loading="lazy" decoding="async" />
-      </div>
-      <div class="pd-split__text">
-        <p class="pd-section-label">Project Narrative</p>
-        <p class="pd-section-body">{narrative}</p>
-      </div>
-    </div>
+    {d.verticalLayout ? (
+      <>
+        {/* ── VERTICAL PICTURES template (Figma "project vertical pictures") ──
+             Portrait images. Always opens with a pair side by side, then a
+             single + narrative, then a single + closing line. */}
 
-    <!-- Duo: two equal images -->
-    <div class="pd-duo" data-reveal>
-      <div class="pd-par">
-        <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" />
-      </div>
-      <div class="pd-par">
-        <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" />
-      </div>
-    </div>
+        {/* Block A: two portrait images side by side — ALWAYS the opener */}
+        {imgs[0] && imgs[1] && (
+          <div class="pdv-duo" data-reveal>
+            <div class="pd-par pdv-img">
+              <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
+            </div>
+            <div class="pd-par pdv-img">
+              <img src={imgs[1]} alt={d.title} loading="eager" decoding="async" />
+            </div>
+          </div>
+        )}
 
-    <!-- pd2 + pd3: full-width 4th image -->
-    {(d.layout === "pd2" || d.layout === "pd3") && imgs[4] && (
-      <div class="pd-img pd-img--full pd-par" data-reveal>
-        <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" />
-      </div>
-    )}
-
-    <!-- pd2 only: portrait (left) + closing line (lower right) -->
-    {d.layout === "pd2" && imgs[5] && (
-      <div class="pd-portrait-row" data-reveal>
-        <div class="pd-par pd-par--portrait">
-          <img src={imgs[5]} alt={d.title} loading="lazy" decoding="async" />
+        {/* Block B: portrait image (left) + Project Narrative (right) */}
+        <div class="pdv-row pdv-row--narrative" data-reveal>
+          {imgs[2] && (
+            <div class="pd-par pdv-img">
+              <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" />
+            </div>
+          )}
+          <div class="pdv-text">
+            <p class="pd-section-label">Project Narrative</p>
+            <p class="pd-section-body">{narrative}</p>
+          </div>
         </div>
-        <div class="pd-portrait-closing">
-          <p class="pd-section-label pd-section-label--right">Closing Line</p>
-          <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
-        </div>
-      </div>
-    )}
 
-    <!-- pd1 + pd3: closing line as separate right-aligned section -->
-    {(d.layout === "pd1" || d.layout === "pd3") && (
-      <div class="pd-closing" data-reveal>
-        <div class="pd-closing__inner">
-          <p class="pd-section-label pd-section-label--right">Closing Line</p>
-          <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
+        {/* Block C: portrait image (left) + Closing Line (lower right) */}
+        <div class="pdv-row pdv-row--closing" data-reveal>
+          {imgs[3] && (
+            <div class="pd-par pdv-img">
+              <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" />
+            </div>
+          )}
+          <div class="pdv-text pdv-text--closing">
+            <p class="pd-section-label pd-section-label--right">Closing Line</p>
+            <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
+          </div>
         </div>
-      </div>
+      </>
+    ) : (
+      <>
+        {/* Split: image left + narrative right */}
+        <div class="pd-split" data-reveal>
+          <div class="pd-split__img pd-par">
+            <img src={imgs[1]} alt={d.title} loading="lazy" decoding="async" />
+          </div>
+          <div class="pd-split__text">
+            <p class="pd-section-label">Project Narrative</p>
+            <p class="pd-section-body">{narrative}</p>
+          </div>
+        </div>
+
+        {/* Duo: two equal images */}
+        <div class="pd-duo" data-reveal>
+          <div class="pd-par">
+            <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" />
+          </div>
+          <div class="pd-par">
+            <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" />
+          </div>
+        </div>
+
+        {/* pd2 + pd3: full-width 4th image. A pd3 vertical image is paired
+            with the closing line below instead of rendering full-width here. */}
+        {(d.layout === "pd2" || (d.layout === "pd3" && !d.fullImageVertical)) && imgs[4] && (
+          <div
+            class:list={["pd-img", "pd-img--full", "pd-par", { "pd-img--full--portrait": d.fullImageVertical }]}
+            data-reveal
+          >
+            <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" />
+          </div>
+        )}
+
+        {/* pd3 + vertical full image: portrait photo (left) + closing line
+            (right), placed in parallel. The 1fr 1fr pd-portrait-row keeps the
+            image edge aligned with the duo/split columns above. */}
+        {d.layout === "pd3" && d.fullImageVertical && imgs[4] && (
+          <div class="pd-portrait-row" data-reveal>
+            <div class="pd-par pd-par--portrait">
+              <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" />
+            </div>
+            <div class="pd-portrait-closing">
+              <p class="pd-section-label pd-section-label--right">Closing Line</p>
+              <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
+            </div>
+          </div>
+        )}
+
+        {/* pd2 only: portrait (left) + closing line (lower right) */}
+        {d.layout === "pd2" && imgs[5] && (
+          <div class="pd-portrait-row" data-reveal>
+            <div class="pd-par pd-par--portrait">
+              <img src={imgs[5]} alt={d.title} loading="lazy" decoding="async" />
+            </div>
+            <div class="pd-portrait-closing">
+              <p class="pd-section-label pd-section-label--right">Closing Line</p>
+              <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
+            </div>
+          </div>
+        )}
+
+        {/* pd1 + pd3 (non-vertical): closing line as separate right-aligned
+            section. The pd3 vertical case renders it beside the photo above. */}
+        {(d.layout === "pd1" || (d.layout === "pd3" && !d.fullImageVertical)) && (
+          <div class="pd-closing" data-reveal>
+            <div class="pd-closing__inner">
+              <p class="pd-section-label pd-section-label--right">Closing Line</p>
+              <p class="pd-section-body pd-section-body--right">{d.closingLine}</p>
+            </div>
+          </div>
+        )}
+      </>
     )}
 
     <!-- ──────────────────────────────────────────────────────────────
@@ -131,10 +202,10 @@ const narrative = project.body.trim();
       <!-- Sticky: sticks to viewport top for the full 300svh duration -->
       <div class="pd-next__pin">
         <a
-          href={`/works/${next.id}/`}
+          href={`/works/${next.id.toLowerCase()}/`}
           class="pd-next__link"
           id="pd-next-link"
-          data-next-href={`/works/${next.id}/`}
+          data-next-href={`/works/${next.id.toLowerCase()}/`}
           aria-label={`Go to ${next.data.title}`}
         >
           <!-- Progress bar: fills left→right as you scroll through the pin -->
@@ -221,7 +292,7 @@ const narrative = project.body.trim();
 
   .pd-meta__label {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
+    font-size: clamp(1.05rem, 1.25vw, 1.6rem);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -238,7 +309,6 @@ const narrative = project.body.trim();
     line-height: 1.55;
     color: #333;
     margin: 0;
-    text-transform: uppercase;
     letter-spacing: -0.01em;
   }
   .pd-meta__value--right { text-align: right; }
@@ -249,7 +319,7 @@ const narrative = project.body.trim();
   .pd-par { overflow: hidden; }
   .pd-par img {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     will-change: transform;
   }
@@ -257,7 +327,7 @@ const narrative = project.body.trim();
   /* ── HERO IMAGE — now lives inside .pd-hero__content (gets its side
      padding from .pd-hero). On desktop `order` drops it below the meta. ── */
   .pd-img--hero {}
-  @media (min-width: 1025px) {
+  @media (min-width: 768px) {
     .pd-hero__meta { order: 1; }
     .pd-img--hero { order: 2; }
   }
@@ -283,7 +353,7 @@ const narrative = project.body.trim();
   .pd-duo {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(0.5rem, 1.5vw, 2rem);
+    gap: clamp(1.5rem, 2.5vw, 4rem);
     padding: clamp(1.5rem, 3vw, 5rem) 0 0;
   }
   .pd-duo .pd-par {}
@@ -292,11 +362,17 @@ const narrative = project.body.trim();
   .pd-img--full {
     margin-top: clamp(1.5rem, 3vw, 5rem);
   }
+  /* Vertical/portrait full image → ~half width, centered, keeps its aspect
+     instead of stretching full-bleed across the screen. */
+  .pd-img--full--portrait {
+    width: clamp(280px, 46%, 720px);
+    margin-inline: 0 auto;
+  }
 
   /* ── PORTRAIT + CLOSING row (pd2) ── */
   .pd-portrait-row {
     display: grid;
-    grid-template-columns: 45fr 55fr;
+    grid-template-columns: 1fr 1fr;
     gap: clamp(1rem, 2vw, 3rem);
     padding: clamp(1.5rem, 3vw, 5rem) 0 0;
     align-items: end;
@@ -325,10 +401,40 @@ const narrative = project.body.trim();
     transform: translateY(20px);
   }
 
+  /* ── VERTICAL PICTURES template (Figma "project vertical pictures") ──
+     Portrait images at ~half width; text sits beside them. Image wrappers
+     keep the source's natural (tall) aspect via .pd-par img { height:auto }. */
+  .pdv-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 3vw, 6rem);
+    padding: clamp(2rem, 4vw, 7rem) 0 0;
+  }
+  .pdv-row--narrative { align-items: center; }
+  .pdv-row--closing { align-items: end; }
+
+  .pdv-duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 3vw, 6rem);
+    padding: clamp(1.5rem, 3vw, 5rem) 0 0;
+  }
+
+  .pdv-text {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .pdv-text--closing {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: clamp(1.5rem, 3vw, 4rem);
+  }
+
   /* ── SECTION TEXT ── */
   .pd-section-label {
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.9rem, 1.05vw, 1.35rem);
+    font-size: clamp(1.05rem, 1.25vw, 1.6rem);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -344,7 +450,6 @@ const narrative = project.body.trim();
     line-height: 1.75;
     color: #333;
     margin: 0;
-    text-transform: uppercase;
     letter-spacing: -0.01em;
   }
   .pd-section-body--right { text-align: right; }
@@ -456,29 +561,53 @@ const narrative = project.body.trim();
   .pd-next__link.is-ready:hover .pd-next__title { opacity: 0.5; transition: opacity 0.3s; }
   .pd-next__link.is-ready:hover .pd-next__media-img { transform: scale(1.03); transition: transform 0.7s ease; }
 
-  /* ── MOBILE & TABLET (≤1024px) — single-column stack (Figma INTERIOR PROYECTOS) ──
+  /* ── TABLET (768–1024px) — same multi-column layout as desktop, only the
+     sizes are tuned down so it fits the narrower viewport (NOT the mobile
+     single-column stack). ── */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    /* Roomier side gutters for the fixed navbar + comfortable margins */
+    .pd { padding-inline: clamp(2rem, 4vw, 3rem); }
+
+    /* Title scales with viewport but a touch larger than the pure vw clamp */
+    .pd-hero__title { font-size: clamp(3rem, 6vw, 4.6rem); }
+
+    /* Meta: keep the two-column grid, tighten the gap, more space from title */
+    .pd-hero__meta { gap: clamp(1.5rem, 3.5vw, 3rem); margin-top: clamp(1.8rem, 5vw, 3rem); }
+    .pd-meta__label,
+    .pd-section-label { font-size: clamp(1rem, 1.7vw, 1.3rem); }
+    .pd-meta__value,
+    .pd-section-body { font-size: clamp(0.95rem, 1.6vw, 1.25rem); }
+
+    /* Next project title scaled to match the hero */
+    .pd-next__title { font-size: clamp(3rem, 6vw, 4.6rem); }
+  }
+
+  /* ── MOBILE (≤767px) — single-column stack (Figma INTERIOR PROYECTOS) ──
      Order: title → hero image → meta. Body text ~20px (labels = values),
      all images landscape (~16:9), looser vertical rhythm. */
-  @media (max-width: 1024px) {
+  @media (max-width: 767px) {
     .pd-hero__meta,
     .pd-split,
     .pd-duo,
     .pd-portrait-row,
+    .pdv-row,
+    .pdv-duo,
     .pd-next__head { grid-template-columns: 1fr; }
 
     /* Title — Figma 32px */
     .pd-hero__title { font-size: clamp(2.2rem, 5.6vw, 3.6rem); }
 
-    /* Hero image — landscape, sits between title & meta, with breathing room */
+    /* Hero image — natural aspect (no crop), with breathing room */
     .pd-img--hero {
       height: auto;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: auto;
       margin: clamp(1.6rem, 4vw, 2.6rem) 0 clamp(2rem, 5vw, 3.2rem);
     }
 
-    /* Meta — stacked, left-aligned */
+    /* Meta — stacked, left-aligned, with a pronounced gap below the title */
     .pd-hero__meta {
       gap: clamp(1.4rem, 3.6vw, 2.2rem);
+      margin-top: clamp(1.6rem, 6vw, 2.4rem);
       padding-top: 0;
       padding-bottom: 0;
     }
@@ -494,13 +623,24 @@ const narrative = project.body.trim();
     .pd-meta__value,
     .pd-section-body { font-size: clamp(1.3rem, 3.3vw, 1.85rem); line-height: 1.55; }
 
-    /* All content images → forced 16:9 on mobile */
+    /* All content images show their FULL content on mobile — natural aspect,
+       no vertical cropping. */
     .pd-img--hero,
     .pd-split__img,
     .pd-duo .pd-par,
     .pd-par--portrait,
-    .pd-img--full { aspect-ratio: 16 / 9; }
-    .pd-par img { height: 100%; object-fit: cover; object-position: center; }
+    .pd-img--full,
+    .pdv-img { aspect-ratio: auto; }
+    .pd-par img { height: auto; object-fit: contain; }
+
+    /* portrait full image: full-width on mobile, keeps its natural aspect */
+    .pd-img--full--portrait { width: 100%; aspect-ratio: auto; }
+    .pd-img--full--portrait img { height: auto; object-fit: contain; }
+
+    /* vertical-pictures spacing — looser stacked rhythm */
+    .pdv-row,
+    .pdv-duo { padding-top: clamp(1.8rem, 4vw, 2.8rem); gap: clamp(1.4rem, 4vw, 2.4rem); }
+    .pdv-text--closing { padding-bottom: 0; }
 
     /* Section spacing — looser so blocks breathe */
     .pd-split { padding-top: clamp(2.6rem, 6vw, 4rem); gap: clamp(1.4rem, 4vw, 2.4rem); }
@@ -581,7 +721,7 @@ const narrative = project.body.trim();
 
   function initReveal() {
     document.querySelectorAll<HTMLElement>(
-      ".pd-split__text, .pd-closing__inner, .pd-portrait-closing",
+      ".pd-split__text, .pd-closing__inner, .pd-portrait-closing, .pdv-text",
     ).forEach((el) => {
       gsap.to(el, {
         y: 0, opacity: 1, duration: 1.0, ease: "power3.out",

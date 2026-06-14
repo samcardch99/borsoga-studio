@@ -1,5 +1,6 @@
 ---
 title: "RAL 7006 // COCONUT GROVE RESIDENCE"
+verticalLayout: true
 discipline: "Architectural Visualization & 3D Modeling"
 scope: "3D Modeling • Interior Visualization • Material Development • Lighting Setup • Still Rendering"
 description: "A complete interior visualization of a high-end residential project, documenting each space through atmosphere and material storytelling."

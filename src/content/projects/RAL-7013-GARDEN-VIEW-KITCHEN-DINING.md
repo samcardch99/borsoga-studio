@@ -6,6 +6,7 @@ description: "Residential kitchen and dining area defined by brown-grey millwork
 closingLine: "Interior system defined by dark millwork, continuous grey stone, and lighting control between work area, dining area, and garden."
 year: "2026"
 layout: "pd3"
+fullImageVertical: true
 order: 8
 images:
   - "/projects/KITCHEN-VIII/1.jpg"

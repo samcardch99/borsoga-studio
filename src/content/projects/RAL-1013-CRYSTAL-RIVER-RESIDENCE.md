@@ -1,5 +1,6 @@
 ---
 title: "RAL 1013 // CRYSTAL RIVER RESIDENCE"
+verticalLayout: true
 discipline: "Architectural Visualization & Photography"
 scope: "Photography • Interior Documentation • Material Study • Still Rendering"
 description: "A residential interior project blending photography and CGI to document the material and atmospheric qualities of a completed space."

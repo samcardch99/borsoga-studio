@@ -11,6 +11,8 @@ import DecorSpiral from "../assets/decor-spiral.svg";
 -->
 <section
   data-navbar-dark
+  data-navbar-transparent
+  data-navbar-noblur
   class="relative w-full h-svh min-h-[600px] bg-black text-white font-poppins overflow-hidden flex flex-col"
 >
   <!-- Decorative breathing spiral — top-right corner -->
@@ -55,7 +57,7 @@ import DecorSpiral from "../assets/decor-spiral.svg";
           visual clarity.
         </p>
         <a
-          href="#work"
+          href="#selected-work"
           class="inline-flex items-center gap-1 md:gap-2 no-underline font-light text-[1.2rem] md:text-[1.6rem] lg:text-2xl py-[0.6rem] px-[1.4rem] md:py-[0.8rem] md:px-[1.8rem] lg:py-3 lg:px-6 rounded-full whitespace-nowrap tracking-wider transition-opacity duration-200 hover:opacity-90 bg-white text-black"
         >
           VIEW OUR WORK
@@ -87,7 +89,9 @@ import DecorSpiral from "../assets/decor-spiral.svg";
     right: 0rem;
     
     height: auto;
-    z-index: 110; /* sobre el banner del navbar (z-100) */
+    /* Decorative only — sits above the black bg but BELOW the cover content
+       and the navbar (z-100), so it never covers the logo / nav border. */
+    z-index: 1;
     opacity: 0.9;
     pointer-events: none;
     transform-origin: center center;

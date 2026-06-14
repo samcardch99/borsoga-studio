@@ -4,34 +4,34 @@ import logoStackedSrc from "../../assets/logo-stacked.svg?url";
 import RightUpArrow from "../../assets/icons/right_up.svg";
 ---
 
-<nav id="interior-nav" class="interior-nav fixed z-100 w-full flex items-center justify-between px-[2.4rem] md:px-[4.2rem] lg:px-16 py-[2vh]">
+<nav id="interior-nav" class="interior-nav fixed top-0 left-0 z-100 w-full flex items-center justify-between px-[2.4rem] md:px-[4.2rem] lg:px-16 py-[2vh]">
   <a href="/" aria-label="Borsoga Studio">
-    <!-- stacked mark on mobile/tablet, horizontal wordmark on desktop -->
+    <!-- stacked mark on mobile only; horizontal wordmark from tablet up -->
     <img
       src={logoStackedSrc}
       alt="Borsoga Studio"
-      class="interior-nav__logo block lg:hidden h-[3.8rem] w-auto"
+      class="interior-nav__logo block md:hidden h-[3.8rem] w-auto"
     />
     <img
       src={logoSrc}
       alt="Borsoga Studio"
-      class="interior-nav__logo hidden lg:block h-[3.8rem] w-auto"
+      class="interior-nav__logo hidden md:block h-[3rem] lg:h-[3.8rem] w-auto"
     />
   </a>
 
-  <ul class="absolute left-1/2 -translate-x-1/2 hidden lg:flex gap-16 list-none m-0 p-0">
+  <ul class="absolute left-1/2 -translate-x-1/2 hidden md:flex gap-8 lg:gap-16 list-none m-0 p-0">
     <li>
-      <a href="/#work" class="interior-nav__link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
+      <a href="/#work" class="interior-nav__link no-underline font-bold text-[1.2rem] lg:text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
         Work
       </a>
     </li>
     <li>
-      <a href="/#capabilities" class="interior-nav__link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
+      <a href="/#capabilities" class="interior-nav__link no-underline font-bold text-[1.2rem] lg:text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
         Capabilities
       </a>
     </li>
     <li>
-      <a href="/#contact" class="interior-nav__link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
+      <a href="/#contact" class="interior-nav__link no-underline font-bold text-[1.2rem] lg:text-[1.4rem] tracking-[0.02em] transition-opacity duration-300 hover:opacity-60">
         Contact
       </a>
     </li>
@@ -108,15 +108,17 @@ import RightUpArrow from "../../assets/icons/right_up.svg";
       });
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    /* Lenis fires native scroll events, so no extra wiring needed.
-       But also hook into it directly if available for smoother sync. */
+    /* Single scroll source — Lenis emits its own native `scroll` events too,
+       so binding BOTH window-scroll and lenis.on("scroll") makes two paths
+       mutate the shared `lastY` out of sync → the nav flickers hide/show.
+       Prefer Lenis when present; otherwise fall back to native scroll. */
     const lenis = (window as any).lenis;
     if (lenis) {
       lenis.on("scroll", ({ scroll }: { scroll: number }) => {
         update(scroll);
       });
+    } else {
+      window.addEventListener("scroll", onScroll, { passive: true });
     }
   }
 

@@ -1,5 +1,6 @@
 ---
 title: "RAL 9002 // CORNER RESIDENTIAL BUILDING"
+verticalLayout: true
 discipline: "Architectural Visualization & 3D Modeling"
 scope: "Interior Design • 3D Modeling • Material Selection • Lighting Design • Interior Visualization • Still Rendering"
 client: "3Design Architecture"

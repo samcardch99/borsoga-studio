@@ -63,7 +63,7 @@ export const projects: ProjectData[] = [
 
   // ── Layout pd3: hero + split + duo + full + closing ─────────────
   {
-    slug: "kitchen-3",
+    slug: "ral-9002-corner-residential-building",
     title: "RAL 9002 // CORNER RESIDENTIAL BUILDING",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "Interior Design · 3D Modeling · Material Selection · Lighting Design · Interior Visualization · Still Rendering",
@@ -88,7 +88,7 @@ export const projects: ProjectData[] = [
 
   // ── Remaining projects — pd1 layout ─────────────────────────────
   {
-    slug: "residence-2",
+    slug: "RAL-7006-COCONUT-GROVE-RESIDENCE",
     title: "RAL 7006 // COCONUT GROVE RESIDENCE",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "3D Modeling · Interior Visualization · Material Development · Lighting Setup · Still Rendering",
@@ -108,7 +108,7 @@ export const projects: ProjectData[] = [
     ],
   },
   {
-    slug: "residence-4",
+    slug: "RAL-1013-CRYSTAL-RIVER-RESIDENCE",
     title: "RAL 1013 // CRYSTAL RIVER RESIDENCE",
     discipline: "Architectural Visualization & Photography",
     scope: "Photography · Interior Documentation · Material Study · Still Rendering",
@@ -168,7 +168,7 @@ export const projects: ProjectData[] = [
     ],
   },
   {
-    slug: "kitchen-8",
+    slug: "RAL-7013-GARDEN-VIEW-KITCHEN-DINING",
     title: "KITCHEN VIII",
     discipline: "Architectural Visualization & 3D Modeling",
     scope: "3D Modeling · Interior Visualization · Viewport Documentation · Material Study · Still Rendering",

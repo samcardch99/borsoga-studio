@@ -7,7 +7,7 @@ const projectsList = [
     num: "01",
     title: "RAL 1011 // FIVE PARK APARTMENT",
     tagline: "Residential apartment, CGI rendering & visualization",
-    href: "/works/RAL-1011-FIVE-PARK-APARTMENT/",
+    href: "/works/ral-1011-five-park-apartment/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-1011-FIVE-PARK-APARTMENT/5.jpg",
     categories: ["visualization"],
@@ -17,37 +17,37 @@ const projectsList = [
     num: "02",
     title: "RAL 8003 // WOOD VEIN KITCHEN & CLOSET",
     tagline: "Interior space, photography & material study",
-    href: "/works/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/",
+    href: "/works/ral-8003-wood-vein-kitchen-closet/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6414.jpg",
     categories: ["visualization"],
   },
   {
-    id: "kitchen-3",
+    id: "RAL-9002-CORNER-RESIDENTIAL-BUILDING",
     num: "03",
-    title: "KITCHEN III",
+    title: "RAL 9002 // CORNER RESIDENTIAL BUILDING",
     tagline: "Contemporary kitchen, detailed material rendering",
-    href: "/works/kitchen-3/",
+    href: "/works/ral-9002-corner-residential-building/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1.jpg",
     categories: ["visualization"],
   },
   {
-    id: "residence-2",
+    id: "RAL-7006-COCONUT-GROVE-RESIDENCE",
     num: "04",
     title: "RAL 7006 // COCONUT GROVE RESIDENCE",
     tagline: "Residential project, full interior CGI series",
-    href: "/works/residence-2/",
+    href: "/works/ral-7006-coconut-grove-residence/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg",
     categories: ["visualization"],
   },
   {
-    id: "residence-4",
+    id: "RAL-1013-CRYSTAL-RIVER-RESIDENCE",
     num: "05",
     title: "RAL 1013 // CRYSTAL RIVER RESIDENCE",
     tagline: "Residence interior, photography & CGI study",
-    href: "/works/residence-4/",
+    href: "/works/ral-1013-crystal-river-residence/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-1013-CRYSTAL-RIVER-RESIDENCE/img-6984.jpg",
     categories: ["visualization"],
@@ -57,7 +57,7 @@ const projectsList = [
     num: "06",
     title: "RAL 1002 // DOUBLE ISLAND KITCHEN",
     tagline: "Kitchen interior, high-res CGI rendering",
-    href: "/works/RAL-1002-DOUBLE-ISLAND-KITCHEN/",
+    href: "/works/ral-1002-double-island-kitchen/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/2.jpg",
     categories: ["visualization"],
@@ -67,17 +67,17 @@ const projectsList = [
     num: "07",
     title: "RAL 7022 // UMBRA STONE KITCHEN",
     tagline: "Kitchen design, material & detail study",
-    href: "/works/RAL-7022-UMBRA-STONE-KITCHEN/",
+    href: "/works/ral-7022-umbra-stone-kitchen/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-7022-UMBRA-STONE-KITCHEN/1.jpg",
     categories: ["visualization"],
   },
   {
-    id: "kitchen-8",
+    id: "RAL-7013-GARDEN-VIEW-KITCHEN-DINING",
     num: "08",
-    title: "KITCHEN VIII",
+    title: "RAL 7013 // GARDEN VIEW KITCHEN & DINING",
     tagline: "Kitchen visualization, CGI & viewport captures",
-    href: "/works/kitchen-8/",
+    href: "/works/ral-7013-garden-view-kitchen-dining/",
     tags: ["#INTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/KITCHEN-VIII/1.jpg",
     categories: ["visualization"],
@@ -87,10 +87,40 @@ const projectsList = [
     num: "09",
     title: "RAL 1015 // POOL PAVILION",
     tagline: "Exterior pool area, concept design & visualization",
-    href: "/works/RAL-1015-POOL-PAVILION/",
+    href: "/works/ral-1015-pool-pavilion/",
     tags: ["#EXTERIOR DESIGN", "#VISUALIZATION"],
     image: "/projects/RAL-1015-POOL-PAVILION/1.jpg",
     categories: ["visualization"],
+  },
+  {
+    id: "RAL-4005-EPSI-NEST",
+    num: "10",
+    title: "RAL 4005 // EPSI NEST",
+    tagline: "Proptech platform, brand identity & UI/UX design",
+    href: "/works/ral-4005-epsi-nest/",
+    tags: ["#BRAND IDENTITY", "#DIGITAL DESIGN"],
+    image: "/projects/branding/epsi-nest/1.jpg",
+    categories: ["branding"],
+  },
+  {
+    id: "RAL-5002-PEAK-VISION",
+    num: "11",
+    title: "RAL 5002 // PEAK VISION",
+    tagline: "Investment firm, brand identity & corporate design",
+    href: "/works/ral-5002-peak-vision/",
+    tags: ["#BRAND IDENTITY", "#CORPORATE DESIGN"],
+    image: "/projects/branding/peak-vision/1.jpg",
+    categories: ["branding"],
+  },
+  {
+    id: "RAL-9005-REFRAME",
+    num: "12",
+    title: "RAL 9005 // REFRAME",
+    tagline: "Real estate developer, brand identity & visual system",
+    href: "/works/ral-9005-reframe/",
+    tags: ["#BRAND IDENTITY", "#VISUAL SYSTEM"],
+    image: "/projects/branding/reframe/2.jpg",
+    categories: ["branding"],
   },
 ];
 
@@ -114,7 +144,7 @@ const projectsList = [
       </div>
 
       <div class="sw__filters" id="sw-filters" role="group" aria-label="Filter by category">
-        {["ALL", "VISUALIZATION"].map((f, i) => (
+        {["ALL", "VISUALIZATION", "BRANDING"].map((f, i) => (
           <button
             class={`sw__chip${i === 0 ? " sw__chip--on" : ""}`}
             data-filter={f.toLowerCase()}
@@ -333,13 +363,14 @@ const projectsList = [
   .sw__row-inner {
     display: grid;
     grid-template-columns:
-      clamp(2.2rem, 9.5vw, 14rem)   /* num */
-      clamp(7rem, 15.5vw, 22rem)    /* name */
-      clamp(6rem, 18.7vw, 26rem)    /* tagline */
+      clamp(2.2rem, 4vw, 5rem)       /* num */
+      clamp(9rem, 24vw, 30rem)       /* name */
+      clamp(7rem, 17vw, 24rem)       /* tagline */
       1fr                            /* spacer */
       auto                           /* tags */
       2.5rem;                        /* arrow */
     align-items: center;
+    column-gap: clamp(1rem, 2vw, 2.5rem);
     padding: clamp(1.1rem, 2.3vw, 3rem) 0;
     position: relative;
     z-index: 2;
@@ -362,6 +393,9 @@ const projectsList = [
     font-weight: 500;
     letter-spacing: 0.04em;
     white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .sw__tagline {
     font-family: "Poppins", sans-serif;
@@ -369,6 +403,7 @@ const projectsList = [
     font-style: italic;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.42);
+    min-width: 0;
   }
   .sw__tags {
     list-style: none;
@@ -464,6 +499,12 @@ const projectsList = [
     .sw__filters {
       justify-content: flex-start;
       opacity: 1;
+      gap: clamp(0.6rem, 1.8vw, 1rem);
+    }
+    .sw__chip {
+      font-size: clamp(0.85rem, 2.4vw, 1.1rem);
+      padding: clamp(0.6rem, 1.8vw, 0.9rem) clamp(1.1rem, 3.2vw, 1.6rem);
+      letter-spacing: 0.08em;
     }
 
     /* rows: num | name | tags */

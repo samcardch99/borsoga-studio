@@ -82,7 +82,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     #main-nav[data-frosted="true"] {
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-bottom: 0.5px solid transparent;
+        border-bottom: 1.5px solid transparent;
     }
 
     /* Transparent state — sobre categories */
@@ -101,7 +101,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         filter: none;
     }
     #main-nav[data-frosted="true"][data-theme="light"] {
-        border-bottom-color: rgba(255, 255, 255, 0.2);
+        border-bottom-color: rgba(255, 255, 255, 0.55);
     }
 
     /* Dark theme (sobre secciones claras) — textos negros */
@@ -112,7 +112,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         filter: invert(1);
     }
     #main-nav[data-frosted="true"][data-theme="dark"] {
-        border-bottom-color: rgba(0, 0, 0, 0.12);
+        border-bottom-color: rgba(0, 0, 0, 0.45);
     }
 
     /* BEGIN A DIALOGUE button (vive en .nav-cta-layer, hermana de #main-nav).
@@ -140,7 +140,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
        Se necesita background explícito porque blur sobre fondo sólido
        no produce efecto visual sin color de fondo. */
     @media (max-width: 1024px) {
-        #main-nav[data-frosted="false"] {
+        #main-nav[data-frosted="false"]:not([data-noblur="true"]) {
             backdrop-filter: blur(20px) !important;
             -webkit-backdrop-filter: blur(20px) !important;
         }
@@ -154,22 +154,25 @@ import RightUpArrow from "../assets/icons/right_up.svg";
 
         const darkSections        = document.querySelectorAll<HTMLElement>("[data-navbar-dark]");
         const transparentSections = document.querySelectorAll<HTMLElement>("[data-navbar-transparent]");
+        const noBlurSections      = document.querySelectorAll<HTMLElement>("[data-navbar-noblur]");
+
+        function isUnderNav(el: HTMLElement, navH: number) {
+            const rect = el.getBoundingClientRect();
+            return rect.top <= navH && rect.bottom > navH;
+        }
 
         function updateTheme() {
             const navH = nav!.offsetHeight;
 
-            const anyDark = Array.from(darkSections).some((el) => {
-                const rect = el.getBoundingClientRect();
-                return rect.top <= navH && rect.bottom > navH;
-            });
-
-            const anyTransparent = Array.from(transparentSections).some((el) => {
-                const rect = el.getBoundingClientRect();
-                return rect.top <= navH && rect.bottom > navH;
-            });
+            const anyDark        = Array.from(darkSections).some((el) => isUnderNav(el, navH));
+            const anyTransparent = Array.from(transparentSections).some((el) => isUnderNav(el, navH));
+            const anyNoBlur      = Array.from(noBlurSections).some((el) => isUnderNav(el, navH));
 
             nav!.dataset.theme   = anyDark ? "light" : "dark";
             nav!.dataset.frosted = anyTransparent ? "false" : "true";
+            // Suppress the mobile/tablet forced-blur over sections that opt out
+            // (e.g. the cover, so its animated spiral reads crisply behind the nav).
+            nav!.dataset.noblur  = anyNoBlur ? "true" : "false";
         }
 
         if (!darkSections.length) nav.dataset.theme = "dark";
