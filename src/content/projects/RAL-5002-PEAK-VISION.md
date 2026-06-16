@@ -5,14 +5,13 @@ scope: "Art Direction • Logo Design • Corporate Collateral • Environmental
 description: "Visual identity for Peak Vision, an investment search and market analysis firm, defined by a geometric aesthetic, vibrant colors, and a focus on strategic orientation."
 closingLine: "Corporate identity system defined by high chromatic impact, geometric symbolism, and a design focused on strategic and financial clarity."
 year: "2025"
-layout: "pd2"
+layout: "pd3"
 fullImageVertical: true
 order: 11
 images:
   - "/projects/branding/peak-vision/1.jpg"
   - "/projects/branding/peak-vision/2.jpg"
   - "/projects/branding/peak-vision/3.jpg"
-  - "/projects/branding/peak-vision/6.jpg"
   - "/projects/branding/peak-vision/4.jpg"
   - "/projects/branding/peak-vision/5.jpg"
 ---
