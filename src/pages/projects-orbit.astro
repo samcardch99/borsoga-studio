@@ -1,0 +1,406 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+
+type Project = CollectionEntry<"projects">;
+
+const projects = (await getCollection("projects"))
+  .sort((a: Project, b: Project) => a.data.order - b.data.order)
+  .map((p: Project) => ({
+    title: p.data.title,
+    href: `/works/${p.id}/`,
+    img: p.data.images[0],
+  }));
+---
+
+<Layout>
+  <section class="orbit" id="orbit">
+    <!-- Heading -->
+    <header class="orbit__head">
+      <p class="orbit__eyebrow">Selected Work</p>
+      <h1 class="orbit__title">Projects</h1>
+    </header>
+
+    <!-- Caption — describes the front-most (largest) card, lives in the empty left -->
+    <a class="orbit__caption" id="orbit-caption" href={projects[0].href}>
+      <span class="orbit__caption-idx" id="orbit-caption-idx">01</span>
+      <span class="orbit__caption-name" id="orbit-caption-name">{projects[0].title}</span>
+      <span class="orbit__caption-cta">
+        View project
+        <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+    </a>
+
+    <!-- Orbiting ring -->
+    <div class="orbit__stage" id="orbit-stage">
+      {
+        projects.map((p, i) => (
+          <a
+            class="orbit__item"
+            href={p.href}
+            data-i={i}
+            data-title={p.title}
+            aria-label={p.title}
+          >
+            <div class="orbit__card">
+              <img src={p.img} alt={p.title} loading={i < 4 ? "eager" : "lazy"} decoding="async" />
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Footer hint -->
+    <a href="/projects" class="orbit__all">View all projects ↗</a>
+  </section>
+</Layout>
+
+<style>
+  .orbit {
+    position: relative;
+    height: 100svh;
+    min-height: 600px;
+    overflow: hidden;
+    background: #ededeb;
+    color: #0a0a0a;
+    font-family: "Poppins", sans-serif;
+  }
+
+  /* ── Heading (top-left) ── */
+  .orbit__head {
+    position: absolute;
+    top: clamp(7rem, 12vh, 11rem);
+    left: clamp(2rem, 5vw, 7rem);
+    z-index: 95;
+    pointer-events: none;
+  }
+  .orbit__eyebrow {
+    margin: 0 0 0.4rem;
+    font-size: clamp(0.7rem, 0.8vw, 1rem);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  .orbit__title {
+    margin: 0;
+    font-size: clamp(3rem, 6vw, 7rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  /* ── Caption (mid-left, describes the front card) ── */
+  .orbit__caption {
+    position: absolute;
+    left: clamp(2rem, 5vw, 7rem);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 95;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    max-width: clamp(14rem, 22vw, 22rem);
+    text-decoration: none;
+    color: inherit;
+  }
+  .orbit__caption-idx {
+    font-size: clamp(0.75rem, 0.9vw, 1.1rem);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: rgba(0, 0, 0, 0.4);
+  }
+  .orbit__caption-name {
+    font-size: clamp(1.4rem, 2.2vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    transition: opacity 0.25s ease;
+  }
+  .orbit__caption-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: clamp(0.8rem, 1vw, 1.1rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: rgba(0, 0, 0, 0.55);
+    transition: gap 0.2s ease, color 0.2s ease;
+  }
+  .orbit__caption:hover .orbit__caption-cta {
+    gap: 0.7rem;
+    color: #000;
+  }
+
+  /* ── Stage + orbiting items ── */
+  .orbit__stage {
+    position: absolute;
+    inset: 0;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+  .orbit__stage.is-dragging {
+    cursor: grabbing;
+  }
+
+  .orbit__item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--card-w, 220px);
+    /* JS sets transform: translate(-50%,-50%) translate(x,y) scale(s) */
+    transform: translate(-50%, -50%) scale(0);
+    will-change: transform, opacity;
+    text-decoration: none;
+  }
+  .orbit__card {
+    width: 100%;
+    aspect-ratio: 6 / 5;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 22px 50px -14px rgba(0, 0, 0, 0.33);
+    transition: box-shadow 0.25s ease;
+  }
+  .orbit__item:hover .orbit__card {
+    box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.4);
+  }
+  .orbit__card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
+  /* ── View-all (bottom) ── */
+  .orbit__all {
+    position: absolute;
+    bottom: clamp(1.6rem, 4vh, 3rem);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 95;
+    font-size: clamp(0.85rem, 1vw, 1.15rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: #000;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.7em 1.6em;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+  .orbit__all:hover {
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  /* Reduced motion — items are placed statically by JS, no spin */
+  @media (prefers-reduced-motion: reduce) {
+    .orbit__stage {
+      cursor: default;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .orbit__head {
+      top: clamp(6rem, 11vh, 9rem);
+    }
+    .orbit__caption {
+      top: auto;
+      bottom: clamp(5.5rem, 14vh, 8rem);
+      transform: none;
+      max-width: clamp(12rem, 60vw, 20rem);
+    }
+  }
+</style>
+
+<script>
+  // ── Orbiting projects gallery ─────────────────────────────────────────
+  // Cards sit on a circle; the ring spins continuously. Each card's scale,
+  // opacity and z-index are a function of its angle — biggest at the focal
+  // point (right, 3 o'clock), shrinking to a dot on the far (left) side.
+  // Drag to spin; hover pauses; respects prefers-reduced-motion.
+  //
+  // IMPORTANT: hooked to astro:page-load (NOT top-level) so it re-initialises
+  // on every soft View Transition, and cleaned up before each swap.
+
+  type Cleanup = () => void;
+  let teardown: Cleanup | null = null;
+
+  function initOrbit(): void {
+    const stage = document.getElementById("orbit-stage");
+    if (!stage) return;
+
+    const items = Array.from(stage.querySelectorAll<HTMLElement>(".orbit__item"));
+    const N = items.length;
+    if (!N) return;
+
+    const capName = document.getElementById("orbit-caption-name");
+    const capIdx = document.getElementById("orbit-caption-idx");
+    const caption = document.getElementById("orbit-caption") as HTMLAnchorElement | null;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const MIN_S = 0.06; // far (back) card → tiny dot
+    const MAX_S = 1.14; // focal (front) card → large, overlaps its neighbours
+    const SPEED = 0.0026; // radians per frame (slow, contemplative)
+
+    let Rx = 0; // horizontal radius — narrow, so the front cards bunch up
+    let Ry = 0; // vertical radius — tall, so they stack into an overlapping deck
+    let theta = 0; // global ring rotation
+    let paused = false;
+    let frontIdx = -1;
+    let raf = 0;
+
+    // drag state
+    let dragging = false;
+    let dragStartX = 0;
+    let thetaStart = 0;
+    let lastDX = 0;
+    let velocity = 0;
+
+    function layout(): void {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const m = Math.min(vw, vh);
+      // Tall, narrow ellipse so the front (right) cards pile into an overlapping
+      // vertical deck while the back (left) ones shrink toward the centre.
+      Rx = m * (vw < 1024 ? 0.16 : 0.2);
+      Ry = m * (vw < 1024 ? 0.36 : 0.42);
+      const cardW = Math.round(m * (vw < 1024 ? 0.36 : 0.28));
+      stage!.style.setProperty("--card-w", `${cardW}px`);
+    }
+
+    function setCaption(i: number): void {
+      const el = items[i];
+      if (!el) return;
+      if (capName) capName.textContent = el.dataset.title ?? "";
+      if (capIdx) capIdx.textContent = String(i + 1).padStart(2, "0");
+      if (caption) caption.href = (el as HTMLAnchorElement).href;
+    }
+
+    function render(): void {
+      let bestScore = -Infinity;
+      let bestIdx = 0;
+      for (let i = 0; i < N; i++) {
+        const a = (i / N) * Math.PI * 2 + theta;
+        const x = Math.cos(a) * Rx;
+        const y = Math.sin(a) * Ry;
+        const focal = Math.cos(a); // 1 at right (front), -1 at left (back)
+        const t = (focal + 1) / 2; // 0..1
+        const eased = Math.pow(t, 1.5); // gentle ramp → several big front cards overlap
+        const scale = MIN_S + (MAX_S - MIN_S) * eased;
+        const el = items[i];
+        el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
+        el.style.opacity = String(0.18 + 0.82 * eased);
+        // keep the whole deck below the fixed navbar (z-100) and page chrome
+        el.style.zIndex = String(Math.round(t * 90));
+        if (focal > bestScore) {
+          bestScore = focal;
+          bestIdx = i;
+        }
+      }
+      if (bestIdx !== frontIdx) {
+        frontIdx = bestIdx;
+        setCaption(frontIdx);
+      }
+    }
+
+    function tick(): void {
+      if (!dragging) {
+        if (!paused && !reduce) theta += SPEED;
+        // light inertia after a drag
+        if (Math.abs(velocity) > 0.00002) {
+          theta += velocity;
+          velocity *= 0.94;
+        }
+      }
+      render();
+      raf = requestAnimationFrame(tick);
+    }
+
+    // ── Interaction ──
+    // Pause ONLY while the pointer is over a card (so it can be clicked) — not
+    // the whole full-screen stage, which would pause the spin almost always.
+    const onOver = (e: PointerEvent) => {
+      if ((e.target as HTMLElement).closest(".orbit__item")) paused = true;
+    };
+    const onOut = (e: PointerEvent) => {
+      if ((e.target as HTMLElement).closest(".orbit__item")) paused = false;
+    };
+
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      stage.classList.add("is-dragging");
+      dragStartX = e.clientX;
+      thetaStart = theta;
+      lastDX = 0;
+      velocity = 0;
+      stage.setPointerCapture?.(e.pointerId);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - dragStartX;
+      const newTheta = thetaStart + dx * 0.005;
+      velocity = (newTheta - theta) * 0.6;
+      theta = newTheta;
+      lastDX = dx;
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!dragging) return;
+      dragging = false;
+      stage.classList.remove("is-dragging");
+      stage.releasePointerCapture?.(e.pointerId);
+      // a quick flick suppresses the click navigation
+    };
+
+    // Prevent a drag from triggering navigation on the underlying <a>
+    items.forEach((el) => {
+      el.addEventListener("click", (ev) => {
+        if (Math.abs(lastDX) > 6) ev.preventDefault();
+      });
+    });
+
+    stage.addEventListener("pointerover", onOver);
+    stage.addEventListener("pointerout", onOut);
+    stage.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("resize", layout);
+
+    layout();
+    setCaption(0);
+    if (reduce) {
+      render();
+    } else {
+      raf = requestAnimationFrame(tick);
+    }
+
+    teardown = () => {
+      cancelAnimationFrame(raf);
+      stage.removeEventListener("pointerover", onOver);
+      stage.removeEventListener("pointerout", onOut);
+      stage.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("resize", layout);
+    };
+  }
+
+  function boot(): void {
+    teardown?.();
+    teardown = null;
+    initOrbit();
+  }
+
+  document.addEventListener("astro:page-load", boot);
+  document.addEventListener("astro:before-swap", () => {
+    teardown?.();
+    teardown = null;
+  });
+</script>
