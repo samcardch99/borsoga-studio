@@ -422,7 +422,12 @@ const sections = [
   function cleanup(): void {
     split?.revert();
     split = null;
-    ScrollTrigger.getAll().forEach((t) => t.kill());
+    // Only kill THIS page's triggers — NOT the footer's (it lives in the Layout,
+    // outside #our-clients, and sets up its heading animation at module load).
+    ScrollTrigger.getAll().forEach((t) => {
+      const trg = t.trigger as HTMLElement | undefined;
+      if (trg && trg.closest && trg.closest("#our-clients")) t.kill();
+    });
   }
 
   document.addEventListener("astro:page-load", init);

@@ -1,4 +1,6 @@
 ---
+import RightUpArrow from "../assets/icons/right_up.svg";
+
 const categories = [
   {
     id: "arch-viz",
@@ -265,21 +267,7 @@ const mobileCategories = [
 
             <a href="/projects" class="cat__cta">
               VIEW OUR WORK
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 18 18"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <RightUpArrow class="cat__cta-arrow" aria-hidden="true" />
             </a>
           </div>
         ))
@@ -331,15 +319,7 @@ const mobileCategories = [
               </ul>
               <a href="/projects" class="catm__cta">
                 VIEW OUR WORK
-                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                  <path
-                    d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
+                <RightUpArrow class="catm__cta-arrow" aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -649,6 +629,11 @@ const mobileCategories = [
   .cat__cta:hover {
     opacity: 0.75;
   }
+  .cat__cta-arrow {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+  }
 
   /* ── Content reveal states — all slides start hidden ── */
   .cat__title-inner,
@@ -863,6 +848,11 @@ const mobileCategories = [
   }
   .catm__cta:hover {
     opacity: 0.8;
+  }
+  .catm__cta-arrow {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
   }
 </style>
 
