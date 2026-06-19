@@ -1,0 +1,520 @@
+---
+import RightUpArrow from "../assets/icons/right_up.svg";
+
+// "Clear communication for every stage of development." — an accordion of three
+// client specialties (Figma frames Clear Communication / Tablet / Mobile).
+// One is open at a time; tapping/clicking a row transitions to it. Point 1 text
+// comes from the frame; points 2 & 3 from the "Clear Communication Texts" frame.
+const items = [
+  {
+    n: "01",
+    title: "For Developers",
+    lead: "Sell the vision,",
+    italic: " before the foundation.",
+    body: "Give your buyers the visual clarity they need to understand the property and commit with confidence before construction begins.",
+  },
+  {
+    n: "02",
+    title: "Architects & Builders",
+    lead: "",
+    italic: "We respect your concepts, atmospheres, and materiality.",
+    body: "Adapting seamlessly to your platforms, we translate form and light into precise visual models that eliminate any confusion or guesswork on-site.",
+  },
+  {
+    n: "03",
+    title: "For Manufacturers",
+    lead: "",
+    italic: "Digitize your physical catalog.",
+    body: "Provide your clients with total visual clarity by showcasing your products in any finish or configuration, bypassing the heavy logistics of physical photography to meet your niche's exact needs.",
+  },
+];
+---
+
+<section class="cc" id="clear-communication">
+  <div class="cc__inner">
+    <!-- Title + View all -->
+    <div class="cc__top">
+      <h2 class="cc__title" id="cc-title">
+       <span class="cc__dim">Clear communication for </span><span
+          class="cc__dim cc__ital">every stage of development.</span>
+      </h2>
+      <a href="/our-clients" class="cc__viewall">
+        VIEW ALL CASES
+        <RightUpArrow class="cc__viewall-arrow" />
+      </a>
+    </div>
+
+    <!-- Accordion -->
+    <div class="cc__accordion" id="cc-accordion">
+      {
+        items.map((it, i) => (
+          <div class:list={["cc__item", { "is-active": i === 0 }]} data-cc-item>
+            <button class="cc__head" type="button" data-cc-toggle={i} aria-expanded={i === 0 ? "true" : "false"}>
+              <span class="cc__head-title">{it.title}</span>
+              <span class="cc__dash" aria-hidden="true" />
+            </button>
+            <div class="cc__panel">
+              <div class="cc__panel-inner">
+                <span class="cc__num" aria-hidden="true">{it.n}</span>
+                <h3 class="cc__headline">
+                  {it.lead && <span class="cc__lead">{it.lead}</span>}
+                  <span class="cc__head-ital">{it.italic}</span>
+                </h3>
+                <p class="cc__body">{it.body}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cc {
+    position: relative;
+    background: #f7f7f7;
+    color: #0a0a0a;
+    font-family: "Poppins", sans-serif;
+    padding: clamp(6rem, 11vh, 12rem) clamp(2rem, 4vw, 6rem);
+  }
+  .cc__inner {
+    max-width: 2120px;
+    margin: 0 auto;
+  }
+
+  /* ── Title + View all ── */
+  .cc__top {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: clamp(2.5rem, 5vw, 6rem);
+  }
+  .cc__title {
+    margin: 0;
+    max-width: 22ch;
+    font-size: clamp(2.4rem, 4vw, 5.4rem);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+  .cc__dim {
+    color: rgba(0, 0, 0, 0.22);
+  }
+  .cc__ital {
+    font-weight: 200;
+    font-style: italic;
+  }
+  .cc__viewall {
+    align-self: flex-end;
+    margin-top: clamp(1.5rem, 3vw, 3rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-size: clamp(0.9rem, 1vw, 1.4rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    padding: 0.7em 1.6em;
+    border-radius: 9999px;
+    transition: opacity 0.2s ease;
+  }
+  .cc__viewall:hover {
+    opacity: 0.82;
+  }
+  .cc__viewall-arrow {
+    height: 1.1em;
+    width: auto;
+  }
+
+  /* ── Accordion ── */
+  .cc__accordion {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  }
+  .cc__item {
+    border-top: 1px solid rgba(0, 0, 0, 0.16);
+  }
+
+  .cc__head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.3rem, 2.4vw, 2.4rem) 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+  }
+  .cc__head-title {
+    font-size: clamp(1.5rem, 2.3vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    transition: opacity 0.3s ease;
+  }
+  .cc__item:not(.is-active) .cc__head-title {
+    opacity: 0.55;
+  }
+  .cc__head:hover .cc__head-title {
+    opacity: 1;
+  }
+  /* toggle dash — faded when collapsed, solid + wider when open */
+  .cc__dash {
+    flex: none;
+    width: 22px;
+    height: 4px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.3);
+    transition:
+      background 0.3s ease,
+      width 0.3s ease;
+  }
+  .cc__item.is-active .cc__dash {
+    background: #000;
+    width: 30px;
+  }
+
+  /* ── Collapsible panel ── */
+  .cc__panel {
+    overflow: hidden;
+  }
+  /* closed by default until JS takes over (prevents a flash of all-open) */
+  .cc__item:not(.is-active) .cc__panel {
+    height: 0;
+  }
+  .cc__panel-inner {
+    position: relative;
+    padding: clamp(0.5rem, 1.5vw, 2rem) 0 clamp(2.5rem, 5vw, 5rem);
+  }
+
+  /* Big watermark number, behind the text on the right */
+  .cc__num {
+    position: absolute;
+    right: clamp(0rem, 4vw, 6rem);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(11rem, 26vw, 34rem);
+    font-weight: 500;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: rgba(0, 0, 0, 0.07);
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+
+  .cc__headline {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 clamp(1.4rem, 2.4vw, 2.6rem);
+    max-width: 18ch;
+    font-size: clamp(2rem, 3.4vw, 4.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .cc__lead {
+    font-weight: 600;
+  }
+  .cc__head-ital {
+    font-weight: 300;
+    font-style: italic;
+  }
+  .cc__body {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: 46ch;
+    font-size: clamp(1.1rem, 1.25vw, 1.5rem);
+    font-weight: 300;
+    line-height: 1.7;
+    color: #2a2a2a;
+  }
+
+  /* ── Entrance state (revealed via GSAP on scroll-in) ── */
+  .cc__viewall,
+  .cc__accordion {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  /* Heading — per-character colour fill (same effect as Cover.astro): the title
+     rests faint (.cc__dim) and GSAP staggers each char up to full black. */
+  .cc__title .char {
+    display: inline-block;
+  }
+  /* Keep each word atomic so a line break never splits it mid-word. */
+  .cc__title .cc-word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  /* ── Mobile + tablet (≤1024px) — the section fills the whole screen, with
+     the title + accordion centred vertically (Figma mobile/tablet frames). ── */
+  @media (max-width: 1024px) {
+    .cc {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .cc__inner {
+      width: 100%;
+    }
+  }
+
+  /* ── Tablet (768–1024px) — same single-column arrangement, scaled ── */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .cc {
+      padding-inline: clamp(1.6rem, 3vw, 2.6rem);
+    }
+  }
+
+  /* ── Mobile (≤767px) ── */
+  @media (max-width: 767px) {
+    .cc {
+      padding: clamp(5rem, 12vh, 7rem) clamp(1.5rem, 6vw, 2rem);
+    }
+    .cc__title {
+      font-size: clamp(2.2rem, 8.5vw, 3.4rem);
+      max-width: 16ch;
+    }
+    .cc__head-title {
+      font-size: clamp(1.7rem, 6.5vw, 2.4rem);
+    }
+    .cc__headline {
+      font-size: clamp(2rem, 8vw, 3rem);
+      max-width: none;
+    }
+    .cc__body {
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+    }
+    .cc__num {
+      right: 0;
+      font-size: clamp(10rem, 48vw, 18rem);
+    }
+  }
+
+  /* ── DESKTOP (≥1025px) — two columns: clickable specialties on the LEFT,
+     the selected one's text fills the full height on the RIGHT. ── */
+  @media (min-width: 1025px) {
+    .cc__accordion {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(260px, 33%) 1fr;
+      grid-template-rows: repeat(3, 1fr);
+      column-gap: 0;
+      min-height: clamp(32rem, 52vh, 48rem);
+      /* full-width horizontal rules framing the whole block */
+      border-top: 1px solid rgba(0, 0, 0, 0.16);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+    }
+    .cc__item {
+      display: contents;
+    }
+
+    /* Tabs — stacked in the left column, evenly distributed. Horizontal
+       dividers between the rows + a vertical divider before the text panel. */
+    .cc__head {
+      grid-column: 1;
+      align-items: center;
+      padding: 0 clamp(2rem, 3vw, 3.5rem) 0 0;
+      border-right: 1px solid rgba(0, 0, 0, 0.16);
+    }
+    .cc__item:not(:first-child) .cc__head {
+      border-top: 1px solid rgba(0, 0, 0, 0.16);
+    }
+    .cc__head-title {
+      font-size: clamp(1.7rem, 1.9vw, 2.7rem);
+    }
+
+    /* Panels — every panel shares the full-height right cell; only the active
+       one is visible. The crossfade is driven by GSAP. */
+    .cc__panel {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      height: auto;
+      display: flex;
+    }
+    .cc__item:not(.is-active) .cc__panel {
+      height: auto;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .cc__panel-inner {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(1.5rem, 3vw, 3.5rem) 0 clamp(1.5rem, 3vw, 3.5rem)
+        clamp(2.5rem, 4vw, 5rem);
+    }
+    .cc__headline {
+      font-size: clamp(2.6rem, 3.4vw, 4.6rem);
+      max-width: 16ch;
+    }
+    .cc__body {
+      font-size: clamp(1.15rem, 1.25vw, 1.6rem);
+      max-width: 42ch;
+    }
+    .cc__num {
+      right: clamp(0rem, 2vw, 4rem);
+      font-size: clamp(15rem, 21vw, 32rem);
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  // Re-runs on every navigation (astro:page-load) and tears down before each
+  // swap so it survives soft View Transitions.
+  let cleanupFns: Array<() => void> = [];
+  let splitTitle: SplitText | null = null;
+
+  function initClearComm(): void {
+    teardown();
+
+    const section = document.getElementById("clear-communication");
+    if (!section) return;
+
+    const items = Array.from(section.querySelectorAll<HTMLElement>(".cc__item"));
+    const heads = Array.from(section.querySelectorAll<HTMLButtonElement>(".cc__head"));
+    if (!items.length) return;
+
+    const mqDesktop = window.matchMedia("(min-width: 1025px)");
+    let desktop = mqDesktop.matches;
+    // persist the selected tab across re-inits (e.g. on resize / soft nav)
+    let active = parseInt(section.dataset.ccActive || "0", 10) || 0;
+
+    const panelOf = (i: number) => items[i].querySelector<HTMLElement>(".cc__panel")!;
+
+    // Set the per-mode resting state. Desktop = tabs (panels overlaid, opacity);
+    // ≤1024px = accordion (panels expand/collapse by height).
+    function setInitial(): void {
+      items.forEach((item, i) => {
+        const on = i === active;
+        item.classList.toggle("is-active", on);
+        heads[i].setAttribute("aria-expanded", on ? "true" : "false");
+        if (desktop) {
+          gsap.set(panelOf(i), { clearProps: "height", opacity: on ? 1 : 0 });
+        } else {
+          gsap.set(panelOf(i), { clearProps: "opacity", height: on ? "auto" : 0 });
+        }
+      });
+    }
+
+    function activate(idx: number): void {
+      if (idx === active) return;
+      const prev = active;
+      active = idx;
+      section!.dataset.ccActive = String(active);
+
+      items[prev].classList.remove("is-active");
+      items[idx].classList.add("is-active");
+      heads[prev].setAttribute("aria-expanded", "false");
+      heads[idx].setAttribute("aria-expanded", "true");
+
+      const prevPanel = panelOf(prev);
+      const newPanel = panelOf(idx);
+      const reveal = items[idx].querySelectorAll<HTMLElement>(".cc__num, .cc__headline, .cc__body");
+
+      if (desktop) {
+        // Tabs: crossfade — fade the old panel out, stagger the new text in.
+        gsap.to(prevPanel, { opacity: 0, duration: 0.4, ease: "power2.out" });
+        gsap.set(newPanel, { opacity: 1 });
+        gsap.fromTo(
+          reveal,
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", stagger: 0.07, delay: 0.1 },
+        );
+      } else {
+        // Accordion: collapse the previous, expand the new.
+        gsap.to(prevPanel, { height: 0, duration: 0.5, ease: "power3.inOut" });
+        gsap.to(newPanel, {
+          height: "auto",
+          duration: 0.6,
+          ease: "power3.inOut",
+          onComplete: () => ScrollTrigger.refresh(),
+        });
+        gsap.fromTo(
+          reveal,
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", stagger: 0.08, delay: 0.12 },
+        );
+      }
+    }
+
+    setInitial();
+
+    heads.forEach((h, i) => {
+      const fn = () => activate(i);
+      h.addEventListener("click", fn);
+      cleanupFns.push(() => h.removeEventListener("click", fn));
+    });
+
+    // Re-apply the resting state for the new mode when crossing the breakpoint
+    // (clears stale inline height/opacity so the layout doesn't break).
+    const onMode = () => {
+      if (mqDesktop.matches === desktop) return;
+      desktop = mqDesktop.matches;
+      setInitial();
+      ScrollTrigger.refresh();
+    };
+    mqDesktop.addEventListener("change", onMode);
+    cleanupFns.push(() => mqDesktop.removeEventListener("change", onMode));
+
+    // ── Entrance ──
+    // Heading: per-character fill (Cover.astro effect). The rest fades up.
+    const title = section.querySelector<HTMLElement>(".cc__title");
+    const viewall = section.querySelector<HTMLElement>(".cc__viewall");
+    const accordion = section.querySelector<HTMLElement>(".cc__accordion");
+
+    // Split into words AND chars: chars drive the fill animation, while the
+    // word wrappers stay atomic so a line break never splits a word mid-word.
+    if (title)
+      splitTitle = new SplitText(title, {
+        type: "words,chars",
+        charsClass: "char",
+        wordsClass: "cc-word",
+      });
+
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: section, start: "top 75%" },
+    });
+    // Exact Cover.astro mechanism: the chars rest at their faint colour (the
+    // .cc__dim resting state) and fill in to full black, staggered left→right.
+    if (splitTitle)
+      tl.to(
+        splitTitle.chars,
+        { color: "#0a0a0a", duration: 0.1, ease: "none", stagger: { each: 0.028, from: "start" } },
+        0,
+      );
+    if (viewall) tl.to(viewall, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.4);
+    if (accordion) tl.to(accordion, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.35);
+
+    ScrollTrigger.refresh();
+  }
+
+  function teardown(): void {
+    cleanupFns.forEach((fn) => fn());
+    cleanupFns = [];
+    splitTitle?.revert();
+    splitTitle = null;
+    ScrollTrigger.getAll().forEach((t) => {
+      // only kill triggers belonging to this section
+      const trg = t.trigger as HTMLElement | undefined;
+      if (trg && trg.closest && trg.closest("#clear-communication")) t.kill();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initClearComm);
+  document.addEventListener("astro:before-swap", teardown);
+</script>

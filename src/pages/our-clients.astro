@@ -1,0 +1,430 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// ── "Who we work with" — three client-type sections (Figma frame 552:320).
+// Desktop + tablet share the same arrangement (tablet just scales down via the
+// vw-based clamps); ≤767px collapses to the single-column mobile frame (558:506),
+// where the Real Estate full image is dropped (marked hideMobile).
+type Media =
+  | { type: "duo" | "trio"; ratio: string; images: string[]; hideMobile?: boolean }
+  | { type: "full"; ratio: string; image: string; hideMobile?: boolean };
+
+const sections = [
+  {
+    id: "real-estate",
+    align: "left" as const,
+    divider: false,
+    heading: "Real estate developers & investors",
+    sub: "Sell it before it's built.",
+    body: "In Miami pre-construction, the money commits before the concrete does. Lenders, capital partners, and first buyers are all backing a space nobody can walk through yet. We close that gap. Photoreal renders, cinematic video, and immersive 360° tours let a buyer stand inside the unit before the slab is poured, while project branding and a dedicated sales site give your brokers something they can actually work with. Reservations come in sooner, and your pitch holds up when the lender starts asking questions.",
+    list: [
+      "Photoreal renders — exteriors, interiors, amenities",
+      "Cinematic walkthrough and aerial video",
+      "Immersive 360° tours for the sales center or remote investors",
+      "Project naming, branding, and sales collateral",
+      "A dedicated sales site and iOS sales app built to take reservations.",
+    ],
+    cta: "Bring us your development",
+    media: [
+      { type: "duo", ratio: "16 / 9", images: ["/clients/s1-duo-1.jpg", "/clients/s1-duo-2.jpg"] },
+      { type: "full", ratio: "16 / 9", image: "/clients/s1-full.jpg", hideMobile: true },
+    ] as Media[],
+  },
+  {
+    id: "architects",
+    align: "right" as const,
+    divider: true,
+    heading: "Architects & general contractors",
+    sub: "Win the room that can't read your plans.",
+    body: "A set of drawings makes complete sense to you and almost none to the client or the board that has to sign off on it. Projects don't usually stall on the design. They stall in the meeting where the decision-maker can't picture what you're proposing. We translate your geometry, materials, and lighting into images that read the same to everyone in the room, so the architect, the builder, and the owner end up looking at one thing instead of arguing over three. Bids close faster, and you break ground without explaining the design five more times.",
+    list: [
+      "Design-intent renders pulled straight from your CAD",
+      "Material, finish, and lighting studies, visualized",
+      "Presentation imagery for boards, permits, and HOA review",
+      'Immersive 360° walkthroughs that settle the "what will it look like" question.',
+    ],
+    cta: "Make your case visually",
+    media: [
+      { type: "trio", ratio: "4 / 5", images: ["/clients/s2-trio-1.jpg", "/clients/s2-trio-2.jpg", "/clients/s2-trio-3.jpg"] },
+      { type: "full", ratio: "3 / 2", image: "/clients/s2-full.jpg" },
+    ] as Media[],
+  },
+  {
+    id: "millwork",
+    align: "left" as const,
+    divider: true,
+    heading: "Custom millwork & carpentry specialists",
+    sub: "Your work is custom. Your brand should be too.",
+    body: "You're doing work most contractors can't touch: joinery that outlasts the house, wood and hardware chosen down to the millimeter. And still, the client lines your quote up next to a cheap importer's, because on paper they can't tell the difference. We handle the part you don't have time for — your shop's identity, a website that looks like the work, the finished piece rendered in the client's actual room before a board gets cut. When the presentation matches the craft, price stops being the whole conversation, and the referrals start coming from the designers and developers who can tell the difference.",
+    list: [
+      "Workshop identity and branding",
+      "A portfolio site that looks like the work",
+      "The finished piece rendered in the client's actual room",
+      "Visual proposals that back up a premium quote.",
+    ],
+    cta: "Position your workshop",
+    media: [
+      { type: "full", ratio: "16 / 9", image: "/clients/s3-full.jpg" },
+      { type: "trio", ratio: "4 / 5", images: ["/clients/s3-trio-1.jpg", "/clients/s3-trio-2.jpg", "/clients/s3-trio-3.jpg"] },
+    ] as Media[],
+  },
+];
+---
+
+<Layout>
+  <section class="clients" id="our-clients">
+    <h1 class="cl-title" id="cl-title">WHO WE WORK WITH</h1>
+
+    {
+      sections.map((s) => (
+        <section class:list={["cl-section", `cl-section--${s.align}`, { "cl-section--divided": s.divider }]} id={s.id}>
+          {s.divider && <div class="cl-divider" />}
+
+          <div class="cl-head">
+            <div class="cl-text">
+              <h2 class="cl-heading">{s.heading}</h2>
+              <p class="cl-sub">{s.sub}</p>
+              <p class="cl-body">{s.body}</p>
+              <ul class="cl-list">
+                {s.list.map((li) => (
+                  <li>{li}</li>
+                ))}
+              </ul>
+            </div>
+            <a href="/#contact" class="cl-cta">{s.cta}</a>
+          </div>
+
+          {s.media.map((m) => (
+            <div
+              class:list={[
+                "cl-media",
+                `cl-media--${m.type}`,
+                { "cl-media--hide-mobile": m.hideMobile },
+              ]}
+            >
+              {m.type === "full" ? (
+                <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
+                  <img src={m.image} alt="" loading="lazy" decoding="async" />
+                </figure>
+              ) : (
+                m.images.map((src) => (
+                  <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
+                    <img src={src} alt="" loading="lazy" decoding="async" />
+                  </figure>
+                ))
+              )}
+            </div>
+          ))}
+        </section>
+      ))
+    }
+  </section>
+</Layout>
+
+<style>
+  .clients {
+    background: #fff;
+    color: #0a0a0a;
+    font-family: "Poppins", sans-serif;
+    padding: clamp(8rem, 13vh, 12rem) clamp(2rem, 4vw, 6rem) clamp(5rem, 9vw, 11rem);
+  }
+
+  /* ── Page title — bold, with a per-character fill (Cover.astro effect) ── */
+  .cl-title {
+    margin: 0 0 clamp(2.5rem, 5vw, 6rem);
+    font-size: clamp(3.2rem, 4vw, 7rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    /* dim until GSAP fills each character in to black */
+    color: rgba(0, 0, 0, 0.19);
+  }
+  .cl-title .char {
+    color: rgba(0, 0, 0, 0.19);
+    display: inline-block;
+  }
+  /* Keep each word atomic so a line break never splits it mid-word. */
+  .cl-title .cl-word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  /* ── Section ── */
+  .cl-section {
+    margin-top: clamp(4rem, 8vw, 11rem);
+  }
+  .cl-section:first-of-type {
+    margin-top: 0;
+  }
+  .cl-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.18);
+    margin-bottom: clamp(3rem, 6vw, 8rem);
+  }
+
+  /* ── Header: text + CTA on opposite sides, vertically centred ── */
+  .cl-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(2rem, 5vw, 7rem);
+    margin-bottom: clamp(2.5rem, 5vw, 6rem);
+  }
+  .cl-section--right .cl-head {
+    flex-direction: row-reverse;
+  }
+  .cl-section--right .cl-text {
+    text-align: right;
+  }
+
+  .cl-text {
+    flex: 0 1 62%;
+    min-width: 0;
+  }
+  .cl-heading {
+    margin: 0 0 clamp(1rem, 2vw, 2rem);
+    font-size: clamp(1.9rem, 2.3vw, 3.4rem);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .cl-sub {
+    margin: 0 0 clamp(1.2rem, 2vw, 2rem);
+    font-size: clamp(1.3rem, 1.5vw, 2.3rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.25;
+    text-transform: uppercase;
+    color: #1a1a1a;
+  }
+  .cl-body {
+    margin: 0 0 clamp(1.2rem, 1.8vw, 2rem);
+    font-size: clamp(1.15rem, 1.2vw, 1.7rem);
+    font-weight: 300;
+    line-height: 1.6;
+    color: #2a2a2a;
+  }
+  .cl-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.3rem, 0.5vw, 0.6rem);
+  }
+  .cl-list li {
+    font-size: clamp(1.05rem, 1.1vw, 1.55rem);
+    font-weight: 300;
+    line-height: 1.5;
+    color: #555;
+  }
+  .cl-section--right .cl-list {
+    align-items: flex-end;
+  }
+
+  /* CTA — black pill, hugs the opposite edge of the text */
+  .cl-cta {
+    flex: none;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-size: clamp(1rem, 1.1vw, 1.6rem);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.9em 1.8em;
+    border-radius: 9999px;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+  .cl-cta:hover {
+    opacity: 0.82;
+  }
+
+  /* ── Media groups ── */
+  .cl-media {
+    display: grid;
+    gap: clamp(0.8rem, 1.6vw, 2rem);
+    margin-top: clamp(1rem, 2vw, 2.4rem);
+  }
+  .cl-media--duo {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cl-media--trio {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .cl-media--full {
+    grid-template-columns: 1fr;
+  }
+
+  .cl-fig {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #ededed;
+  }
+  .cl-fig img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    will-change: transform;
+  }
+
+  /* ── Entrance (same mechanism as /works/[slug].astro) ──
+     Text blocks fade up on scroll (GSAP); images drift via parallax scrub. */
+  .cl-head {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  /* ── TABLET (768–1024px) — same arrangement, just smaller (handled mostly by
+     the vw clamps); trim the side padding a touch. ── */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .clients {
+      padding-inline: clamp(1.6rem, 3vw, 2.6rem);
+    }
+    .cl-head {
+      gap: clamp(1.4rem, 3vw, 2.6rem);
+    }
+  }
+
+  /* ── MOBILE (≤767px) — single column stack (Figma mobile frame) ── */
+  @media (max-width: 767px) {
+    .clients {
+      padding: clamp(7rem, 16vh, 9rem) clamp(1.5rem, 6vw, 2rem) clamp(4rem, 12vw, 6rem);
+    }
+    .cl-title {
+      font-size: clamp(2.6rem, 10vw, 4rem);
+      margin-bottom: clamp(2rem, 8vw, 3rem);
+    }
+
+    /* Header stacks: text → CTA below it */
+    .cl-head,
+    .cl-section--right .cl-head {
+      flex-direction: column;
+      align-items: stretch;
+      gap: clamp(1.6rem, 5vw, 2.4rem);
+    }
+    .cl-text {
+      flex: 1 1 auto;
+    }
+    .cl-heading {
+      font-size: clamp(2rem, 7vw, 2.8rem);
+    }
+    .cl-sub {
+      font-size: clamp(1.4rem, 4.6vw, 2rem);
+    }
+    .cl-body {
+      font-size: clamp(1.1rem, 3.7vw, 1.45rem);
+    }
+    .cl-list li {
+      font-size: clamp(1.05rem, 3.4vw, 1.35rem);
+    }
+    /* CTA aligns with its section's text edge */
+    .cl-cta {
+      align-self: flex-start;
+    }
+    .cl-section--right .cl-cta {
+      align-self: flex-end;
+    }
+
+    /* All image groups stack into one column */
+    .cl-media--duo,
+    .cl-media--trio {
+      grid-template-columns: 1fr;
+    }
+    .cl-media {
+      gap: clamp(1rem, 4vw, 1.6rem);
+    }
+    /* Real Estate full image is dropped on mobile (matches the mobile frame) */
+    .cl-media--hide-mobile {
+      display: none;
+    }
+
+    .cl-divider {
+      margin-bottom: clamp(2.4rem, 9vw, 3.6rem);
+    }
+    .cl-section {
+      margin-top: clamp(3.5rem, 12vw, 5.5rem);
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  // Re-runs on every navigation (astro:page-load) and tears down before each
+  // swap, so it survives soft View Transitions without piling up triggers.
+  let split: SplitText | null = null;
+
+  function init(): void {
+    cleanup();
+
+    // ── Title: per-character fill — same effect as Cover.astro ──
+    const title = document.getElementById("cl-title");
+    if (title) {
+      split = new SplitText(title, {
+        type: "words,chars",
+        charsClass: "char",
+        wordsClass: "cl-word",
+      });
+      gsap.to(split.chars, {
+        color: "#000",
+        duration: 0.1,
+        stagger: { each: 0.06, from: "start" },
+        ease: "none",
+        delay: 0.25,
+      });
+    }
+
+    // ── Images: parallax scrub — same as /works/[slug].astro (.pd-par) ──
+    document.querySelectorAll<HTMLElement>("#our-clients .cl-fig").forEach((wrap) => {
+      const img = wrap.querySelector<HTMLElement>("img");
+      if (!img) return;
+      gsap.fromTo(
+        img,
+        { scale: 1.12, yPercent: -5 },
+        {
+          scale: 1.12,
+          yPercent: 5,
+          ease: "none",
+          scrollTrigger: { trigger: wrap, start: "top bottom", end: "bottom top", scrub: true },
+        },
+      );
+    });
+
+    // ── Text blocks: fade up on scroll — same as /works/[slug].astro ──
+    document.querySelectorAll<HTMLElement>("#our-clients .cl-head").forEach((el) => {
+      gsap.to(el, {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 84%" },
+      });
+    });
+
+    ScrollTrigger.refresh();
+  }
+
+  function cleanup(): void {
+    split?.revert();
+    split = null;
+    ScrollTrigger.getAll().forEach((t) => t.kill());
+  }
+
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", cleanup);
+</script>
