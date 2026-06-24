@@ -83,6 +83,10 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-bottom: 1.5px solid transparent;
+        /* iOS Safari: force the bar onto its own compositing layer so the
+           backdrop re-samples each frame instead of leaving a smeared ghost
+           of the content scrolling beneath it. */
+        transform: translateZ(0);
     }
 
     /* Transparent state — sobre categories */
@@ -102,6 +106,10 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     }
     #main-nav[data-frosted="true"][data-theme="light"] {
         border-bottom-color: rgba(255, 255, 255, 0.55);
+        /* iOS Safari: a translucent fill masks the backdrop-filter ghost/smear
+           that fixed elements leave during scroll (the blur still sits on top).
+           Light theme = over dark sections → dark fill. */
+        background: rgba(10, 10, 10, 0.5);
     }
 
     /* Dark theme (sobre secciones claras) — textos negros */
@@ -113,6 +121,8 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     }
     #main-nav[data-frosted="true"][data-theme="dark"] {
         border-bottom-color: rgba(0, 0, 0, 0.45);
+        /* Dark theme = over light sections → light fill. */
+        background: rgba(255, 255, 255, 0.55);
     }
 
     /* BEGIN A DIALOGUE button (vive en .nav-cta-layer, hermana de #main-nav).

@@ -303,8 +303,11 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
     white-space: nowrap;
     text-decoration: none;
     color: #000;
+    /* Initial paint only — once the carousel inits, GSAP owns this opacity (it
+       tweens it on slide change). The CSS `transition` was removed on purpose:
+       iOS Safari drops class-toggle opacity transitions fired mid-gesture, and
+       leaving it on would also fight GSAP's per-frame writes. */
     opacity: 0.2;
-    transition: opacity 0.4s ease;
   }
   .projects__mobile-title-item.is-active {
     opacity: 1;
@@ -714,7 +717,18 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
         this.dom.querySelectorAll<HTMLElement>(".projects__mobile-title-item"),
       );
       const setActive = (idx: number) => {
-        titleItems.forEach((t, i) => t.classList.toggle("is-active", i === idx));
+        titleItems.forEach((t, i) => {
+          const on = i === idx;
+          t.classList.toggle("is-active", on);
+          // GSAP (not a CSS transition) drives the fade — iOS Safari skips
+          // class-toggle opacity transitions fired during the Swiper gesture.
+          gsap.to(t, {
+            opacity: on ? 1 : 0.2,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        });
       };
 
       this.swiper = new Swiper(el, {
