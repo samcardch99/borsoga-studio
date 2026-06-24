@@ -4,6 +4,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
 const categories = [
   {
     id: "arch-viz",
+    filter: "visualization" as string | undefined,
     title: "Architectural Visualization",
     description:
       "We translate ideas, concepts, sketches, and architectural plans into accurate, atmospheric imagery and animations. We focus on natural light, true human scale, and the honest representation of materials to evoke the exact emotion of the space.",
@@ -22,6 +23,7 @@ const categories = [
   },
   {
     id: "immersive",
+    filter: undefined as string | undefined,
     title: "Interactive &\nImmersive Spaces",
     description:
       "Buyers don't just want to see a space; they want to experience it. We develop real-time immersive environments and interactive 3D walkthroughs, allowing users to navigate and feel the atmosphere of a project before it physically exists.",
@@ -35,12 +37,13 @@ const categories = [
     noGradient: true,
     customGradient: undefined as string | undefined,
     contentBlur: undefined as string | undefined,
-    bgImg: "/categories/cat2-bg.jpg",
+    bgImg: "/categories/fondo realidad virtual.png",
     bgImgStyle:
       "position:absolute;left:21.71%;top:-63.58%;width:78.29%;height:177.69%;object-fit:cover;pointer-events:none;",
   },
   {
     id: "web",
+    filter: undefined as string | undefined,
     title: "Custom Web Platforms",
     description:
       "A memorable project deserves a unique space to live online. We design and build fast, intuitive websites where clients can easily explore floor plans, interact with the space, and understand the property from anywhere.",
@@ -59,6 +62,7 @@ const categories = [
   },
   {
     id: "apps",
+    filter: undefined as string | undefined,
     title: "Custom App Development",
     description:
       "Beyond the screen, we engineer the experience. We design and build tailored web platforms and native mobile applications, turning complex ideas into fast, reliable, and intuitive products crafted to scale with your vision across every device.",
@@ -66,8 +70,8 @@ const categories = [
     bgColor: "#e8e8ea",
     textColor: "#1a1a1a",
     tagBorder: "rgba(0,0,0,0.5)",
-    ctaBg: "#000",
-    ctaColor: "#fff",
+    ctaBg: "#fff",
+    ctaColor: "#000",
     bgStyle: "background-color:#e8e8ea;",
     noGradient: true,
     customGradient: undefined as string | undefined,
@@ -77,6 +81,7 @@ const categories = [
   },
   {
     id: "brand",
+    filter: "branding" as string | undefined,
     title: "Brand Identity",
     description:
       "We build identities for the entire built environment. Whether you are launching an architectural practice, a new development, or a product line, we design the naming, visual systems, and presentation decks that give your vision its own distinct voice.",
@@ -106,13 +111,13 @@ type CatLayer = { src: string; depth: number; pos?: string };
 const mobileCategories = [
   { // Arch. Viz — single render (gentle bg drift)
     ...categories[0], dark: true,
-    layers: [{ src: "/categories/animated-architecture-opt/3.jpg", depth: 0 }] as CatLayer[],
+    layers: [{ src: "/categories/animated-architecture-new/3.jpg", depth: 0 }] as CatLayer[],
   },
   { // Immersive — bg + people cut-out (light section)
     ...categories[1], dark: false,
     layers: [
-      { src: "/categories/mobile/immersive-bg.jpg", depth: 0 },
-      { src: "/categories/mobile/immersive-fg.png", depth: 2.5, pos: "center bottom" },
+      { src: "/categories/fondo realidad virtual.png", depth: 0 },
+      { src: "/categories/parte 2 realidad virtual.png", depth: 2.5, pos: "center bottom" },
     ] as CatLayer[],
   },
   { // Web Platforms — fondo + piedra + laptops
@@ -127,9 +132,9 @@ const mobileCategories = [
   { // Custom App Development — light gradient fondo + two phone mockups
     ...categories[3], dark: false,
     layers: [
-      { src: "/categories/apps/fondo.png",   depth: 0 },
-      { src: "/categories/apps/movil-1.png", depth: 1.8 },
-      { src: "/categories/apps/movil-2.png", depth: 2.6 },
+      { src: "/categories/apps/fondo de app.png",   depth: 0 },
+      { src: "/categories/apps/capa 1 app movil.png", depth: 1.8 },
+      { src: "/categories/apps/capa 2 app movil.png", depth: 2.6 },
     ] as CatLayer[],
   },
   { // Brand Identity — dark fondo + two branding mockups
@@ -177,9 +182,9 @@ const mobileCategories = [
             <div class="cat__bg" style={cat.bgStyle}>
               {i === 0 && (
                 <>
-                  {[1,2,3,4,5].map((n) => (
+                  {[1,2,3].map((n) => (
                     <img
-                      src={`/categories/animated-architecture-opt/${n}.jpg`}
+                      src={`/categories/animated-architecture-new/${n}.jpg`}
                       alt=""
                       class="cat__light-frame"
                       data-light-frame={n}
@@ -198,7 +203,7 @@ const mobileCategories = [
               )}
               {i === 1 && (
                 <img
-                  src="/categories/recorte.png"
+                  src="/categories/parte 2 realidad virtual.png"
                   alt=""
                   class="cat__parallax-fg"
                   style={cat.bgImgStyle}
@@ -234,11 +239,11 @@ const mobileCategories = [
               )}
               {i === 3 && (
                 <>
-                  <img src="/categories/apps/fondo.png" alt="" id="cat-apps-bg" class="cat__apps-layer cat__apps-bg" loading="eager" />
-                  <img src="/categories/apps/1.png" alt="" id="cat-apps-l1" class="cat__apps-layer cat__apps-fg" loading="lazy" />
-                  <img src="/categories/apps/2.png" alt="" id="cat-apps-l2" class="cat__apps-layer cat__apps-fg" loading="lazy" />
-                  <img src="/categories/apps/3.png" alt="" id="cat-apps-l3" class="cat__apps-layer cat__apps-fg" loading="lazy" />
-                  <img src="/categories/apps/4.png" alt="" id="cat-apps-l4" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/fondo de app.png" alt="" id="cat-apps-bg" class="cat__apps-layer cat__apps-bg" loading="eager" />
+                  <img src="/categories/apps/capa 1 app comp.png" alt="" id="cat-apps-l1" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/capa 2 app comp.png" alt="" id="cat-apps-l2" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/capa 3 app comp.png" alt="" id="cat-apps-l3" class="cat__apps-layer cat__apps-fg" loading="lazy" />
+                  <img src="/categories/apps/capa 4 app comp.png" alt="" id="cat-apps-l4" class="cat__apps-layer cat__apps-fg" loading="lazy" />
                 </>
               )}
               {i === 4 && (
@@ -265,7 +270,10 @@ const mobileCategories = [
               </ul>
             </div>
 
-            <a href="/projects" class="cat__cta">
+            <a
+              href={cat.filter ? `/projects?filter=${cat.filter}` : "/projects"}
+              class="cat__cta"
+            >
               VIEW OUR WORK
               <RightUpArrow class="cat__cta-arrow" aria-hidden="true" />
             </a>
@@ -317,7 +325,10 @@ const mobileCategories = [
                   <li class="catm__tag">{tag}</li>
                 ))}
               </ul>
-              <a href="/projects" class="catm__cta">
+              <a
+                href={cat.filter ? `/projects?filter=${cat.filter}` : "/projects"}
+                class="catm__cta"
+              >
                 VIEW OUR WORK
                 <RightUpArrow class="catm__cta-arrow" aria-hidden="true" />
               </a>
@@ -419,7 +430,7 @@ const mobileCategories = [
     overflow: hidden;
     transform: scale(0.4);
     transform-origin: center center;
-    opacity: 0.8;
+    opacity: 1;
     z-index: 5;
   }
 
@@ -483,6 +494,8 @@ const mobileCategories = [
     object-position: center center;
     pointer-events: none;
     will-change: opacity;
+    /* show the renders untouched — no colour/brightness filter at any point */
+    filter: none;
   }
 
   /* ── Parallax slide 3: fondo + laptops + piedra ── */
@@ -615,13 +628,13 @@ const mobileCategories = [
     align-items: center;
     gap: 0.5rem;
     font-family: "Poppins", sans-serif;
-    font-size: clamp(0.75rem, 1vw, 1.2rem);
+    font-size: 1.25rem;
     font-weight: 300;
     letter-spacing: 0.1em;
     color: var(--cat-cta-color);
     background: var(--cat-cta-bg);
     text-decoration: none;
-    padding: 0.8em 1.8em;
+    padding: 0.75rem 1.5rem;
     border-radius: 9999px;
     transition: opacity 0.2s;
     z-index: 3;
@@ -835,13 +848,13 @@ const mobileCategories = [
     align-items: center;
     gap: 0.5rem;
     font-family: "Poppins", sans-serif;
-    font-size: clamp(1.05rem, 2.5vw, 1.4rem);
+    font-size: 1rem;
     font-weight: 300;
     letter-spacing: 0.08em;
     color: var(--catm-cta-color, #000);
     background: var(--catm-cta-bg, #fff);
     text-decoration: none;
-    padding: 0.7em 1.6em;
+    padding: 0.6rem 1.4rem;
     border-radius: 9999px;
     transition: opacity 0.2s;
     margin-top: clamp(0.6rem, 1.5vh, 1.4rem);
@@ -853,6 +866,37 @@ const mobileCategories = [
     flex: none;
     width: 1.15em;
     height: 1.15em;
+  }
+
+  /* ── Apps card: drop the whitening overlay; instead the content inverts
+     against the scene via mix-blend-mode so the text stays legible over both
+     the light fondo and the dark phone screens. Blend is set on .catm__content
+     (its z-index:9 stacking context) so it mixes against the image layers. ── */
+  .catm--apps .catm__overlay {
+    display: none;
+  }
+  .catm--apps .catm__content {
+    color: #fff;
+    mix-blend-mode: difference;
+  }
+  .catm--apps .catm__tag {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+  /* CTA is inside the blended content — an outlined (not filled) pill inverts
+     cleanly instead of the solid pill turning invisible under `difference`. */
+  .catm--apps .catm__cta {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+  }
+
+  /* Tablet (768–1024px): match the navbar "BEGIN A DIALOGUE" CTA size. */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .catm__cta {
+      font-size: 1.3rem;
+      padding: 0.8rem 1.8rem;
+    }
   }
 </style>
 
@@ -940,7 +984,6 @@ const mobileCategories = [
 
     gsap.set(cardWrap, {
       scale: SCALE_START + SCALE_RANGE * enterP,
-      opacity: 0.8 + 0.2 * enterP,
       transformOrigin: "center center",
     });
     gsap.set(border, { scaleX: enterP });
@@ -1019,7 +1062,7 @@ const mobileCategories = [
   // Phase A (scroll): enterP 0→1 drives lighting dark→bright, scrubable in both directions
   // Phase B (mouse):  once enterComplete, mouse X controls lighting freely
   {
-    const FRAME_COUNT = 5;
+    const FRAME_COUNT = 3;
     const lightFrames = Array.from(
       document.querySelectorAll<HTMLImageElement>(".cat__light-frame")
     );
@@ -1031,9 +1074,12 @@ const mobileCategories = [
 
     function applyLighting(v: number) {
       const fi = v * (FRAME_COUNT - 1);
+      // Stacked cross-fade: every frame below the one currently fading in stays
+      // fully opaque, so the dark slide background never shows through to darken
+      // the image mid-transition (no "filter" at start, during, or end). Only
+      // the incoming frame takes a fractional opacity over an opaque base.
       lightFrames.forEach((img, i) => {
-        const dist = Math.abs(i - fi);
-        img.style.opacity = String(Math.max(0, 1 - dist));
+        img.style.opacity = String(Math.min(1, Math.max(0, fi - i + 1)));
       });
     }
 

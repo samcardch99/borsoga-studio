@@ -357,10 +357,10 @@ const projects = [
       align-items: center;
       gap: 0.5rem;
       margin-top: 1.25rem;
-      padding: 0.6rem 1.1rem 0.6rem 1.25rem;
+      padding: 0.75rem 1.5rem;
       border-radius: 9999px;
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 1.25rem;
       font-weight: 300;
       letter-spacing: 0.04em;
       white-space: nowrap;
@@ -371,6 +371,14 @@ const projects = [
     }
     .projects__view-all__arrow {
       flex-shrink: 0;
+    }
+  }
+
+  /* Tablet (768–1024px): match navbar "BEGIN A DIALOGUE" CTA size. */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .projects__view-all {
+      font-size: 1.3rem;
+      padding: 0.8rem 1.8rem;
     }
   }
 </style>

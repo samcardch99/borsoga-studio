@@ -41,8 +41,8 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
         <ul class="footer__ch-list">
             <li class="footer__ch-row">
                 <span class="footer__ch-type">EMAIL</span>
-                <a href="mailto:borsogastudio@gmail.com" class="footer__ch-val">
-                    borsogastudio@gmail.com
+                <a href="mailto:info@borsogastudio.com" class="footer__ch-val">
+                    info@borsogastudio.com
                 </a>
             </li>
             <li class="footer__ch-row">
@@ -157,7 +157,7 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
     .footer {
         --f-ch: clamp(0.85rem, 1.25vw, 1.8rem); /* channel val / form input */
         --f-lbl: clamp(0.65rem, 0.85vw, 1.2rem); /* dim labels */
-        --f-btn: clamp(0.7rem, 0.9vw, 1.25rem); /* send button */
+        --f-btn: 1.25rem; /* send button — matches navbar CTA (desktop) */
         --f-soc: clamp(1rem, 1.5vw, 2.2rem); /* social links */
         --row-py: clamp(0.55rem, 1.1vw, 1.6rem); /* channel row padding */
 
@@ -343,7 +343,7 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
         color: #000;
         border: none;
         border-radius: 9999px;
-        padding: clamp(0.45rem, 0.9vw, 1.2rem) clamp(0.9rem, 1.8vw, 2.5rem);
+        padding: 0.75rem 1.5rem;
         font-family: "Poppins", sans-serif;
         font-size: var(--f-btn);
         font-weight: 300;
@@ -428,8 +428,12 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
             --f-ch: clamp(1.4rem, 3.6vw, 2.1rem); /* channel value / form input */
             --f-lbl: clamp(1.3rem, 3.2vw, 1.9rem); /* labels (≈ values, dimmed) */
             --f-soc: clamp(2.2rem, 6vw, 3.2rem); /* social links (36px) */
-            --f-btn: clamp(1.35rem, 3.3vw, 1.9rem); /* send button */
+            --f-btn: 1rem; /* send button — matches navbar CTA (mobile) */
             --row-py: clamp(1.5rem, 4vw, 2.4rem); /* taller channel / form rows */
+        }
+        /* Send button padding — matches navbar CTA (mobile) */
+        :global(.form-btn) {
+            padding: 0.6rem 1.4rem;
         }
         /* Headline — larger, flows & wraps naturally (like Figma), with air */
         .footer__headline {
@@ -477,6 +481,12 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
         .footer__wordmark {
             padding-top: clamp(1.6rem, 4vw, 3rem);
         }
+    }
+
+    /* Tablet (768–1024px): match navbar "BEGIN A DIALOGUE" CTA size. */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .footer { --f-btn: 1.3rem; }
+        :global(.form-btn) { padding: 0.8rem 1.8rem; }
     }
 
     /* ══ ≥1025px (desktop) ══ */

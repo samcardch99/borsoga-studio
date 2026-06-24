@@ -3,9 +3,23 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 type Project = CollectionEntry<"projects">;
 
+// Homepage preview — only a handful of projects (5 visualization + 1 brand
+// identity). Ordered explicitly so the preview always reads the same way
+// regardless of the collection's global `order`.
+const FEATURED = [
+  "RAL-1011-FIVE-PARK-APARTMENT", // viz
+  "RAL-8003-WOOD-VEIN-KITCHEN-CLOSET", // viz
+  "RAL-9002-CORNER-RESIDENTIAL-BUILDING", // viz
+  "RAL-7006-COCONUT-GROVE-RESIDENCE", // viz
+  "RAL-1013-CRYSTAL-RIVER-RESIDENCE", // viz
+  "RAL-9005-REFRAME", // brand
+];
+
 const raw = await getCollection("projects");
-const projects = raw
-  .sort((a: Project, b: Project) => a.data.order - b.data.order)
+// Collection ids are slugified to lowercase, so match case-insensitively.
+const byId = new Map(raw.map((p: Project) => [p.id.toLowerCase(), p]));
+const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
+  .filter((p): p is Project => Boolean(p))
   .map((p: Project) => ({
     uid: p.id,
     title: p.data.title,
@@ -15,78 +29,43 @@ const projects = raw
 ---
 
 <section id="selected-work" class="projects section border-b border-black">
-  <div class="projects__container">
-    <!-- Mobile header -->
-    <div class="projects__mobile-header">
-      <p>We are</p>
-      <h1>Borsoga Studio,<br />Architecture Studio</h1>
-      <p>from Miami, FL</p>
-    </div>
-
-    <!-- 16-col grid -->
+  <!-- ───────────── DESKTOP (≥1025px) — Figma "Projects Exterior" ─────────────
+       Image stack flush against the LEFT viewport edge, heading + sticky title
+       list + CTA right-aligned on the right. -->
+  <div class="projects__container projects__desktop">
     <div class="projects__grid">
-      <!-- LEFT — image stack -->
+      <!-- LEFT — image stack (flush-left) -->
       <div class="projects__wrapper" data-animation="gallery">
         {
           projects.map((p, i) => (
-            <>
-              {/* Primary item — visible on both */}
-              <div
-                class="projects__item projects__item--primary"
-                data-project-index={i}
+            <div
+              class="projects__item projects__item--primary"
+              data-project-index={i}
+            >
+              <a
+                class="projects__item-link"
+                href={p.href}
+                aria-label={`See ${p.title}`}
               >
-                <a
-                  class="projects__item-link"
-                  href={p.href}
-                  aria-label={`See ${p.title}`}
-                >
-                  <div
-                    class="projects__item__image projects__item__thumb"
-                    data-project-uid={p.uid}
-                  >
-                    <img
-                      src={p.thumb}
-                      alt={p.title}
-                      loading={i === 0 ? "eager" : "lazy"}
-                      width="520"
-                      height="370"
-                    />
-                  </div>
-                </a>
-                <p class="projects__title projects__title--mobile">
-                  <a href={p.href}>{p.title}</a>
-                </p>
-              </div>
-
-              {/* Secondary item — desktop only, rendered only when a distinct secondary image exists */}
-              {p.secondary && p.secondary !== p.thumb && (
                 <div
-                  class="projects__item projects__item--secondary"
-                  data-project-index={i}
+                  class="projects__item__image projects__item__thumb"
+                  data-project-uid={p.uid}
                 >
-                  <a
-                    class="projects__item-link"
-                    href={p.href}
-                    aria-label={`See ${p.title}`}
-                  >
-                    <div class="projects__item__image" data-project-uid={p.uid}>
-                      <img
-                        src={p.secondary}
-                        alt={p.title}
-                        loading="lazy"
-                        width="520"
-                        height="370"
-                      />
-                    </div>
-                  </a>
+                  <img
+                    src={p.thumb}
+                    alt={p.title}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    width="520"
+                    height="370"
+                  />
                 </div>
-              )}
-            </>
+              </a>
+            </div>
           ))
         }
       </div>
 
-      <!-- RIGHT — heading + sticky title list + CTA (desktop) -->
+      <!-- RIGHT — heading + sticky title list + CTA -->
       <div class="projects__titles">
         <div class="projects__titles__wrapper">
           <h2 class="projects__intro" aria-label="Projects"><span
@@ -129,136 +108,298 @@ const projects = raw
       </div>
     </div>
   </div>
+
+  <!-- ───────────── MOBILE / TABLET (≤1024px) — Swiper carousel ─────────────
+       Centered slides; the active slide scales up (echoing the desktop
+       expand-on-active effect). The active project's name cross-fades in. -->
+  <div class="projects__mobile">
+    <h2 class="projects__intro projects__intro--mobile" aria-label="Projects"><span
+        >Proj</span><span class="projects__intro-dim">ects</span></h2>
+
+    <div class="swiper projects__swiper">
+      <div class="swiper-wrapper">
+        {
+          projects.map((p) => (
+            <div class="swiper-slide projects__slide">
+              <a
+                class="projects__slide-inner"
+                href={p.href}
+                aria-label={`See ${p.title}`}
+              >
+                <img src={p.thumb} alt={p.title} loading="lazy" />
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Footer — full title list (all visible, active one at full opacity) + CTA -->
+    <div class="projects__mobile-footer">
+      <div class="projects__mobile-titles" aria-live="polite">
+        {
+          projects.map((p, i) => (
+            <a
+              class={`projects__mobile-title-item${i === 0 ? " is-active" : ""}`}
+              href={p.href}
+              data-index={i}
+            >
+              {p.title}
+            </a>
+          ))
+        }
+      </div>
+
+      <a
+        href="/projects"
+        class="projects__view-all projects__view-all--mobile"
+        aria-label="View all projects"
+      >
+        <span>VIEW ALL PROJECTS</span>
+        <svg
+          class="projects__view-all__arrow"
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M3.75 14.25L14.25 3.75M14.25 3.75H6.75M14.25 3.75V11.25"
+            stroke="white"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
 </section>
 
 <style>
   /* ── Section ── */
   .projects.section {
     position: relative;
-    padding-top: 6.25rem;
-    padding-bottom: 4rem;
   }
 
-  /* ── Fixed top-right tag ── */
-  .projects__tag {
-    display: none;
-    position: fixed;
-    top: 1.25rem;
-    right: 1.25rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    line-height: 1.5;
-    z-index: 50;
-  }
-
-  /* ── Container ── */
-  .projects__container {
-    padding: 0 2.4rem;
-  }
-  @media (min-width: 768px) {
-    .projects__container {
-      padding: 0 4.2rem;
-    }
-  }
-  @media (min-width: 1025px) {
-    .projects__container {
-      padding: 0 4rem;
-    }
-  }
-
-  /* ── Mobile header ── */
-  .projects__mobile-header {
-    margin-bottom: 6.25rem;
-    font-size: 2.5rem;
-    font-weight: 500;
-    line-height: 1.15;
-  }
-  .projects__mobile-header h1 {
-    font-size: 2.5rem;
-    font-weight: 500;
-    line-height: 1.15;
-    margin: 0;
-  }
-
-  /* ── Grid (mobile: single column) ── */
-  .projects__grid {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(16, 1fr);
-    column-gap: 0.625rem;
-  }
-
-  .projects__wrapper {
-    grid-column: 1 / -1;
-    position: relative;
-  }
-
-  .projects__titles {
+  /* ── Desktop / mobile visibility ── */
+  .projects__desktop {
     display: none;
   }
-
-  /* ── Items ── */
-  .projects__item {
-    margin-bottom: 1.25rem;
-  }
-  .projects__item--secondary {
-    display: none;
-  }
-
-  .projects__item-link {
+  .projects__mobile {
     display: block;
   }
 
-  .projects__item__image {
+  /* ════════════════ MOBILE / TABLET (≤1024px) ════════════════
+     Full-screen section. Header / carousel / titles+CTA are distributed
+     uniformly down the viewport via a flex column (Figma "PROJECTS EXTERIOR
+     MOBILE"). */
+  .projects__mobile {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: stretch;
+    padding: clamp(6.5rem, 15vh, 9rem) 0 clamp(2.5rem, 6vh, 4rem);
+    box-sizing: border-box;
+  }
+
+  .projects__intro--mobile {
+    font-size: clamp(3.25rem, 16vw, 6rem);
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0 2.4rem;
+    text-align: left;
+  }
+  .projects__intro-dim {
+    color: rgba(0, 0, 0, 0.19);
+  }
+
+  /* Per-character entrance fill (same effect as Cover.astro): every char rests
+     faint and GSAP staggers it to its final colour on scroll-in.
+     `:global(.char)` is required because SplitText creates the char spans at
+     runtime, so they never carry Astro's scoped `data-astro-cid` attribute — a
+     scoped `.char` selector would not match them (the "Proj" part would stay
+     solid black instead of resting faint). */
+  .projects__intro :global(.char) {
+    display: inline-block;
+    color: rgba(0, 0, 0, 0.08);
+  }
+
+  /* Swiper — full-bleed; slides share the BOTTOM baseline (Figma): the active
+     slide is full size, neighbours scale down toward that shared bottom edge
+     and hug the active slide so they peek on both sides. */
+  .projects__swiper {
     width: 100%;
     overflow: hidden;
-    aspect-ratio: 520 / 370;
   }
-  .projects__item__image img {
+  .projects__swiper .swiper-wrapper {
+    align-items: flex-end;
+  }
+  .projects__slide {
+    width: 72vw;
+    box-sizing: border-box;
+  }
+  .swiper-slide-active {
+    z-index: 2; /* active sits above the peeking neighbours */
+  }
+  .projects__slide-inner {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    /* Neighbour scale kept close to the active slide so the size difference is
+       subtle (was 0.64 — too dramatic a jump). */
+    transform: scale(0.86);
+    transform-origin: bottom center;
+    opacity: 1;
+    transition:
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s ease;
+    will-change: transform;
+  }
+  .projects__slide-inner img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
+  /* Neighbours scale toward the active slide so they hug it with a slim gap */
+  .swiper-slide-prev .projects__slide-inner {
+    transform-origin: bottom right;
+  }
+  .swiper-slide-next .projects__slide-inner {
+    transform-origin: bottom left;
+  }
+  .swiper-slide-active .projects__slide-inner {
+    transform: scale(1);
+    transform-origin: bottom center;
+    opacity: 1;
+  }
 
-  /* ── Mobile titles ── */
-  .projects__title--mobile {
-    font-size: 1.25rem;
+  /* Footer — full title list (all visible, active at full opacity, the rest
+     semi-opaque) + CTA, right-aligned (Figma). */
+  .projects__mobile-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1.25rem;
+    padding: 0 2.4rem;
+  }
+  .projects__mobile-titles {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+  .projects__mobile-title-item {
+    font-size: clamp(0.78rem, 3.6vw, 1.2rem);
     font-weight: 500;
-    margin-top: 0.5rem;
-  }
-  .projects__title--mobile a {
+    line-height: 1.5;
+    white-space: nowrap;
     text-decoration: none;
-    color: inherit;
+    color: #000;
+    opacity: 0.2;
+    transition: opacity 0.4s ease;
+  }
+  .projects__mobile-title-item.is-active {
+    opacity: 1;
   }
 
-  .projects__title--desktop {
-    display: none;
+  .projects__view-all--mobile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.4rem;
+    background: black;
+    color: white;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .projects__view-all--mobile .projects__view-all__arrow {
+    flex-shrink: 0;
+    width: 1.3rem;
+    height: 1.3rem;
   }
 
-  /* ── DESKTOP (≥640px) ── */
-  @media (min-width: 640px) {
-    .projects.section {
-      padding-top: 0;
-      padding-bottom: 10rem;
-      /* Sticky behavior identical to Joffrey: section sits above the next section */
-      margin-bottom: 100svh;
-      margin-top: -45rem;
-      top: 100svh;
-      position: relative;
+  @media (min-width: 768px) {
+    /* Tablet — larger type, slightly narrower slides */
+    .projects__slide {
+      width: 56vw;
     }
+    .projects__intro--mobile,
+    .projects__mobile-footer {
+      padding-left: 4.2rem;
+      padding-right: 4.2rem;
+    }
+    .projects__mobile-title-item {
+      font-size: 1.5rem;
+    }
+    .projects__view-all--mobile {
+      font-size: 1.3rem;
+      padding: 0.8rem 1.8rem;
+    }
+  }
 
-    .projects__tag {
+  /* ════════════════ DESKTOP (≥1025px) ════════════════ */
+  @media (min-width: 1025px) {
+    .projects__desktop {
       display: block;
     }
-
-    .projects__mobile-header {
+    .projects__mobile {
       display: none;
     }
 
-    /* Figma layout: image stack LEFT, heading + titles + CTA RIGHT. */
+    /* Sticky behaviour: section sits above the next section */
+    .projects.section {
+      padding-bottom: 10rem;
+      margin-bottom: 100svh;
+      margin-top: -45rem;
+      top: 100svh;
+    }
+
+    /* Flush-left: no left padding so the image stack hugs the viewport edge
+       (Figma "Projects Exterior"); keep right padding for the title column. */
+    .projects__container {
+      padding: 0 4rem 0 0;
+    }
+
+    .projects__grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      column-gap: 0.625rem;
+    }
+
+    /* Image stack — flush against col 1 (viewport's left edge) */
     .projects__wrapper {
       grid-column: 1 / span 7;
+      position: relative;
+    }
+
+    .projects__item {
+      margin-bottom: 0.75rem;
+    }
+    .projects__item-link {
+      display: block;
+    }
+    .projects__item__image {
+      width: 17.55vw;
+      overflow: hidden;
+      aspect-ratio: 520 / 370;
+    }
+    .projects__item__image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       display: block;
     }
 
@@ -271,34 +412,8 @@ const projects = raw
       margin: 0 0 clamp(1.8rem, 3.5vw, 4rem);
       text-align: right;
     }
-    .projects__intro-dim {
-      color: rgba(0, 0, 0, 0.19);
-    }
 
-    .projects__item {
-      margin-bottom: 0.75rem;
-    }
-
-    /* Primary items: the "thumb" is small, desktop-width */
-    .projects__item--primary .projects__item__image {
-      width: 17.55vw;
-    }
-
-    /* Secondary items: shown only on desktop */
-    .projects__item--secondary {
-      display: block;
-      margin-bottom: 0.75rem;
-    }
-    .projects__item--secondary .projects__item__image {
-      width: 17.55vw;
-    }
-
-    .projects__title--mobile {
-      display: none;
-    }
-
-    /* Right sidebar: sticky title list — anchored to the grid's right edge
-       and right-aligned so long titles grow leftward and never overflow. */
+    /* Right sidebar: sticky title list — anchored to the grid's right edge */
     .projects__titles {
       display: flex;
       grid-column: 10 / -1;
@@ -307,10 +422,6 @@ const projects = raw
       align-items: flex-end;
       min-height: 100%;
     }
-
-    /* Sticky block (heading + titles + CTA) — stays pinned on screen until the
-       image stack finishes scrolling. Must stay SHORTER than its container, so
-       no forced min-height here (that would release it early). */
     .projects__titles__wrapper {
       position: sticky;
       bottom: 1.25rem;
@@ -351,7 +462,7 @@ const projects = raw
       color: white;
       border-radius: 9999px;
       text-decoration: none;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 300;
       letter-spacing: 0.05em;
       white-space: nowrap;
@@ -371,14 +482,21 @@ const projects = raw
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import Swiper from "swiper";
+  import "swiper/css";
 
   gsap.registerPlugin(ScrollTrigger);
+
+  // ≥ this width → desktop scroll-scale layout; below → Swiper carousel.
+  const DESKTOP_MIN = 1025;
 
   class ProjectsSection {
     dom: Element | null;
     projects: HTMLElement[];
     titles: HTMLElement[];
     timeline: gsap.core.Timeline | null;
+    swiper: any | null;
+    mode: "desktop" | "mobile" | null;
     resizeHandler: (() => void) | null;
     lastViewport: { width: number; height: number } | null;
 
@@ -387,6 +505,8 @@ const projects = raw
       this.projects = [];
       this.titles = [];
       this.timeline = null;
+      this.swiper = null;
+      this.mode = null;
       this.resizeHandler = null;
       this.lastViewport =
         typeof window !== "undefined"
@@ -443,9 +563,9 @@ const projects = raw
       this.titles = [];
     }
 
-    setup() {
-      if (!this.dom || typeof window === "undefined" || window.innerWidth < 640)
-        return;
+    // ── Desktop scroll-scale animation ─────────────────────────────────────
+    setupDesktop() {
+      if (!this.dom || typeof window === "undefined") return;
 
       this.projects = Array.from(
         this.dom.querySelectorAll<HTMLElement>(".projects__item"),
@@ -474,7 +594,7 @@ const projects = raw
         lastByIndex.set(idx, item);
       });
 
-      // Scale constants (same as Joffrey): collapsed = 17.55vw, expanded = 36vw
+      // Scale constants: collapsed = 17.55vw, expanded = 36vw
       const IMAGE_VW = 17.55;
       const EXPANDED_VW = 36;
       const scaleFactor = EXPANDED_VW / IMAGE_VW;
@@ -569,9 +689,82 @@ const projects = raw
       });
     }
 
+    setupDesktopRAF() {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          this.setupDesktop();
+          ScrollTrigger.refresh();
+        }),
+      );
+    }
+
+    resetDesktop() {
+      this.destroyTimeline();
+      this.cleanupDomState();
+      this.setupDesktopRAF();
+    }
+
+    // ── Mobile / tablet Swiper carousel ────────────────────────────────────
+    setupMobile() {
+      if (!this.dom) return;
+      const el = this.dom.querySelector<HTMLElement>(".projects__swiper");
+      if (!el) return;
+
+      const titleItems = Array.from(
+        this.dom.querySelectorAll<HTMLElement>(".projects__mobile-title-item"),
+      );
+      const setActive = (idx: number) => {
+        titleItems.forEach((t, i) => t.classList.toggle("is-active", i === idx));
+      };
+
+      this.swiper = new Swiper(el, {
+        slidesPerView: "auto",
+        centeredSlides: true,
+        spaceBetween: 8,
+        loop: true,
+        grabCursor: true,
+        speed: 450,
+        on: {
+          // realIndex maps loop clones back to the true slide index
+          slideChange: (sw: any) => setActive(sw.realIndex),
+        },
+      });
+      setActive(this.swiper.realIndex ?? 0);
+    }
+
+    destroySwiper() {
+      if (this.swiper) {
+        this.swiper.destroy(true, true);
+        this.swiper = null;
+      }
+    }
+
+    // ── Mode switching ─────────────────────────────────────────────────────
+    teardownMode() {
+      this.destroyTimeline();
+      this.cleanupDomState();
+      this.destroySwiper();
+    }
+
+    applyMode() {
+      if (typeof window === "undefined") return;
+      const want: "desktop" | "mobile" =
+        window.innerWidth >= DESKTOP_MIN ? "desktop" : "mobile";
+
+      if (want === this.mode) {
+        if (want === "desktop" && this.shouldResetOnResize()) this.resetDesktop();
+        return;
+      }
+
+      this.teardownMode();
+      this.mode = want;
+      if (want === "desktop") this.setupDesktopRAF();
+      else this.setupMobile();
+    }
+
     init() {
       if (!this.dom || typeof window === "undefined") return;
-      requestAnimationFrame(() => requestAnimationFrame(() => this.setup()));
+      this.applyMode();
 
       const debounce = (fn: () => void, ms = 200) => {
         let t: ReturnType<typeof setTimeout>;
@@ -581,17 +774,8 @@ const projects = raw
         };
       };
 
-      this.resizeHandler = debounce(() => {
-        if (this.shouldResetOnResize()) this.reset();
-      }, 200);
+      this.resizeHandler = debounce(() => this.applyMode(), 200);
       window.addEventListener("resize", this.resizeHandler);
-    }
-
-    reset() {
-      this.destroyTimeline();
-      this.cleanupDomState();
-      this.setup();
-      requestAnimationFrame(() => ScrollTrigger.refresh());
     }
 
     shouldResetOnResize(): boolean {
@@ -614,8 +798,8 @@ const projects = raw
     }
 
     destroy() {
-      this.destroyTimeline();
-      this.cleanupDomState();
+      this.teardownMode();
+      this.mode = null;
       if (this.resizeHandler && typeof window !== "undefined") {
         window.removeEventListener("resize", this.resizeHandler);
         this.resizeHandler = null;
@@ -634,12 +818,83 @@ const projects = raw
 
   // Re-init on EVERY navigation. With <ClientRouter/> active, module scripts run
   // only once, so a bare boot() never re-runs when the homepage is reached via a
-  // soft (no-reload) View Transition — leaving the scroll animation dead. Hook
-  // the lifecycle (astro:page-load fires on first load AND every soft nav) and
-  // tear down before each swap so stale ScrollTriggers don't pile up.
+  // soft (no-reload) View Transition. Hook the lifecycle and tear down before
+  // each swap so stale ScrollTriggers / Swipers don't pile up.
   document.addEventListener("astro:page-load", boot);
   document.addEventListener("astro:before-swap", () => {
     instance?.destroy();
     instance = null;
   });
+</script>
+
+<script>
+  import { gsap } from "gsap";
+  import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(SplitText);
+
+  // ── "Projects" heading entrance ──────────────────────────────────────────
+  // Per-character colour fill, identical to Cover.astro: the heading rests faint
+  // (.char start state) and GSAP staggers every char from grey to solid black.
+  // Playback is gated on an IntersectionObserver (NOT ScrollTrigger): the
+  // desktop section uses an offset/sticky layout (top: 100svh, margin-top:
+  // -45rem) whose box crosses any "top X%" line long before the sticky heading
+  // is actually on screen, so a ScrollTrigger fired the fill out of view. The
+  // observer watches the heading's real pixels, so it plays exactly when seen.
+  // Only the visible heading (desktop OR mobile) is split, so the two copies
+  // never fight over the same text.
+  let headingSplits: SplitText[] = [];
+  let headingObserver: IntersectionObserver | null = null;
+  let headingTween: gsap.core.Tween | null = null;
+
+  function initProjectsHeading(): void {
+    teardownProjectsHeading();
+
+    const section = document.getElementById("selected-work");
+    if (!section || typeof window === "undefined") return;
+
+    const desktop = window.matchMedia("(min-width: 1025px)").matches;
+    const heading = section.querySelector<HTMLElement>(
+      desktop
+        ? ".projects__intro:not(.projects__intro--mobile)"
+        : ".projects__intro--mobile",
+    );
+    if (!heading) return;
+
+    const split = new SplitText(heading, { type: "chars", charsClass: "char" });
+    headingSplits.push(split);
+
+    // Paused — plays only once the heading is genuinely in view.
+    headingTween = gsap.to(split.chars, {
+      color: "#000",
+      duration: 0.1,
+      ease: "none",
+      stagger: { each: 0.06, from: "start" },
+      paused: true,
+    });
+
+    headingObserver = new IntersectionObserver(
+      (entries, obs) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          headingTween?.play();
+          obs.disconnect();
+          headingObserver = null;
+        }
+      },
+      { threshold: 0.6 },
+    );
+    headingObserver.observe(heading);
+  }
+
+  function teardownProjectsHeading(): void {
+    headingObserver?.disconnect();
+    headingObserver = null;
+    headingTween?.kill();
+    headingTween = null;
+    headingSplits.forEach((s) => s.revert());
+    headingSplits = [];
+  }
+
+  document.addEventListener("astro:page-load", initProjectsHeading);
+  document.addEventListener("astro:before-swap", teardownProjectsHeading);
 </script>

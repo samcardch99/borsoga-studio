@@ -135,25 +135,52 @@ const projectsList = [
   </div>
 
   <div class="sw__inner">
-    <!-- Title + Filter row -->
-    <div class="sw__top">
+    <!-- Header: title (left) + search (right) -->
+    <div class="sw__header">
       <div class="sw__title-clip">
         <h2 class="sw__title" id="sw-title" aria-label="Projects">
           <span class="sw__t-ghost">PROJECTS</span>
         </h2>
       </div>
 
-      <div class="sw__filters" id="sw-filters" role="group" aria-label="Filter by category">
-        {["ALL", "VISUALIZATION", "BRANDING"].map((f, i) => (
+      <div class="sw__search" id="sw-search">
+        <div class="sw__search-field">
+          <input
+            type="text"
+            class="sw__search-input"
+            id="sw-search-input"
+            placeholder="SEARCH PROJECT"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Search projects"
+          />
           <button
-            class={`sw__chip${i === 0 ? " sw__chip--on" : ""}`}
-            data-filter={f.toLowerCase()}
             type="button"
+            class="sw__search-icon"
+            id="sw-search-icon"
+            aria-label="Search"
+            tabindex="-1"
           >
-            {f}
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.75" cy="8.75" r="6" stroke="currentColor" stroke-width="1.5" />
+              <path d="M13.25 13.25L17.5 17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </button>
-        ))}
+        </div>
       </div>
+    </div>
+
+    <!-- Filter chips row -->
+    <div class="sw__filters" id="sw-filters" role="group" aria-label="Filter by category">
+      {["ALL", "VISUALIZATION", "BRANDING"].map((f, i) => (
+        <button
+          class={`sw__chip${i === 0 ? " sw__chip--on" : ""}`}
+          data-filter={f.toLowerCase()}
+          type="button"
+        >
+          {f}
+        </button>
+      ))}
     </div>
 
     <!-- Project rows -->
@@ -166,6 +193,7 @@ const projectsList = [
           href={p.href}
           data-project-id={p.id}
           data-categories={p.categories.join(",")}
+          data-name={p.title}
           aria-label={p.title}
           data-cursor="view"
         >
@@ -195,8 +223,61 @@ const projectsList = [
           <div class="sw__divider sw__divider--row"></div>
         </a>
       ))}
+
+      <!-- Empty state — shown when no project matches the filter/search -->
+      <p class="sw__empty" id="sw-empty" hidden>
+        No projects match your search.
+      </p>
     </div>
   </div>
+
+  <!--
+    Apply the URL filter (e.g. /projects?filter=visualization, linked from the
+    category "VIEW OUR WORK" CTAs) BEFORE the first paint. Running here, inline
+    and synchronously during parse, sets the active chip and collapses the list
+    with no flicker/"reload" of the buttons — the GSAP boot then just reads the
+    state that is already in the DOM.
+  -->
+  <script is:inline>
+    (function () {
+      var requested = (
+        new URLSearchParams(location.search).get("filter") || ""
+      ).toLowerCase();
+      var chips = Array.prototype.slice.call(
+        document.querySelectorAll(".sw__chip")
+      );
+      var valid = chips.some(function (c) {
+        return c.dataset.filter === requested;
+      });
+      var filter = valid ? requested : "all";
+
+      chips.forEach(function (c) {
+        c.classList.toggle("sw__chip--on", c.dataset.filter === filter);
+      });
+
+      var rows = Array.prototype.slice.call(
+        document.querySelectorAll(".sw__row")
+      );
+      var visible = 0;
+      rows.forEach(function (row) {
+        var cats = (row.dataset.categories || "").split(",");
+        var match = filter === "all" || cats.indexOf(filter) !== -1;
+        if (match) {
+          row.dataset.hidden = "0";
+          visible += 1;
+          var numEl = row.querySelector(".sw__num");
+          if (numEl) numEl.textContent = String(visible).padStart(2, "0");
+        } else {
+          row.dataset.hidden = "1";
+          row.style.display = "none";
+          row.style.pointerEvents = "none";
+        }
+      });
+
+      var empty = document.getElementById("sw-empty");
+      if (empty) empty.hidden = visible > 0;
+    })();
+  </script>
 </section>
 
 </Layout>
@@ -265,12 +346,68 @@ const projectsList = [
     opacity: 1;
   }
 
-  /* ── Header ── */
-  .sw__top {
+  /* ── Header (title + search) ── */
+  .sw__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding-bottom: clamp(3rem, 5vw, 8rem);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    /* Margin between header and the filter row (per Figma) */
+    padding-bottom: clamp(3.5rem, 6.5vw, 8rem);
+  }
+
+  /* ── Search bar ── */
+  .sw__search {
+    width: clamp(220px, 30vw, 400px);
+    align-self: flex-end;
+    flex-shrink: 0;
+  }
+  .sw__search-field {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: clamp(0.45rem, 0.6vw, 0.7rem);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    transition: border-color 0.25s;
+  }
+  .sw__search-field:focus-within {
+    border-bottom-color: rgba(255, 255, 255, 0.85);
+  }
+  .sw__search-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.85rem, 1vw, 1.15rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: text;
+  }
+  .sw__search-input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 1;
+  }
+  .sw__search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: color 0.25s;
+  }
+  .sw__search-icon:hover {
+    color: #fff;
   }
 
   /* ── Title ── */
@@ -300,9 +437,11 @@ const projectsList = [
     gap: clamp(0.4rem, 0.5vw, 0.75rem);
     flex-wrap: wrap;
     justify-content: flex-end;
-    align-self: flex-end;
-    padding-bottom: 0.35rem;
-    opacity: 0;
+    /* Margin between the filter row and the projects (per Figma) */
+    padding-bottom: clamp(1.1rem, 1.8vw, 2.2rem);
+    /* Rendered immediately & stable — no entrance fade. The active chip is set
+       pre-paint by the inline script below so it never flickers from ALL → the
+       URL filter when arriving via a "VIEW OUR WORK" link. */
   }
   .sw__chip {
     display: inline-flex;
@@ -476,6 +615,22 @@ const projectsList = [
     transform: translate(0, -50%) scale(1.14) rotate(-1deg);
   }
 
+  /* ── Empty state ── */
+  .sw__empty {
+    margin: 0;
+    padding: clamp(2.5rem, 6vw, 5rem) 0;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(0.9rem, 1.1vw, 1.25rem);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+  }
+  .sw__empty[hidden] {
+    display: none;
+  }
+
   /* ── MOBILE & TABLET (≤1024px) — Figma "PROYECTOS INTERIOR" listing ──
      Rows show num + name + tags (no tagline / hover preview / arrow);
      big number, smaller name & tags; touch = no custom cursor. */
@@ -489,20 +644,33 @@ const projectsList = [
         clamp(4rem, 10vw, 8rem);
     }
 
-    /* header: title, then filters, stacked */
-    .sw__top {
+    /* header: title, then search, stacked full-width */
+    .sw__header {
       flex-direction: column;
-      align-items: flex-start;
-      gap: clamp(1.6rem, 4vw, 2.6rem);
-      padding-bottom: clamp(2rem, 5vw, 3.5rem);
+      align-items: stretch;
+      gap: clamp(1.4rem, 6vw, 2.4rem);
+      /* Big airy gap between search and filters.
+         Figma "PROJECTS INTERIOR MOBILE" (591px frame): search underline y=327,
+         filter chips y=566 → 239px gap ≈ 40.4vw. */
+      padding-bottom: clamp(8rem, 40vw, 18rem);
+    }
+    .sw__search {
+      width: 100%;
+      align-self: stretch;
+    }
+    /* Search text/placeholder = 24px in Figma (591px frame) */
+    .sw__search-input {
+      font-size: clamp(1.05rem, 4.06vw, 1.5rem);
     }
     .sw__filters {
-      justify-content: flex-start;
+      justify-content: flex-end;
       opacity: 1;
       gap: clamp(0.6rem, 1.8vw, 1rem);
+      padding-bottom: clamp(0.7rem, 2vw, 1.2rem);
     }
     .sw__chip {
-      font-size: clamp(0.85rem, 2.4vw, 1.1rem);
+      /* Figma chip label = 12px (591px frame) */
+      font-size: clamp(0.7rem, 2.03vw, 0.75rem);
       padding: clamp(0.6rem, 1.8vw, 0.9rem) clamp(1.1rem, 3.2vw, 1.6rem);
       letter-spacing: 0.08em;
     }
@@ -519,11 +687,13 @@ const projectsList = [
     .sw__preview { display: none; }
     .sw__tags { display: flex; }
 
-    /* sizing — Figma: big number, smaller name & tags */
-    .sw__title { font-size: clamp(3.6rem, 11vw, 6rem); }
-    .sw__num { font-size: clamp(1.4rem, 4vw, 2.4rem); }
-    .sw__name { font-size: clamp(1.1rem, 2.6vw, 1.7rem); white-space: normal; }
-    .sw__tag { font-size: clamp(0.75rem, 1.8vw, 1.05rem); }
+    /* Font sizes from Figma "PROJECTS INTERIOR MOBILE" (591px frame):
+       title 64px, num 24px, name 12px, tag 10px. vw calibrated to 591px,
+       capped at the Figma px, with readable floors for small phones. */
+    .sw__title { font-size: clamp(2.6rem, 10.8vw, 4rem); }
+    .sw__num { font-size: clamp(1.1rem, 4.06vw, 1.5rem); }
+    .sw__name { font-size: clamp(0.7rem, 2.03vw, 0.75rem); white-space: normal; }
+    .sw__tag { font-size: clamp(0.58rem, 1.69vw, 0.625rem); }
   }
 </style>
 
@@ -587,43 +757,138 @@ const projectsList = [
     });
   }
 
-  // ── Filter chips ─────────────────────────────────────────────────
+  // ── Filter chips + search ────────────────────────────────────────
+  //
+  // A row is visible only when it matches BOTH the active category chip
+  // AND the search query. Non-matching rows are removed from the flow
+  // (display:none) so the matching ones collapse up to the top. When no
+  // row matches, an empty-state message is shown.
 
-  function initFilters() {
+  function initFiltersAndSearch() {
     const chips = Array.from(
       document.querySelectorAll<HTMLButtonElement>(".sw__chip")
     );
     const rows = Array.from(document.querySelectorAll<HTMLElement>(".sw__row"));
+    const searchInput = document.getElementById(
+      "sw-search-input"
+    ) as HTMLInputElement | null;
+    const searchIcon = document.getElementById("sw-search-icon");
+    const emptyEl = document.getElementById("sw-empty") as HTMLElement | null;
+
+    // Initial state was already applied pre-paint by the inline script, so read
+    // the active filter back from the highlighted chip instead of recomputing.
+    let activeFilter =
+      (document.querySelector(".sw__chip--on") as HTMLElement | null)?.dataset
+        .filter ?? "all";
+
+    const norm = (s: string) =>
+      s
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+
+    function renumber() {
+      let n = 0;
+      rows.forEach((row) => {
+        if (row.dataset.hidden === "1") return;
+        n += 1;
+        const numEl = row.querySelector<HTMLElement>(".sw__num");
+        if (numEl) numEl.textContent = String(n).padStart(2, "0");
+      });
+    }
+
+    function showRow(row: HTMLElement, index: number) {
+      const wasHidden = row.dataset.hidden === "1";
+      row.dataset.hidden = "0";
+      row.style.display = "";
+      row.style.pointerEvents = "auto";
+      gsap.killTweensOf(row);
+      if (wasHidden) {
+        gsap.fromTo(
+          row,
+          { opacity: 0, y: 8 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            ease: "power2.out",
+            delay: index * 0.04,
+          }
+        );
+      } else {
+        gsap.to(row, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" });
+      }
+    }
+
+    function hideRow(row: HTMLElement) {
+      if (row.dataset.hidden === "1") return;
+      row.dataset.hidden = "1";
+      row.style.pointerEvents = "none";
+      row.classList.remove("is-hover");
+      gsap.killTweensOf(row);
+      gsap.to(row, {
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          if (row.dataset.hidden === "1") row.style.display = "none";
+        },
+      });
+    }
+
+    function applyView() {
+      const query = searchInput ? norm(searchInput.value) : "";
+      let visibleIndex = 0;
+
+      rows.forEach((row) => {
+        const cats = row.dataset.categories?.split(",") ?? [];
+        const name = norm(row.dataset.name ?? "");
+        const matchesFilter =
+          activeFilter === "all" || cats.includes(activeFilter);
+        const matchesSearch = query === "" || name.includes(query);
+
+        if (matchesFilter && matchesSearch) {
+          showRow(row, visibleIndex);
+          visibleIndex += 1;
+        } else {
+          hideRow(row);
+        }
+      });
+
+      if (emptyEl) emptyEl.hidden = visibleIndex > 0;
+      renumber();
+    }
 
     chips.forEach((chip) => {
       chip.addEventListener("click", () => {
-        const filter = chip.dataset.filter ?? "all";
-
+        activeFilter = chip.dataset.filter ?? "all";
         chips.forEach((c) => c.classList.remove("sw__chip--on"));
         chip.classList.add("sw__chip--on");
-
-        rows.forEach((row, i) => {
-          const cats = row.dataset.categories?.split(",") ?? [];
-          const matches = filter === "all" || cats.includes(filter);
-
-          if (matches) {
-            gsap.to(row, {
-              opacity: 1,
-              duration: 0.4,
-              ease: "power2.out",
-              delay: i * 0.04,
-            });
-            row.style.pointerEvents = "auto";
-          } else {
-            gsap.to(row, {
-              opacity: 0.07,
-              duration: 0.3,
-              ease: "power2.in",
-            });
-            row.style.pointerEvents = "none";
-          }
-        });
+        applyView();
       });
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener("input", applyView);
+    }
+    if (searchIcon && searchInput) {
+      searchIcon.addEventListener("click", () => searchInput.focus());
+    }
+  }
+
+  // ── Hide the custom cursor over the search field ─────────────────
+
+  function initSearchCursor() {
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    const cur = document.getElementById("sw-cur") as HTMLElement | null;
+    const search = document.getElementById("sw-search") as HTMLElement | null;
+    if (!cur || !search) return;
+    search.addEventListener("mouseenter", () => {
+      cur.style.display = "none";
+    });
+    search.addEventListener("mouseleave", () => {
+      cur.style.display = "flex";
     });
   }
 
@@ -632,9 +897,12 @@ const projectsList = [
   function initEntrance() {
     const section = document.getElementById("selected-work");
     const title = document.getElementById("sw-title");
-    const filtersEl = document.getElementById("sw-filters");
     const topDivider = document.getElementById("sw-top-divider");
-    const rows = gsap.utils.toArray<HTMLElement>(".sw__row");
+    // Skip rows already hidden by an initial URL filter so the entrance only
+    // reveals the matching ones.
+    const rows = gsap.utils
+      .toArray<HTMLElement>(".sw__row")
+      .filter((row) => row.dataset.hidden !== "1");
 
     if (!section || !title) return;
 
@@ -662,19 +930,9 @@ const projectsList = [
       "-=0.5"
     );
 
-    // Filter chips stagger in
-    // tl.set makes the wrapper visible at the exact same tick fromTo starts,
-    // so children are never visible at their natural position before being
-    // pushed to y:10 (which caused the abrupt downward jump).
-    if (filtersEl) {
-      tl.set(filtersEl, { opacity: 1 }, "<+0.2");
-      tl.fromTo(
-        Array.from(filtersEl.children),
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.07 },
-        "<"
-      );
-    }
+    // Search bar + filter chips are rendered immediately (stable, no entrance
+    // fade) so they never look like they "reload" on load — see the inline
+    // pre-paint script and the .sw__search / .sw__filters styles.
 
     // Rows stagger in
     tl.to(
@@ -688,8 +946,9 @@ const projectsList = [
 
   function boot() {
     initCursor();
+    initSearchCursor();
     initRows();
-    initFilters();
+    initFiltersAndSearch();
     initEntrance();
   }
 

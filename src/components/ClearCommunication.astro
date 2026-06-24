@@ -98,6 +98,8 @@ const items = [
     letter-spacing: -0.03em;
   }
   .cc__dim {
+    font-weight: 700;
+
     color: rgba(0, 0, 0, 0.22);
   }
   .cc__ital {
@@ -113,10 +115,10 @@ const items = [
     background: #000;
     color: #fff;
     text-decoration: none;
-    font-size: clamp(0.9rem, 1vw, 1.4rem);
+    font-size: 1.25rem;
     font-weight: 300;
     letter-spacing: 0.06em;
-    padding: 0.7em 1.6em;
+    padding: 0.75rem 1.5rem;
     border-radius: 9999px;
     transition: opacity 0.2s ease;
   }
@@ -196,7 +198,11 @@ const items = [
     position: absolute;
     right: clamp(0rem, 4vw, 6rem);
     top: 50%;
-    transform: translateY(-50%);
+    /* Centre via the independent `translate` property (not `transform`) so the
+       GSAP entrance tween (which animates `y` → `transform`) composes with the
+       -50% offset instead of overwriting it — keeps the number centred while it
+       slides + fades in just like the headline/body. */
+    translate: 0 -50%;
     font-size: clamp(11rem, 26vw, 34rem);
     font-weight: 500;
     line-height: 0.8;
@@ -270,6 +276,10 @@ const items = [
     .cc {
       padding-inline: clamp(1.6rem, 3vw, 2.6rem);
     }
+    .cc__viewall {
+      font-size: 1.3rem;
+      padding: 0.8rem 1.8rem;
+    }
   }
 
   /* ── Mobile (≤767px) ── */
@@ -294,6 +304,10 @@ const items = [
     .cc__num {
       right: 0;
       font-size: clamp(10rem, 48vw, 18rem);
+    }
+    .cc__viewall {
+      font-size: 1rem;
+      padding: 0.6rem 1.4rem;
     }
   }
 
@@ -363,6 +377,7 @@ const items = [
     .cc__num {
       right: clamp(0rem, 2vw, 4rem);
       font-size: clamp(15rem, 21vw, 32rem);
+      color: #000;
     }
   }
 </style>
@@ -424,6 +439,10 @@ const items = [
 
       const prevPanel = panelOf(prev);
       const newPanel = panelOf(idx);
+      // Number + headline + body all get the same staggered entrance. The
+      // number stays centred during its `y` slide because it's centred via the
+      // CSS `translate` property (see .cc__num), which composes with GSAP's
+      // `transform` instead of being overwritten by it.
       const reveal = items[idx].querySelectorAll<HTMLElement>(".cc__num, .cc__headline, .cc__body");
 
       if (desktop) {

@@ -24,6 +24,7 @@ const sections = [
       "Project naming, branding, and sales collateral",
       "A dedicated sales site and iOS sales app built to take reservations.",
     ],
+    listInline: true,
     cta: "Bring us your development",
     media: [
       { type: "duo", ratio: "16 / 9", images: ["/clients/s1-duo-1.jpg", "/clients/s1-duo-2.jpg"] },
@@ -43,6 +44,7 @@ const sections = [
       "Presentation imagery for boards, permits, and HOA review",
       'Immersive 360° walkthroughs that settle the "what will it look like" question.',
     ],
+    listInline: true,
     cta: "Make your case visually",
     media: [
       { type: "trio", ratio: "4 / 5", images: ["/clients/s2-trio-1.jpg", "/clients/s2-trio-2.jpg", "/clients/s2-trio-3.jpg"] },
@@ -62,6 +64,7 @@ const sections = [
       "The finished piece rendered in the client's actual room",
       "Visual proposals that back up a premium quote.",
     ],
+    listInline: true,
     cta: "Position your workshop",
     media: [
       { type: "full", ratio: "16 / 9", image: "/clients/s3-full.jpg" },
@@ -85,11 +88,18 @@ const sections = [
               <h2 class="cl-heading">{s.heading}</h2>
               <p class="cl-sub">{s.sub}</p>
               <p class="cl-body">{s.body}</p>
-              <ul class="cl-list">
-                {s.list.map((li) => (
-                  <li>{li}</li>
-                ))}
-              </ul>
+              {s.listInline ? (
+                /* Figma "Who we work with": the service list reads as one
+                   continuous paragraph (no bullets / line breaks), sharing the
+                   body paragraph's exact line spacing. */
+                <p class="cl-body">{s.list.join(" ")}</p>
+              ) : (
+                <ul class="cl-list">
+                  {s.list.map((li) => (
+                    <li>{li}</li>
+                  ))}
+                </ul>
+              )}
             </div>
             <a href="/#contact" class="cl-cta">{s.cta}</a>
           </div>
@@ -126,14 +136,17 @@ const sections = [
     background: #fff;
     color: #0a0a0a;
     font-family: "Poppins", sans-serif;
-    padding: clamp(8rem, 13vh, 12rem) clamp(2rem, 4vw, 6rem) clamp(5rem, 9vw, 11rem);
+    /* Generous top margin before the heading — matches the Figma frame, where
+       the title sits ~18% of the canvas width below the top (y≈454 on the
+       2526-wide canvas). Root font-size is 10px, so the cap must allow ~26rem. */
+    padding: clamp(14rem, 18vw, 30rem) clamp(2rem, 4vw, 6rem) clamp(5rem, 9vw, 11rem);
   }
 
-  /* ── Page title — bold, with a per-character fill (Cover.astro effect) ── */
+  /* ── Page title — normal weight, with a per-character fill (Cover.astro effect) ── */
   .cl-title {
     margin: 0 0 clamp(2.5rem, 5vw, 6rem);
     font-size: clamp(3.2rem, 4vw, 7rem);
-    font-weight: 700;
+    font-weight: 400;
     line-height: 1;
     letter-spacing: -0.02em;
     text-transform: uppercase;
@@ -218,7 +231,8 @@ const sections = [
     font-size: clamp(1.05rem, 1.1vw, 1.55rem);
     font-weight: 300;
     line-height: 1.5;
-    color: #555;
+    /* Same near-black as the body paragraph (was a lighter grey) */
+    color: #2a2a2a;
   }
   .cl-section--right .cl-list {
     align-items: flex-end;
@@ -235,11 +249,11 @@ const sections = [
     background: #000;
     color: #fff;
     text-decoration: none;
-    font-size: clamp(1rem, 1.1vw, 1.6rem);
+    font-size: 1.25rem;
     font-weight: 300;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    padding: 0.9em 1.8em;
+    padding: 0.75rem 1.5rem;
     border-radius: 9999px;
     white-space: nowrap;
     transition: opacity 0.2s ease;
@@ -294,6 +308,10 @@ const sections = [
     .cl-head {
       gap: clamp(1.4rem, 3vw, 2.6rem);
     }
+    .cl-cta {
+      font-size: 1.3rem;
+      padding: 0.8rem 1.8rem;
+    }
   }
 
   /* ── MOBILE (≤767px) — single column stack (Figma mobile frame) ── */
@@ -303,7 +321,8 @@ const sections = [
     }
     .cl-title {
       font-size: clamp(2.6rem, 10vw, 4rem);
-      margin-bottom: clamp(2rem, 8vw, 3rem);
+      margin-top: clamp(1.5rem, 6vw, 2.5rem);
+      margin-bottom: clamp(3.25rem, 12vw, 4.75rem);
     }
 
     /* Header stacks: text → CTA below it */
@@ -331,6 +350,8 @@ const sections = [
     /* CTA aligns with its section's text edge */
     .cl-cta {
       align-self: flex-start;
+      font-size: 1rem;
+      padding: 0.6rem 1.4rem;
     }
     .cl-section--right .cl-cta {
       align-self: flex-end;
