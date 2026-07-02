@@ -30,7 +30,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     >
         <li>
             <a
-                href="#work"
+                href="/projects"
                 class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
             >
                 Work
@@ -38,7 +38,7 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         </li>
         <li>
             <a
-                href="#categories"
+                href="/#categories"
                 class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
             >
                 Capabilities
@@ -162,7 +162,6 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         const nav = document.getElementById("main-nav");
         if (!nav) return;
 
-        const darkSections        = document.querySelectorAll<HTMLElement>("[data-navbar-dark]");
         const transparentSections = document.querySelectorAll<HTMLElement>("[data-navbar-transparent]");
         const noBlurSections      = document.querySelectorAll<HTMLElement>("[data-navbar-noblur]");
 
@@ -174,6 +173,10 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         function updateTheme() {
             const navH = nav!.offsetHeight;
 
+            // Live query (not a NodeList captured at init): the pinned #categories
+            // section toggles data-navbar-dark on itself per active slide at
+            // runtime, so a static list would never see slides 3 & 5 go dark.
+            const darkSections   = document.querySelectorAll<HTMLElement>("[data-navbar-dark]");
             const anyDark        = Array.from(darkSections).some((el) => isUnderNav(el, navH));
             const anyTransparent = Array.from(transparentSections).some((el) => isUnderNav(el, navH));
             const anyNoBlur      = Array.from(noBlurSections).some((el) => isUnderNav(el, navH));
@@ -184,8 +187,6 @@ import RightUpArrow from "../assets/icons/right_up.svg";
             // (e.g. the cover, so its animated spiral reads crisply behind the nav).
             nav!.dataset.noblur  = anyNoBlur ? "true" : "false";
         }
-
-        if (!darkSections.length) nav.dataset.theme = "dark";
 
         window.addEventListener("scroll", updateTheme, { passive: true });
         updateTheme();

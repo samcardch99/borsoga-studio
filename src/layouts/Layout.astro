@@ -4,12 +4,96 @@ import "lenis/dist/lenis.css";
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import {
+	SITE_NAME,
+	SITE_TITLE,
+	SITE_DESCRIPTION,
+	SITE_TAGLINE,
+	DEFAULT_OG_IMAGE,
+	CONTACT,
+	SOCIAL,
+	SERVICES,
+} from "../consts";
 
 interface Props {
+	/** Page title. Composed as "{title} — Borsoga Studio"; omit on the home page. */
+	title?: string;
+	/** Meta description (~150–160 chars). Falls back to the site description. */
+	description?: string;
+	/** Social-share image (path from root or absolute URL). */
+	image?: string;
+	/** Open Graph type — "website" for listings, "article" for project pages. */
+	type?: "website" | "article";
+	/** Set true on experimental/duplicate pages to keep them out of the index. */
+	noindex?: boolean;
 	showChrome?: boolean;
 }
 
-const { showChrome = true } = Astro.props;
+const {
+	title,
+	description = SITE_DESCRIPTION,
+	image = DEFAULT_OG_IMAGE,
+	type = "website",
+	noindex = false,
+	showChrome = true,
+} = Astro.props;
+
+// "{Page} — Borsoga Studio", or the full brand title on the home page.
+const pageTitle = title ? `${title} — ${SITE_NAME}` : SITE_TITLE;
+
+// Absolute URLs (require `site` in astro.config.mjs). Astro.site is guaranteed
+// there, but guard so a missing config degrades gracefully instead of throwing.
+const origin = Astro.site ?? new URL("https://borsogastudio.com");
+const canonical = new URL(Astro.url.pathname, origin).href;
+const ogImage = new URL(image, origin).href;
+
+// ── Organization + WebSite JSON-LD (site-wide knowledge graph) ──
+// Helps Google, AI Overviews and LLM answer engines understand who Borsoga is,
+// what it offers, where it operates and how to reach it.
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": ["Organization", "ProfessionalService"],
+			"@id": `${origin.origin}/#organization`,
+			name: SITE_NAME,
+			alternateName: "Borsoga",
+			url: origin.origin + "/",
+			logo: `${origin.origin}/favicon.svg`,
+			image: ogImage,
+			description: SITE_DESCRIPTION,
+			slogan: SITE_TAGLINE,
+			foundingDate: CONTACT.foundingYear,
+			email: CONTACT.email,
+			telephone: CONTACT.telephone,
+			address: {
+				"@type": "PostalAddress",
+				addressLocality: CONTACT.city,
+				addressRegion: CONTACT.region,
+				addressCountry: CONTACT.country,
+			},
+			areaServed: CONTACT.areaServed,
+			knowsAbout: SERVICES,
+			sameAs: SOCIAL,
+			contactPoint: {
+				"@type": "ContactPoint",
+				contactType: "sales",
+				email: CONTACT.email,
+				telephone: CONTACT.telephone,
+				availableLanguage: ["en", "es"],
+			},
+		},
+		{
+			"@type": "WebSite",
+			"@id": `${origin.origin}/#website`,
+			url: origin.origin + "/",
+			name: SITE_NAME,
+			description: SITE_DESCRIPTION,
+			inLanguage: "en",
+			publisher: { "@id": `${origin.origin}/#organization` },
+		},
+	],
+};
 ---
 
 <!doctype html>
@@ -19,7 +103,37 @@ const { showChrome = true } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Borsoga Studio</title>
+
+		<!-- ── Primary meta ── -->
+		<title>{pageTitle}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<meta
+			name="robots"
+			content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"}
+		/>
+		<meta name="theme-color" content="#0a0a0a" />
+
+		<!-- ── Open Graph ── -->
+		<meta property="og:type" content={type} />
+		<meta property="og:site_name" content={SITE_NAME} />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- ── Twitter / X ── -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+
+		<!-- ── Structured data (Organization + WebSite) ── -->
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+		<!-- Page-specific structured data (BreadcrumbList, CreativeWork, …) -->
+		<slot name="head" />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link

@@ -1,0 +1,148 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// Contact details reused from the single source of truth.
+import { CONTACT } from "../consts";
+
+// Static "last updated" stamp — bump manually when the policy changes so the
+// date isn't tied to the build time.
+const lastUpdated = "January 2026";
+---
+
+<Layout
+  title="Privacy & Terms"
+  description="How Borsoga Studio collects, uses and protects the information you share through our contact form and website."
+>
+  <main class="legal">
+    <div class="legal__inner">
+      <h1 class="legal__title">Privacy &amp; Terms</h1>
+      <p class="legal__meta">Last updated: {lastUpdated}</p>
+
+      <p class="legal__lead">
+        This page explains what information Borsoga Studio collects, why we
+        collect it, and the choices you have. We keep it short and plain.
+      </p>
+
+      <section class="legal__block">
+        <h2>Information we collect</h2>
+        <p>
+          We only collect what you choose to send us. When you use the contact
+          form, we receive the <strong>name, email address and message</strong>
+          you provide. We do not sell, rent or trade your information.
+        </p>
+      </section>
+
+      <section class="legal__block">
+        <h2>How we use it</h2>
+        <p>
+          Your details are used solely to respond to your inquiry, discuss a
+          potential project, and stay in touch about the work you asked about.
+          Contact-form submissions are delivered to us through our email
+          provider (EmailJS), which processes the message on our behalf.
+        </p>
+      </section>
+
+      <section class="legal__block">
+        <h2>Cookies &amp; analytics</h2>
+        <p>
+          This site runs the functional scripts needed to display and animate
+          its pages. If we add analytics or advertising cookies in the future,
+          we will update this page first.
+        </p>
+      </section>
+
+      <section class="legal__block">
+        <h2>Your choices</h2>
+        <p>
+          You can ask us to access, correct or delete the information you have
+          shared at any time. Just email
+          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> and we will
+          take care of it.
+        </p>
+      </section>
+
+      <section class="legal__block">
+        <h2>Contact</h2>
+        <p>
+          Borsoga Studio · {CONTACT.city}, {CONTACT.region} · working globally<br />
+          Email: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a><br />
+          Phone / WhatsApp: <a href={`tel:${CONTACT.telephone}`}>{CONTACT.telephone}</a>
+        </p>
+      </section>
+
+      <p class="legal__note">
+        This document is a general starting point and not legal advice. Adapt it
+        to your jurisdiction and the data you actually process.
+      </p>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .legal {
+    background: #f7f7f7;
+    color: #0a0a0a;
+    font-family: "Poppins", sans-serif;
+    min-height: 100svh;
+    padding: clamp(9rem, 16vh, 14rem) clamp(2rem, 6vw, 6rem) clamp(5rem, 9vw, 9rem);
+  }
+  .legal__inner {
+    max-width: 68rem;
+    margin: 0 auto;
+  }
+  .legal__title {
+    margin: 0 0 0.6rem;
+    font-size: clamp(2.6rem, 5vw, 5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+  .legal__meta {
+    margin: 0 0 clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(1rem, 1.1vw, 1.3rem);
+    font-weight: 300;
+    color: rgba(0, 0, 0, 0.45);
+    letter-spacing: 0.04em;
+  }
+  .legal__lead {
+    margin: 0 0 clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(1.3rem, 1.5vw, 1.8rem);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+  .legal__block {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .legal__block h2 {
+    margin: 0 0 0.8rem;
+    font-size: clamp(1.4rem, 1.8vw, 2.1rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .legal__block p {
+    margin: 0;
+    font-size: clamp(1.15rem, 1.25vw, 1.55rem);
+    font-weight: 300;
+    line-height: 1.7;
+    color: #2a2a2a;
+  }
+  .legal a {
+    color: #0a0a0a;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .legal a:hover {
+    opacity: 0.65;
+  }
+  .legal__note {
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid rgba(0, 0, 0, 0.14);
+    font-size: clamp(1rem, 1.1vw, 1.25rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.5);
+  }
+</style>

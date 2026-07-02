@@ -3,7 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 type Project = CollectionEntry<"projects">;
 
-// Homepage preview — only a handful of projects (5 visualization + 1 brand
+// Homepage preview — only a handful of projects (5 visualization + 3 brand
 // identity). Ordered explicitly so the preview always reads the same way
 // regardless of the collection's global `order`.
 const FEATURED = [
@@ -12,12 +12,22 @@ const FEATURED = [
   "RAL-9002-CORNER-RESIDENTIAL-BUILDING", // viz
   "RAL-7006-COCONUT-GROVE-RESIDENCE", // viz
   "RAL-1013-CRYSTAL-RIVER-RESIDENCE", // viz
+  "RAL-4005-EPSI-NEST", // brand
+  "RAL-5002-PEAK-VISION", // brand
   "RAL-9005-REFRAME", // brand
 ];
 
 const raw = await getCollection("projects");
 // Collection ids are slugified to lowercase, so match case-insensitively.
 const byId = new Map(raw.map((p: Project) => [p.id.toLowerCase(), p]));
+// Projects whose cover is a portrait (4:5) photo — the preview thumbnail uses a
+// vertical box for these so the image shows fully, instead of being cropped to a
+// thin landscape slice by object-fit: cover.
+const VERTICAL_COVERS = new Set([
+  "ral-9002-corner-residential-building",
+  "ral-7006-coconut-grove-residence",
+  "ral-1013-crystal-river-residence",
+]);
 const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
   .filter((p): p is Project => Boolean(p))
   .map((p: Project) => ({
@@ -25,6 +35,7 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
     title: p.data.title,
     href: `/works/${p.id}/`,
     thumb: p.data.images[0],
+    vertical: VERTICAL_COVERS.has(p.id.toLowerCase()),
   }));
 ---
 
@@ -39,7 +50,11 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
         {
           projects.map((p, i) => (
             <div
-              class="projects__item projects__item--primary"
+              class:list={[
+                "projects__item",
+                "projects__item--primary",
+                { "projects__item--vertical": p.vertical },
+              ]}
               data-project-index={i}
             >
               <a
@@ -120,7 +135,7 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
       <div class="swiper-wrapper">
         {
           projects.map((p) => (
-            <div class="swiper-slide projects__slide">
+            <div class:list={["swiper-slide", "projects__slide", { "projects__slide--vertical": p.vertical }]}>
               <a
                 class="projects__slide-inner"
                 href={p.href}
@@ -268,6 +283,11 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
     object-fit: cover;
     display: block;
   }
+  /* Portrait covers — a 4:5 box so the vertical photo shows fully (its natural
+     ratio) instead of being cropped to the 16:9 landscape slice. */
+  .projects__slide--vertical .projects__slide-inner {
+    aspect-ratio: 4 / 5;
+  }
   /* Neighbours scale toward the active slide so they hug it with a slim gap */
   .swiper-slide-prev .projects__slide-inner {
     transform-origin: bottom right;
@@ -404,6 +424,12 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
       height: 100%;
       object-fit: cover;
       display: block;
+    }
+    /* Portrait covers — a 4:5 box so the vertical photo shows fully (its natural
+       ratio); the scroll-scale animation reads each item's height, so the taller
+       box flows through per-item. */
+    .projects__item--vertical .projects__item__image {
+      aspect-ratio: 4 / 5;
     }
 
     /* "Projects" heading — top of the right column, right-aligned, two-tone */

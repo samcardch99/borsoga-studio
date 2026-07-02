@@ -23,10 +23,66 @@ type Props = {
 const { project, next } = Astro.props;
 const d = project.data;
 const imgs = d.images;
-const narrative = project.body.trim();
+const narrative = project.body?.trim() ?? "";
+
+// ── Per-project SEO / structured data ──
+const origin = Astro.site ?? new URL("https://borsogastudio.com");
+const canonical = new URL(Astro.url.pathname, origin).href;
+const absImages = imgs.map((src) => new URL(src, origin).href);
+// Split the "•/·"-separated scope string into discrete keyword tokens.
+const scopeTokens = d.scope
+	.split(/[•·]/)
+	.map((s) => s.trim())
+	.filter(Boolean);
+
+const projectLd = {
+	"@context": "https://schema.org",
+	"@graph": [
+		{
+			"@type": "CreativeWork",
+			"@id": `${canonical}#project`,
+			name: d.title,
+			headline: d.title,
+			description: d.description,
+			abstract: d.closingLine,
+			url: canonical,
+			inLanguage: "en",
+			dateCreated: d.year,
+			datePublished: d.year,
+			genre: d.discipline,
+			keywords: [d.discipline, ...scopeTokens].join(", "),
+			creator: { "@id": `${origin.origin}/#organization` },
+			author: { "@id": `${origin.origin}/#organization` },
+			publisher: { "@id": `${origin.origin}/#organization` },
+			...(d.client
+				? { sourceOrganization: { "@type": "Organization", name: d.client } }
+				: {}),
+			image: absImages,
+			thumbnailUrl: absImages[0],
+		},
+		{
+			"@type": "BreadcrumbList",
+			itemListElement: [
+				{ "@type": "ListItem", position: 1, name: "Home", item: `${origin.origin}/` },
+				{ "@type": "ListItem", position: 2, name: "Work", item: `${origin.origin}/projects/` },
+				{ "@type": "ListItem", position: 3, name: d.title, item: canonical },
+			],
+		},
+	],
+};
 ---
 
-<Layout showChrome={false}>
+<Layout
+  showChrome={false}
+  title={d.title}
+  description={d.description}
+  image={imgs[0]}
+  type="article"
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(projectLd)} />
+    <meta property="article:published_time" content={`${d.year}-01-01`} />
+  </Fragment>
   <div class="pd">
     <NavbarInterior />
 

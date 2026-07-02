@@ -4,9 +4,14 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
+  // Canonical production origin — required for absolute canonical URLs, Open
+  // Graph tags and the generated sitemap. Update if the domain changes.
+  site: 'https://borsogastudio.com',
+
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
@@ -14,5 +19,12 @@ export default defineConfig({
     },
   },
 
-  integrations: [react()]
+  integrations: [
+    react(),
+    sitemap({
+      // Keep the experimental orbit view out of the index (it duplicates
+      // /projects and links to non-canonical, un-lowercased work URLs).
+      filter: (page) => !page.includes('/projects-orbit'),
+    }),
+  ],
 });

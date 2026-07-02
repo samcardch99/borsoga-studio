@@ -8,11 +8,11 @@ year: "2024"
 layout: "pd2"
 order: 2
 images:
-  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6461.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6458.jpg"
   - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6414.jpg"
   - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6415.jpg"
   - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6416.jpg"
-  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6458.jpg"
+  - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6461.jpg"
   - "/projects/RAL-8003-WOOD-VEIN-KITCHEN-CLOSET/img-6459.jpg"
 ---
 

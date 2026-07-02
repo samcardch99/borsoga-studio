@@ -28,18 +28,20 @@ const categories = [
     description:
       "Buyers don't just want to see a space; they want to experience it. We develop real-time immersive environments and interactive 3D walkthroughs, allowing users to navigate and feel the atmosphere of a project before it physically exists.",
     tags: ["FLOOR PLAN UI", "BESPOKE SITES", "PERFORMANCE & SEO"],
-    bgColor: "#f6f5f1",
+    bgColor: "#fff",
     textColor: "#1a1a1a",
     tagBorder: "rgba(0,0,0,0.5)",
     ctaBg: "#000",
     ctaColor: "#fff",
-    bgStyle: "background-color:#f6f5f1;",
+    bgStyle: "background-color:#fff;",
     noGradient: true,
     customGradient: undefined as string | undefined,
     contentBlur: undefined as string | undefined,
-    bgImg: "/categories/fondo realidad virtual.png",
+    // Immersive scene = two floating VR headsets on white. gafas 1 is the back
+    // layer (this bgImg); gafas 2 is the front layer (see the i===1 block).
+    bgImg: "/categories/gafas-1-desktop.png",
     bgImgStyle:
-      "position:absolute;left:21.71%;top:-63.58%;width:78.29%;height:177.69%;object-fit:cover;pointer-events:none;",
+      "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 28%;pointer-events:none;",
   },
   {
     id: "web",
@@ -113,11 +115,11 @@ const mobileCategories = [
     ...categories[0], dark: true,
     layers: [{ src: "/categories/animated-architecture-new/3.jpg", depth: 0 }] as CatLayer[],
   },
-  { // Immersive — bg + people cut-out (light section)
+  { // Immersive — two floating VR headsets on white (gafas 1 back, gafas 2 front)
     ...categories[1], dark: false,
     layers: [
-      { src: "/categories/fondo realidad virtual.png", depth: 0 },
-      { src: "/categories/parte 2 realidad virtual.png", depth: 2.5, pos: "center bottom" },
+      { src: "/categories/gafas-1-movil.png", depth: 0, pos: "center 43%" },
+      { src: "/categories/gafas-2-movil.png", depth: 2.5, pos: "center 53%" },
     ] as CatLayer[],
   },
   { // Web Platforms — fondo + piedra + laptops
@@ -203,10 +205,10 @@ const mobileCategories = [
               )}
               {i === 1 && (
                 <img
-                  src="/categories/parte 2 realidad virtual.png"
+                  src="/categories/gafas-2-desktop.png"
                   alt=""
                   class="cat__parallax-fg"
-                  style={cat.bgImgStyle}
+                  style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 76%;pointer-events:none;"
                 />
               )}
               {i === 2 && (
@@ -477,11 +479,18 @@ const mobileCategories = [
     transform-origin: center center;
     z-index: 2;
     pointer-events: none;
+    /* Nudge gafas 2 (front headset) slightly to the right on desktop.
+       `transform` composes with the mouse-parallax `translate` property. */
+    transform: translateX(2%);
   }
   #cat-parallax-bg {
     will-change: transform;
     scale: 1.2;
     transform-origin: center center;
+    /* Nudge gafas 1 (back headset) slightly to the left on desktop. Uses
+       `transform` (not the `translate` property, which the mouse-parallax JS
+       drives) so the two compose; the scale:1.2 overflow hides the edge. */
+    transform: translateX(-3%);
   }
 
   /* ── Lighting frames slide 1 ── */
@@ -765,6 +774,33 @@ const mobileCategories = [
     object-fit: cover;
     transform: scale(1.12);
   }
+  /* Immersive card — the VR headsets are centered product shots on transparency,
+     so each layer must `contain` (no crop) and sit on a white section. */
+  .catm--immersive {
+    background: #fff;
+  }
+  /* Keep the desktop two-headset composition on portrait screens. The source
+     PNGs are a small headset centered in a big landscape canvas, so `contain`
+     alone renders them tiny; we scale up hard to zoom past the transparent
+     margin (only the transparent area is cropped, never the device). Each layer
+     is offset vertically (object-position) so gafas 1 stacks above gafas 2, and
+     the big scale spreads them further apart — mirroring the desktop diagonal. */
+  .catm--immersive .catm__layer {
+    object-fit: contain;
+    transform: scale(2.2);
+  }
+  /* No whitening gradient here — the section is already white, so the overlay
+     only added an unwanted white fade over the headsets. */
+  .catm--immersive .catm__overlay {
+    display: none;
+  }
+  /* Phone (≤767px): the headsets read a touch small, so bump the zoom a bit
+     more than tablet. */
+  @media (max-width: 767px) {
+    .catm--immersive .catm__layer {
+      transform: scale(2.6);
+    }
+  }
   .catm__overlay {
     position: absolute;
     inset: 0;
@@ -933,7 +969,8 @@ const mobileCategories = [
   const FADE_START = 0.72;
 
   // true = slide has dark bg → navbar needs light (white) text
-  const SLIDE_IS_DARK = [false, false, false, false, true];
+  // [arch-viz, immersive, web (cat 3), apps, brand (cat 5)]
+  const SLIDE_IS_DARK = [false, false, true, false, true];
 
   const catSection = document.getElementById("categories") as HTMLElement;
 
