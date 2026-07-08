@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import NavbarInterior from "../../components/helpers/NavbarInterior.astro";
 import Footer from "../../components/Footer.astro";
+import RightUpArrow from "../../assets/icons/right_up.svg";
 
 export async function getStaticPaths() {
   const all = (await getCollection("projects")).sort(
@@ -11,16 +12,21 @@ export async function getStaticPaths() {
   );
   return all.map((project: CollectionEntry<"projects">, i: number) => ({
     params: { slug: project.id.toLowerCase(), },
-    props: { project, next: all[(i + 1) % all.length] },
+    props: {
+      project,
+      prev: all[(i - 1 + all.length) % all.length],
+      next: all[(i + 1) % all.length],
+    },
   }));
 }
 
 type Props = {
   project: CollectionEntry<"projects">;
+  prev: CollectionEntry<"projects">;
   next: CollectionEntry<"projects">;
 };
 
-const { project, next } = Astro.props;
+const { project, prev, next } = Astro.props;
 const d = project.data;
 const imgs = d.images;
 const narrative = project.body?.trim() ?? "";
@@ -93,6 +99,18 @@ const projectLd = {
       <div class="pd-line" id="pd-line-top"></div>
 
       <div class="pd-hero__content">
+        {/* Back to the previous project. The forward "NEXT PROJECT" nav at the
+            page bottom auto-advances; this gives a manual way to step back.
+            Plain anchor — ClientRouter handles the soft View Transition. */}
+        <a
+          href={`/works/${prev.id.toLowerCase()}/`}
+          class="pd-back"
+          aria-label={`Back to ${prev.data.title}`}
+        >
+          <RightUpArrow class="pd-back__arrow" aria-hidden="true" />
+          <span class="pd-back__label">Back</span>
+        </a>
+
         <div class="pd-hero__clip">
           <h1 class="pd-hero__title" id="pd-title">{d.title}</h1>
         </div>
@@ -320,6 +338,30 @@ const projectLd = {
     padding-top: clamp(1.2rem, 2.5vw, 3.5rem);
     display: flex;
     flex-direction: column;
+  }
+
+  /* ── BACK button — top-left, above the title (all breakpoints) ── */
+  .pd-back {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: clamp(1.2rem, 2vw, 2rem);
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.05rem, 1.3vw, 1.6rem);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    transition: opacity 0.25s ease;
+  }
+  .pd-back:hover { opacity: 0.55; }
+  .pd-back__arrow {
+    /* right_up.svg points ↗; rotate to point ← for "previous / back". */
+    height: 1.25em;
+    width: auto;
+    transform: rotate(-135deg);
   }
 
   .pd-hero__clip { overflow: hidden; padding-bottom: 0.06em; }
