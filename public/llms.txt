@@ -42,6 +42,38 @@ Tagline: "Digital spaces for the unbuilt imagination."
 - [RAL 5002 // Peak Vision](https://borsogastudio.com/works/ral-5002-peak-vision/): Investment-firm brand identity and corporate design
 - [RAL 9005 // Reframe](https://borsogastudio.com/works/ral-9005-reframe/): Real-estate-developer brand identity and visual system
 
+## Key facts
+
+- Name: Borsoga Studio (also "Borsoga")
+- Type: Architectural visualization and CGI studio
+- Location: Miami, Florida, USA — working globally
+- Founded: 2026
+- Core tools: V-Ray and Rhino for 3D rendering
+- Languages: English and Spanish
+- Primary services: photoreal 3D rendering, CGI, immersive 360° tours, cinematic and aerial video, architectural & interior photography, custom sales websites and iOS sales apps, brand identity and visual systems
+- Serves: real estate developers and investors, architects and general contractors, and custom millwork and carpentry specialists
+- Positioning: "Digital spaces for the unbuilt imagination" — letting people experience a building or interior before it is built
+
+## Common questions
+
+### What is Borsoga Studio?
+Borsoga Studio is a Miami-based architectural visualization and CGI studio. It produces photoreal 3D renders, immersive 360° tours, cinematic video, custom sales websites and brand identity that let people experience a building or interior before it is built. It works with real estate developers, architects, general contractors and custom millwork specialists, based in Miami and working globally.
+
+### What is architectural visualization?
+Architectural visualization is the process of turning architectural plans, sketches and 3D models into accurate, photorealistic images, animations and immersive tours. It lets developers, architects and buyers see and evaluate a space before it is built. Borsoga Studio focuses on natural light, true human scale and honest material representation to convey the real feeling of a space.
+
+### Where is Borsoga Studio located?
+Borsoga Studio is based in Miami, Florida, USA, and works with clients globally. It can be reached at info@borsogastudio.com or +1 786-852-4847.
+
+### Who does Borsoga Studio work with?
+Borsoga Studio works with three main client types: real estate developers and investors who need to sell pre-construction before it is built; architects and general contractors who need drawings translated into images every stakeholder understands; and custom millwork and carpentry specialists who need brand identity and renders that justify a premium quote.
+
+### Can you visualize a building before it is built?
+Yes. Borsoga Studio specializes in pre-construction visualization — photoreal renders, cinematic walkthrough and aerial video, and immersive 360° tours that let a buyer stand inside a unit before the slab is poured. This helps developers take reservations earlier and defend their pitch to lenders and capital partners.
+
+### What software does Borsoga Studio use?
+Borsoga Studio's architectural visualization work is built primarily with V-Ray and Rhino, producing photorealistic CGI renders, animations and immersive environments.
+
 ## Contact
 
 - Email: info@borsogastudio.com

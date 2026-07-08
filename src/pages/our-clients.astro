@@ -26,10 +26,11 @@ const sections = [
     ],
     listInline: true,
     cta: "Bring us your development",
-    media: [
-      { type: "duo", ratio: "16 / 9", images: ["/clients/s1-duo-1.jpg", "/clients/s1-duo-2.jpg"] },
-      { type: "full", ratio: "16 / 9", image: "/clients/s1-full.jpg", hideMobile: true },
-    ] as Media[],
+    // Native, responsive branding-value infographic (three animated stats)
+    // replaces the three real-estate photos — rendered by the `graphic` branch
+    // in the template below. Desktop = 3 columns, mobile = stacked.
+    graphic: true,
+    media: [] as Media[],
   },
   {
     id: "architects",
@@ -46,6 +47,7 @@ const sections = [
     ],
     listInline: true,
     cta: "Make your case visually",
+    graphic: false,
     media: [
       { type: "trio", ratio: "4 / 5", images: ["/clients/s2-trio-1.jpg", "/clients/s2-trio-2.jpg", "/clients/s2-trio-3.jpg"] },
       { type: "full", ratio: "3 / 2", image: "/clients/s2-full.jpg" },
@@ -66,6 +68,7 @@ const sections = [
     ],
     listInline: true,
     cta: "Position your workshop",
+    graphic: false,
     media: [
       { type: "full", ratio: "16 / 9", image: "/clients/s3-full.jpg" },
       { type: "trio", ratio: "4 / 5", images: ["/clients/s3-trio-1.jpg", "/clients/s3-trio-2.jpg", "/clients/s3-trio-3.jpg"] },
@@ -107,27 +110,60 @@ const sections = [
             <a href="/#contact" class="cl-cta">{s.cta}</a>
           </div>
 
-          {s.media.map((m) => (
-            <div
-              class:list={[
-                "cl-media",
-                `cl-media--${m.type}`,
-                { "cl-media--hide-mobile": m.hideMobile },
-              ]}
-            >
-              {m.type === "full" ? (
-                <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
-                  <img src={m.image} alt="" loading="lazy" decoding="async" />
-                </figure>
-              ) : (
-                m.images.map((src) => (
-                  <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
-                    <img src={src} alt="" loading="lazy" decoding="async" />
-                  </figure>
-                ))
-              )}
+          {s.graphic ? (
+            /* Native, responsive branding-value graphic (three animated stats).
+               Desktop: 3 columns with vertical dividers. Mobile: stacked one
+               below the other. Animations (count-up, bar-grow, fade-up) run on
+               scroll via initBrandingGraphic() in the script below. */
+            <div class="cl-graphic" aria-label="Why branding funds the build — three key statistics">
+              <div class="cl-gfx__row">
+                <div class="cl-gfx__stat">
+                  <p class="cl-gfx__label">Price Premium</p>
+                  <div class="cl-gfx__num" data-count-to="40" data-count-prefix="+" data-count-suffix="%">+40%</div>
+                  <div class="cl-gfx__bar"><span style="--fill:70%"></span></div>
+                  <p class="cl-gfx__body">that a <strong>brand affiliation</strong> adds to a Miami residence vs. comparable non-branded stock. Prime global markets: 20–35%.</p>
+                  <p class="cl-gfx__src">Source: Brand Atlas, 2026</p>
+                </div>
+                <div class="cl-gfx__stat">
+                  <p class="cl-gfx__label">Pre-Sale Threshold</p>
+                  <div class="cl-gfx__num" data-count-to="50" data-count-suffix="%">50%</div>
+                  <div class="cl-gfx__bar"><span style="--fill:50%"></span></div>
+                  <p class="cl-gfx__body">of units sold <strong>before</strong> a project secures its construction loan — financed on renders, not concrete.</p>
+                  <p class="cl-gfx__src">Source: David Siddons Group</p>
+                </div>
+                <div class="cl-gfx__stat">
+                  <p class="cl-gfx__label">Buyer Demand</p>
+                  <div class="cl-gfx__num" data-count-to="4" data-count-suffix="×">4×</div>
+                  <div class="cl-gfx__bar"><span style="--fill:80%"></span></div>
+                  <p class="cl-gfx__body">more buyer inquiries on listings with <strong>3D tours &amp; renders</strong> vs. photo-only — faster absorption, earlier deposits.</p>
+                  <p class="cl-gfx__src">Source: Transparent House, 2026</p>
+                </div>
+              </div>
+              <p class="cl-gfx__close">Branding doesn't decorate the sale — it <span>funds the build</span>. Higher price, sold sooner, before ground breaks.</p>
             </div>
-          ))}
+          ) : (
+            s.media.map((m) => (
+              <div
+                class:list={[
+                  "cl-media",
+                  `cl-media--${m.type}`,
+                  { "cl-media--hide-mobile": m.hideMobile },
+                ]}
+              >
+                {m.type === "full" ? (
+                  <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
+                    <img src={m.image} alt="" loading="lazy" decoding="async" />
+                  </figure>
+                ) : (
+                  m.images.map((src) => (
+                    <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
+                      <img src={src} alt="" loading="lazy" decoding="async" />
+                    </figure>
+                  ))
+                )}
+              </div>
+            ))
+          )}
         </section>
       ))
     }
@@ -149,7 +185,7 @@ const sections = [
   .cl-title {
     margin: 0 0 clamp(2.5rem, 5vw, 6rem);
     font-size: clamp(3.2rem, 4vw, 7rem);
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
     text-transform: uppercase;
@@ -295,6 +331,96 @@ const sections = [
     will-change: transform;
   }
 
+  /* ── Branding value graphic (native, responsive) — replaces the real-estate
+     photos. Desktop: 3 columns with vertical dividers. Mobile: stacked. ── */
+  .cl-graphic {
+    margin-top: clamp(1.5rem, 3vw, 3rem);
+  }
+  .cl-gfx__row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.6rem, 3vw, 3.5rem);
+  }
+  .cl-gfx__stat {
+    padding-right: clamp(1.6rem, 2.5vw, 3rem);
+    border-right: 1px solid #e2e2e2;
+  }
+  .cl-gfx__stat:last-child {
+    padding-right: 0;
+    border-right: none;
+  }
+  .cl-gfx__label {
+    margin: 0;
+    font-size: clamp(0.95rem, 0.9vw, 1.2rem);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+  }
+  .cl-gfx__num {
+    margin: clamp(1rem, 1.6vw, 1.7rem) 0 0;
+    font-size: clamp(4.2rem, 6.5vw, 7.4rem);
+    font-weight: 600;
+    line-height: 0.82;
+    letter-spacing: -0.03em;
+    color: #111;
+  }
+  .cl-gfx__bar {
+    margin-top: clamp(1.2rem, 1.8vw, 1.9rem);
+    height: 8px;
+    background: #ececec;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .cl-gfx__bar span {
+    display: block;
+    height: 100%;
+    width: var(--fill, 100%);
+    background: #111;
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .cl-gfx__body {
+    margin: clamp(1.3rem, 1.8vw, 1.9rem) 0 0;
+    font-size: clamp(1.15rem, 1.05vw, 1.5rem);
+    font-weight: 300;
+    line-height: 1.55;
+    color: #555;
+  }
+  .cl-gfx__body strong {
+    font-weight: 500;
+    color: #111;
+  }
+  .cl-gfx__src {
+    margin: clamp(0.8rem, 1vw, 1.1rem) 0 0;
+    font-size: clamp(0.9rem, 0.85vw, 1.1rem);
+    font-weight: 400;
+    color: #9a9a9a;
+  }
+  .cl-gfx__close {
+    margin: clamp(2.4rem, 4vw, 3.4rem) 0 0;
+    padding-top: clamp(1.6rem, 2.5vw, 2.4rem);
+    border-top: 1px solid #e2e2e2;
+    max-width: 70ch;
+    font-size: clamp(1.5rem, 1.6vw, 2.1rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.45;
+    color: #333;
+  }
+  .cl-gfx__close span {
+    font-style: normal;
+    font-weight: 500;
+    color: #111;
+  }
+  /* Reveal states — animated in by initBrandingGraphic() on scroll */
+  .cl-gfx__stat,
+  .cl-gfx__close {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
   /* ── Entrance (same mechanism as /works/[slug].astro) ──
      Text blocks fade up on scroll (GSAP); images drift via parallax scrub. */
   .cl-head {
@@ -373,6 +499,41 @@ const sections = [
       display: none;
     }
 
+    /* Branding graphic — stack the three stats one below the other; vertical
+       dividers become horizontal, and the huge numbers scale down to fit. */
+    .cl-graphic {
+      /* Double the top margin on mobile (base is clamp(1.5rem, 3vw, 3rem)). */
+      margin-top: clamp(3rem, 6vw, 6rem);
+    }
+    .cl-gfx__row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .cl-gfx__stat {
+      padding: clamp(1.8rem, 6vw, 2.4rem) 0;
+      border-right: none;
+      border-bottom: 1px solid #e2e2e2;
+    }
+    .cl-gfx__stat:first-child {
+      padding-top: 0;
+    }
+    .cl-gfx__stat:last-child {
+      border-bottom: none;
+    }
+    .cl-gfx__num {
+      font-size: clamp(4rem, 17vw, 6.4rem);
+    }
+    .cl-gfx__label {
+      font-size: clamp(0.95rem, 3vw, 1.2rem);
+    }
+    .cl-gfx__body {
+      font-size: clamp(1.1rem, 3.7vw, 1.45rem);
+    }
+    .cl-gfx__close {
+      max-width: none;
+      font-size: clamp(1.45rem, 4.8vw, 1.9rem);
+    }
+
     .cl-divider {
       margin-bottom: clamp(2.4rem, 9vw, 3.6rem);
     }
@@ -439,6 +600,45 @@ const sections = [
         scrollTrigger: { trigger: el, start: "top 84%" },
       });
     });
+
+    // ── Branding graphic: reveal stats + grow bars + count up numbers on scroll.
+    const graphic = document.querySelector<HTMLElement>("#our-clients .cl-graphic");
+    if (graphic) {
+      const stats = gsap.utils.toArray<HTMLElement>(".cl-gfx__stat", graphic);
+      const bars = gsap.utils.toArray<HTMLElement>(".cl-gfx__bar span", graphic);
+      const nums = gsap.utils.toArray<HTMLElement>(".cl-gfx__num", graphic);
+      const close = graphic.querySelector<HTMLElement>(".cl-gfx__close");
+
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: graphic, start: "top 78%" },
+      });
+      tl.to(stats, { opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: "power3.out" }, 0);
+      tl.to(bars, { scaleX: 1, duration: 1.2, stagger: 0.15, ease: "power3.inOut" }, 0.2);
+      if (close) tl.to(close, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.5);
+
+      // Count numbers up from 0 (final value stays in the markup for no-JS / SEO).
+      nums.forEach((el) => {
+        const to = parseFloat(el.dataset.countTo ?? "0");
+        const prefix = el.dataset.countPrefix ?? "";
+        const suffix = el.dataset.countSuffix ?? "";
+        // Reset to 0 now (the stat is still opacity:0, so this is invisible) so
+        // the final value baked into the markup — kept for no-JS / SEO — doesn't
+        // flash before the count-up starts.
+        el.textContent = `${prefix}0${suffix}`;
+        const proxy = { v: 0 };
+        tl.fromTo(
+          proxy,
+          { v: 0 },
+          {
+            v: to,
+            duration: 1.4,
+            ease: "power2.out",
+            onUpdate: () => { el.textContent = `${prefix}${Math.round(proxy.v)}${suffix}`; },
+          },
+          0.25,
+        );
+      });
+    }
 
     ScrollTrigger.refresh();
   }

@@ -74,7 +74,26 @@ const jsonLd = {
 			},
 			areaServed: CONTACT.areaServed,
 			knowsAbout: SERVICES,
+			keywords:
+				"architectural visualization, 3D rendering, CGI, photorealistic renders, real estate visualization, immersive 360 tours, cinematic architectural video, sales websites, brand identity, Miami",
 			sameAs: SOCIAL,
+			// Machine-readable service list — lets AI answer engines enumerate and
+			// cite exactly what the studio offers (GEO: "architectural
+			// visualization services in Miami" style queries).
+			hasOfferCatalog: {
+				"@type": "OfferCatalog",
+				name: "Services",
+				itemListElement: SERVICES.map((service) => ({
+					"@type": "Offer",
+					itemOffered: {
+						"@type": "Service",
+						name: service,
+						serviceType: service,
+						provider: { "@id": `${origin.origin}/#organization` },
+						areaServed: CONTACT.areaServed,
+					},
+				})),
+			},
 			contactPoint: {
 				"@type": "ContactPoint",
 				contactType: "sales",
