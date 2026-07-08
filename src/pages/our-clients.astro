@@ -7,7 +7,15 @@ import Layout from "../layouts/Layout.astro";
 // where the Real Estate full image is dropped (marked hideMobile).
 type Media =
   | { type: "duo" | "trio"; ratio: string; images: string[]; hideMobile?: boolean }
+  // mosaic = 2 images side by side on top + 1 large image below (spans both
+  // columns). `images` is [top-left, top-right, big-bottom].
+  | { type: "mosaic"; ratio: string; images: string[]; hideMobile?: boolean }
   | { type: "full"; ratio: string; image: string; hideMobile?: boolean };
+
+// Exterior renders shown ABOVE the branding graphic (real-estate section).
+// `grow` = the numeric aspect ratio (w/h): used as flex-grow so the two images
+// share the full-bleed row at equal height, each keeping its own proportions.
+type PreImg = { src: string; ratio: string; grow: number };
 
 const sections = [
   {
@@ -30,6 +38,11 @@ const sections = [
     // replaces the three real-estate photos — rendered by the `graphic` branch
     // in the template below. Desktop = 3 columns, mobile = stacked.
     graphic: true,
+    // Two exterior renders sit above the branding graphic, full-bleed side by side.
+    preGraphic: [
+      { src: "/clients/exterior1.jpg", ratio: "16 / 9", grow: 16 / 9 },
+      { src: "/clients/exterior2.jpg", ratio: "4 / 5", grow: 4 / 5 },
+    ] as PreImg[],
     media: [] as Media[],
   },
   {
@@ -48,6 +61,7 @@ const sections = [
     listInline: true,
     cta: "Make your case visually",
     graphic: false,
+    preGraphic: [] as PreImg[],
     media: [
       { type: "trio", ratio: "4 / 5", images: ["/clients/s2-trio-1.jpg", "/clients/s2-trio-2.jpg", "/clients/s2-trio-3.jpg"] },
       { type: "full", ratio: "3 / 2", image: "/clients/s2-full.jpg" },
@@ -69,9 +83,9 @@ const sections = [
     listInline: true,
     cta: "Position your workshop",
     graphic: false,
+    preGraphic: [] as PreImg[],
     media: [
-      { type: "full", ratio: "16 / 9", image: "/clients/s3-full.jpg" },
-      { type: "trio", ratio: "4 / 5", images: ["/clients/s3-trio-1.jpg", "/clients/s3-trio-2.jpg", "/clients/s3-trio-3.jpg"] },
+      { type: "mosaic", ratio: "16 / 9", images: ["/clients/bathroom1.jpg", "/clients/bathroom2.jpg", "/clients/bathroom3.jpg"] },
     ] as Media[],
   },
 ];
@@ -111,10 +125,24 @@ const sections = [
           </div>
 
           {s.graphic ? (
-            /* Native, responsive branding-value graphic (three animated stats).
+            <>
+            {s.preGraphic.length > 0 && (
+              /* Reduced-size exterior renders, placed above the graphic. */
+              <div class="cl-exteriors">
+                {s.preGraphic.map((p) => (
+                  <figure
+                    class="cl-fig cl-fig--ext"
+                    style={`aspect-ratio:${p.ratio};flex-grow:${p.grow}`}
+                  >
+                    <img src={p.src} alt="" loading="lazy" decoding="async" />
+                  </figure>
+                ))}
+              </div>
+            )}
+            {/* Native, responsive branding-value graphic (three animated stats).
                Desktop: 3 columns with vertical dividers. Mobile: stacked one
                below the other. Animations (count-up, bar-grow, fade-up) run on
-               scroll via initBrandingGraphic() in the script below. */
+               scroll via initBrandingGraphic() in the script below. */}
             <div class="cl-graphic" aria-label="Why branding funds the build — three key statistics">
               <div class="cl-gfx__row">
                 <div class="cl-gfx__stat">
@@ -141,6 +169,7 @@ const sections = [
               </div>
               <p class="cl-gfx__close">Branding doesn't decorate the sale — it <span>funds the build</span>. Higher price, sold sooner, before ground breaks.</p>
             </div>
+            </>
           ) : (
             s.media.map((m) => (
               <div
@@ -155,8 +184,14 @@ const sections = [
                     <img src={m.image} alt="" loading="lazy" decoding="async" />
                   </figure>
                 ) : (
-                  m.images.map((src) => (
-                    <figure class="cl-fig" style={`aspect-ratio:${m.ratio}`}>
+                  m.images.map((src, idx) => (
+                    <figure
+                      class:list={[
+                        "cl-fig",
+                        { "cl-fig--mosaic-big": m.type === "mosaic" && idx === 2 },
+                      ]}
+                      style={`aspect-ratio:${m.ratio}`}
+                    >
                       <img src={src} alt="" loading="lazy" decoding="async" />
                     </figure>
                   ))
@@ -316,6 +351,14 @@ const sections = [
   .cl-media--full {
     grid-template-columns: 1fr;
   }
+  /* Mosaic — two images side by side on top, one large image below (spanning
+     both columns). */
+  .cl-media--mosaic {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cl-fig--mosaic-big {
+    grid-column: 1 / -1;
+  }
 
   .cl-fig {
     margin: 0;
@@ -329,6 +372,22 @@ const sections = [
     object-fit: cover;
     display: block;
     will-change: transform;
+  }
+
+  /* ── Exterior renders shown above the branding graphic — a two-up mosaic that
+     matches the other media groups (content width, same gap, rounded corners).
+     flex-grow (set inline = each image's aspect ratio) splits the row so the
+     landscape shot takes more width than the portrait, both at one shared
+     height. ── */
+  .cl-exteriors {
+    display: flex;
+    gap: clamp(0.8rem, 1.6vw, 2rem);
+    margin-top: clamp(1rem, 2vw, 2.4rem);
+  }
+  .cl-exteriors .cl-fig--ext {
+    flex-basis: 0;
+    flex-shrink: 1;
+    min-width: 0;
   }
 
   /* ── Branding value graphic (native, responsive) — replaces the real-estate
@@ -488,7 +547,8 @@ const sections = [
 
     /* All image groups stack into one column */
     .cl-media--duo,
-    .cl-media--trio {
+    .cl-media--trio,
+    .cl-media--mosaic {
       grid-template-columns: 1fr;
     }
     .cl-media {
@@ -497,6 +557,16 @@ const sections = [
     /* Real Estate full image is dropped on mobile (matches the mobile frame) */
     .cl-media--hide-mobile {
       display: none;
+    }
+
+    /* Exterior renders — stack full-width on phones (side by side would be tiny). */
+    .cl-exteriors {
+      flex-direction: column;
+      gap: clamp(0.8rem, 3vw, 1.2rem);
+    }
+    .cl-exteriors .cl-fig--ext {
+      flex: none;
+      width: 100%;
     }
 
     /* Branding graphic — stack the three stats one below the other; vertical

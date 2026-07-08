@@ -3,7 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 type Project = CollectionEntry<"projects">;
 
-// Homepage preview — only a handful of projects (5 visualization + 3 brand
+// Homepage preview — only a handful of projects (6 visualization + 3 brand
 // identity). Ordered explicitly so the preview always reads the same way
 // regardless of the collection's global `order`.
 const FEATURED = [
@@ -12,6 +12,7 @@ const FEATURED = [
   "RAL-9002-CORNER-RESIDENTIAL-BUILDING", // viz
   "RAL-7006-COCONUT-GROVE-RESIDENCE", // viz
   "RAL-1013-CRYSTAL-RIVER-RESIDENCE", // viz
+  "RAL-1015-POOL-PAVILION", // viz
   "RAL-4005-EPSI-NEST", // brand
   "RAL-5002-PEAK-VISION", // brand
   "RAL-9005-REFRAME", // brand
@@ -670,6 +671,30 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
         gsap.set(t, { opacity: i === firstIdx ? 1 : 0.2 });
       });
 
+      // ── Height-weighted timeline positions ──────────────────────────────
+      // The scrub maps scroll → timeline linearly, so a uniform per-index
+      // cadence assumes every image occupies the same scroll distance. Portrait
+      // (4:5) covers are ~1.75× taller than the landscape ones, so they scroll
+      // through slower — with fixed integer positions the highlighted title runs
+      // ahead of the image actually on screen. Weight each project's slot by its
+      // stack footprint (collapsed height) so tall covers get proportionally
+      // more scroll, keeping title ↔ image in sync. With uniform heights the
+      // positions collapse back to 0,1,2,… (identical to the old cadence).
+      const MARGIN_PX = 12; // .projects__item margin-bottom: 0.75rem
+      const weights = this.projects.map((_, i) => (collapsedH[i] || 0) + MARGIN_PX);
+      const avgW =
+        weights.reduce((a, b) => a + b, 0) / (weights.length || 1) || 1;
+      const pos: number[] = [];
+      let acc = 0;
+      this.projects.forEach((_, i) => {
+        pos[i] = acc / avgW;
+        acc += weights[i];
+      });
+      const spacingAt = (i: number) =>
+        i < this.projects.length - 1
+          ? pos[i + 1] - pos[i]
+          : pos[i] - pos[i - 1] || 1;
+
       // Build the scrubbed scroll timeline
       this.projects.forEach((item, i) => {
         const img = item.querySelector<HTMLElement>(".projects__item__image");
@@ -683,6 +708,15 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
         const isFirst = firstByIndex.get(projectIdx) === item;
         const isLast = lastByIndex.get(projectIdx) === item;
 
+        // Every duration/offset scales with this project's local scroll share so
+        // the crossfade overlap stays proportional whatever the cover height.
+        const s = spacingAt(i);
+        const expandAt = pos[i];
+        const expandDur = 0.8 * s;
+        const collapseAt = expandAt + 1.1 * s; // 0.8 expand + 0.3 gap, scaled
+        const collapseDur = 1.5 * s;
+        const fadeDur = 0.4 * s;
+
         // Expand phase
         tl.to(
           img,
@@ -690,14 +724,14 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
             scaleX: scaleFactor,
             scaleY: scaleFactor,
             force3D: true,
-            duration: 0.8,
+            duration: expandDur,
             ease: "none",
           },
-          i,
+          expandAt,
         );
         if (isFirst)
-          tl.to(title, { opacity: 1, duration: 0.4, ease: "none" }, "<");
-        tl.to(item, { height: expanded, duration: 0.8, ease: "none" }, "<");
+          tl.to(title, { opacity: 1, duration: fadeDur, ease: "none" }, expandAt);
+        tl.to(item, { height: expanded, duration: expandDur, ease: "none" }, expandAt);
 
         // Collapse phase
         tl.to(
@@ -706,15 +740,14 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
             scaleX: 1,
             scaleY: 1,
             force3D: true,
-            duration: 1.5,
+            duration: collapseDur,
             ease: "none",
-            delay: 0.3,
           },
-          ">",
+          collapseAt,
         );
         if (isLast)
-          tl.to(title, { opacity: 0.2, duration: 0.4, ease: "none" }, "<");
-        tl.to(item, { height: collapsed, duration: 1.5, ease: "none" }, "<");
+          tl.to(title, { opacity: 0.2, duration: fadeDur, ease: "none" }, collapseAt);
+        tl.to(item, { height: collapsed, duration: collapseDur, ease: "none" }, collapseAt);
       });
     }
 
