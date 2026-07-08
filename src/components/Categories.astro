@@ -41,7 +41,7 @@ const categories = [
     // layer (this bgImg); gafas 2 is the front layer (see the i===1 block).
     bgImg: "/categories/gafas-1-desktop.png",
     bgImgStyle:
-      "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 28%;pointer-events:none;",
+      "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;pointer-events:none;",
   },
   {
     id: "web",
@@ -72,8 +72,8 @@ const categories = [
     bgColor: "#e8e8ea",
     textColor: "#1a1a1a",
     tagBorder: "rgba(0,0,0,0.5)",
-    ctaBg: "#fff",
-    ctaColor: "#000",
+    ctaBg: "#000",
+    ctaColor: "#fff",
     bgStyle: "background-color:#e8e8ea;",
     noGradient: true,
     customGradient: undefined as string | undefined,
@@ -113,13 +113,13 @@ type CatLayer = { src: string; depth: number; pos?: string };
 const mobileCategories = [
   { // Arch. Viz — single render (gentle bg drift)
     ...categories[0], dark: true,
-    layers: [{ src: "/categories/animated-architecture-new/3.jpg", depth: 0 }] as CatLayer[],
+    layers: [{ src: "/categories/cat-1-mobile.jpg", depth: 0 }] as CatLayer[],
   },
   { // Immersive — two floating VR headsets on white (gafas 1 back, gafas 2 front)
     ...categories[1], dark: false,
     layers: [
-      { src: "/categories/gafas-1-movil.png", depth: 0, pos: "center 43%" },
-      { src: "/categories/gafas-2-movil.png", depth: 2.5, pos: "center 53%" },
+      { src: "/categories/gafas-1-movil.png", depth: 0, pos: "center 46%" },
+      { src: "/categories/gafas-2-movil.png", depth: 2.5, pos: "center 50%" },
     ] as CatLayer[],
   },
   { // Web Platforms — fondo + piedra + laptops
@@ -184,9 +184,9 @@ const mobileCategories = [
             <div class="cat__bg" style={cat.bgStyle}>
               {i === 0 && (
                 <>
-                  {[1,2,3].map((n) => (
+                  {[1,2,3,4,5].map((n) => (
                     <img
-                      src={`/categories/animated-architecture-new/${n}.jpg`}
+                      src={`/categories/animated-architecture-opt/${n}.jpg`}
                       alt=""
                       class="cat__light-frame"
                       data-light-frame={n}
@@ -208,7 +208,7 @@ const mobileCategories = [
                   src="/categories/gafas-2-desktop.png"
                   alt=""
                   class="cat__parallax-fg"
-                  style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 76%;pointer-events:none;"
+                  style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 64%;pointer-events:none;"
                 />
               )}
               {i === 2 && (
@@ -528,8 +528,13 @@ const mobileCategories = [
     object-position: 15% center;
   }
   #cat-s3-piedra  { z-index: 2; }
-  #cat-s3-laptop1 { z-index: 3; }
-  #cat-s3-laptop2 { z-index: 4; }
+  /* Only the floating laptops shrink a touch so their tops don't rise into the
+     fixed navbar (logo / CTA). The laptop PNGs have transparent margins, so the
+     smaller scale just reveals more of the scene behind them — no hard edge.
+     (The piedra keeps 1.05: its canvas is solid black, so shrinking it would
+     expose a visible bottom cut.) */
+  #cat-s3-laptop1 { scale: 0.85; z-index: 3; }
+  #cat-s3-laptop2 { scale: 0.85; z-index: 4; }
   [data-cat-index="2"] .cat__content,
   [data-cat-index="2"] .cat__cta { z-index: 10; }
 
@@ -545,7 +550,11 @@ const mobileCategories = [
     will-change: transform;
   }
   .cat__apps-bg { scale: 1.12; z-index: 0; }
-  .cat__apps-fg { scale: 1.05; }
+  /* Nudge the floating phone mockups left (and shrink them slightly) so they
+     clear the right-hand "VIEW OUR WORK" button instead of sitting under it.
+     translateX via `transform` composes with the parallax `translate` property
+     (set inline by JS) and the CSS `scale`. Fondo (bg) still covers the slide. */
+  .cat__apps-fg { scale: 0.92; transform: translateX(-9%); }
   #cat-apps-l1 { z-index: 1; }
   #cat-apps-l2 { z-index: 2; }
   #cat-apps-l3 { z-index: 3; }
@@ -774,6 +783,13 @@ const mobileCategories = [
     object-fit: cover;
     transform: scale(1.12);
   }
+  /* Float the laptop/rock composition up into the empty band under the title so
+     it clears the bottom text block (desc + tags + CTA) instead of being
+     overlapped by it. All contained foreground layers share the same box, so
+     shifting their object-position together keeps the scene aligned. */
+  .catm--web .catm__layer:not([data-depth="0"]) {
+    object-position: center 40%;
+  }
   /* Immersive card — the VR headsets are centered product shots on transparency,
      so each layer must `contain` (no crop) and sit on a white section. */
   .catm--immersive {
@@ -830,7 +846,7 @@ const mobileCategories = [
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: clamp(9rem, 15vh, 13rem) clamp(2.4rem, 5vw, 4rem)
+    padding: clamp(7.25rem, 12.5vh, 10.5rem) clamp(2.4rem, 5vw, 4rem)
       clamp(2.8rem, 5vh, 4.5rem);
   }
   /* push description / tags / CTA to the bottom; title (if any) stays on top */
@@ -884,13 +900,13 @@ const mobileCategories = [
     align-items: center;
     gap: 0.5rem;
     font-family: "Poppins", sans-serif;
-    font-size: 1rem;
+    font-size: 1.3rem;
     font-weight: 300;
     letter-spacing: 0.08em;
     color: var(--catm-cta-color, #000);
     background: var(--catm-cta-bg, #fff);
     text-decoration: none;
-    padding: 0.6rem 1.4rem;
+    padding: 0.9rem 1.9rem;
     border-radius: 9999px;
     transition: opacity 0.2s;
     margin-top: clamp(0.6rem, 1.5vh, 1.4rem);
@@ -911,6 +927,12 @@ const mobileCategories = [
   .catm--apps .catm__overlay {
     display: none;
   }
+  /* Shrink the floating phone mockups a touch and nudge them up so they clear
+     the descriptive text at the bottom (the fondo, data-depth=0, keeps covering
+     the whole section so neither the scale nor the lift reveals an edge). */
+  .catm--apps .catm__layer:not([data-depth="0"]) {
+    transform: translateY(-5%) scale(0.98);
+  }
   .catm--apps .catm__content {
     color: #fff;
     mix-blend-mode: difference;
@@ -930,8 +952,17 @@ const mobileCategories = [
   /* Tablet (768–1024px): match the navbar "BEGIN A DIALOGUE" CTA size. */
   @media (min-width: 768px) and (max-width: 1024px) {
     .catm__cta {
-      font-size: 1.3rem;
-      padding: 0.8rem 1.8rem;
+      font-size: 1.6rem;
+      padding: 1.1rem 2.2rem;
+    }
+    /* `object-fit: contain` sizes these wide layers by viewport WIDTH, so on the
+       squarer tablet aspect ratios the laptop/rock scene grows tall enough to
+       fall behind the bottom text. Confine the floating layers to a top band
+       (proportional to the section height) so the rock can never reach down into
+       the description, whatever the tablet aspect ratio. */
+    .catm--web .catm__layer:not([data-depth="0"]) {
+      inset: 6% 0 auto 0;
+      height: 54%;
     }
   }
 </style>
@@ -1099,7 +1130,7 @@ const mobileCategories = [
   // Phase A (scroll): enterP 0→1 drives lighting dark→bright, scrubable in both directions
   // Phase B (mouse):  once enterComplete, mouse X controls lighting freely
   {
-    const FRAME_COUNT = 3;
+    const FRAME_COUNT = 5;
     const lightFrames = Array.from(
       document.querySelectorAll<HTMLImageElement>(".cat__light-frame")
     );

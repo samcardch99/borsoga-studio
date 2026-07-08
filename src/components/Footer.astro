@@ -51,8 +51,13 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
                     >786-852-4847</a
                 >
             </li>
+            <li class="footer__ch-row">
+                <span class="footer__ch-type">DIRECT</span>
+                <a href="tel:+17867783409" class="footer__ch-val"
+                    >786-778-3409</a
+                >
+            </li>
             <li class="footer__ch-row footer__ch-row--arrow">
-                <span class="footer__ch-type">WHATS APP</span>
                 <a
                     href="https://wa.me/17868524847"
                     target="_blank"
@@ -60,6 +65,7 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
                     class="footer__ch-arrow"
                     aria-label="WhatsApp"
                 >
+                    <span class="footer__ch-type">WHATS APP</span>
                     <img
                         src={arrowSrc}
                         alt=""
@@ -256,12 +262,15 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
     .footer__ch-arrow {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        gap: clamp(1rem, 2.5vw, 4rem);
+        width: 100%;
         color: #fff;
-        opacity: 0.7;
+        text-decoration: none;
         transition: opacity 0.2s;
     }
     .footer__ch-arrow:hover {
-        opacity: 1;
+        opacity: 0.6;
     }
 
     /* ── Icons ── */
@@ -428,12 +437,12 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
             --f-ch: clamp(1.4rem, 3.6vw, 2.1rem); /* channel value / form input */
             --f-lbl: clamp(1.3rem, 3.2vw, 1.9rem); /* labels (≈ values, dimmed) */
             --f-soc: clamp(2.2rem, 6vw, 3.2rem); /* social links (36px) */
-            --f-btn: 1rem; /* send button — matches navbar CTA (mobile) */
+            --f-btn: 1.3rem; /* send button — matches navbar CTA (mobile) */
             --row-py: clamp(1.5rem, 4vw, 2.4rem); /* taller channel / form rows */
         }
         /* Send button padding — matches navbar CTA (mobile) */
         :global(.form-btn) {
-            padding: 0.6rem 1.4rem;
+            padding: 0.9rem 1.9rem;
         }
         /* Headline — larger, flows & wraps naturally (like Figma), with air */
         .footer__headline {
@@ -485,8 +494,8 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
 
     /* Tablet (768–1024px): match navbar "BEGIN A DIALOGUE" CTA size. */
     @media (min-width: 768px) and (max-width: 1024px) {
-        .footer { --f-btn: 1.3rem; }
-        :global(.form-btn) { padding: 0.8rem 1.8rem; }
+        .footer { --f-btn: 1.6rem; }
+        :global(.form-btn) { padding: 1.1rem 2.2rem; }
     }
 
     /* ══ ≥1025px (desktop) ══ */
