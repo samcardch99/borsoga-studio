@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
 
 // Contact details reused from the single source of truth.
 import { CONTACT } from "../consts";
@@ -15,6 +16,9 @@ const lastUpdated = "January 2026";
 >
   <main class="legal">
     <div class="legal__inner">
+      <div class="legal__back">
+        <BackButton />
+      </div>
       <h1 class="legal__title">Privacy &amp; Terms</h1>
       <p class="legal__meta">Last updated: {lastUpdated}</p>
 
@@ -89,6 +93,9 @@ const lastUpdated = "January 2026";
   .legal__inner {
     max-width: 68rem;
     margin: 0 auto;
+  }
+  .legal__back {
+    margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
   }
   .legal__title {
     margin: 0 0 0.6rem;

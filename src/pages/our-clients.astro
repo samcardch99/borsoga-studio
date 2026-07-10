@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
 
 // ── "Who we work with" — three client-type sections (Figma frame 552:320).
 // Desktop + tablet share the same arrangement (tablet just scales down via the
@@ -96,6 +97,9 @@ const sections = [
   description="How Borsoga Studio helps Miami real estate developers, architects, general contractors and custom millwork specialists sell and win with visualization, video and branding."
 >
   <section class="clients" id="our-clients">
+    <div class="cl-back">
+      <BackButton />
+    </div>
     <h1 class="cl-title" id="cl-title">WHO WE WORK WITH</h1>
 
     {
@@ -207,6 +211,7 @@ const sections = [
 
 <style>
   .clients {
+    position: relative;
     background: #fff;
     color: #0a0a0a;
     font-family: "Poppins", sans-serif;
@@ -214,6 +219,15 @@ const sections = [
        the title sits ~18% of the canvas width below the top (y≈454 on the
        2526-wide canvas). Root font-size is 10px, so the cap must allow ~26rem. */
     padding: clamp(14rem, 18vw, 30rem) clamp(2rem, 4vw, 6rem) clamp(5rem, 9vw, 11rem);
+  }
+
+  /* Back button — pinned top-left below the navbar, so it isn't dragged down by
+     the section's large title padding. Left matches the section's side padding. */
+  .cl-back {
+    position: absolute;
+    top: clamp(9rem, 13vh, 12rem);
+    left: clamp(2rem, 4vw, 6rem);
+    z-index: 2;
   }
 
   /* ── Page title — normal weight, with a per-character fill (Cover.astro effect) ── */
@@ -506,6 +520,12 @@ const sections = [
   @media (max-width: 767px) {
     .clients {
       padding: clamp(7rem, 16vh, 9rem) clamp(1.5rem, 6vw, 2rem) clamp(4rem, 12vw, 6rem);
+    }
+    /* Title padding is modest on mobile, so let the back button sit in normal
+       flow above the title instead of absolutely positioned. */
+    .cl-back {
+      position: static;
+      margin-bottom: clamp(1.4rem, 5vw, 2rem);
     }
     .cl-title {
       font-size: clamp(2.6rem, 10vw, 4rem);

@@ -14,7 +14,6 @@ export async function getStaticPaths() {
     params: { slug: project.id.toLowerCase(), },
     props: {
       project,
-      prev: all[(i - 1 + all.length) % all.length],
       next: all[(i + 1) % all.length],
     },
   }));
@@ -22,11 +21,10 @@ export async function getStaticPaths() {
 
 type Props = {
   project: CollectionEntry<"projects">;
-  prev: CollectionEntry<"projects">;
   next: CollectionEntry<"projects">;
 };
 
-const { project, prev, next } = Astro.props;
+const { project, next } = Astro.props;
 const d = project.data;
 const imgs = d.images;
 const narrative = project.body?.trim() ?? "";
@@ -99,13 +97,12 @@ const projectLd = {
       <div class="pd-line" id="pd-line-top"></div>
 
       <div class="pd-hero__content">
-        {/* Back to the previous project. The forward "NEXT PROJECT" nav at the
-            page bottom auto-advances; this gives a manual way to step back.
+        {/* Back to the full project index (the "ALL" filter on /projects).
             Plain anchor — ClientRouter handles the soft View Transition. */}
         <a
-          href={`/works/${prev.id.toLowerCase()}/`}
+          href="/projects?filter=all"
           class="pd-back"
-          aria-label={`Back to ${prev.data.title}`}
+          aria-label="Back to all projects"
         >
           <RightUpArrow class="pd-back__arrow" aria-hidden="true" />
           <span class="pd-back__label">Back</span>
@@ -348,7 +345,7 @@ const projectLd = {
     gap: 0.5rem;
     margin-bottom: clamp(1.2rem, 2vw, 2rem);
     font-family: "Poppins", sans-serif;
-    font-size: clamp(1.05rem, 1.3vw, 1.6rem);
+    font-size: clamp(1.25rem, 1.6vw, 1.95rem);
     font-weight: 300;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -359,8 +356,8 @@ const projectLd = {
   .pd-back:hover { opacity: 0.55; }
   .pd-back__arrow {
     /* right_up.svg points ↗; rotate to point ← for "previous / back". */
-    height: 1.25em;
-    width: auto;
+    height: 1em;
+    width: 1em;
     transform: rotate(-135deg);
   }
 

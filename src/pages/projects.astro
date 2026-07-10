@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Projects from "../components/Projects.astro";
+import BackButton from "../components/BackButton.astro";
 const projectsList = [
   {
     id: "RAL-1011-FIVE-PARK-APARTMENT",
@@ -135,6 +136,11 @@ const projectsList = [
   </div>
 
   <div class="sw__inner">
+    <!-- Back to homepage -->
+    <div class="sw__back">
+      <BackButton color="#fff" />
+    </div>
+
     <!-- Header: title (left) + search (right) -->
     <div class="sw__header">
       <div class="sw__title-clip">
@@ -294,6 +300,9 @@ const projectsList = [
   .sw__inner {
     padding: clamp(5rem, 9vw, 12rem) clamp(1.5rem, 2.4vw, 4rem)
       clamp(4rem, 7vw, 10rem);
+  }
+  .sw__back {
+    margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
   }
 
   /* ── Custom cursor ── */

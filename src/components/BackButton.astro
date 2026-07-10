@@ -1,0 +1,50 @@
+---
+// Shared "Back" link — mirrors the .pd-back button on the project detail page
+// (same size). Defaults to a true "back" to the homepage; pass `href` to point
+// elsewhere. On dark backgrounds pass color="#fff" (the arrow inherits it via
+// currentColor).
+import RightUpArrow from "../assets/icons/right_up.svg";
+
+interface Props {
+  href?: string;
+  label?: string;
+  color?: string;
+  class?: string;
+}
+const { href = "/", label = "Back", color, class: className } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={["back-btn", className]}
+  aria-label="Back to homepage"
+  style={color ? `color:${color}` : undefined}
+>
+  <RightUpArrow class="back-btn__arrow" aria-hidden="true" />
+  <span class="back-btn__label">{label}</span>
+</a>
+
+<style>
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(1.25rem, 1.6vw, 1.95rem);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    transition: opacity 0.25s ease;
+  }
+  .back-btn:hover {
+    opacity: 0.55;
+  }
+  .back-btn__arrow {
+    /* right_up.svg points ↗; rotate to point ← for "back". */
+    height: 1em;
+    width: 1em;
+    transform: rotate(-135deg);
+  }
+</style>
