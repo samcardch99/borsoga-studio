@@ -24,6 +24,9 @@ jobs:
           PUBLIC_EMAILJS_SERVICE_ID: ${{ secrets.PUBLIC_EMAILJS_SERVICE_ID }}
           PUBLIC_EMAILJS_TEMPLATE_ID: ${{ secrets.PUBLIC_EMAILJS_TEMPLATE_ID }}
           PUBLIC_EMAILJS_PUBLIC_KEY: ${{ secrets.PUBLIC_EMAILJS_PUBLIC_KEY }}
+          # Twenty CRM native Workflow webhook (inbound trigger) that creates the
+          # lead. Public endpoint (also visible in the client bundle) → safe to inline.
+          PUBLIC_LEAD_WEBHOOK_URL: https://crm.borsogastudio.com/webhooks/workflows/c434a3ba-e3ba-4cf2-97db-25f2d849944a/2ac7762d-4064-4bc5-a8d6-795ee7413e60
 
       - name: Publish dist to branch build
         uses: peaceiris/actions-gh-pages@v4

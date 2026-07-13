@@ -43,8 +43,44 @@ export default function Form() {
     el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
   }, [messageValue]);
 
-  const onSubmit = async () => {
+  // Best-effort: also register the lead in the CRM (Twenty) via n8n.
+  // Fire-and-forget so it never blocks or breaks the email/UX. If the
+  // webhook URL env var is missing or the request fails, the form still works.
+  const sendLeadToCRM = (data) => {
+    const webhookUrl = import.meta.env.PUBLIC_LEAD_WEBHOOK_URL;
+    if (!webhookUrl) return;
+    // Split the full name into first / last (first token vs. the rest).
+    const fullName = (data.username || "").trim();
+    const spaceIdx = fullName.indexOf(" ");
+    const firstName = spaceIdx === -1 ? fullName : fullName.slice(0, spaceIdx);
+    const lastName = spaceIdx === -1 ? "" : fullName.slice(spaceIdx + 1).trim();
+    try {
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fullName,
+          firstName,
+          lastName,
+          email: data.email,
+          phone: data.phone,
+          notes: data.message,
+          source: "borsogastudio.com",
+          page: typeof window !== "undefined" ? window.location.href : "",
+        }),
+        keepalive: true,
+      }).catch((err) => console.error("CRM webhook failed:", err));
+    } catch (err) {
+      console.error("CRM webhook failed:", err);
+    }
+  };
+
+  const onSubmit = async (data) => {
     if (!formRef.current) return;
+
+    // Register the lead in the CRM in parallel (best-effort, non-blocking).
+    sendLeadToCRM(data);
+
     try {
       await emailjs.sendForm(
         import.meta.env.PUBLIC_EMAILJS_SERVICE_ID,
