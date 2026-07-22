@@ -9,12 +9,13 @@ type Project = CollectionEntry<"projects">;
 // identity). Ordered explicitly so the preview always reads the same way
 // regardless of the collection's global `order`.
 const FEATURED = [
+  // Second viz trio shown first, first trio second (swapped per request).
+  "RAL-7006-COCONUT-GROVE-RESIDENCE", // viz
+  "RAL-1013-CRYSTAL-RIVER-RESIDENCE", // viz
+  "RAL-9016-WATERFRONT-VILLA", // viz — replaces Pool Pavilion here; Pool Pavilion stays on /projects only
   "RAL-1011-FIVE-PARK-APARTMENT", // viz
   "RAL-8003-WOOD-VEIN-KITCHEN-CLOSET", // viz
   "RAL-9002-CORNER-RESIDENTIAL-BUILDING", // viz
-  "RAL-7006-COCONUT-GROVE-RESIDENCE", // viz
-  "RAL-1013-CRYSTAL-RIVER-RESIDENCE", // viz
-  "RAL-1015-POOL-PAVILION", // viz
   "RAL-4005-EPSI-NEST", // brand
   "RAL-5002-PEAK-VISION", // brand
   "RAL-9005-REFRAME", // brand
@@ -30,6 +31,7 @@ const VERTICAL_COVERS = new Set([
   "ral-9002-corner-residential-building",
   "ral-7006-coconut-grove-residence",
   "ral-1013-crystal-river-residence",
+  "ral-9016-waterfront-villa",
 ]);
 const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
   .filter((p): p is Project => Boolean(p))

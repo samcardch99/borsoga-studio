@@ -259,4 +259,35 @@ const jsonLd = {
 			});
 	}
 	document.addEventListener("astro:page-load", markReloadLinks);
+
+	// ── Cross-page hash scroll (e.g. /#selected-work from the /projects "Back",
+	//    or the navbar /#categories · /#contact links) ─────────────────────────
+	// The homepage pins Categories via ScrollTrigger, which inserts a spacer
+	// AFTER the browser's native hash jump — so the initial scroll lands on the
+	// wrong section (Categories instead of the requested one). Re-scroll to the
+	// real element for a short window while the pins settle, tracking it as its
+	// position shifts (Lenis reads the element's live offset on each call).
+	function initHashScroll() {
+		const hash = window.location.hash;
+		if (!hash || hash.length < 2) return;
+		let target: Element | null = null;
+		try {
+			target = document.querySelector(hash);
+		} catch {
+			return; // malformed selector
+		}
+		if (!target) return;
+		const el = target as HTMLElement;
+
+		let frames = 0;
+		function follow() {
+			const l = window.lenis;
+			if (l) l.scrollTo(el, { immediate: true, force: true });
+			else el.scrollIntoView();
+			// ~0.5s of tracking covers the pin setup + the Projects double-rAF refresh.
+			if (frames++ < 32) requestAnimationFrame(follow);
+		}
+		requestAnimationFrame(follow);
+	}
+	document.addEventListener("astro:page-load", initHashScroll);
 </script>

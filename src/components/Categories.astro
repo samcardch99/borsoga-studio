@@ -109,42 +109,53 @@ const categories = [
 // Each card is a stack of PNG layers (back → front). `depth` drives the
 // scroll-parallax amplitude: 0 = far background (drifts least), higher =
 // foreground (drifts most). Reuses the desktop scene layers where they exist.
-type CatLayer = { src: string; depth: number; pos?: string };
+//
+// Layers split into two groups at render time:
+//  · background (depth 0, opaque fondo) — full-bleed behind everything;
+//  · cutouts (depth > 0, or `stage: true`) — rendered inside .catm__stage, the
+//    in-flow band between the title and the bottom text block, so they can
+//    never extend behind either text.
+// The `-trim.png` cutouts are pre-cropped to the scene's shared content box
+// (same crop for every layer of a scene → their composition stays aligned).
+type CatLayer = { src: string; depth: number; pos?: string; stage?: boolean };
+const isStageLayer = (l: CatLayer) => l.stage || l.depth > 0;
 const mobileCategories = [
   { // Arch. Viz — single render (gentle bg drift)
     ...categories[0], dark: true,
     layers: [{ src: "/categories/cat-1-mobile.jpg", depth: 0 }] as CatLayer[],
   },
-  { // Immersive — two floating VR headsets on white (gafas 1 back, gafas 2 front)
+  { // Immersive — two floating VR headsets on white (gafas 1 back, gafas 2 front).
+    // Both are cutouts (no opaque fondo) → both go to the stage; gafas 1 keeps
+    // depth 0 so it drifts least, `stage: true` opts it out of full-bleed.
     ...categories[1], dark: false,
     layers: [
-      { src: "/categories/gafas-1-movil.png", depth: 0, pos: "center 46%" },
-      { src: "/categories/gafas-2-movil.png", depth: 2.5, pos: "center 50%" },
+      { src: "/categories/gafas-1-movil-trim.png", depth: 0, stage: true },
+      { src: "/categories/gafas-2-movil-trim.png", depth: 2.5 },
     ] as CatLayer[],
   },
   { // Web Platforms — fondo + piedra + laptops
     ...categories[2], dark: true,
     layers: [
-      { src: "/categories/fondo.png",   depth: 0 },
-      { src: "/categories/piedra.png",  depth: 1.5 },
-      { src: "/categories/laptop1.png", depth: 2.5 },
-      { src: "/categories/laptop2.png", depth: 3 },
+      { src: "/categories/fondo.png",        depth: 0 },
+      { src: "/categories/piedra-trim.png",  depth: 1.5 },
+      { src: "/categories/laptop1-trim.png", depth: 2.5 },
+      { src: "/categories/laptop2-trim.png", depth: 3 },
     ] as CatLayer[],
   },
   { // Custom App Development — light gradient fondo + two phone mockups
     ...categories[3], dark: false,
     layers: [
       { src: "/categories/apps/fondo de app.png",   depth: 0 },
-      { src: "/categories/apps/capa 1 app movil.png", depth: 1.8 },
-      { src: "/categories/apps/capa 2 app movil.png", depth: 2.6 },
+      { src: "/categories/apps/capa 1 app movil-trim.png", depth: 1.8 },
+      { src: "/categories/apps/capa 2 app movil-trim.png", depth: 2.6 },
     ] as CatLayer[],
   },
   { // Brand Identity — dark fondo + two branding mockups
     ...categories[4], dark: true,
     layers: [
       { src: "/categories/branding-mobile/fondo.png",   depth: 0 },
-      { src: "/categories/branding-mobile/movil-1.png", depth: 1.8 },
-      { src: "/categories/branding-mobile/movil-2.png", depth: 2.6 },
+      { src: "/categories/branding-mobile/movil-1-trim.png", depth: 1.8 },
+      { src: "/categories/branding-mobile/movil-2-trim.png", depth: 2.6 },
     ] as CatLayer[],
   },
 ];
@@ -306,7 +317,7 @@ const mobileCategories = [
           data-navbar-dark={cat.dark ? "" : undefined}
           style={`--catm-text:${cat.textColor};--catm-tag-border:${cat.tagBorder};--catm-cta-bg:${cat.ctaBg};--catm-cta-color:${cat.ctaColor};`}
         >
-          {cat.layers.map((layer, li) => (
+          {cat.layers.filter((l) => !isStageLayer(l)).map((layer, li) => (
             <img
               class="catm__layer"
               src={layer.src}
@@ -320,6 +331,19 @@ const mobileCategories = [
           <div class="catm__overlay" />
           <div class="catm__content">
             <h3 class="catm__title">{cat.title}</h3>
+            <div class="catm__stage">
+              {cat.layers.filter(isStageLayer).map((layer, li) => (
+                <img
+                  class="catm__layer"
+                  src={layer.src}
+                  alt=""
+                  data-depth={layer.depth}
+                  style={`z-index:${li};${layer.pos ? `object-position:${layer.pos};` : ""}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ))}
+            </div>
             <div class="catm__bottom">
               <p class="catm__desc">{cat.description}</p>
               <ul class="catm__tags">
@@ -771,51 +795,38 @@ const mobileCategories = [
     transform-origin: center center;
     will-change: transform;
   }
-  /* Web card — laptop scene: pull the foreground layers back (contain) so the
-     full composition reads across the x-axis instead of being cropped. */
-  .catm--web .catm__layer {
+  /* Stage — in-flow band between the title and the bottom text block. The
+     cutout layers (depth > 0 / stage) live here, so however tall the texts
+     get, the compositions can never extend behind them. The layers keep the
+     .catm__layer absolute box (now resolved against the stage) but `contain`
+     instead of cover, and drop the full-bleed 1.18 zoom. The vertical margin
+     absorbs the scroll-parallax drift (up to ~8% of the stage height). */
+  .catm__stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    margin: clamp(0.8rem, 2svh, 1.6rem) 0;
+  }
+  .catm__stage .catm__layer {
     object-fit: contain;
-    transform: scale(1.04);
+    transform: none;
   }
-  /* …but the background layer (fondo, depth 0) stretches to cover the whole
-     section, so there are no empty bands behind the contained foreground. */
-  .catm--web .catm__layer[data-depth="0"] {
-    object-fit: cover;
-    transform: scale(1.12);
+  /* Web / apps / brand — plain `contain` reads a touch small on phones, so the
+     cutout scenes get some extra presence. Kept moderate (and the trims carry
+     ~3% transparent padding) so the parallax drift still clears the texts. */
+  .catm--web .catm__stage .catm__layer,
+  .catm--apps .catm__stage .catm__layer,
+  .catm--brand .catm__stage .catm__layer {
+    transform: scale(1.25);
   }
-  /* Float the laptop/rock composition up into the empty band under the title so
-     it clears the bottom text block (desc + tags + CTA) instead of being
-     overlapped by it. All contained foreground layers share the same box, so
-     shifting their object-position together keeps the scene aligned. */
-  .catm--web .catm__layer:not([data-depth="0"]) {
-    object-position: center 40%;
-  }
-  /* Immersive card — the VR headsets are centered product shots on transparency,
-     so each layer must `contain` (no crop) and sit on a white section. */
+  /* Immersive card — the VR headsets sit on a white section. */
   .catm--immersive {
     background: #fff;
-  }
-  /* Keep the desktop two-headset composition on portrait screens. The source
-     PNGs are a small headset centered in a big landscape canvas, so `contain`
-     alone renders them tiny; we scale up hard to zoom past the transparent
-     margin (only the transparent area is cropped, never the device). Each layer
-     is offset vertically (object-position) so gafas 1 stacks above gafas 2, and
-     the big scale spreads them further apart — mirroring the desktop diagonal. */
-  .catm--immersive .catm__layer {
-    object-fit: contain;
-    transform: scale(2.2);
   }
   /* No whitening gradient here — the section is already white, so the overlay
      only added an unwanted white fade over the headsets. */
   .catm--immersive .catm__overlay {
     display: none;
-  }
-  /* Phone (≤767px): the headsets read a touch small, so bump the zoom a bit
-     more than tablet. */
-  @media (max-width: 767px) {
-    .catm--immersive .catm__layer {
-      transform: scale(2.6);
-    }
   }
   .catm__overlay {
     position: absolute;
@@ -920,49 +931,11 @@ const mobileCategories = [
     height: 1em;
   }
 
-  /* ── Apps card: drop the whitening overlay; instead the content inverts
-     against the scene via mix-blend-mode so the text stays legible over both
-     the light fondo and the dark phone screens. Blend is set on .catm__content
-     (its z-index:9 stacking context) so it mixes against the image layers. ── */
-  .catm--apps .catm__overlay {
-    display: none;
-  }
-  /* Shrink the floating phone mockups a touch and nudge them up so they clear
-     the descriptive text at the bottom (the fondo, data-depth=0, keeps covering
-     the whole section so neither the scale nor the lift reveals an edge). */
-  .catm--apps .catm__layer:not([data-depth="0"]) {
-    transform: translateY(-5%) scale(0.98);
-  }
-  .catm--apps .catm__content {
-    color: #fff;
-    mix-blend-mode: difference;
-  }
-  .catm--apps .catm__tag {
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.7);
-  }
-  /* CTA is inside the blended content — an outlined (not filled) pill inverts
-     cleanly instead of the solid pill turning invisible under `difference`. */
-  .catm--apps .catm__cta {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-  }
-
   /* Tablet (768–1024px): match the navbar "BEGIN A DIALOGUE" CTA size. */
   @media (min-width: 768px) and (max-width: 1024px) {
     .catm__cta {
       font-size: 1.6rem;
       padding: 1.1rem 2.2rem;
-    }
-    /* `object-fit: contain` sizes these wide layers by viewport WIDTH, so on the
-       squarer tablet aspect ratios the laptop/rock scene grows tall enough to
-       fall behind the bottom text. Confine the floating layers to a top band
-       (proportional to the section height) so the rock can never reach down into
-       the description, whatever the tablet aspect ratio. */
-    .catm--web .catm__layer:not([data-depth="0"]) {
-      inset: 6% 0 auto 0;
-      height: 54%;
     }
   }
 </style>
