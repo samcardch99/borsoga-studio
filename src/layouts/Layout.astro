@@ -203,6 +203,14 @@ const jsonLd = {
 
 	gsap.registerPlugin(ScrollTrigger);
 
+	// Mobile browsers (iOS Chrome/Safari) collapse & expand their top/bottom
+	// bars while scrolling, firing height-only `resize` events. Left alone,
+	// ScrollTrigger refreshes on each one — every pinned/scrubbed section
+	// recalculates mid-scroll and the page visibly jumps. All sections are
+	// sized in svh (static — unaffected by the bars), so those refreshes are
+	// pure noise: skip them on touch devices.
+	ScrollTrigger.config({ ignoreMobileResize: true });
+
 	let lenis: Lenis | null = null;
 	let rafId: number | null = null;
 
