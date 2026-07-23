@@ -55,6 +55,16 @@ import RightUpArrow from "../../assets/icons/right_up.svg";
     transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
   }
+  /* Mobile/tablet: a fixed backdrop-blur bar re-samples the page on every
+     scrolled frame — one of the main iPhone jank sources on these
+     image-heavy pages. A translucent solid fill reads nearly the same. */
+  @media (max-width: 1024px) {
+    .interior-nav {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background: rgba(255, 255, 255, 0.92);
+    }
+  }
 
   /* Slide out of viewport when scrolling down */
   .interior-nav.is-hidden {

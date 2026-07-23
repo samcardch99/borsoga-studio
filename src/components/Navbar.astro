@@ -202,6 +202,14 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     }
 
     /* ── Hamburger (Figma: Menu Closed → two lines / Menu Open → X) ── */
+    /* The component styles are unlayered so they beat Tailwind's layered
+       `lg:hidden` — hide the burger (and overlay) for desktop here too. */
+    @media (min-width: 1024px) {
+        .nav-burger,
+        .navm {
+            display: none !important;
+        }
+    }
     .nav-burger {
         display: flex;
         flex-direction: column;

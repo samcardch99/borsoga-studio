@@ -12,6 +12,10 @@ export default defineConfig({
   // Graph tags and the generated sitemap. Update if the domain changes.
   site: 'https://borsogastudio.com',
 
+  // Programmatic prefetch (astro:prefetch) — the project pages warm the
+  // next-project HTML ahead of the scroll-driven transition.
+  prefetch: true,
+
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {

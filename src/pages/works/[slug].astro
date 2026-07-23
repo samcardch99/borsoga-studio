@@ -1,8 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import NavbarInterior from "../../components/helpers/NavbarInterior.astro";
-import Footer from "../../components/Footer.astro";
 import RightUpArrow from "../../assets/icons/right_up.svg";
 
 export async function getStaticPaths() {
@@ -77,7 +75,6 @@ const projectLd = {
 ---
 
 <Layout
-  showChrome={false}
   title={d.title}
   description={d.description}
   image={imgs[0]}
@@ -88,8 +85,6 @@ const projectLd = {
     <meta property="article:published_time" content={`${d.year}-01-01`} />
   </Fragment>
   <div class="pd">
-    <NavbarInterior />
-
     <!-- ──────────────────────────────────────────────────────────────
          HERO SECTION
     ─────────────────────────────────────────────────────────────── -->
@@ -294,7 +289,7 @@ const projectLd = {
           <!-- Static preview image — fills remaining height, cropped by fold -->
           <div class="pd-next__media">
             <img
-              src={next.data.images[0]}
+              src={next.data.nextPreviewImage ?? next.data.images[0]}
               alt={next.data.title}
               class="pd-next__media-img"
               loading="lazy"
@@ -304,12 +299,17 @@ const projectLd = {
         </a>
       </div>
     </section>
-
-    <Footer />
   </div>
 </Layout>
 
 <style>
+  /* ── Global navbar on project pages: frosted-transparent, like the old
+     interior nav — pure backdrop blur with NO colour fill, every viewport.
+     The open-menu state keeps its own (transparent-over-overlay) styling. ── */
+  :global(html:not(.menu-open) #main-nav[data-frosted="true"]) {
+    background: transparent !important;
+  }
+
   /* ── Page wrapper ── */
   .pd {
     background: #fff;
@@ -359,6 +359,22 @@ const projectLd = {
     height: 1em;
     width: 1em;
     transform: rotate(-135deg);
+  }
+
+  /* Mobile + tablet (1rem = 10px): much larger type (~22px mobile → 28px
+     tablet, vs 12.5px before) plus a padded hit-area (≥48px tall) so the link
+     is easy to tap. Negative top/left margins cancel the padding to keep the
+     label's visual position; the bottom/right padding stays uncompensated —
+     plus a wider margin-bottom — so the touch box clears the title below. */
+  @media (max-width: 1024px) {
+    .pd-back {
+      font-size: clamp(2.2rem, 1.8rem + 1vw, 2.8rem);
+      gap: 0.8rem;
+      padding: 1.1rem 1.5rem;
+      margin-top: -1.1rem;
+      margin-left: -1.5rem;
+      margin-bottom: clamp(2rem, 5vw, 2.8rem);
+    }
   }
 
   .pd-hero__clip { overflow: hidden; padding-bottom: 0.06em; }
@@ -416,7 +432,13 @@ const projectLd = {
     width: 100%;
     height: 100%;
     display: block;
-    will-change: transform;
+  }
+  /* Desktop only — the parallax needs the layer promotion; on mobile the
+     images are static and promoting every photo wastes iPhone GPU memory. */
+  @media (min-width: 1025px) {
+    .pd-par img {
+      will-change: transform;
+    }
   }
 
   /* ── HERO IMAGE — now lives inside .pd-hero__content (gets its side
@@ -558,6 +580,13 @@ const projectLd = {
     margin-top: clamp(4rem, 8vw, 12rem);
     margin-inline: calc(-1 * clamp(2.4rem, 3.3vw, 4.5rem));
   }
+  /* Mobile/tablet: a 2-viewport confirmation scroll is a lot of thumb — one
+     viewport of pin distance fills the bar quicker while still deliberate. */
+  @media (max-width: 1024px) {
+    .pd-next {
+      height: calc(var(--app-height, 100svh) * 2);
+    }
+  }
 
   /* Sticky container: sticks to top for the entire 300svh pin */
   .pd-next__pin {
@@ -566,6 +595,32 @@ const projectLd = {
     height: var(--app-height, 100svh);
     overflow: hidden;
     background: #fff;
+  }
+
+  /* Exit freeze — the OUTGOING page's body is pinned in place with
+     position:fixed at the exact scroll offset (--pd-lock-y). Unlike plain
+     overflow:hidden, this reliably interrupts iOS's in-flight touch
+     momentum, so the old project holds perfectly still while the next
+     page is fetched and swapped in. */
+  :global(html.pd-landing-lock) {
+    overflow: hidden;
+  }
+  :global(html.pd-landing-lock body) {
+    position: fixed;
+    top: calc(-1 * var(--pd-lock-y, 0px));
+    left: 0;
+    right: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Landing hold — the INCOMING page only needs a light overflow lock while
+     the entrance plays (momentum already died on the frozen previous page).
+     Kept deliberately light: position:fixed here would defer painting of
+     below-fold content on iOS, showing a blank band until release. */
+  :global(html.pd-landing-hold),
+  :global(html.pd-landing-hold body) {
+    overflow: hidden;
   }
 
   /* The whole preview is one link: progress + header + image */
@@ -649,7 +704,12 @@ const projectLd = {
     object-position: center top;
     display: block;
     opacity: 0;
-    will-change: transform;
+  }
+  /* Layer promotion only where the hover scale exists (pointer devices). */
+  @media (min-width: 1025px) {
+    .pd-next__media-img {
+      will-change: transform;
+    }
   }
 
   /* Hover (whole link) — only once the preview has revealed (.is-ready) */
@@ -755,10 +815,12 @@ const projectLd = {
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   import { navigate } from "astro:transitions/client";
+  import { prefetch } from "astro:prefetch";
 
   gsap.registerPlugin(ScrollTrigger);
 
   let enterTl: gsap.core.Timeline | null = null;
+  let cameFromPin = false; // set by initLandingPause before initEnter runs
 
   // ─────────────────────────────────────────────────────────────────
   // ENTER ANIMATION — hero separator line + title rise + meta fade in.
@@ -783,6 +845,10 @@ const projectLd = {
     // Meta row fades in
     if (meta)
       enterTl.to(meta, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.22);
+
+    // Arriving from the next-project pin: play the entrance faster so the
+    // landing hold can release sooner and the user regains scroll quickly.
+    if (cameFromPin) enterTl.timeScale(1.4);
   }
 
   // ─────────────────────────────────────────────────────────────────
@@ -790,6 +856,11 @@ const projectLd = {
   // ─────────────────────────────────────────────────────────────────
 
   function initParallax() {
+    // Mobile/tablet: skip entirely. A scrubbed transform on every project
+    // photo forces a full-size compositor layer per image plus per-frame
+    // style writes — the main reason scrolling felt sluggish on iPhone.
+    // The photos render static there; reveals and the pin still run.
+    if (window.innerWidth <= 1024) return;
     document.querySelectorAll<HTMLElement>(".pd-par").forEach((wrap) => {
       const img = wrap.querySelector<HTMLElement>("img");
       if (!img) return;
@@ -845,6 +916,37 @@ const projectLd = {
     const nextHref = link.dataset.nextHref!;
     let triggered = false;
 
+    // Warm the next page ahead of time — without this, navigate() only
+    // starts fetching the HTML when the bar completes, and on a real
+    // (mobile) network that delay leaves the old project on screen, still
+    // scrolling under the user's touch momentum.
+    try {
+      prefetch(nextHref);
+    } catch {
+      /* prefetch unavailable — navigation still works, just unwarmed */
+    }
+    // The pin may init deep in the section (history-restored scroll, or any
+    // stray scroll surviving a swap). Navigation only arms once we've seen
+    // progress clearly below the trigger point — a landing directly at ≥0.99
+    // must never chain-navigate to a project that was never previewed. The
+    // 0.9 threshold is generous on purpose: scroll events can be coarse on
+    // touch, and any real confirmation scroll passes through <0.9.
+    let armed = false;
+
+    // Shared exit: freeze the page NOW, exactly where it is. The lock puts
+    // the body in position:fixed (see CSS) — the only reliable way to kill
+    // iOS's in-flight touch momentum, which plain overflow:hidden does not
+    // interrupt — so the old project can't keep drifting while the next
+    // page's HTML is fetched and swapped in.
+    function beginPinNavigation() {
+      const root = document.documentElement;
+      root.style.setProperty("--pd-lock-y", `${window.scrollY}px`);
+      root.classList.add("pd-landing-lock");
+      (window as any).lenis?.stop();
+      sessionStorage.setItem("pd-pin-nav", "1");
+      navigate(nextHref);
+    }
+
     // One-time reveal of the preview (label + title + image) when it scrolls in.
     // Hover is only enabled once this finishes (.is-ready).
     const reveal = gsap.timeline({
@@ -855,20 +957,22 @@ const projectLd = {
     if (label) reveal.to(label, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.05);
     if (title) reveal.to(title, { opacity: 1, y: 0, duration: 0.9, ease: "expo.out" }, 0.12);
 
-    // Progress bar fills as you scroll the pin — ease-out (studiodado: 1-(1-p)²).
-    // With scrub, the tween's ease maps scroll progress → scaleX.
+    // Progress bar fills as you scroll the pin — linear scrub, so the bar is
+    // genuinely at ZERO when the pin starts and the full pin distance is a
+    // deliberate confirmation scroll (no eased head start).
     gsap.to(fill, {
       scaleX: 1,
-      ease: "power2.out",
+      ease: "none",
       scrollTrigger: {
         trigger: section,
         start: "top top",      // pin activates when section hits viewport top
         end: "bottom bottom",  // stays pinned until section bottom passes viewport bottom
         scrub: true,           // 1-to-1 scroll mapping (no lag)
         onUpdate(self) {
-          if (self.progress >= 0.99 && !triggered) {
+          if (self.progress < 0.9) armed = true;
+          if (armed && self.progress >= 0.99 && !triggered) {
             triggered = true;
-            navigate(nextHref);   // soft, no-reload View Transition
+            beginPinNavigation();   // soft, no-reload View Transition
           }
         },
       },
@@ -877,7 +981,7 @@ const projectLd = {
     // Click anywhere on the preview → soft navigate (View Transition)
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      if (!triggered) { triggered = true; navigate(nextHref); }
+      if (!triggered) { triggered = true; beginPinNavigation(); }
     });
   }
 
@@ -888,17 +992,90 @@ const projectLd = {
   // otherwise stale ScrollTriggers pile up and the next page never animates.
   // ─────────────────────────────────────────────────────────────────
 
+  // ─────────────────────────────────────────────────────────────────
+  // IMAGE-DRIVEN REFRESH — the image containers have no reserved aspect
+  // ratio, so the page grows by thousands of px as images load (and the
+  // lazy ones load mid-scroll). ScrollTriggers measured at init would keep
+  // those stale positions — the next-project pin would then think it's
+  // deep in progress while the user is still above it (pre-filled bar,
+  // early auto-navigation), worse the longer the page. Re-measure, then,
+  // whenever an image finishes loading. window `load` only covers eager
+  // images on hard loads — soft navigations never re-fire it.
+  // ─────────────────────────────────────────────────────────────────
+
+  let refreshTimer: number | undefined;
+
+  function scheduleRefresh() {
+    window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(() => {
+      // Never refresh mid-scroll: refresh() writes the scroll position while
+      // re-measuring, and on iOS any programmatic scroll write kills the
+      // native momentum — the fling would just stop dead mid-page. Wait for
+      // the scroll to go idle, then re-measure.
+      if (ScrollTrigger.isScrolling()) {
+        scheduleRefresh();
+        return;
+      }
+      ScrollTrigger.refresh();
+    }, 250);
+  }
+
+  function initImageRefresh() {
+    document.querySelectorAll<HTMLImageElement>(".pd img").forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener("load", scheduleRefresh, { once: true });
+      img.addEventListener("error", scheduleRefresh, { once: true });
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // LANDING PAUSE — arriving from the next-project pin, the previous
+  // page's touch/wheel momentum must not carry into this one. Pin the
+  // scroll at the very top for a beat (overflow lock + Lenis stopped)
+  // so the intro is actually readable, then hand control back.
+  // ─────────────────────────────────────────────────────────────────
+
+  function initLandingPause() {
+    const root = document.documentElement;
+    // Always clear the exit freeze carried over from the previous page.
+    root.classList.remove("pd-landing-lock");
+    root.style.removeProperty("--pd-lock-y");
+    cameFromPin = !!sessionStorage.getItem("pd-pin-nav");
+    if (!cameFromPin) {
+      root.classList.remove("pd-landing-hold");
+      return;
+    }
+    sessionStorage.removeItem("pd-pin-nav");
+    // Momentum already died on the previous page's fixed body, so a plain
+    // overflow lock is enough here — position:fixed would defer painting of
+    // the below-fold content on iOS (blank band until release). Held only
+    // while the (accelerated) entrance plays, then scroll is handed back.
+    root.classList.add("pd-landing-hold");
+    window.scrollTo(0, 0);
+    const lenis = (window as any).lenis;
+    lenis?.scrollTo(0, { immediate: true, force: true });
+    lenis?.stop();
+    window.setTimeout(() => {
+      root.classList.remove("pd-landing-hold");
+      window.scrollTo(0, 0);
+      (window as any).lenis?.start();
+    }, 550);
+  }
+
   function init() {
+    initLandingPause();
     initEnter();
     initParallax();
     initReveal();
     initNextSection();
+    initImageRefresh();
     ScrollTrigger.refresh();
   }
 
   function cleanup() {
     enterTl?.kill();
     enterTl = null;
+    window.clearTimeout(refreshTimer);
     ScrollTrigger.getAll().forEach((t) => t.kill());
   }
 

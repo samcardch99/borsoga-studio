@@ -242,12 +242,32 @@ const jsonLd = {
 	let lenis: Lenis | null = null;
 	let rafId: number | null = null;
 
+	function destroyLenis() {
+		if (!lenis) return;
+		gsap.ticker.remove(rafId as unknown as gsap.Callback);
+		lenis.destroy();
+		lenis = null;
+		rafId = null;
+		window.lenis = null;
+		(window as any).lenisReady = false;
+	}
+
 	function initLenis() {
-		if (lenis) {
-			gsap.ticker.remove(rafId as unknown as gsap.Callback);
-			lenis.destroy();
-			lenis = null;
-			rafId = null;
+		destroyLenis();
+
+		// Project pages on touch devices run on native scrolling only. Lenis
+		// adds no touch smoothing there (syncTouch is off) but its RAF + scroll
+		// pipeline still burns frame budget on iPhone, where these image-heavy
+		// pages already push the GPU — so skip it entirely. ScrollTrigger falls
+		// back to its own native scroll listener; the lenis:ready contract is
+		// kept so dependent components still initialize.
+		if (
+			window.matchMedia("(pointer: coarse)").matches &&
+			location.pathname.startsWith("/works/")
+		) {
+			(window as any).lenisReady = true;
+			window.dispatchEvent(new CustomEvent("lenis:ready"));
+			return;
 		}
 
 		lenis = new Lenis({
@@ -283,6 +303,14 @@ const jsonLd = {
 	// (A bare initLenis() here too would double-init and break components that
 	// listen for lenis:ready with { once: true }.)
 	document.addEventListener("astro:page-load", initLenis);
+
+	// Kill Lenis the moment a soft navigation starts. The old instance's RAF
+	// keeps running until astro:page-load re-creates it — left alive, its
+	// animatedScroll (still at the previous page's huge offset) gets written
+	// back onto the NEW document right after Astro resets scroll to top, so
+	// the user lands deep into the next project (skipped intro, pre-filled
+	// next-project bar, and even chained auto-navigations).
+	document.addEventListener("astro:before-swap", destroyLenis);
 
 	// Scope soft (no-reload) View Transitions to project → project only.
 	// The GSAP-heavy home & /projects pages run their scroll setup once on
