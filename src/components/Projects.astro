@@ -186,11 +186,16 @@ const projects = FEATURED.map((id) => byId.get(id.toLowerCase()))
      uniformly down the viewport via a flex column (Figma "PROJECTS EXTERIOR
      MOBILE"). */
   .projects__mobile {
-    min-height: 100svh;
+    min-height: var(--app-height, 100svh);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: stretch;
+    /* Guaranteed breathing room between the heading, the carousel and the title
+       list — space-evenly alone collapses when the (tall, portrait) slides +
+       full title list nearly fill the viewport. The section grows past 100svh
+       if needed. */
+    gap: clamp(2.5rem, 6vh, 4rem);
     padding: clamp(6.5rem, 15vh, 9rem) 0 clamp(2.5rem, 6vh, 4rem);
     box-sizing: border-box;
   }

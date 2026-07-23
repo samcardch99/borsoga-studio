@@ -553,7 +553,7 @@ const projectLd = {
 
   /* Outer section: tall enough for the full pin scroll */
   .pd-next {
-    height: 300svh;
+    height: calc(var(--app-height, 100svh) * 3);
     position: relative;
     margin-top: clamp(4rem, 8vw, 12rem);
     margin-inline: calc(-1 * clamp(2.4rem, 3.3vw, 4.5rem));
@@ -563,7 +563,7 @@ const projectLd = {
   .pd-next__pin {
     position: sticky;
     top: 0;
-    height: 100svh;
+    height: var(--app-height, 100svh);
     overflow: hidden;
     background: #fff;
   }

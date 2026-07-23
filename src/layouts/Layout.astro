@@ -135,6 +135,34 @@ const jsonLd = {
 	<!-- Suppress Chrome/Edge's automatic translate prompt -->
 	<meta name="google" content="notranslate" />
 
+	<script is:inline>
+		// In-app browsers (e.g. the Google app on iOS) render pages in a
+		// WKWebView that is physically resized as the app's top/bottom bars
+		// show & hide, so even the "static" svh unit behaves like dvh there
+		// and full-screen sections jump while scrolling. (Safari/Chrome
+		// implement their bars as UA chrome, so svh is stable in them.)
+		// Freeze the viewport height into --app-height at load; sections use
+		// it via `var(--app-height, 100svh)`. On touch devices only a WIDTH
+		// change (rotation, real window resize) re-measures — height-only
+		// resizes are exactly the bar-collapse noise we want to ignore.
+		(function () {
+			var lastW = window.innerWidth;
+			var finePointer = window.matchMedia("(pointer: fine)").matches;
+			function set() {
+				document.documentElement.style.setProperty(
+					"--app-height",
+					window.innerHeight + "px",
+				);
+			}
+			set();
+			window.addEventListener("resize", function () {
+				if (!finePointer && window.innerWidth === lastW) return;
+				lastW = window.innerWidth;
+				set();
+			});
+		})();
+	</script>
+
 		<!-- ── Open Graph ── -->
 		<meta property="og:type" content={type} />
 		<meta property="og:site_name" content={SITE_NAME} />
