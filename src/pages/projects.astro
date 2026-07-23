@@ -314,6 +314,13 @@ const projectsList = [
   .sw__back {
     margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
   }
+  /* Mobile + tablet: extra separation below the enlarged Back button so the
+     bigger touch box doesn't crowd the header. */
+  @media (max-width: 1024px) {
+    .sw__back {
+      margin-bottom: clamp(2.2rem, 5vw, 3rem);
+    }
+  }
 
   /* ── Custom cursor ── */
   .sw__cur {
@@ -706,13 +713,28 @@ const projectsList = [
     .sw__preview { display: none; }
     .sw__tags { display: flex; }
 
-    /* Font sizes from Figma "PROJECTS INTERIOR MOBILE" (591px frame):
-       title 64px, num 24px, name 12px, tag 10px. vw calibrated to 591px,
-       capped at the Figma px, with readable floors for small phones. */
+    /* Page title stays per Figma; the project-row elements (num / name / tags)
+       are bumped up significantly for mobile + tablet legibility. */
     .sw__title { font-size: clamp(2.6rem, 10.8vw, 4rem); }
-    .sw__num { font-size: clamp(1.1rem, 4.06vw, 1.5rem); }
-    .sw__name { font-size: clamp(0.98rem, 3vw, 1.1rem); white-space: normal; }
-    .sw__tag { font-size: clamp(0.78rem, 2.3vw, 0.9rem); }
+    .sw__num { font-size: clamp(1.4rem, 4.2vw, 2.2rem); }
+    .sw__name { font-size: clamp(1.5rem, 4.5vw, 2.5rem); white-space: normal; }
+    .sw__tag {
+      font-size: clamp(1.1rem, 3vw, 1.55rem);
+      padding: 0.4em 0.95em;
+    }
+  }
+
+  /* ── MOBILE ONLY (≤767px) ──────────────────────────────────────────────
+     Stack the classification tags one above the other, right-aligned to the
+     content edge (same side margin as the left), so the (now larger) project
+     title gets the full remaining width. */
+  @media (max-width: 767px) {
+    .sw__tags {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: flex-end;
+      gap: clamp(0.4rem, 1.6vw, 0.7rem);
+    }
   }
 </style>
 

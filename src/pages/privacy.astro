@@ -97,6 +97,13 @@ const lastUpdated = "January 2026";
   .legal__back {
     margin-bottom: clamp(1.6rem, 3vw, 2.6rem);
   }
+  /* Mobile + tablet: extra separation below the enlarged Back button so the
+     bigger touch box doesn't crowd the title. */
+  @media (max-width: 1024px) {
+    .legal__back {
+      margin-bottom: clamp(2.2rem, 5vw, 3rem);
+    }
+  }
   .legal__title {
     margin: 0 0 0.6rem;
     font-size: clamp(2.6rem, 5vw, 5rem);

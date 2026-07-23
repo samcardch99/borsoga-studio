@@ -23,6 +23,10 @@ const projects = defineCollection({
     fullImageVertical: z.boolean().optional().default(false),
     order: z.number(),
     images: z.array(z.string()),
+    // Optional override for the "next project" preview image. The preview
+    // fills the viewport width and is cropped by the fold, so it needs a
+    // portrait/vertical photo; use this when images[0] is horizontal.
+    nextPreviewImage: z.string().optional(),
   }),
 });
 

@@ -47,4 +47,19 @@ const { href = "/", label = "Back", color, class: className } = Astro.props;
     width: 1em;
     transform: rotate(-135deg);
   }
+
+  /* Mobile + tablet (1rem = 10px): much larger type (~22px mobile → 28px
+     tablet, vs 12.5px before) plus a padded hit-area (≥48px tall) so the link
+     is easy to tap. Negative top/left margins cancel the padding to keep the
+     label's visual position; the bottom/right padding stays uncompensated so
+     the touch box gains clearance from nearby elements. */
+  @media (max-width: 1024px) {
+    .back-btn {
+      font-size: clamp(2.2rem, 1.8rem + 1vw, 2.8rem);
+      gap: 0.8rem;
+      padding: 1.1rem 1.5rem;
+      margin-top: -1.1rem;
+      margin-left: -1.5rem;
+    }
+  }
 </style>

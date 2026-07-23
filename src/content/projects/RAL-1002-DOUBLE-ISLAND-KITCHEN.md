@@ -7,6 +7,7 @@ closingLine: "Kitchen defined by mineral contrast, dark millwork, and reflectanc
 year: "2024"
 layout: "pd1"
 order: 6
+nextPreviewImage: "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/4.jpg"
 images:
   - "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/2.jpg"
   - "/projects/RAL-1002-DOUBLE-ISLAND-KITCHEN/3.jpg"

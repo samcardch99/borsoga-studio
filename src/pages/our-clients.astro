@@ -523,10 +523,11 @@ const sections = [
       padding: clamp(7rem, 16vh, 9rem) clamp(1.5rem, 6vw, 2rem) clamp(4rem, 12vw, 6rem);
     }
     /* Title padding is modest on mobile, so let the back button sit in normal
-       flow above the title instead of absolutely positioned. */
+       flow above the title instead of absolutely positioned. Wider gap below
+       so the enlarged touch box doesn't crowd the title. */
     .cl-back {
       position: static;
-      margin-bottom: clamp(1.4rem, 5vw, 2rem);
+      margin-bottom: clamp(2rem, 6vw, 2.8rem);
     }
     .cl-title {
       font-size: clamp(2.6rem, 10vw, 4rem);
