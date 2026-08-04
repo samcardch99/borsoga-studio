@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import ProjectLightbox from "../../components/ProjectLightbox.astro";
 import RightUpArrow from "../../assets/icons/right_up.svg";
 
 export async function getStaticPaths() {
@@ -112,7 +113,7 @@ const projectLd = {
              The vertical-pictures template has no hero image (Figma frame). -->
         {!d.verticalLayout && (
           <div class="pd-img pd-img--hero pd-par">
-            <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
+            <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" data-lb-index="0" />
           </div>
         )}
 
@@ -150,10 +151,10 @@ const projectLd = {
         {imgs[0] && imgs[1] && (
           <div class="pdv-duo" data-reveal>
             <div class="pd-par pdv-img">
-              <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" />
+              <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" data-lb-index="0" />
             </div>
             <div class="pd-par pdv-img">
-              <img src={imgs[1]} alt={d.title} loading="eager" decoding="async" />
+              <img src={imgs[1]} alt={d.title} loading="eager" decoding="async" data-lb-index="1" />
             </div>
           </div>
         )}
@@ -162,7 +163,7 @@ const projectLd = {
         <div class="pdv-row pdv-row--narrative" data-reveal>
           {imgs[2] && (
             <div class="pd-par pdv-img">
-              <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" />
+              <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" data-lb-index="2" />
             </div>
           )}
           <div class="pdv-text">
@@ -175,7 +176,7 @@ const projectLd = {
         <div class="pdv-row pdv-row--closing" data-reveal>
           {imgs[3] && (
             <div class="pd-par pdv-img">
-              <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" />
+              <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" data-lb-index="3" />
             </div>
           )}
           <div class="pdv-text pdv-text--closing">
@@ -189,7 +190,7 @@ const projectLd = {
         {/* Split: image left + narrative right */}
         <div class="pd-split" data-reveal>
           <div class="pd-split__img pd-par">
-            <img src={imgs[1]} alt={d.title} loading="lazy" decoding="async" />
+            <img src={imgs[1]} alt={d.title} loading="lazy" decoding="async" data-lb-index="1" />
           </div>
           <div class="pd-split__text">
             <p class="pd-section-label">Project Narrative</p>
@@ -200,10 +201,10 @@ const projectLd = {
         {/* Duo: two equal images */}
         <div class="pd-duo" data-reveal>
           <div class="pd-par">
-            <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" />
+            <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" data-lb-index="2" />
           </div>
           <div class="pd-par">
-            <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" />
+            <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" data-lb-index="3" />
           </div>
         </div>
 
@@ -214,7 +215,7 @@ const projectLd = {
             class:list={["pd-img", "pd-img--full", "pd-par", { "pd-img--full--portrait": d.fullImageVertical }]}
             data-reveal
           >
-            <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" />
+            <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" data-lb-index="4" />
           </div>
         )}
 
@@ -224,7 +225,7 @@ const projectLd = {
         {d.layout === "pd3" && d.fullImageVertical && imgs[4] && (
           <div class="pd-portrait-row" data-reveal>
             <div class="pd-par pd-par--portrait">
-              <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" />
+              <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" data-lb-index="4" />
             </div>
             <div class="pd-portrait-closing">
               <p class="pd-section-label pd-section-label--right">Closing Line</p>
@@ -237,7 +238,7 @@ const projectLd = {
         {d.layout === "pd2" && imgs[5] && (
           <div class="pd-portrait-row" data-reveal>
             <div class="pd-par pd-par--portrait">
-              <img src={imgs[5]} alt={d.title} loading="lazy" decoding="async" />
+              <img src={imgs[5]} alt={d.title} loading="lazy" decoding="async" data-lb-index="5" />
             </div>
             <div class="pd-portrait-closing">
               <p class="pd-section-label pd-section-label--right">Closing Line</p>
@@ -300,6 +301,11 @@ const projectLd = {
       </div>
     </section>
   </div>
+
+  <!-- Full-screen gallery. Every project photo above carries a
+       data-lb-index into `d.images`, which is what lets the viewer morph out
+       of — and back into — the exact image on the page. -->
+  <ProjectLightbox images={imgs} title={d.title} />
 </Layout>
 
 <style>
@@ -432,6 +438,14 @@ const projectLd = {
     width: 100%;
     height: 100%;
     display: block;
+  }
+
+  /* Every gallery photo opens the full-screen viewer (ProjectLightbox).
+     The cursor is the whole affordance — no badge, no overlay. */
+  .pd img[data-lb-index] { cursor: pointer; }
+  .pd img[data-lb-index]:focus-visible {
+    outline: 1px solid #000;
+    outline-offset: 4px;
   }
   /* Desktop only — the parallax needs the layer promotion; on mobile the
      images are static and promoting every photo wastes iPhone GPU memory. */

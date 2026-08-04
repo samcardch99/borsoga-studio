@@ -1,0 +1,1481 @@
+---
+/**
+ * PROJECT LIGHTBOX — full-screen gallery for the project detail pages.
+ *
+ * Built on the two libraries the site already ships (Swiper 12 for the
+ * carousel + pinch/double-tap zoom, GSAP for the motion) so it adds no new
+ * dependency and speaks the same motion language as the rest of the studio:
+ * thin 1px rules, Poppins 300 uppercase, expo/power easings.
+ *
+ * The signature move is a SHARED-ELEMENT MORPH: on open, a single fixed
+ * "morph" layer is placed over the clicked thumbnail — same size, same crop —
+ * and then animated to the fitted full-screen rect while its clip opens up,
+ * so the photo literally grows and un-crops out of the page. On close it
+ * travels back into whichever image is currently on screen.
+ *
+ * Usage: <ProjectLightbox images={d.images} title={d.title} /> and mark every
+ * thumbnail on the page with data-lb-index="<index into images>".
+ */
+interface Props {
+  images: string[];
+  title: string;
+}
+
+const { images, title } = Astro.props;
+const total = images.length;
+const pad = (n: number) => String(n).padStart(2, "0");
+---
+
+<div
+  class="lb"
+  id="project-lightbox"
+  role="dialog"
+  aria-modal="true"
+  aria-label={`${title} — image gallery`}
+  data-total={total}
+  tabindex="-1"
+>
+  <!-- Opaque backdrop. Fades in behind the travelling image, out ahead of it. -->
+  <div class="lb__backdrop"></div>
+
+  <!-- Carousel. Its box IS the stage: the JS fits every image into this rect,
+       so the morph target and the rendered slide land on the same pixels. -->
+  <div class="swiper lb__swiper">
+    <div class="swiper-wrapper">
+      {
+        images.map((src, i) => (
+          <div class="swiper-slide lb__slide">
+            <div class="lb__frame">
+              {/* `src` is filled in on demand (current ± 1) so opening the
+                  page doesn't download the whole gallery. */}
+              <img
+                data-src={src}
+                alt={`${title} — image ${i + 1} of ${total}`}
+                decoding="async"
+                draggable="false"
+              />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Morph layer — the element that actually travels between the page and
+       the stage. Sits above the slides; hidden once the hand-off is done. -->
+  <div class="lb__morph" aria-hidden="true">
+    <img class="lb__morph-img" alt="" decoding="async" draggable="false" />
+  </div>
+
+  <!-- Chrome -->
+  <div class="lb__ui">
+    <div class="lb__bar lb__bar--top">
+      <p class="lb__counter">
+        <span id="lb-counter-index">01</span>
+        <span class="lb__counter-sep">/</span>
+        <span class="lb__counter-total">{pad(total)}</span>
+      </p>
+      <button class="lb__close" type="button" aria-label="Close gallery">
+        <span class="lb__close-label">Close</span>
+        <span class="lb__close-x" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <button class="lb__nav lb__nav--prev" type="button" aria-label="Previous image">
+      <span class="lb__nav-arrow" aria-hidden="true"></span>
+    </button>
+    <button class="lb__nav lb__nav--next" type="button" aria-label="Next image">
+      <span class="lb__nav-arrow" aria-hidden="true"></span>
+    </button>
+
+    <div class="lb__bar lb__bar--bottom">
+      <p class="lb__title">{title}</p>
+      <p class="lb__hint">
+        <span class="lb__hint--fine">Scroll to zoom · ← → to browse · Esc to close</span>
+        <span class="lb__hint--coarse">Pinch to zoom · Swipe to browse</span>
+      </p>
+    </div>
+
+    <!-- Same thin progress rule as the "next project" pin -->
+    <div class="lb__progress" aria-hidden="true">
+      <div class="lb__progress-bg"></div>
+      <div class="lb__progress-fill"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ── Shell ─────────────────────────────────────────────────────────────
+     Stage insets double as the layout for the carousel AND the geometry the
+     morph fits into — they must stay in sync, hence the shared vars. */
+  .lb {
+    --lb-x: clamp(2.4rem, 3.3vw, 4.5rem);
+    --lb-top: clamp(7rem, 9vh, 9.5rem);
+    --lb-bottom: clamp(6.5rem, 8vh, 8.5rem);
+    --lb-ink: #f2f2f2;
+
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    /* ── Scroll lock ────────────────────────────────────────────────────
+       The page underneath is held still purely by refusing the gesture, NOT
+       by freezing the body with position:fixed. That freeze collapses the
+       document height, and iOS reacts by animating its toolbars back in —
+       which shrinks the visual viewport mid-transition. The overlay is
+       `inset: 0`, so the stage recentres while the morph is still flying
+       toward a rect measured before the change, and the photo lands a step
+       too low, then snaps up at the hand-off. Declining the gesture touches
+       no layout at all, so the toolbars never move; it also spares a full
+       relayout of a very long, image-heavy document at the exact moment the
+       animation starts. Wheel input is handled in JS (and Lenis is stopped
+       on pointer:fine). */
+    touch-action: none;
+    overscroll-behavior: contain;
+  }
+  .lb.is-open {
+    display: block;
+  }
+  /* Focus lands on the dialog itself on open — no ring on a non-interactive
+     container, but the browser's default blue outline is off-brand on the
+     controls too, so both get the site's hairline treatment instead. */
+  .lb:focus {
+    outline: none;
+  }
+  .lb__close:focus-visible,
+  .lb__nav:focus-visible {
+    outline: 1px solid rgba(242, 242, 242, 0.7);
+    outline-offset: 6px;
+  }
+
+  .lb__backdrop {
+    position: absolute;
+    inset: 0;
+    background: #0a0a0a;
+    opacity: 0;
+  }
+
+  /* ── Swiper layout ───────────────────────────────────────────────────
+     Owned here instead of `import "swiper/css"` inside the client script.
+     That import is injected by Vite as a runtime <style> when the module
+     first executes; Astro's ClientRouter then replaces <head> on every soft
+     navigation, and since the module never re-executes the tag is gone for
+     good. The result — only when arriving through the next-project pin, and
+     only in dev — is a wrapper that falls back to `display: block`, slides
+     that stack vertically and an image blown up to its natural height.
+     These few rules are the entire surface a one-per-view horizontal slider
+     needs, they ship in the page stylesheet, and so they survive the swap. */
+  :global(.lb__swiper.swiper) {
+    position: relative;
+    overflow: hidden;
+    list-style: none;
+    padding: 0;
+    z-index: 1;
+    display: block;
+  }
+  :global(.lb__swiper .swiper-wrapper) {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    box-sizing: content-box;
+    transition-property: transform;
+  }
+  :global(.lb__swiper .swiper-slide) {
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition-property: transform;
+  }
+  /* Swiper adds this on browsers that need it; it also keeps iOS from
+     flashing while the slides are composited. */
+  :global(.lb__swiper.swiper-backface-hidden .swiper-slide) {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* ── Stage / carousel ── */
+  .lb__swiper {
+    position: absolute;
+    top: var(--lb-top);
+    right: var(--lb-x);
+    bottom: var(--lb-bottom);
+    left: var(--lb-x);
+    opacity: 0;
+  }
+
+  .lb__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* The browser must not claim the gestures — pinch, pan and swipe are all
+       handled here (Swiper for the swipe, this component for the zoom). */
+    touch-action: none;
+  }
+  .lb__frame {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .lb__slide img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center center;
+    /* Deliberately NO `will-change: transform` here. It would promote every
+       slide's full-resolution photo to its own compositor layer the moment
+       the overlay is shown — a pile of GPU memory and layer-creation work on
+       a phone, landing exactly on the frames the open transition needs. The
+       zoom tweens pass force3D, so the active image is promoted only while
+       it is actually being transformed. */
+  }
+  /* Panning is only possible once the photo is bigger than the stage. */
+  .lb.is-zoomed .lb__slide img {
+    cursor: grab;
+  }
+  .lb.is-panning .lb__slide img {
+    cursor: grabbing;
+  }
+
+  /* ── Morph layer ── */
+  .lb__morph {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* Above both the carousel (Swiper's own z-index: 1) and the chrome. */
+    z-index: 20;
+    transform-origin: 0 0;
+    /* transform only: the clip is skipped whenever it wouldn't move (all of
+       mobile), and promoting it there would cost a layer for nothing. */
+    will-change: transform;
+    backface-visibility: hidden;
+    pointer-events: none;
+    display: none;
+  }
+  .lb__morph.is-active {
+    display: block;
+  }
+  .lb__morph-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* ── Chrome ────────────────────────────────────────────────────────────
+     The whole UI layer is click-through; only the controls take pointer
+     events, so a click on the empty letterbox area still reaches the stage
+     (where it closes the gallery). */
+  .lb__ui {
+    position: absolute;
+    inset: 0;
+    /* Swiper gives .swiper a z-index of 1, which would otherwise paint the
+       carousel over this layer — and since hit-testing follows paint order,
+       the prev/next buttons (which overlap the stage) would never receive a
+       click even though they look perfectly clickable. */
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+  }
+  /* `pointer-events` inherits, so the `none` above already covers every
+     descendant — the controls just opt back in. Do NOT reintroduce a
+     `.lb__ui > *` rule: Astro scopes it to `.lb__ui[cid] > [cid]`, whose
+     specificity beats `.lb__nav[cid]` and silently kills the arrows (they
+     are direct children of this layer, unlike the close button). */
+  .lb__close,
+  .lb__nav {
+    pointer-events: auto;
+  }
+
+  .lb__bar {
+    position: absolute;
+    left: var(--lb-x);
+    right: var(--lb-x);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .lb__bar--top {
+    top: clamp(2.6rem, 4vh, 4rem);
+  }
+  .lb__bar--bottom {
+    bottom: clamp(2.4rem, 3.5vh, 3.6rem);
+  }
+
+  .lb__counter,
+  .lb__title,
+  .lb__hint,
+  .lb__close {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .lb__counter {
+    font-size: clamp(1.05rem, 1.05vw, 1.35rem);
+    color: var(--lb-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .lb__counter-sep {
+    margin: 0 0.5em;
+    opacity: 0.4;
+  }
+  .lb__counter-total {
+    opacity: 0.4;
+  }
+
+  .lb__title {
+    font-size: clamp(1.05rem, 1.05vw, 1.35rem);
+    color: rgba(242, 242, 242, 0.45);
+  }
+  .lb__hint {
+    font-size: clamp(0.95rem, 0.95vw, 1.2rem);
+    color: rgba(242, 242, 242, 0.3);
+    text-align: right;
+  }
+  .lb__hint--coarse {
+    display: none;
+  }
+  @media (pointer: coarse) {
+    .lb__hint--fine {
+      display: none;
+    }
+    .lb__hint--coarse {
+      display: inline;
+    }
+  }
+
+  /* Close — "CLOSE" + a 1px × drawn in CSS, matching the hairline vocabulary */
+  .lb__close {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    background: none;
+    border: 0;
+    padding: 0.8rem 0;
+    font-size: clamp(1.05rem, 1.05vw, 1.35rem);
+    color: var(--lb-ink);
+    cursor: pointer;
+    transition: opacity 0.25s ease;
+  }
+  .lb__close:hover {
+    opacity: 0.55;
+  }
+  .lb__close-x {
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+  }
+  .lb__close-x::before,
+  .lb__close-x::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+  }
+  .lb__close-x::before {
+    transform: rotate(45deg);
+  }
+  .lb__close-x::after {
+    transform: rotate(-45deg);
+  }
+
+  /* Prev / next — hairline chevrons, desktop only */
+  .lb__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(5rem, 5vw, 7rem);
+    height: clamp(5rem, 5vw, 7rem);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--lb-ink);
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.25s ease;
+  }
+  .lb__nav:hover {
+    opacity: 1;
+  }
+  .lb__nav:disabled {
+    opacity: 0.12;
+    cursor: default;
+  }
+  .lb__nav--prev {
+    left: calc(var(--lb-x) * -0.15);
+  }
+  .lb__nav--next {
+    right: calc(var(--lb-x) * -0.15);
+  }
+  @media (pointer: fine) {
+    .lb__nav {
+      display: flex;
+    }
+  }
+  /* Zoomed in, the arrows would fight the pan gesture — hide them. */
+  .lb.is-zoomed .lb__nav {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .lb__nav-arrow {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-left: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+  }
+  .lb__nav--prev .lb__nav-arrow {
+    transform: rotate(45deg);
+    margin-left: 0.5rem;
+  }
+  .lb__nav--next .lb__nav-arrow {
+    transform: rotate(-135deg);
+    margin-right: 0.5rem;
+  }
+
+  /* Progress rule — same 1px fill-from-left as the next-project pin */
+  .lb__progress {
+    position: absolute;
+    left: var(--lb-x);
+    right: var(--lb-x);
+    bottom: clamp(1.2rem, 1.8vh, 1.8rem);
+    height: 1px;
+  }
+  .lb__progress-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(242, 242, 242, 0.15);
+  }
+  .lb__progress-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--lb-ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 767px) {
+    .lb {
+      --lb-x: 1.6rem;
+      --lb-top: 6rem;
+      --lb-bottom: 7.5rem;
+    }
+    .lb__counter,
+    .lb__close,
+    .lb__title {
+      font-size: 1.3rem;
+    }
+    .lb__hint {
+      font-size: 1.15rem;
+    }
+    /* Stacked: title over hint, both left-aligned */
+    .lb__bar--bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+    .lb__hint {
+      text-align: left;
+    }
+    /* Bigger tap target for close */
+    .lb__close {
+      padding: 1.2rem 0 1.2rem 1.2rem;
+      margin-right: -0.4rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lb__morph {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  // Swiper's layout CSS lives in this component's <style> block, not in a
+  // runtime `import "swiper/css"` — see the note there.
+  import Swiper from "swiper";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  type Rect = { left: number; top: number; width: number; height: number };
+  type Inset = { t: number; r: number; b: number; l: number };
+
+  /**
+   * Motion — the same family of curves the project pages already use, but
+   * shorter and with far less tail on touch. `expo.out` over 0.9s covers most
+   * of its distance early and then creeps, which on a phone (where the photo
+   * travels a fraction of the desktop distance, on a fraction of the GPU)
+   * reads as a laggy, slow-motion open rather than a decelerating one.
+   */
+  const isCoarse = () => window.matchMedia("(pointer: coarse)").matches;
+  const openDuration = () => (isCoarse() ? 0.42 : 0.9);
+  const openEase = () => (isCoarse() ? "power3.out" : "expo.out");
+  const closeDuration = () => (isCoarse() ? 0.34 : 0.68);
+  const closeEase = () => (isCoarse() ? "power2.inOut" : "power3.inOut");
+
+  let swiper: any = null;
+  let root: HTMLElement | null = null;
+  let morph: HTMLElement | null = null;
+  let morphImg: HTMLImageElement | null = null;
+  let swiperEl: HTMLElement | null = null;
+  let backdrop: HTMLElement | null = null;
+  let ui: HTMLElement | null = null;
+  let progressFill: HTMLElement | null = null;
+  let counterIndex: HTMLElement | null = null;
+
+  let isOpen = false;
+  let isAnimating = false;
+  let total = 0;
+  let lastTrigger: HTMLElement | null = null;
+  /** Thumbnail currently faded out because the morph is standing in for it. */
+  let hiddenThumb: HTMLElement | null = null;
+  let tl: gsap.core.Timeline | null = null;
+  const reduceMotion = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ───────────────────────────────────────────────────────────────────────
+  // GEOMETRY
+  // The morph only looks right if it starts on the thumbnail's *painted*
+  // pixels — not its layout box. On desktop the thumbnails carry a scrubbed
+  // parallax transform inside an overflow:hidden wrapper, and they're
+  // object-fit:cover, so the visible photo is scaled, offset AND cropped.
+  // These helpers reconstruct that exact state.
+  // ───────────────────────────────────────────────────────────────────────
+
+  /** The stage box the carousel lays its images out in. */
+  function stageRect(): Rect {
+    const r = swiperEl!.getBoundingClientRect();
+    return { left: r.left, top: r.top, width: r.width, height: r.height };
+  }
+
+  /** Natural aspect fitted (contain) into the stage — where the photo lands. */
+  function fittedRect(natW: number, natH: number): Rect {
+    const s = stageRect();
+    const k = Math.min(s.width / natW, s.height / natH);
+    const width = natW * k;
+    const height = natH * k;
+    return {
+      left: s.left + (s.width - width) / 2,
+      top: s.top + (s.height - height) / 2,
+      width,
+      height,
+    };
+  }
+
+  /**
+   * Where the thumbnail's photo content actually sits on screen, and which
+   * part of it is visible through its (overflow:hidden) wrapper.
+   */
+  function thumbGeometry(img: HTMLImageElement) {
+    const natW = img.naturalWidth;
+    const natH = img.naturalHeight;
+    if (!natW || !natH) return null;
+
+    // Post-transform box of the <img> itself (includes the parallax scale).
+    const b = img.getBoundingClientRect();
+    const fit = getComputedStyle(img).objectFit;
+    const scale =
+      fit === "contain"
+        ? Math.min(b.width / natW, b.height / natH)
+        : Math.max(b.width / natW, b.height / natH);
+
+    const contentW = natW * scale;
+    const contentH = natH * scale;
+    const contentLeft = b.left + (b.width - contentW) / 2;
+    const contentTop = b.top + (b.height - contentH) / 2;
+
+    // Visible window = wrapper clip ∩ content box.
+    const wrap = (img.closest(".pd-par") as HTMLElement | null) ?? img;
+    const w = wrap.getBoundingClientRect();
+    const visLeft = Math.max(w.left, contentLeft);
+    const visTop = Math.max(w.top, contentTop);
+    const visRight = Math.min(w.right, contentLeft + contentW);
+    const visBottom = Math.min(w.bottom, contentTop + contentH);
+
+    return {
+      natW,
+      natH,
+      scale,
+      contentLeft,
+      contentTop,
+      visLeft,
+      visTop,
+      visRight,
+      visBottom,
+    };
+  }
+
+  /**
+   * Start state for the morph, expressed in the morph element's own (final,
+   * un-transformed) coordinate space: a translate+uniform-scale that maps the
+   * final rect onto the thumbnail's painted content, plus the clip inset that
+   * reproduces the thumbnail's crop. Animating both to identity performs the
+   * grow-and-un-crop.
+   */
+  function morphStart(img: HTMLImageElement, final: Rect) {
+    const g = thumbGeometry(img);
+    if (!g) return null;
+
+    const s = g.scale / (final.width / g.natW);
+    const x = g.contentLeft - final.left;
+    const y = g.contentTop - final.top;
+
+    const clip: Inset = {
+      l: (g.visLeft - g.contentLeft) / s,
+      t: (g.visTop - g.contentTop) / s,
+      r: final.width - (g.visRight - g.contentLeft) / s,
+      b: final.height - (g.visBottom - g.contentTop) / s,
+    };
+    return { x, y, scale: s, clip };
+  }
+
+  function applyClip(el: HTMLElement, c: Inset) {
+    el.style.clipPath = `inset(${c.t}px ${c.r}px ${c.b}px ${c.l}px)`;
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // SCROLL LOCK
+  // ───────────────────────────────────────────────────────────────────────
+
+  /**
+   * Nothing here moves the page — the document keeps its normal layout and
+   * scroll offset for the whole time the gallery is open. Touch gestures are
+   * refused by `touch-action: none` on the overlay (plus the touchmove guard
+   * below), and wheel input by stopping Lenis, which swallows and
+   * preventDefaults it. See the CSS note for why freezing the body is worse.
+   */
+  function lockScroll() {
+    (window as any).lenis?.stop();
+  }
+
+  function unlockScroll() {
+    (window as any).lenis?.start();
+  }
+
+  /** Belt-and-braces for engines that under-apply `touch-action: none`. */
+  function onOverlayTouchMove(e: TouchEvent) {
+    if (isOpen) e.preventDefault();
+  }
+
+  function scrollPageTo(y: number) {
+    const max = Math.max(
+      0,
+      document.documentElement.scrollHeight - window.innerHeight,
+    );
+    const target = Math.min(Math.max(y, 0), max);
+    const lenis = (window as any).lenis;
+    if (lenis) lenis.scrollTo(target, { immediate: true, force: true });
+    else window.scrollTo(0, target);
+  }
+
+  const nextFrame = () =>
+    new Promise<void>((r) => requestAnimationFrame(() => r()));
+
+  // ───────────────────────────────────────────────────────────────────────
+  // SLIDE SOURCES — load the current image and its neighbours only.
+  // ───────────────────────────────────────────────────────────────────────
+
+  /**
+   * `neighbours` is held off during the open: decoding two more full-size
+   * JPEGs is tens of milliseconds of work each, and letting it start here
+   * drops it straight into the frames the transition is animating on. The
+   * current slide is the same URL as the thumbnail that was just clicked, so
+   * it is already in the memory cache and costs nothing.
+   */
+  function hydrateSlides(index: number, neighbours = true) {
+    const imgs = root!.querySelectorAll<HTMLImageElement>(".lb__slide img");
+    const wanted = neighbours ? [index - 1, index, index + 1] : [index];
+    wanted.forEach((i) => {
+      const img = imgs[i];
+      if (!img || img.getAttribute("src")) return;
+      img.setAttribute("src", img.dataset.src!);
+    });
+  }
+
+  function currentImage(): HTMLImageElement | null {
+    return (
+      root!.querySelectorAll<HTMLImageElement>(".lb__slide img")[
+        swiper?.activeIndex ?? 0
+      ] ?? null
+    );
+  }
+
+  function syncChrome(index: number) {
+    if (counterIndex) counterIndex.textContent = String(index + 1).padStart(2, "0");
+    if (progressFill)
+      gsap.to(progressFill, {
+        scaleX: total ? (index + 1) / total : 0,
+        duration: 0.5,
+        ease: "power3.out",
+      });
+    const prev = root!.querySelector<HTMLButtonElement>(".lb__nav--prev");
+    const next = root!.querySelector<HTMLButtonElement>(".lb__nav--next");
+    if (prev) prev.disabled = index === 0;
+    if (next) next.disabled = index === total - 1;
+  }
+
+  /** The on-page thumbnail for a gallery index, if that image is rendered. */
+  function thumbFor(index: number): HTMLImageElement | null {
+    return document.querySelector<HTMLImageElement>(
+      `.pd img[data-lb-index="${index}"]`,
+    );
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // SWIPER
+  // ───────────────────────────────────────────────────────────────────────
+
+  function ensureSwiper() {
+    if (swiper) {
+      swiper.update();
+      return;
+    }
+    swiper = new Swiper(swiperEl!, {
+      slidesPerView: 1,
+      spaceBetween: 40,
+      speed: 620,
+      // Arrow keys are handled by this component (scoped to the open state),
+      // so Swiper's Keyboard module is deliberately left out — with both
+      // active every keypress would advance two slides. Zoom is ours too
+      // (see the ZOOM section): Swiper's module can only jump straight to its
+      // max ratio, which rules out continuous wheel and pinch zooming.
+      on: {
+        slideChange: (sw: any) => {
+          resetZoom(false);
+          hydrateSlides(sw.activeIndex);
+          syncChrome(sw.activeIndex);
+        },
+      },
+    });
+
+    // Pointer handling stays on plain DOM listeners rather than Swiper's
+    // `click` event: Swiper derives that one from its own pointerup pipeline,
+    // which doesn't cover clicks landing outside the carousel (the bands
+    // above and below the stage). `allowClick` is Swiper's own "this click is
+    // the tail of a drag" flag — respecting it keeps a swipe from closing the
+    // gallery on release.
+    swiperEl!.addEventListener("click", onStageClick);
+    backdrop!.addEventListener("click", () => close());
+
+    // Wheel is bound to the whole overlay, not just the stage: the page is no
+    // longer frozen, so a wheel over the surrounding bands has to be refused
+    // here too (Lenis only covers pointer:fine).
+    root!.addEventListener("wheel", onWheel, { passive: false });
+    swiperEl!.addEventListener("dblclick", onDoubleClick);
+    swiperEl!.addEventListener("pointerdown", onPointerDown);
+    // move/up live on window: a pinch or pan regularly travels outside the
+    // stage, and a pointerup missed there would leave a stale finger in the
+    // map and wedge the gesture.
+    window.addEventListener("pointermove", onPointerMove, { passive: false });
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+  }
+
+  function onStageClick(e: MouseEvent) {
+    if (!isOpen || isAnimating) return;
+    if (swiper && swiper.allowClick === false) return;
+    if (didPan) return; // the click that ends a pan drag
+    const target = e.target as HTMLElement;
+    // Clicking the photo does nothing — zoom is a scroll/pinch gesture now.
+    // Clicking the empty letterbox area dismisses.
+    if (!target.closest(".lb__frame") && zScale <= 1.01) close();
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // ZOOM
+  //
+  // Continuous rather than a toggle: the wheel, a laptop trackpad's pinch
+  // (which Chrome and Safari report as `wheel` with ctrlKey set) and a
+  // two-finger touch pinch all drive the same scale, anchored on whatever
+  // point is under the cursor or between the fingers. Swiper's own Zoom
+  // module is not used — its API only jumps to a fixed max ratio.
+  // ───────────────────────────────────────────────────────────────────────
+
+  let zScale = 1;
+  let zX = 0;
+  let zY = 0;
+  /** Live pointers on the stage, for pinch detection. */
+  const pointers = new Map<number, { x: number; y: number }>();
+  let pinchStartDist = 0;
+  let pinchStartScale = 1;
+  let panStart: { x: number; y: number; zx: number; zy: number } | null = null;
+  let didPan = false;
+
+  function activeFrame() {
+    return swiper?.slides?.[swiper.activeIndex]?.querySelector(
+      ".lb__frame",
+    ) as HTMLElement | null;
+  }
+
+  /**
+   * Upper bound tracks the image's own resolution — past 1:1 zooming only
+   * buys blur — with a 3× floor so wide renders, whose source barely exceeds
+   * the stage, still zoom enough to be worth the gesture.
+   */
+  function maxScale(img: HTMLImageElement) {
+    const fitted = img.clientWidth || 1;
+    return Math.min(6, Math.max(3, (img.naturalWidth || fitted) / fitted));
+  }
+
+  /** Keep the photo from being dragged away from the stage it fills. */
+  function clampPan(img: HTMLImageElement) {
+    const frame = img.parentElement as HTMLElement;
+    const limitX = Math.max(
+      0,
+      (img.clientWidth * zScale - frame.clientWidth) / 2,
+    );
+    const limitY = Math.max(
+      0,
+      (img.clientHeight * zScale - frame.clientHeight) / 2,
+    );
+    zX = Math.min(limitX, Math.max(-limitX, zX));
+    zY = Math.min(limitY, Math.max(-limitY, zY));
+  }
+
+  function applyZoom(img: HTMLImageElement, animate: boolean) {
+    clampPan(img);
+    const zoomed = zScale > 1.01;
+    root!.classList.toggle("is-zoomed", zoomed);
+    // A zoomed photo owns the horizontal drag; otherwise it belongs to Swiper.
+    if (swiper) swiper.allowTouchMove = !zoomed;
+    const to = { x: zX, y: zY, scale: zScale, force3D: true };
+    if (animate) gsap.to(img, { ...to, duration: 0.35, ease: "power3.out" });
+    else gsap.set(img, to);
+  }
+
+  /**
+   * Scale by `factor` while holding the point (px, py) — in viewport
+   * coordinates — visually fixed under the cursor / fingers.
+   */
+  function zoomAt(factor: number, px: number, py: number, animate = false) {
+    const img = activeFrame()?.querySelector("img") as HTMLImageElement | null;
+    if (!img) return;
+    const prev = zScale;
+    const next = Math.min(maxScale(img), Math.max(1, prev * factor));
+    if (next === prev) return;
+
+    // Anchor point relative to the frame's centre, which is the image's
+    // transform origin.
+    const frame = img.parentElement as HTMLElement;
+    const box = frame.getBoundingClientRect();
+    const ax = px - (box.left + box.width / 2);
+    const ay = py - (box.top + box.height / 2);
+
+    zX = ax - (next / prev) * (ax - zX);
+    zY = ay - (next / prev) * (ay - zY);
+    zScale = next;
+    if (zScale <= 1.01) {
+      zScale = 1;
+      zX = 0;
+      zY = 0;
+    }
+    applyZoom(img, animate);
+  }
+
+  function resetZoom(animate: boolean) {
+    const img = activeFrame()?.querySelector("img") as HTMLImageElement | null;
+    zScale = 1;
+    zX = 0;
+    zY = 0;
+    root!.classList.remove("is-zoomed", "is-panning");
+    if (swiper) swiper.allowTouchMove = true;
+    if (!img) return;
+    if (animate) gsap.to(img, { x: 0, y: 0, scale: 1, duration: 0.35, ease: "power3.out" });
+    else gsap.set(img, { x: 0, y: 0, scale: 1 });
+  }
+
+  function onWheel(e: WheelEvent) {
+    if (!isOpen) return;
+    // Nothing here scrolls, so the wheel is always swallowed. Over the stage
+    // it means "zoom" — and on a trackpad a pinch arrives as ctrl+wheel with
+    // much finer deltas, so the two get their own sensitivity.
+    e.preventDefault();
+    if (isAnimating) return;
+    if (!(e.target as HTMLElement).closest(".lb__swiper")) return;
+    let dy = e.deltaY;
+    if (e.deltaMode === 1) dy *= 16; // lines → px
+    else if (e.deltaMode === 2) dy *= 400; // pages → px
+    const factor = Math.exp(-dy * (e.ctrlKey ? 0.012 : 0.0025));
+    zoomAt(factor, e.clientX, e.clientY);
+  }
+
+  function onDoubleClick(e: MouseEvent) {
+    if (!isOpen || isAnimating) return;
+    if (!(e.target as HTMLElement).closest(".lb__frame")) return;
+    const img = activeFrame()?.querySelector("img") as HTMLImageElement | null;
+    if (!img) return;
+    if (zScale > 1.01) resetZoom(true);
+    else zoomAt(2, e.clientX, e.clientY, true);
+  }
+
+  function pinchDistance() {
+    const [a, b] = [...pointers.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function pinchCentre() {
+    const [a, b] = [...pointers.values()];
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  }
+
+  function onPointerDown(e: PointerEvent) {
+    if (!isOpen) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      pinchStartDist = pinchDistance();
+      pinchStartScale = zScale;
+      panStart = null;
+      // A pinch is never a swipe — hand the gesture back after it ends.
+      if (swiper) swiper.allowTouchMove = false;
+    } else if (pointers.size === 1 && zScale > 1.01) {
+      panStart = { x: e.clientX, y: e.clientY, zx: zX, zy: zY };
+      didPan = false;
+      root!.classList.add("is-panning");
+    }
+  }
+
+  function onPointerMove(e: PointerEvent) {
+    if (!isOpen || !pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size === 2 && pinchStartDist > 0) {
+      e.preventDefault();
+      const img = activeFrame()?.querySelector("img") as HTMLImageElement | null;
+      if (!img) return;
+      const centre = pinchCentre();
+      const target = Math.min(
+        maxScale(img),
+        Math.max(1, (pinchStartScale * pinchDistance()) / pinchStartDist),
+      );
+      zoomAt(target / zScale, centre.x, centre.y);
+      return;
+    }
+
+    if (panStart && pointers.size === 1) {
+      const dx = e.clientX - panStart.x;
+      const dy = e.clientY - panStart.y;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) didPan = true;
+      zX = panStart.zx + dx;
+      zY = panStart.zy + dy;
+      const img = activeFrame()?.querySelector("img") as HTMLImageElement | null;
+      if (img) applyZoom(img, false);
+    }
+  }
+
+  function onPointerUp(e: PointerEvent) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinchStartDist = 0;
+    if (pointers.size === 0) {
+      panStart = null;
+      root!.classList.remove("is-panning");
+      if (swiper) swiper.allowTouchMove = zScale <= 1.01;
+      // A pinch that lands back at 1 should settle cleanly, not sit at 1.004.
+      if (zScale <= 1.01 && (zX !== 0 || zY !== 0)) resetZoom(true);
+      // Let the click that ends a drag through on the next tick.
+      setTimeout(() => {
+        didPan = false;
+      }, 0);
+    }
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // OPEN
+  // ───────────────────────────────────────────────────────────────────────
+
+  async function open(index: number, thumb: HTMLImageElement) {
+    if (isOpen || isAnimating) return;
+    isOpen = true;
+    isAnimating = true;
+    lastTrigger = thumb;
+
+    lockScroll();
+
+    root!.classList.add("is-open");
+    root!.classList.remove("is-zoomed");
+    swiperEl!.style.opacity = "0";
+    gsap.set(backdrop, { opacity: 0 });
+    gsap.set(ui, { opacity: 0 });
+
+    ensureSwiper();
+    hydrateSlides(index, false);
+    swiper.slideTo(index, 0, false);
+    resetZoom(false);
+    syncChrome(index);
+
+    const src = thumb.currentSrc || thumb.src;
+    const start =
+      reduceMotion() || !thumb.naturalWidth
+        ? null
+        : (() => {
+            const final = fittedRect(thumb.naturalWidth, thumb.naturalHeight);
+            const s = morphStart(thumb, final);
+            return s ? { final, ...s } : null;
+          })();
+
+    // The morph is fully staged — box, source, starting transform and clip —
+    // while it is still hidden, and only revealed once its pixels exist.
+    const morphed = start
+      ? await primeMorph(src, start.final, start, start.clip)
+      : false;
+    if (!isOpen) return; // closed again while we waited
+
+    tl?.kill();
+    tl = gsap.timeline({
+      onComplete() {
+        isAnimating = false;
+        // Hand off from the morph to the live (zoomable, swipeable) slide.
+        // Same photo, same rect — the swap is invisible.
+        swiperEl!.style.opacity = "1";
+        morph!.classList.remove("is-active");
+        root!.focus({ preventScroll: true });
+        // Neighbours were held back so their decode couldn't land in the
+        // middle of the transition; now is the cheap moment for them.
+        hydrateSlides(index);
+      },
+    });
+
+    const dur = openDuration();
+    tl.to(backdrop, { opacity: 1, duration: dur * 0.5, ease: "power2.out" }, 0);
+
+    if (morphed) {
+      // Only now is the page copy safe to hide.
+      hiddenThumb = thumb;
+      thumb.style.opacity = "0";
+
+      // force3D stays on past the end of the tween. GSAP's "auto" default
+      // drops back to a 2D matrix on completion, and that hand-back off the
+      // compositor re-rasterises the photo and snaps its subpixel position.
+      tl.to(
+        morph,
+        { x: 0, y: 0, scale: 1, duration: dur, ease: openEase(), force3D: true },
+        0,
+      );
+      addClipTween(tl, start!.clip, { t: 0, r: 0, b: 0, l: 0 }, dur, openEase());
+    } else {
+      // No usable geometry, or the photo could not be made ready in time:
+      // a straight cross-fade into the stage.
+      tl.fromTo(
+        swiperEl,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.45, ease: "power2.out" },
+        0,
+      );
+    }
+
+    // The chrome fade is scaled to finish WITH the photo, not after it. A
+    // fixed 0.5s tail made the timeline outlast the travel by ~250ms, and the
+    // hand-off waits on the timeline — so the image sat there, landed but
+    // still not swipeable or zoomable, for a quarter of a second.
+    tl.to(ui, { opacity: 1, duration: dur * 0.6, ease: "power2.out" }, dur * 0.4);
+  }
+
+  /**
+   * Stage the morph and reveal it only once it can actually be painted.
+   *
+   * Order is the whole point. Everything — box, source, the transform it
+   * starts from and its clip — is applied while the element is still
+   * `display: none`; the reveal is the last step, after the decode. Doing it
+   * the other way round is a visible flash: `<img>` keeps showing its
+   * previous frame until a newly assigned src decodes, so the morph would sit
+   * there at full stage size holding the *previous* photo for a frame or two
+   * before snapping down to thumbnail size to start travelling.
+   *
+   * Returns false if the pixels never arrived, so the caller can cross-fade
+   * instead of revealing an empty or stale morph.
+   */
+  async function primeMorph(
+    src: string,
+    final: Rect,
+    from: { x: number; y: number; scale: number },
+    clip: Inset,
+  ): Promise<boolean> {
+    morph!.style.left = `${final.left}px`;
+    morph!.style.top = `${final.top}px`;
+    morph!.style.width = `${final.width}px`;
+    morph!.style.height = `${final.height}px`;
+    if (morphImg!.getAttribute("src") !== src) morphImg!.setAttribute("src", src);
+    gsap.set(morph, { x: from.x, y: from.y, scale: from.scale, force3D: true });
+    applyClip(morph!, clip);
+
+    await Promise.race([
+      morphImg!.decode().catch(() => {}),
+      new Promise((r) => setTimeout(r, 140)),
+    ]);
+    if (!morphImg!.complete || !morphImg!.naturalWidth) return false;
+    morph!.classList.add("is-active");
+    return true;
+  }
+
+  /**
+   * The clip is what reproduces the thumbnail's crop — but only desktop
+   * thumbnails are cropped (object-fit: cover plus the scrubbed parallax).
+   * On mobile they render `contain` at their natural aspect, so every inset
+   * is zero and tweening it would just repaint a full-screen image on every
+   * frame for no visual gain. That repaint was the bulk of the sluggishness.
+   */
+  function addClipTween(
+    timeline: gsap.core.Timeline,
+    from: Inset,
+    to: Inset,
+    duration: number,
+    ease: string,
+  ) {
+    const travel = Math.max(
+      Math.abs(to.t - from.t),
+      Math.abs(to.r - from.r),
+      Math.abs(to.b - from.b),
+      Math.abs(to.l - from.l),
+    );
+    if (travel < 0.5) {
+      morph!.style.clipPath = "none";
+      return;
+    }
+    const clip = { ...from };
+    applyClip(morph!, clip);
+    timeline.to(
+      clip,
+      { ...to, duration, ease, onUpdate: () => applyClip(morph!, clip) },
+      0,
+    );
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // CLOSE
+  //
+  // The whole point: before anything becomes visible, the page is silently
+  // repositioned so the image the visitor is *currently* looking at is in
+  // view — then the photo shrinks straight back into it. No visible scroll,
+  // and you always land on the picture you were just looking at.
+  // ───────────────────────────────────────────────────────────────────────
+
+  async function close() {
+    if (!isOpen || isAnimating) return;
+
+    // First Esc / close press just exits zoom.
+    if (zScale > 1.01) {
+      resetZoom(true);
+      return;
+    }
+
+    isAnimating = true;
+    const index = swiper?.activeIndex ?? 0;
+    const slideImg = currentImage();
+
+    tl?.kill();
+    gsap.to(ui, { opacity: 0, duration: 0.2, ease: "power2.out" });
+
+    // Release the lock and reposition the page under the still-opaque
+    // backdrop, then let the parallax settle at the new offset before
+    // measuring — otherwise the morph would land on a stale transform.
+    unlockScroll();
+    const thumb = thumbFor(index) ?? nearestThumb(index);
+    if (thumb) revealThumb(thumb);
+    ScrollTrigger.update();
+    await nextFrame();
+    await nextFrame();
+
+    const target = thumbFor(index);
+    const src = slideImg?.currentSrc || slideImg?.src || "";
+    const natW = slideImg?.naturalWidth ?? 0;
+    const natH = slideImg?.naturalHeight ?? 0;
+
+    const end =
+      reduceMotion() || !target || !natW || !src
+        ? null
+        : (() => {
+            const final = fittedRect(natW, natH);
+            const s = morphStart(target, final);
+            return s ? { final, ...s } : null;
+          })();
+
+    // Same reason as on open: the morph is staged where the live slide
+    // already is, and only revealed once its pixels exist — otherwise the
+    // hand-off blinks.
+    const morphed = end
+      ? await primeMorph(src, end.final, { x: 0, y: 0, scale: 1 }, {
+          t: 0,
+          r: 0,
+          b: 0,
+          l: 0,
+        })
+      : false;
+
+    tl = gsap.timeline({
+      onComplete() {
+        // Focus follows the eye: it returns to the photo you landed on, not
+        // the one you opened from (they're only the same if you never browsed).
+        finishClose(target ?? lastTrigger);
+      },
+    });
+
+    const dur = closeDuration();
+
+    if (morphed) {
+      // The morph now stands exactly where the slide is; hide the live slide
+      // and travel home.
+      restoreThumb();
+      hiddenThumb = target!;
+      target!.style.opacity = "0";
+      swiperEl!.style.opacity = "0";
+
+      tl.to(
+        morph,
+        {
+          x: end!.x,
+          y: end!.y,
+          scale: end!.scale,
+          duration: dur,
+          ease: closeEase(),
+          force3D: true,
+        },
+        0,
+      );
+      addClipTween(tl, { t: 0, r: 0, b: 0, l: 0 }, end!.clip, dur, closeEase());
+      // The backdrop clears while the photo is still travelling, so the
+      // image visibly returns to its place in the page.
+      tl.to(backdrop, { opacity: 0, duration: dur * 0.65, ease: "power2.inOut" }, dur * 0.26);
+    } else {
+      tl.to(swiperEl, { opacity: 0, duration: 0.3, ease: "power2.in" }, 0).to(
+        backdrop,
+        { opacity: 0, duration: 0.4, ease: "power2.inOut" },
+        0.05,
+      );
+    }
+  }
+
+  function finishClose(focusTarget: HTMLElement | null = lastTrigger) {
+    root!.classList.remove("is-open", "is-zoomed", "is-panning");
+    morph!.classList.remove("is-active");
+    swiperEl!.style.opacity = "0";
+    pointers.clear();
+    pinchStartDist = 0;
+    panStart = null;
+    resetZoom(false);
+    restoreThumb();
+    isOpen = false;
+    isAnimating = false;
+    focusTarget?.focus?.({ preventScroll: true });
+    lastTrigger = null;
+  }
+
+  function restoreThumb() {
+    if (hiddenThumb) hiddenThumb.style.opacity = "";
+    hiddenThumb = null;
+  }
+
+  /** Closest rendered thumbnail to a gallery index (for images not on page). */
+  function nearestThumb(index: number): HTMLImageElement | null {
+    const all = Array.from(
+      document.querySelectorAll<HTMLImageElement>(".pd img[data-lb-index]"),
+    );
+    if (!all.length) return null;
+    return all.reduce((best, el) => {
+      const d = Math.abs(Number(el.dataset.lbIndex) - index);
+      const bd = Math.abs(Number(best.dataset.lbIndex) - index);
+      return d < bd ? el : best;
+    });
+  }
+
+  /**
+   * Bring a thumbnail into view — but only when it isn't already comfortably
+   * on screen, so closing on the image you opened from leaves the page
+   * exactly where the visitor left it.
+   */
+  function revealThumb(thumb: HTMLImageElement) {
+    const wrap = (thumb.closest(".pd-par") as HTMLElement | null) ?? thumb;
+    const r = wrap.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const visible = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+    if (visible / Math.min(r.height, vh) >= 0.6) return;
+
+    const y =
+      r.height > vh * 0.9
+        ? window.scrollY + r.top - vh * 0.08
+        : window.scrollY + r.top - (vh - r.height) / 2;
+    scrollPageTo(y);
+  }
+
+  // ───────────────────────────────────────────────────────────────────────
+  // WIRING
+  // ───────────────────────────────────────────────────────────────────────
+
+  function onThumbActivate(e: Event) {
+    const img = (e.target as HTMLElement)?.closest<HTMLImageElement>(
+      "img[data-lb-index]",
+    );
+    if (!img) return;
+    e.preventDefault();
+    open(Number(img.dataset.lbIndex), img);
+  }
+
+  function onThumbKey(e: KeyboardEvent) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const img = (e.target as HTMLElement)?.closest<HTMLImageElement>(
+      "img[data-lb-index]",
+    );
+    if (!img) return;
+    e.preventDefault();
+    open(Number(img.dataset.lbIndex), img);
+  }
+
+  function onKeyDown(e: KeyboardEvent) {
+    if (!isOpen) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      close();
+    } else if (e.key === "ArrowLeft") {
+      swiper?.slidePrev();
+    } else if (e.key === "ArrowRight") {
+      swiper?.slideNext();
+    } else if (e.key === "Tab") {
+      trapFocus(e);
+    }
+  }
+
+  /** Keep Tab inside the dialog — it's modal, the page behind is inert. */
+  function trapFocus(e: KeyboardEvent) {
+    const stops = [
+      ...root!.querySelectorAll<HTMLElement>(
+        ".lb__close, .lb__nav:not(:disabled)",
+      ),
+    ];
+    if (!stops.length) return;
+    const first = stops[0];
+    const last = stops[stops.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey && (active === first || active === root)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    } else if (!root!.contains(active)) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  /**
+   * Viewport changed while open → the stage moved. The carousel recentres by
+   * itself (the slide image is centred in CSS), but a morph already in flight
+   * is heading for a rect measured against the old viewport, so it would land
+   * off and snap into place at the hand-off. Re-place it against the new
+   * stage: its tween runs toward x/y/scale identity, so moving the box moves
+   * the landing point with it.
+   */
+  function onViewportChange() {
+    if (!isOpen) return;
+    if (morph!.classList.contains("is-active")) {
+      const img = morphImg!;
+      if (img.naturalWidth) {
+        const final = fittedRect(img.naturalWidth, img.naturalHeight);
+        morph!.style.left = `${final.left}px`;
+        morph!.style.top = `${final.top}px`;
+        morph!.style.width = `${final.width}px`;
+        morph!.style.height = `${final.height}px`;
+      }
+      return;
+    }
+    resetZoom(false);
+    swiper?.update();
+  }
+
+  let pageEl: HTMLElement | null = null;
+
+  function init() {
+    root = document.getElementById("project-lightbox");
+    pageEl = document.querySelector(".pd");
+    if (!root || !pageEl) return;
+
+    total = Number(root.dataset.total) || 0;
+    morph = root.querySelector(".lb__morph");
+    morphImg = root.querySelector(".lb__morph-img");
+    swiperEl = root.querySelector(".lb__swiper");
+    backdrop = root.querySelector(".lb__backdrop");
+    ui = root.querySelector(".lb__ui");
+    progressFill = root.querySelector(".lb__progress-fill");
+    counterIndex = root.querySelector("#lb-counter-index");
+
+    // Thumbnails are plain <img> inside the layout grid; make them operable
+    // without wrapping them in a button (which would disturb the layout).
+    document
+      .querySelectorAll<HTMLImageElement>(".pd img[data-lb-index]")
+      .forEach((img) => {
+        img.setAttribute("role", "button");
+        img.setAttribute("tabindex", "0");
+        img.setAttribute("aria-haspopup", "dialog");
+      });
+
+    pageEl.addEventListener("click", onThumbActivate);
+    pageEl.addEventListener("keydown", onThumbKey);
+    root.querySelector(".lb__close")?.addEventListener("click", () => close());
+    root
+      .querySelector(".lb__nav--prev")
+      ?.addEventListener("click", () => swiper?.slidePrev());
+    root
+      .querySelector(".lb__nav--next")
+      ?.addEventListener("click", () => swiper?.slideNext());
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onViewportChange);
+    // visualViewport fires for browser-chrome changes that never reach the
+    // `resize` event — exactly the case this guard exists for.
+    window.visualViewport?.addEventListener("resize", onViewportChange);
+    root.addEventListener("touchmove", onOverlayTouchMove, { passive: false });
+  }
+
+  function cleanup() {
+    tl?.kill();
+    tl = null;
+    if (isOpen) {
+      unlockScroll();
+      restoreThumb();
+      isOpen = false;
+      isAnimating = false;
+    }
+    pageEl?.removeEventListener("click", onThumbActivate);
+    pageEl?.removeEventListener("keydown", onThumbKey);
+    document.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("resize", onViewportChange);
+    window.visualViewport?.removeEventListener("resize", onViewportChange);
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("pointercancel", onPointerUp);
+    pointers.clear();
+    zScale = 1;
+    zX = 0;
+    zY = 0;
+    swiper?.destroy(true, true);
+    swiper = null;
+    pageEl = null;
+    root = null;
+  }
+
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", cleanup);
+</script>
