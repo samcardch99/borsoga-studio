@@ -63,26 +63,25 @@ export const projects: ProjectData[] = [
 
   // ── Layout pd3: hero + split + duo + full + closing ─────────────
   {
-    slug: "ral-9002-corner-residential-building",
-    title: "RAL 9002 // CORNER RESIDENTIAL BUILDING",
-    discipline: "Architectural Visualization & 3D Modeling",
-    scope: "Interior Design · 3D Modeling · Material Selection · Lighting Design · Interior Visualization · Still Rendering",
-    client: "3Design Architecture",
+    slug: "ral-8001-curved-wood-kitchen",
+    title: "RAL 8001 // CURVED WOOD KITCHEN",
+    discipline: "Interior Design, Architectural Visualization & 3D Modeling",
+    scope: "Interior Design · 3D Modeling · Material Selection · Lighting Design · Kitchen Visualization · Still Rendering",
     description:
-      "Three-level residential building defined by white volumes, exposed concrete slabs, and vertical black window frames.",
+      "Residential kitchen defined by warm wood millwork, a curved ribbed island, black veined stone, and illuminated display cabinets.",
     narrative:
-      "The visualization represents a corner residential building organized through horizontal concrete planes and vertically oriented white volumes. Narrow glass openings and black window frames reinforce the façade proportion and define the rhythm between levels. Exterior lighting activates the building base and surrounding vegetation to separate the main volume from its immediate urban context. Borsoga developed the 3D modeling and visualization to represent the project's scale, materiality, and urban presence.",
+      "The design organizes the kitchen through a curved central island and a continuous perimeter storage system. Warm wood is applied across cabinetry, vertical panels, display cabinets, and the ribbed island base to create a unified interior envelope. Black veined stone on the countertop, hood, and backsplash introduces direct contrast against the light floor and dominant millwork. Borsoga developed the interior design, 3D modeling, and visualization to represent the relationship between curved volume, reflective surfaces, storage, and integrated lighting.",
     closingLine:
-      "Vertical massing controlled by horizontal planes, narrow openings, and contrast between concrete, glass, and white surfaces.",
+      "Kitchen defined by curved geometry, continuous millwork, and technical contrast between warm wood, illuminated glass, and black stone.",
     year: "2025",
     layout: "pd3",
     images: [
-      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1.jpg",
-      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_2.jpg",
-      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_3.jpg",
-      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_4.jpg",
-      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_5.jpg",
-      "/projects/RAL-9002-CORNER-RESIDENTIAL-BUILDING/1_6.jpg",
+      "/projects/RAL-8001-CURVED-WOOD-KITCHEN/1.jpg",
+      "/projects/RAL-8001-CURVED-WOOD-KITCHEN/1_2.jpg",
+      "/projects/RAL-8001-CURVED-WOOD-KITCHEN/1_3.jpg",
+      "/projects/RAL-8001-CURVED-WOOD-KITCHEN/1_4.jpg",
+      "/projects/RAL-8001-CURVED-WOOD-KITCHEN/1_5.jpg",
+      "/projects/RAL-8001-CURVED-WOOD-KITCHEN/1_6.jpg",
     ],
   },
 

@@ -31,7 +31,7 @@ Tagline: "Digital spaces for the unbuilt imagination."
 
 - [RAL 1011 // Five Park Apartment](https://borsogastudio.com/works/ral-1011-five-park-apartment/): Interior CGI of an open-plan apartment in Five Park, Miami Beach
 - [RAL 8003 // Wood Vein Kitchen & Closet](https://borsogastudio.com/works/ral-8003-wood-vein-kitchen-closet/): Interior space, photography and material study
-- [RAL 9002 // Corner Residential Building](https://borsogastudio.com/works/ral-9002-corner-residential-building/): Exterior 3D visualization of a corner residential building (client: 3Design Architecture)
+- [RAL 8001 // Curved Wood Kitchen](https://borsogastudio.com/works/ral-8001-curved-wood-kitchen/): Residential kitchen with warm wood millwork, a curved ribbed island and black veined stone
 - [RAL 7006 // Coconut Grove Residence](https://borsogastudio.com/works/ral-7006-coconut-grove-residence/): Full interior CGI series of a high-end residence
 - [RAL 1013 // Crystal River Residence](https://borsogastudio.com/works/ral-1013-crystal-river-residence/): Residence interior documented through photography and CGI
 - [RAL 1002 // Double Island Kitchen](https://borsogastudio.com/works/ral-1002-double-island-kitchen/): High-resolution CGI rendering of a luxury kitchen
