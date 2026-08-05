@@ -1,0 +1,1018 @@
+---
+import {
+  reviews,
+  GOOGLE_PROFILE_URL,
+  GOOGLE_RATING,
+  GOOGLE_REVIEW_COUNT,
+} from "../data/reviews";
+
+// Google reviews strip — dark band that sits between the light section above
+// and the black footer, on / and /our-clients. Design: Claude Design
+// "Borsoga Google Reviews Strip". Data is a curated snapshot (src/data/reviews.ts),
+// not a live fetch — the site builds to static HTML.
+
+const STARS = [1, 2, 3, 4, 5];
+
+const ratingLabel = GOOGLE_RATING.toFixed(1);
+const headerStars = Math.round(GOOGLE_RATING);
+const countLabel = `BASED ON ${GOOGLE_REVIEW_COUNT} GOOGLE REVIEW${
+  GOOGLE_REVIEW_COUNT === 1 ? "" : "S"
+}`;
+
+const cards = reviews.map((r) => ({
+  ...r,
+  role: r.role || "GOOGLE REVIEW",
+  initial: (r.name || "?").trim().charAt(0).toUpperCase(),
+}));
+---
+
+<section class="gr" id="google-reviews" data-navbar-dark>
+  <div class="gr__inner">
+    <!-- ── Header: rating + controls ── -->
+    <div class="gr__head" data-gr-reveal>
+      <div>
+        <p class="gr__eyebrow">GOOGLE REVIEWS</p>
+        <div class="gr__score">
+          <span class="gr__rating">{ratingLabel}</span>
+          <div>
+            <span
+              class="gr__stars gr__stars--lg"
+              role="img"
+              aria-label={`${ratingLabel} out of 5 stars`}
+            >
+              {
+                STARS.map((i) => (
+                  <span
+                    class:list={["gr__star", { "is-off": i > headerStars }]}
+                    aria-hidden="true"
+                  >
+                    ★
+                  </span>
+                ))
+              }
+            </span>
+            <p class="gr__count">{countLabel}</p>
+          </div>
+        </div>
+        <a
+          class="gr__verified"
+          href={GOOGLE_PROFILE_URL}
+          target="_blank"
+          rel="noopener"
+        >
+          <span class="gr__dot" aria-hidden="true"></span>
+          VERIFIED ON GOOGLE
+        </a>
+      </div>
+
+      <div class="gr__controls">
+        <button
+          class="gr__arrow"
+          type="button"
+          data-gr-prev
+          aria-label="Previous reviews"
+        >
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.05" aria-hidden="true">
+            <path d="M13.4 8 H3.2"></path>
+            <path d="M7.6 3.6 L3.2 8 L7.6 12.4"></path>
+          </svg>
+        </button>
+        <button
+          class="gr__arrow"
+          type="button"
+          data-gr-next
+          aria-label="Next reviews"
+        >
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.05" aria-hidden="true">
+            <path d="M2.6 8 H12.8"></path>
+            <path d="M8.4 3.6 L12.8 8 L8.4 12.4"></path>
+          </svg>
+        </button>
+        <!-- Anchor, not a button: without JS it still reaches the profile. -->
+        <a
+          class="gr__cta"
+          href={GOOGLE_PROFILE_URL}
+          target="_blank"
+          rel="noopener"
+          data-gr-open
+        >
+          SEE ALL REVIEWS
+          <svg class="gr__cta-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.15" aria-hidden="true">
+            <path d="M4.4 11.6 L13 3"></path>
+            <path d="M4.6 3 H13 V11.4"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- ── Carousel ── -->
+    <div class="gr__viewport" data-gr-viewport data-gr-reveal>
+      <div class="gr__track" data-gr-track>
+        {
+          cards.map((r) => (
+            <article class="gr__card">
+              <div class="gr__card-top">
+                <span
+                  class="gr__stars"
+                  role="img"
+                  aria-label={`${r.rating} out of 5 stars`}
+                >
+                  {STARS.map((i) => (
+                    <span
+                      class:list={["gr__star", { "is-off": i > r.rating }]}
+                      aria-hidden="true"
+                    >
+                      ★
+                    </span>
+                  ))}
+                </span>
+                <span class="gr__date">{r.date}</span>
+              </div>
+              <p class="gr__quote">{r.text}</p>
+              <div class="gr__author">
+                <span class="gr__avatar" aria-hidden="true">
+                  {r.initial}
+                </span>
+                <div class="gr__author-txt">
+                  <p class="gr__name">{r.name}</p>
+                  <p class="gr__role">{r.role}</p>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+
+    <p class="gr__hint" data-gr-reveal>
+      <span class="gr__hint--pointer"
+        >DRAG OR HOVER TO PAUSE · SOURCED FROM GOOGLE BUSINESS PROFILE</span
+      >
+      <span class="gr__hint--touch"
+        >SWIPE TO SCRUB · SOURCED FROM GOOGLE BUSINESS PROFILE</span
+      >
+    </p>
+  </div>
+
+  <!-- ── All-reviews overlay ── -->
+  <!-- data-lenis-prevent: while the page behind is locked with lenis.stop(),
+       Lenis preventDefaults every wheel/touch event (lenis.mjs) — including the
+       ones inside this panel. The attribute makes it skip its own handling here
+       so the overlay scrolls natively. -->
+  <dialog
+    class="gr__all"
+    data-gr-dialog
+    data-lenis-prevent
+    aria-label="All Google reviews"
+  >
+    <div class="gr__all-head">
+      <div>
+        <p class="gr__eyebrow">ALL GOOGLE REVIEWS</p>
+        <div class="gr__score gr__score--sm">
+          <span class="gr__rating">{ratingLabel}</span>
+          <div>
+            <span
+              class="gr__stars gr__stars--lg"
+              role="img"
+              aria-label={`${ratingLabel} out of 5 stars`}
+            >
+              {
+                STARS.map((i) => (
+                  <span
+                    class:list={["gr__star", { "is-off": i > headerStars }]}
+                    aria-hidden="true"
+                  >
+                    ★
+                  </span>
+                ))
+              }
+            </span>
+            <p class="gr__count">{countLabel}</p>
+          </div>
+        </div>
+      </div>
+      <!-- SVG cross rather than a "×" glyph: the glyph sits off-centre in
+           Poppins' em box, so it never lands in the middle of the circle. -->
+      <button class="gr__close" type="button" data-gr-close aria-label="Close">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.15" aria-hidden="true">
+          <path d="M4 4 L12 12"></path>
+          <path d="M12 4 L4 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="gr__grid">
+      {
+        cards.map((r) => (
+          <article class="gr__cell">
+            <div class="gr__card-top">
+              <span
+                class="gr__stars"
+                role="img"
+                aria-label={`${r.rating} out of 5 stars`}
+              >
+                {STARS.map((i) => (
+                  <span
+                    class:list={["gr__star", { "is-off": i > r.rating }]}
+                    aria-hidden="true"
+                  >
+                    ★
+                  </span>
+                ))}
+              </span>
+              <span class="gr__date">{r.date}</span>
+            </div>
+            <p class="gr__quote gr__quote--free">{r.text}</p>
+            <div class="gr__author gr__author--bare">
+              <span class="gr__avatar" aria-hidden="true">
+                {r.initial}
+              </span>
+              <div class="gr__author-txt">
+                <p class="gr__name">{r.name}</p>
+                <p class="gr__role">{r.role}</p>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="gr__all-foot">
+      <span class="gr__hint">SOURCED FROM GOOGLE BUSINESS PROFILE</span>
+      <a class="gr__cta" href={GOOGLE_PROFILE_URL} target="_blank" rel="noopener">
+        OPEN ON GOOGLE
+        <svg class="gr__cta-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.15" aria-hidden="true">
+          <path d="M4.4 11.6 L13 3"></path>
+          <path d="M4.6 3 H13 V11.4"></path>
+        </svg>
+      </a>
+    </div>
+  </dialog>
+</section>
+
+<style>
+  /* ══ Section ══
+     Design px ÷ 10 = rem (global.css pins the root at 1rem = 10px).
+     Base block = desktop; tablet & mobile override below. */
+  .gr {
+    --gr-card-w: 39.4rem;
+    --gr-card-gap: 2.2rem;
+    --gr-card-pad: 2.8rem;
+    --gr-fs-rating: 5.2rem;
+    --gr-fs-quote: 1.5rem;
+    --gr-quote-minh: 11.6rem;
+    /* Chosen so clamp height ≈ --gr-quote-minh: cards stay uniform whether the
+       review is two lines or twelve. */
+    --gr-quote-lines: 5;
+    --gr-line: rgba(242, 242, 240, 0.14);
+
+    position: relative;
+    background: #0a0a0a;
+    color: #f2f2f0;
+    font-family: "Poppins", sans-serif;
+    /* Inline padding matches .cc / .cc__inner (ClearCommunication.astro) so the
+       strip's left edge lines up with the section above it. */
+    padding: 7.2rem clamp(2rem, 4vw, 6rem) 6.4rem;
+  }
+  .gr__inner {
+    max-width: 2120px;
+    margin: 0 auto;
+  }
+
+  /* Keyboard focus stays visible (showModal autofocuses the close button) but
+     wears the section palette instead of the UA's blue ring. */
+  .gr :focus-visible,
+  .gr__all :focus-visible {
+    outline: 1px solid #f2f2f0;
+    outline-offset: 3px;
+  }
+
+  /* ══ Header ══ */
+  .gr__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2.4rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--gr-line);
+    padding-bottom: 2.4rem;
+  }
+  .gr__eyebrow {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.26em;
+    color: #6a6a68;
+  }
+  .gr__score {
+    display: flex;
+    align-items: baseline;
+    gap: 1.4rem;
+    margin-top: 1.4rem;
+  }
+  .gr__rating {
+    font-size: var(--gr-fs-rating);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .gr__count {
+    margin: 0.7rem 0 0;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.1em;
+    color: #8a8a88;
+  }
+
+  /* Stars — all five always render; the unearned ones sit dim so a 4★ review
+     never reads as 4/4 (the source design sliced the string instead). */
+  .gr__stars {
+    display: flex;
+    gap: 0.3rem;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: #fff;
+  }
+  .gr__stars--lg {
+    font-size: 1.5rem;
+  }
+  .gr__star.is-off {
+    opacity: 0.24;
+  }
+
+  .gr__verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+    color: #8a8a88;
+    text-decoration: none;
+    transition: color 0.25s ease;
+  }
+  .gr__verified:hover {
+    color: #f2f2f0;
+  }
+  .gr__dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: #8a8a88;
+  }
+
+  /* ══ Controls ══ */
+  .gr__controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .gr__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(242, 242, 240, 0.26);
+    color: #f2f2f0;
+    cursor: pointer;
+    padding: 0;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+  }
+  .gr__arrow:hover {
+    background: #f2f2f0;
+    color: #0a0a0a;
+  }
+  .gr__arrow svg {
+    display: block;
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .gr__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.1rem;
+    border: 1px solid rgba(242, 242, 240, 0.3);
+    border-radius: 9999px;
+    padding: 1.5rem 2.4rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.15em;
+    color: #f2f2f0;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+  .gr__cta:hover {
+    background: #f2f2f0;
+    color: #0a0a0a;
+    border-color: #f2f2f0;
+  }
+  .gr__cta-ico {
+    display: block;
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /* ══ Carousel ══ */
+  .gr__viewport {
+    position: relative;
+    margin-top: 3rem;
+    overflow: hidden;
+    cursor: grab;
+    /* Let the browser keep vertical panning (Lenis / native scroll) while we
+       take the horizontal axis for the drag. */
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .gr__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+  .gr__card {
+    flex: none;
+    width: var(--gr-card-w);
+    margin-right: var(--gr-card-gap);
+    padding: var(--gr-card-pad);
+    box-sizing: border-box;
+    border: 1px solid rgba(242, 242, 240, 0.13);
+    background: #0d0d0d;
+    transition:
+      border-color 0.3s ease,
+      background 0.3s ease;
+  }
+  .gr__card:hover {
+    border-color: rgba(242, 242, 240, 0.3);
+    background: #111;
+  }
+  .gr__card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .gr__date {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    color: #7a7a78;
+    white-space: nowrap;
+  }
+  .gr__quote {
+    margin: 1.8rem 0 0;
+    font-size: var(--gr-fs-quote);
+    font-weight: 300;
+    line-height: 1.6;
+    color: #d4d4d0;
+    min-height: var(--gr-quote-minh);
+    /* Reviews are stored verbatim, so a long one would stretch every card in
+       the flex row. Clamp it VISUALLY (ellipsis, full text one click away in
+       the overlay) rather than shortening anyone's words in the data. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--gr-quote-lines);
+    line-clamp: var(--gr-quote-lines);
+    overflow: hidden;
+  }
+  /* The overlay is the place where every review reads in full. */
+  .gr__quote--free {
+    min-height: 0;
+    margin-top: 1.6rem;
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: none;
+    line-clamp: none;
+  }
+  .gr__author {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(242, 242, 240, 0.1);
+  }
+  .gr__author--bare {
+    margin-top: 1.8rem;
+    padding-top: 0;
+    border-top: none;
+  }
+  .gr__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
+    border: 1px solid rgba(242, 242, 240, 0.24);
+    font-size: 1.25rem;
+    line-height: 1;
+    color: #f2f2f0;
+  }
+  .gr__author-txt {
+    flex: 1;
+    min-width: 0;
+  }
+  .gr__name {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 1.3;
+    color: #f2f2f0;
+    overflow-wrap: anywhere;
+  }
+  .gr__role {
+    margin: 0.3rem 0 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: 0.11em;
+    color: #7a7a78;
+  }
+
+  .gr__hint {
+    margin: 1.8rem 0 0;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.13em;
+    color: #8a8a88;
+  }
+  .gr__hint--touch {
+    display: none;
+  }
+
+  /* ══ Overlay ══ */
+  .gr__all {
+    width: min(100rem, calc(100% - 3.6rem));
+    max-width: none;
+    max-height: calc(100vh - 8rem);
+    margin: auto;
+    padding: 0;
+    overflow-y: auto;
+    /* Don't chain the scroll back to the page once the panel bottoms out. */
+    overscroll-behavior: contain;
+    background: #0a0a0a;
+    color: #f2f2f0;
+    border: 1px solid rgba(242, 242, 240, 0.16);
+    font-family: "Poppins", sans-serif;
+  }
+  .gr__all::backdrop {
+    background: rgba(6, 6, 6, 0.88);
+    backdrop-filter: blur(6px);
+  }
+  .gr__all[open] {
+    animation: gr-panel-in 0.4s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+  }
+  .gr__all[open]::backdrop {
+    animation: gr-fade-in 0.3s ease both;
+  }
+  @keyframes gr-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+  @keyframes gr-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .gr__all-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2.4rem;
+    padding: 3.2rem 3.4rem;
+    background: #0a0a0a;
+    border-bottom: 1px solid var(--gr-line);
+  }
+  .gr__score--sm {
+    margin-top: 1.2rem;
+    --gr-fs-rating: 3.8rem;
+  }
+  .gr__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 4.4rem;
+    height: 4.4rem;
+    padding: 0;
+    border-radius: 9999px;
+    background: transparent;
+    border: 1px solid rgba(242, 242, 240, 0.3);
+    color: #f2f2f0;
+    cursor: pointer;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+  }
+  .gr__close:hover {
+    background: #f2f2f0;
+    color: #0a0a0a;
+  }
+  .gr__close svg {
+    display: block;
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .gr__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .gr__cell {
+    padding: 2.8rem 3.4rem;
+    border-bottom: 1px solid rgba(242, 242, 240, 0.1);
+    border-right: 1px solid rgba(242, 242, 240, 0.1);
+  }
+  .gr__all-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.8rem;
+    flex-wrap: wrap;
+    padding: 2.6rem 3.4rem;
+  }
+  .gr__all-foot .gr__hint {
+    margin: 0;
+  }
+
+  /* ══ Entrance state — GSAP tweens these to opacity 1 / y 0 on scroll-in ══ */
+  [data-gr-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  /* ══ Tablet (768–1024px) ══ */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .gr {
+      --gr-card-w: 33rem;
+      --gr-card-gap: 1.8rem;
+      --gr-card-pad: 2.6rem;
+      --gr-fs-rating: 4.6rem;
+      --gr-fs-quote: 1.45rem;
+      --gr-quote-minh: 12.4rem;
+      --gr-quote-lines: 5;
+      padding: 5.6rem clamp(1.6rem, 3vw, 2.6rem) 5.2rem;
+    }
+  }
+
+  /* ══ Mobile (≤767px) ══ */
+  @media (max-width: 767px) {
+    .gr {
+      --gr-card-w: 27.8rem;
+      --gr-card-gap: 1.4rem;
+      --gr-card-pad: 2.2rem;
+      --gr-fs-rating: 4rem;
+      --gr-fs-quote: 1.4rem;
+      --gr-quote-minh: 14rem;
+      --gr-quote-lines: 6;
+      /* Side padding tracks .cc and .clients at this breakpoint (2rem, not the
+         design's 22px) so the strip's left edge lines up with the section above. */
+      padding: 4.4rem clamp(1.5rem, 6vw, 2rem) 4.2rem;
+    }
+    /* Arrows are pointer affordances — on touch the strip is swiped directly. */
+    .gr__arrow {
+      display: none;
+    }
+    .gr__controls {
+      width: 100%;
+    }
+    .gr__hint--pointer {
+      display: none;
+    }
+    .gr__hint--touch {
+      display: inline;
+    }
+    .gr__all {
+      width: calc(100% - 2.4rem);
+      max-height: calc(100vh - 4rem);
+    }
+    .gr__all-head {
+      padding: 2.4rem 2.2rem;
+    }
+    .gr__grid {
+      grid-template-columns: 1fr;
+    }
+    .gr__cell {
+      padding: 2.4rem 2.2rem;
+      border-right: none;
+    }
+    .gr__all-foot {
+      padding: 2.2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gr__all[open],
+    .gr__all[open]::backdrop {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /** Marquee speed, px/s (design prop `speed`). */
+  const SPEED = 40;
+
+  let cleanupFns: Array<() => void> = [];
+
+  function initGoogleReviews(): void {
+    teardown();
+
+    const section = document.getElementById("google-reviews");
+    if (!section) return;
+
+    const viewport = section.querySelector<HTMLElement>("[data-gr-viewport]");
+    const track = section.querySelector<HTMLElement>("[data-gr-track]");
+    if (!viewport || !track) return;
+
+    // ── Marquee track ──────────────────────────────────────────────────────
+    // The HTML holds exactly one copy of the list. Clone it until the track is
+    // at least twice the viewport, so the wrap point is always off-screen — a
+    // fixed 2× (as in the source design) leaves a visible gap on 2K/4K displays.
+    let copyWidth = 0;
+
+    // Clones are tagged and cleared by tag rather than by count, so calling
+    // this again (resize, re-init) always rebuilds from the authored cards
+    // instead of stacking copies on top of the previous run's.
+    function buildTrack(): void {
+      track!
+        .querySelectorAll("[data-gr-clone]")
+        .forEach((el) => el.remove());
+      const originals = Array.from(track!.children) as HTMLElement[];
+      copyWidth = track!.scrollWidth;
+      if (copyWidth <= 0) return;
+      const copies = Math.max(2, Math.ceil((viewport!.clientWidth * 2) / copyWidth) + 1);
+      for (let c = 1; c < copies; c++) {
+        originals.forEach((el) => {
+          const clone = el.cloneNode(true) as HTMLElement;
+          clone.setAttribute("data-gr-clone", "");
+          // Duplicates are decoration — keep them out of the a11y tree.
+          clone.setAttribute("aria-hidden", "true");
+          track!.appendChild(clone);
+        });
+      }
+    }
+
+    // ── Motion loop ────────────────────────────────────────────────────────
+    let off = 0;
+    let vel = 0;
+    let dragging = false;
+    let paused = false;
+    let raf = 0;
+    let last = 0;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const finePointer = window.matchMedia("(pointer: fine)");
+
+    function wrap(): void {
+      if (copyWidth <= 0) return;
+      off = ((off % copyWidth) + copyWidth) % copyWidth;
+    }
+    function draw(): void {
+      track!.style.transform = `translate3d(${-off}px,0,0)`;
+    }
+
+    function tick(ts: number): void {
+      const dt = last ? Math.min(64, ts - last) : 0;
+      last = ts;
+      if (!dragging) {
+        if (!paused && !reduce.matches) off += (SPEED * dt) / 1000;
+        if (Math.abs(vel) > 0.05) {
+          off += vel;
+          vel *= 0.93;
+        } else {
+          vel = 0;
+        }
+        wrap();
+        draw();
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    function start(): void {
+      if (raf) return;
+      last = 0;
+      raf = requestAnimationFrame(tick);
+    }
+    function stop(): void {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    buildTrack();
+    draw();
+
+    // Only run the loop while the strip is on screen — the home page already
+    // carries Three.js, GSAP and Lenis.
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? start() : stop()));
+      },
+      { rootMargin: "200px 0px" },
+    );
+    io.observe(section);
+    cleanupFns.push(() => {
+      io.disconnect();
+      stop();
+    });
+
+    // ── Drag to scrub ──────────────────────────────────────────────────────
+    let lastX = 0;
+    let moved = 0;
+    let suppressClick = false;
+
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      lastX = e.clientX;
+      moved = 0;
+      viewport.style.cursor = "grabbing";
+      try {
+        viewport.setPointerCapture(e.pointerId);
+      } catch {
+        /* capture is best-effort */
+      }
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      moved += Math.abs(dx);
+      off -= dx;
+      vel = -dx;
+      wrap();
+      draw();
+    };
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      viewport.style.cursor = "grab";
+      // Swallow the click that follows a real drag so releasing over a card
+      // never counts as a tap.
+      if (moved > 6) {
+        suppressClick = true;
+        setTimeout(() => (suppressClick = false), 40);
+      }
+    };
+    const onClickCapture = (e: MouseEvent) => {
+      if (!suppressClick) return;
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    viewport.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    viewport.addEventListener("click", onClickCapture, true);
+    cleanupFns.push(() => {
+      viewport.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      viewport.removeEventListener("click", onClickCapture, true);
+    });
+
+    // Hover-to-pause is a mouse affordance; on touch a synthetic mouseleave may
+    // never arrive and the strip would stay frozen.
+    if (finePointer.matches) {
+      const onEnter = () => (paused = true);
+      const onLeave = () => (paused = false);
+      viewport.addEventListener("mouseenter", onEnter);
+      viewport.addEventListener("mouseleave", onLeave);
+      cleanupFns.push(() => {
+        viewport.removeEventListener("mouseenter", onEnter);
+        viewport.removeEventListener("mouseleave", onLeave);
+      });
+    }
+
+    // ── Arrows ─────────────────────────────────────────────────────────────
+    const nudge = (dir: number) => {
+      const card = track.children[0] as HTMLElement | undefined;
+      const step = (card?.offsetWidth ?? 300) + 20;
+      vel = dir * step * 0.09;
+    };
+    const prev = section.querySelector<HTMLButtonElement>("[data-gr-prev]");
+    const next = section.querySelector<HTMLButtonElement>("[data-gr-next]");
+    const onPrev = () => nudge(-1);
+    const onNext = () => nudge(1);
+    prev?.addEventListener("click", onPrev);
+    next?.addEventListener("click", onNext);
+    cleanupFns.push(() => {
+      prev?.removeEventListener("click", onPrev);
+      next?.removeEventListener("click", onNext);
+    });
+
+    // ── Resize ─────────────────────────────────────────────────────────────
+    // Width-only: mobile browsers fire height-only resizes as their bars
+    // collapse (see the --app-height note in Layout.astro).
+    let lastW = window.innerWidth;
+    let resizeTimer = 0;
+    const onResize = () => {
+      if (window.innerWidth === lastW) return;
+      lastW = window.innerWidth;
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        buildTrack();
+        wrap();
+        draw();
+      }, 150);
+    };
+    window.addEventListener("resize", onResize);
+    cleanupFns.push(() => {
+      window.removeEventListener("resize", onResize);
+      clearTimeout(resizeTimer);
+    });
+
+    // ── All-reviews overlay ────────────────────────────────────────────────
+    const dialog = section.querySelector<HTMLDialogElement>("[data-gr-dialog]");
+    const open = section.querySelector<HTMLAnchorElement>("[data-gr-open]");
+    const close = section.querySelector<HTMLButtonElement>("[data-gr-close]");
+
+    if (dialog && open) {
+      const onOpen = (e: MouseEvent) => {
+        e.preventDefault();
+        dialog.showModal();
+        // Same scroll lock the mobile menu uses (Navbar.astro).
+        (window as any).lenis?.stop();
+      };
+      const onClose = () => dialog.close();
+      // A click on the backdrop lands on the <dialog> element itself.
+      const onBackdrop = (e: MouseEvent) => {
+        if (e.target === dialog) dialog.close();
+      };
+      // Fires for the close button, the backdrop and the native Escape key.
+      const onClosed = () => (window as any).lenis?.start();
+
+      open.addEventListener("click", onOpen);
+      close?.addEventListener("click", onClose);
+      dialog.addEventListener("click", onBackdrop);
+      dialog.addEventListener("close", onClosed);
+      cleanupFns.push(() => {
+        open.removeEventListener("click", onOpen);
+        close?.removeEventListener("click", onClose);
+        dialog.removeEventListener("click", onBackdrop);
+        dialog.removeEventListener("close", onClosed);
+        if (dialog.open) dialog.close();
+      });
+    }
+
+    // ── Entrance ───────────────────────────────────────────────────────────
+    // Same trigger point as ClearCommunication.astro.
+    const reveal = section.querySelectorAll<HTMLElement>("[data-gr-reveal]");
+    gsap.to(reveal, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power3.out",
+      stagger: 0.12,
+      scrollTrigger: { trigger: section, start: "top 75%" },
+    });
+  }
+
+  function teardown(): void {
+    cleanupFns.forEach((fn) => fn());
+    cleanupFns = [];
+    ScrollTrigger.getAll().forEach((t) => {
+      const trg = t.trigger as HTMLElement | undefined;
+      if (trg && trg.closest && trg.closest("#google-reviews")) t.kill();
+    });
+  }
+
+  document.addEventListener("astro:page-load", initGoogleReviews);
+  document.addEventListener("astro:before-swap", teardown);
+</script>
