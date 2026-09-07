@@ -3,6 +3,25 @@ import RightUpArrow from "../assets/icons/right_up.svg";
 
 const categories = [
   {
+    id: "interior-design",
+    filter: "visualization" as string | undefined,
+    title: "Interior Design",
+    description:
+      "We shape interiors around the way people live, move, and experience space. From spatial planning and material selection to lighting, furniture, and finishes, every decision is guided by function, proportion, and atmosphere to create cohesive spaces with a distinct identity.",
+    tags: ["SPACE PLANNING", "MATERIALS", "FURNITURE & LIGHTING"],
+    bgColor: "#0a0a0a",
+    textColor: "#fff",
+    tagBorder: "rgba(255,255,255,0.5)",
+    ctaBg: "#fff",
+    ctaColor: "#000",
+    bgStyle: "background-color:#0a0a0a;",
+    noGradient: true,
+    customGradient: undefined as string | undefined,
+    contentBlur: undefined as string | undefined,
+    bgImg: undefined as string | undefined,
+    bgImgStyle: undefined as string | undefined,
+  },
+  {
     id: "arch-viz",
     filter: "visualization" as string | undefined,
     title: "Architectural Visualization",
@@ -103,7 +122,7 @@ const categories = [
 ];
 
 // ── Mobile / tablet (≤1024px) — stacked sections.
-// All 4 categories, each a full-bleed background image with overlaid text +
+// All categories, each a full-bleed background image with overlaid text +
 // classification tags. Text / tag / CTA colours come from the desktop data
 // (Immersive Spaces is a light section → dark text, like on desktop).
 // Each card is a stack of PNG layers (back → front). `depth` drives the
@@ -120,21 +139,28 @@ const categories = [
 type CatLayer = { src: string; depth: number; pos?: string; stage?: boolean };
 const isStageLayer = (l: CatLayer) => l.stage || l.depth > 0;
 const mobileCategories = [
-  { // Arch. Viz — single render (gentle bg drift)
+  { // Interior Design — single render (gentle bg drift)
     ...categories[0], dark: true,
     layers: [{ src: "/categories/cat-1-mobile.jpg", depth: 0 }] as CatLayer[],
+  },
+  { // Architectural Visualization — matching weather renders.
+    ...categories[1], dark: true,
+    layers: [
+      { src: "/categories/architectural-visualization/nublado-mobile.webp", depth: 0 },
+      { src: "/categories/architectural-visualization/dia-mobile.webp", depth: 0 },
+    ] as CatLayer[],
   },
   { // Immersive — two floating VR headsets on white (gafas 1 back, gafas 2 front).
     // Both are cutouts (no opaque fondo) → both go to the stage; gafas 1 keeps
     // depth 0 so it drifts least, `stage: true` opts it out of full-bleed.
-    ...categories[1], dark: false,
+    ...categories[2], dark: false,
     layers: [
       { src: "/categories/gafas-1-movil-trim.png", depth: 0, stage: true },
       { src: "/categories/gafas-2-movil-trim.png", depth: 2.5 },
     ] as CatLayer[],
   },
   { // Web Platforms — fondo + piedra + laptops
-    ...categories[2], dark: true,
+    ...categories[3], dark: true,
     layers: [
       { src: "/categories/fondo.png",        depth: 0 },
       { src: "/categories/piedra-trim.png",  depth: 1.5 },
@@ -143,7 +169,7 @@ const mobileCategories = [
     ] as CatLayer[],
   },
   { // Custom App Development — light gradient fondo + two phone mockups
-    ...categories[3], dark: false,
+    ...categories[4], dark: false,
     layers: [
       { src: "/categories/apps/fondo de app.png",   depth: 0 },
       { src: "/categories/apps/capa 1 app movil-trim.png", depth: 1.8 },
@@ -151,7 +177,7 @@ const mobileCategories = [
     ] as CatLayer[],
   },
   { // Brand Identity — dark fondo + two branding mockups
-    ...categories[4], dark: true,
+    ...categories[5], dark: true,
     layers: [
       { src: "/categories/branding-mobile/fondo.png",   depth: 0 },
       { src: "/categories/branding-mobile/movil-1-trim.png", depth: 1.8 },
@@ -173,6 +199,7 @@ const mobileCategories = [
     <div class="cat__flank cat__flank--right" id="cat-flank-right">
       <p class="cat__flank-label">Services</p>
       <ul class="cat__flank-list">
+        <li>Interior Design</li>
         <li>Arch. Visualization</li>
         <li>Immersive Spaces</li>
         <li>Web Platforms</li>
@@ -190,6 +217,7 @@ const mobileCategories = [
           <div
             class={`cat__slide${i === 0 ? " is-active cat__slide--first" : ""}`}
             data-cat-index={i}
+            data-cat-id={cat.id}
             style={`--cat-bg:${cat.bgColor};--cat-text:${cat.textColor};--cat-tag-border:${cat.tagBorder};--cat-cta-bg:${cat.ctaBg};--cat-cta-color:${cat.ctaColor};`}
           >
             <div class="cat__bg" style={cat.bgStyle}>
@@ -206,15 +234,33 @@ const mobileCategories = [
                   ))}
                 </>
               )}
+              {cat.id === "arch-viz" && (
+                <>
+                  {["nublado", "dia"].map((weather, frame) => (
+                    <picture>
+                      <source media="(max-width: 1024px)" srcset={`/categories/architectural-visualization/${weather}-mobile.webp`} />
+                      <img
+                        src={`/categories/architectural-visualization/${weather}.webp`}
+                        alt=""
+                        width="2560"
+                        height="1435"
+                        class="cat__weather-frame"
+                        style={`opacity:${frame === 0 ? 1 : 0}`}
+                        decoding="async"
+                      />
+                    </picture>
+                  ))}
+                </>
+              )}
               {cat.bgImg && (
                 <img
                   src={cat.bgImg}
                   alt=""
-                  id={i === 1 ? "cat-parallax-bg" : undefined}
+                  id={cat.id === "immersive" ? "cat-parallax-bg" : undefined}
                   style={cat.bgImgStyle}
                 />
               )}
-              {i === 1 && (
+              {cat.id === "immersive" && (
                 <img
                   src="/categories/gafas-2-desktop.png"
                   alt=""
@@ -222,7 +268,7 @@ const mobileCategories = [
                   style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 64%;pointer-events:none;"
                 />
               )}
-              {i === 2 && (
+              {cat.id === "web" && (
                 <>
                   <img
                     src="/categories/fondo.png"
@@ -250,7 +296,7 @@ const mobileCategories = [
                   />
                 </>
               )}
-              {i === 3 && (
+              {cat.id === "apps" && (
                 <>
                   <img src="/categories/apps/fondo de app.png" alt="" id="cat-apps-bg" class="cat__apps-layer cat__apps-bg" loading="eager" />
                   <img src="/categories/apps/capa 1 app comp.png" alt="" id="cat-apps-l1" class="cat__apps-layer cat__apps-fg" loading="lazy" />
@@ -259,7 +305,7 @@ const mobileCategories = [
                   <img src="/categories/apps/capa 4 app comp.png" alt="" id="cat-apps-l4" class="cat__apps-layer cat__apps-fg" loading="lazy" />
                 </>
               )}
-              {i === 4 && (
+              {cat.id === "brand" && (
                 <>
                   <img src="/categories/cat-4/0.webp" alt="" id="cat-s4-l0" class="cat__s4-layer cat__s4-l0" loading="eager" />
                   <img src="/categories/cat-4/1.webp" alt="" id="cat-s4-l1" class="cat__s4-layer cat__s4-l1" loading="lazy" />
@@ -518,7 +564,8 @@ const mobileCategories = [
   }
 
   /* ── Lighting frames slide 1 ── */
-  .cat__light-frame {
+  .cat__light-frame,
+  .cat__weather-frame {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -559,8 +606,8 @@ const mobileCategories = [
      expose a visible bottom cut.) */
   #cat-s3-laptop1 { scale: 0.85; z-index: 3; }
   #cat-s3-laptop2 { scale: 0.85; z-index: 4; }
-  [data-cat-index="2"] .cat__content,
-  [data-cat-index="2"] .cat__cta { z-index: 10; }
+  [data-cat-id="web"] .cat__content,
+  [data-cat-id="web"] .cat__cta { z-index: 10; }
 
   /* ── Parallax slide 4: app development (fondo + layers 1…4 front) ── */
   .cat__apps-layer {
@@ -583,8 +630,8 @@ const mobileCategories = [
   #cat-apps-l2 { z-index: 2; }
   #cat-apps-l3 { z-index: 3; }
   #cat-apps-l4 { z-index: 4; }
-  [data-cat-index="3"] .cat__content,
-  [data-cat-index="3"] .cat__cta { z-index: 10; }
+  [data-cat-id="apps"] .cat__content,
+  [data-cat-id="apps"] .cat__cta { z-index: 10; }
 
   /* ── Parallax slide 5: branding layers (0=fondo … 5=frente) ── */
   .cat__s4-layer {
@@ -603,8 +650,17 @@ const mobileCategories = [
   .cat__s4-l3 { scale: 1.06; z-index: 3; }
   .cat__s4-l4 { scale: 1.04; z-index: 4; }
   .cat__s4-l5 { scale: 1.02; z-index: 5; }
-  [data-cat-index="4"] .cat__content,
-  [data-cat-index="4"] .cat__cta { z-index: 10; }
+  [data-cat-id="brand"] .cat__content,
+  [data-cat-id="brand"] .cat__cta { z-index: 10; }
+
+  /* Blend white copy with the weather renders, scoped to this service. */
+  [data-cat-id="arch-viz"],
+  .catm--arch-viz {
+    isolation: isolate;
+  }
+  [data-cat-id="arch-viz"] .cat__content {
+    mix-blend-mode: difference;
+  }
 
   /* ── Content panel ── */
   .cat__content {
@@ -778,6 +834,8 @@ const mobileCategories = [
     color: var(--catm-text, #fff);
     display: flex;
   }
+  .catm--arch-viz > .catm__layer:nth-of-type(2) { opacity: 0; }
+
   .catm--light {
     background: #f6f5f1;
   }
@@ -860,6 +918,16 @@ const mobileCategories = [
     padding: clamp(7.25rem, 12.5vh, 10.5rem) clamp(2.4rem, 5vw, 4rem)
       clamp(2.8rem, 5vh, 4.5rem);
   }
+  /* Let the text blend with the photos without blending the mobile CTA. */
+  .catm--arch-viz .catm__content { z-index: auto; }
+  .catm--arch-viz :is(.catm__title, .catm__desc, .catm__tags, .catm__cta) {
+    position: relative;
+    z-index: 9;
+  }
+  .catm--arch-viz :is(.catm__title, .catm__desc, .catm__tags) {
+    mix-blend-mode: difference;
+  }
+
   /* push description / tags / CTA to the bottom; title (if any) stays on top */
   .catm__bottom {
     margin-top: auto;
@@ -973,8 +1041,8 @@ const mobileCategories = [
   const FADE_START = 0.72;
 
   // true = slide has dark bg → navbar needs light (white) text
-  // [arch-viz, immersive, web (cat 3), apps, brand (cat 5)]
-  const SLIDE_IS_DARK = [false, false, true, false, true];
+  // [interior-design, arch-viz, immersive, web, apps, brand]
+  const SLIDE_IS_DARK = [false, false, false, true, false, true];
 
   const catSection = document.getElementById("categories") as HTMLElement;
 
@@ -1006,7 +1074,6 @@ const mobileCategories = [
 
   function setSlide(idx: number) {
     if (idx === currentSlide) return;
-    const prev = currentSlide;
     slides[currentSlide].classList.remove("is-active");
     dots[currentSlide].classList.remove("is-active");
     hideSlide(currentSlide);
@@ -1015,6 +1082,7 @@ const mobileCategories = [
     dots[currentSlide].classList.add("is-active");
     revealSlide(currentSlide);
     updateNavbarTheme(currentSlide);
+    (window as any).__catWeather?.setSlide(idx);
     // Notify parallax system of slide change
     if ((window as any).__catSetSlide) (window as any).__catSetSlide(idx);
   }
@@ -1058,8 +1126,8 @@ const mobileCategories = [
       updateNavbarTheme(currentSlide);
       catSection.removeAttribute("data-navbar-transparent");
 (window as any).__catLighting?.lightHandoffToMouse();
-      if (currentSlide === 1 && (window as any).__catSetSlide)
-        (window as any).__catSetSlide(1);
+      if (currentSlide === 2 && (window as any).__catSetSlide)
+        (window as any).__catSetSlide(2);
     } else if (enterP < 1 && enterComplete) {
       enterComplete = false;
       (window as any).__catLighting?.lightHandoffToScroll();
@@ -1161,6 +1229,54 @@ const mobileCategories = [
     lightTick();
   }
 
+  // Architectural Visualization: entrance crossfade, then horizontal mouse control.
+  // Keep the cloudy base opaque throughout, just like the interior lighting stack.
+  {
+    const day = slides[1].querySelector<HTMLImageElement>("picture:last-child .cat__weather-frame")!;
+    const frames = Array.from(slides[1].querySelectorAll<HTMLImageElement>(".cat__weather-frame"));
+    const ready = Promise.all(frames.map(frame => frame.decode().catch(() => {})));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let transition: gsap.core.Tween | null = null;
+    let entering = false;
+    let generation = 0;
+    let mouseTarget = 1;
+
+    async function setWeatherSlide(idx: number) {
+      const token = ++generation;
+      transition?.kill();
+      entering = false;
+      if (idx !== 1) return;
+      mouseTarget = 1;
+      entering = true;
+      gsap.set(day, { opacity: reducedMotion.matches ? 1 : 0 });
+      await ready;
+      if (token !== generation || currentSlide !== 1) return;
+      transition = gsap.to(day, {
+        opacity: 1,
+        duration: reducedMotion.matches ? 0 : 1.8,
+        delay: reducedMotion.matches ? 0 : 0.2,
+        ease: "power2.inOut",
+        onComplete: () => {
+          entering = false;
+          if (!reducedMotion.matches) {
+            transition = gsap.to(day, { opacity: mouseTarget, duration: 0.8, overwrite: true });
+          }
+        },
+      });
+    }
+
+    window.addEventListener("mousemove", (event) => {
+      if (currentSlide !== 1 || !enterComplete || reducedMotion.matches) return;
+      mouseTarget = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
+      if (entering) return;
+      transition = gsap.to(day, {
+        opacity: mouseTarget, duration: 0.8, ease: "power2.out", overwrite: true,
+      });
+    }, { passive: true });
+    (window as any).__catWeather = { setSlide: setWeatherSlide };
+    if (currentSlide === 1) void setWeatherSlide(1);
+  }
+
   // ── Mouse parallax: slide 2 (bg + recorte) and slide 3 (fondo + laptops + piedra) ──
 
   // Slide 2 elements
@@ -1234,9 +1350,9 @@ const mobileCategories = [
   }
 
   function applyDemo() {
-    const active = currentSlide === 1 ? s2layers
-      : currentSlide === 2 ? s3layers
-      : currentSlide === 3 ? sAppsLayers
+    const active = currentSlide === 2 ? s2layers
+      : currentSlide === 3 ? s3layers
+      : currentSlide === 4 ? sAppsLayers
       : s4layers;
     for (const l of active) {
       l.tx = -ARC_NX * demoProxy.t * l.strength;
@@ -1274,7 +1390,7 @@ const mobileCategories = [
   }
 
   window.addEventListener("mousemove", (e) => {
-    const isParallaxSlide = (currentSlide === 1 || currentSlide === 2 || currentSlide === 3 || currentSlide === 4) && enterComplete;
+    const isParallaxSlide = (currentSlide === 2 || currentSlide === 3 || currentSlide === 4 || currentSlide === 5) && enterComplete;
     if (!isParallaxSlide) {
       resetLayerTargets(s2layers);
       resetLayerTargets(s3layers);
@@ -1286,10 +1402,10 @@ const mobileCategories = [
     if (!mouseActive) stopDemo();
     const nx = (e.clientX / window.innerWidth  - 0.5) * 2;
     const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-    if (currentSlide === 1) setLayerTargets(s2layers, nx, ny);
-    if (currentSlide === 2) setLayerTargets(s3layers, nx, ny);
-    if (currentSlide === 3) setLayerTargets(sAppsLayers, nx, ny);
-    if (currentSlide === 4) setLayerTargets(s4layers, nx, ny);
+    if (currentSlide === 2) setLayerTargets(s2layers, nx, ny);
+    if (currentSlide === 3) setLayerTargets(s3layers, nx, ny);
+    if (currentSlide === 4) setLayerTargets(sAppsLayers, nx, ny);
+    if (currentSlide === 5) setLayerTargets(s4layers, nx, ny);
   }, { passive: true });
 
   window.addEventListener("mouseleave", () => {
@@ -1300,7 +1416,7 @@ const mobileCategories = [
   }, { passive: true });
 
   (window as any).__catSetSlide = (idx: number) => {
-    if (idx === 1 || idx === 2 || idx === 3 || idx === 4) {
+    if (idx === 2 || idx === 3 || idx === 4 || idx === 5) {
       playDemoParallax();
     } else {
       stopDemo();
@@ -1342,6 +1458,23 @@ const mobileCategories = [
           );
         });
       });
+      const day = document.querySelector<HTMLElement>(".catm--arch-viz > .catm__layer:nth-of-type(2)");
+      if (day) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          gsap.set(day, { opacity: 1 });
+        } else {
+          gsap.to(day, {
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".catm--arch-viz",
+              start: "top 65%",
+              end: "top 10%",
+              scrub: 0.6,
+            },
+          });
+        }
+      }
       ScrollTrigger.refresh();
     }
 
