@@ -853,6 +853,18 @@ const mobileCategories = [
     transform-origin: center center;
     will-change: transform;
   }
+  /* Fill the card height and crop the proportional overflow at either side. */
+  .catm--arch-viz > .catm__layer {
+    inset: 0 auto 0 50%;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transform: translateX(-50%);
+    will-change: opacity;
+  }
+
   /* Stage — in-flow band between the title and the bottom text block. The
      cutout layers (depth > 0 / stage) live here, so however tall the texts
      get, the compositions can never extend behind them. The layers keep the
@@ -1437,6 +1449,8 @@ const mobileCategories = [
     // no mouse. Driven by ScrollTrigger scrub (synced to Lenis via Layout).
     function initMobileParallax() {
       document.querySelectorAll<HTMLElement>(".catm").forEach((section) => {
+        // These portraits stay fitted to the card; only their opacity transitions.
+        if (section.classList.contains("catm--arch-viz")) return;
         section.querySelectorAll<HTMLElement>(".catm__layer").forEach((layer) => {
           const depth = parseFloat(layer.dataset.depth || "0");
           const amp = 2 + depth * 2; // gentle yPercent amplitude (bg≈2 … fg up to ~8)
