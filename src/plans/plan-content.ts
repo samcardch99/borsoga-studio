@@ -59,7 +59,7 @@ export const BRAND_ESSENTIALS = [
   "1 ronda de revisiones",
 ] as const;
 
-export const BRAND_INHERIT_EDITION = "Brand Concept · Extended Visual System · Graphic Language · Patterns &amp; Supporting Graphics · Iconography · Photography / Image Direction · Brand Applications · Social Media Starter Kit · Extended Brand Guidelines" as const;
+export const BRAND_INHERIT_EDITION = "Brand Concept · Extended Visual System · Graphic Language · Patterns & Supporting Graphics · Iconography · Photography / Image Direction · Brand Applications · Social Media Starter Kit · Extended Brand Guidelines" as const;
 
 export const BRAND_INHERIT_PREMIUM = "Primary Logo · Logo Variations · Color Palette · Typography System · Profile / Favicon Assets · Basic Graphic Language · Basic Brand Guidelines · Archivos finales organizados" as const;
 
