@@ -68,6 +68,10 @@ export interface I18n {
   missing(): string[];
 }
 
+// `I18N_AUDIT=1 npm run build` prints every string that fell back to Spanish on
+// the English pages (I18N_MISS_T by text, I18N_MISS_t by key). Build time only.
+const AUDIT = typeof process !== "undefined" && !!process.env?.I18N_AUDIT;
+
 export function createI18n(lang: Lang, extra?: ExtraName): I18n {
   const dict = merge(lang, extra);
   const source = merge(SOURCE_LANG, extra);
@@ -85,6 +89,7 @@ export function createI18n(lang: Lang, extra?: ExtraName): I18n {
       if (hit !== undefined) return hit;
       const base = find(source, key);
       missing.add(key);
+      if (AUDIT) console.warn("I18N_MISS_t\t" + lang + "\t" + key);
       if (base !== undefined) return base;
       return fallback !== undefined ? fallback : `‹${key}›`;
     },
@@ -95,6 +100,7 @@ export function createI18n(lang: Lang, extra?: ExtraName): I18n {
       if (typeof text !== "string" || !text.trim() || lang === SOURCE_LANG) return text;
       const hit = dict.opt[text];
       if (hit !== undefined && hit !== text) return hit;
+      if (AUDIT) console.warn("I18N_MISS_T\t" + lang + "\t" + JSON.stringify(text));
       return source.opt[text] ?? text;
     },
 
