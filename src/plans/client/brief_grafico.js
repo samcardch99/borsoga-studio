@@ -88,7 +88,7 @@ window.BORSOGA_BRIEF({
     personality: [], axes: {},
     meaning: '', meaningWhich: '', avoidElements: '', brandColors: '', whichColors: '',
     avoidColors: '', whichAvoidColors: '',
-    hasRefs: '', refsText: '', refsWhy: '',
+    refBrands: '', hasRefs: '', refsText: '', refsWhy: '',
     touchpoints: [], packagingType: '', packagingScope: '', spaces: '',
     languages: [], restrictions: '',
     approvers: '', anythingElse: '',
@@ -172,6 +172,7 @@ window.BORSOGA_BRIEF({
     ] },
 
     { titulo: 'gd_s7', preguntas: [
+      { f: 'refBrands', q: 'q_refBrands', h: 'h_refBrands', tipo: 'area', req: true },
       { f: 'hasRefs', q: 'q_hasRefs', h: 'h_hasRefs', tipo: 'chips', ops: YES_NO, req: true },
       { f: 'refFiles', q: 'q_refs', h: 'h_refs', tipo: 'subida', area: 'refsText',
         si: function (a) { return a.hasRefs === YES; },
@@ -233,6 +234,7 @@ window.BORSOGA_BRIEF({
     }).filter(Boolean).join(' · ') || raya]);
     if (a.meaningWhich) filas.push(['sum_meaning', a.meaningWhich]);
     filas.push(['sum_colors', val(a.brandColors) + (a.whichColors ? ' · ' + a.whichColors : '')]);
+    filas.push(['sum_refBrands', a.refBrands || raya]);
     if (a.refsText) filas.push(['sum_refs', a.refsText]);
     filas.push(['sum_touchpoints', lista(a.touchpoints) || raya]);
     filas.push(['sum_languages', lista(a.languages) || raya]);
