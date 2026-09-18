@@ -4,7 +4,7 @@
 // Calls window.BORSOGA_BRIEF, so brief.js must load first.
 
 /**
- * Cuestionario de Diseño Gráfico (identidad de marca) — 12 pasos.
+ * Cuestionario de Diseño Gráfico (identidad de marca) — 11 pasos.
  *
  * Portado del artboard 'Cuestionario Diseno Grafico'. Igual que el de diseño
  * web: las constantes se quedan en español porque son el valor canónico que
@@ -33,7 +33,6 @@ var CHANGE_REASON = ['La empresa evolucionó', 'Se siente anticuada', 'No repres
 
 var CATEGORY = ['Servicios profesionales', 'Tecnología', 'Salud', 'Real Estate / Desarrollo inmobiliario', 'Arquitectura / Construcción', 'Hospitality', 'Retail', 'Alimentos y bebidas', 'Moda / Lifestyle', 'Producto de consumo', 'E-commerce', 'Marca personal', 'Nonprofit', 'Otro'];
 var STAGE = ['Próxima a lanzarse', 'Recién lanzada', 'En crecimiento', 'Empresa establecida', 'En expansión hacia nuevos mercados', 'En proceso de transformación/rebranding'];
-var MARKETS = ['Localmente', 'En todo Estados Unidos', 'Latinoamérica', 'Internacionalmente', 'Online / sin mercado geográfico específico', 'Otro'];
 var VS_COMP = ['Verse más premium', 'Verse más moderna', 'Verse más confiable', 'Verse más accesible/cercana', 'Verse más innovadora', 'Verse más especializada', 'Verse más sólida/corporativa', 'Diferenciarse completamente', 'Otro'];
 
 var B2C = 'Consumidores — B2C';
@@ -43,7 +42,6 @@ var SELLS_TO = [B2C, B2B, BOTH, 'Otro'];
 var DECISION_MAKER = ['Founder / Owner', 'CEO / Dirección', 'Marketing', 'Procurement', 'Recursos Humanos', 'Arquitectos / Diseñadores', 'Desarrolladores / Inversionistas', 'Otro'];
 
 var TRAITS = ['Elegante', 'Moderna', 'Sofisticada', 'Premium', 'Cercana', 'Humana', 'Profesional', 'Confiable', 'Innovadora', 'Audaz', 'Minimalista', 'Técnica', 'Exclusiva', 'Artesanal', 'Dinámica', 'Juvenil', 'Atemporal', 'Disruptiva', 'Seria', 'Cálida'];
-var FEELINGS = ['Confianza', 'Seguridad', 'Deseo', 'Curiosidad', 'Tranquilidad', 'Exclusividad', 'Inspiración', 'Energía', 'Cercanía', 'Innovación', 'Profesionalismo', 'Otro'];
 var AXES = [['ax1a', 'ax1b'], ['ax2a', 'ax2b'], ['ax3a', 'ax3b'], ['ax4a', 'ax4b'], ['ax5a', 'ax5b'], ['ax6a', 'ax6b']];
 
 var COLORS_KEEP = 'Sí, debemos conservarlos';
@@ -65,7 +63,6 @@ var conIdentidad = function (a) {
 };
 var esNueva = function (a) { return a.projectType === SCRATCH; };
 var tiene = function (a, campo, v) { return (a[campo] || []).indexOf(v) > -1; };
-var topeTop = function (a) { return Math.min(3, a.touchpoints.length || 3); };
 
 window.BORSOGA_BRIEF({
   servicio: 'grafico',
@@ -85,16 +82,15 @@ window.BORSOGA_BRIEF({
   vacio: {
     company: '', webSocial: '', projectType: '', nameDefined: '', needsNaming: '',
     identityAge: '', changeReason: [], keepWhat: '', changeWhat: '', currentLink: '',
-    whatDoes: '', products: '', mainProduct: '', category: '', stage: '', markets: [],
-    problem: '', diff: '', competitors: '', vsComp: [],
-    sellsTo: '', idealClient: '', clientSeeks: '', idealCompanies: '', decisionMaker: [],
-    personality: [], notPersonality: [], axes: {}, feelings: [],
+    whatDoes: '', products: '', mainProduct: '', category: '', stage: '',
+    problem: '', diff: '', vsComp: [],
+    sellsTo: '', idealCompanies: '', decisionMaker: [],
+    personality: [], axes: {},
     meaning: '', meaningWhich: '', avoidElements: '', brandColors: '', whichColors: '',
     avoidColors: '', whichAvoidColors: '',
-    hasRefs: '', refsText: '', refsWhy: '', avoidBrands: '',
-    touchpoints: [], topTouchpoints: [], packagingType: '', packagingScope: '', spaces: '',
+    hasRefs: '', refsText: '', refsWhy: '',
+    touchpoints: [], packagingType: '', packagingScope: '', spaces: '',
     languages: [], restrictions: '',
-    success: '', launchDate: '', launchDateValue: '', whatHappens: '',
     approvers: '', anythingElse: '',
     contactName: '', email: '', phone: '', privacy: false, bot: ''
   },
@@ -106,23 +102,16 @@ window.BORSOGA_BRIEF({
     if (!conIdentidad(a)) {
       a.identityAge = ''; a.changeReason = []; a.keepWhat = ''; a.changeWhat = ''; a.currentLink = '';
     }
-    if (a.sellsTo !== B2C && a.sellsTo !== BOTH) { a.idealClient = ''; a.clientSeeks = ''; }
     if (a.sellsTo !== B2B && a.sellsTo !== BOTH) { a.idealCompanies = ''; a.decisionMaker = []; }
     if (a.meaning !== YES) a.meaningWhich = '';
     if (a.brandColors !== COLORS_KEEP && a.brandColors !== COLORS_OPEN) a.whichColors = '';
     if (a.avoidColors !== YES) a.whichAvoidColors = '';
     if (a.hasRefs !== YES) { a.refsText = ''; a.refsWhy = ''; }
-    // Los tres primeros salen de lo elegido antes: si un punto de contacto se
-    // desmarca, deja de poder estar entre los importantes.
-    a.topTouchpoints = (a.topTouchpoints || []).filter(function (v) {
-      return (a.touchpoints || []).indexOf(v) > -1;
-    });
     if (!tiene(a, 'touchpoints', PACKAGING)) { a.packagingType = ''; a.packagingScope = ''; }
     if (!tiene(a, 'touchpoints', PREMISES) && !tiene(a, 'touchpoints', SIGNAGE)) a.spaces = '';
     var ax = {};
     AXES.forEach(function (_, i) { if (a.axes && a.axes[i] != null) ax[i] = a.axes[i]; });
     a.axes = ax;
-    if (a.launchDate !== YES) { a.launchDateValue = ''; a.whatHappens = ''; }
     return a;
   },
 
@@ -147,23 +136,17 @@ window.BORSOGA_BRIEF({
       { f: 'products', q: 'q_products', tipo: 'area' },
       { f: 'mainProduct', q: 'q_mainProduct', tipo: 'texto' },
       { f: 'category', q: 'q_category', tipo: 'chips', ops: CATEGORY, req: true },
-      { f: 'stage', q: 'q_stage', tipo: 'cards', ops: STAGE, req: true },
-      { f: 'markets', q: 'q_markets', tipo: 'checks', ops: MARKETS, req: true }
+      { f: 'stage', q: 'q_stage', tipo: 'cards', ops: STAGE, req: true }
     ] },
 
     { titulo: 'gd_s3', preguntas: [
       { f: 'problem', q: 'q_problem', tipo: 'area', req: true },
       { f: 'diff', q: 'q_diff', h: 'h_diff', tipo: 'area', req: true },
-      { f: 'competitors', q: 'q_competitors', h: 'h_competitors', tipo: 'area' },
       { f: 'vsComp', q: 'q_vsComp', tipo: 'checks', ops: VS_COMP }
     ] },
 
     { titulo: 'gd_s4', preguntas: [
       { f: 'sellsTo', q: 'q_sellsTo', tipo: 'chips', ops: SELLS_TO, req: true },
-      { f: 'idealClient', q: 'q_idealClient', h: 'h_idealClient', tipo: 'area', req: true,
-        si: function (a) { return a.sellsTo === B2C || a.sellsTo === BOTH; } },
-      { f: 'clientSeeks', q: 'q_clientSeeks', tipo: 'area',
-        si: function (a) { return a.sellsTo === B2C || a.sellsTo === BOTH; } },
       { f: 'idealCompanies', q: 'q_idealCompanies', tipo: 'area', req: true,
         si: function (a) { return a.sellsTo === B2B || a.sellsTo === BOTH; } },
       { f: 'decisionMaker', q: 'q_decisionMaker', tipo: 'checks', ops: DECISION_MAKER,
@@ -172,9 +155,7 @@ window.BORSOGA_BRIEF({
 
     { titulo: 'gd_s5', preguntas: [
       { f: 'personality', q: 'q_personality', h: 'h_personality', tipo: 'tope', ops: TRAITS, tope: 5, req: true },
-      { f: 'notPersonality', q: 'q_notPersonality', tipo: 'tope', ops: TRAITS, tope: 3 },
-      { f: 'axes', q: 'q_axes', tipo: 'ejes', ejes: AXES, a11y: 'ax_a11y', req: true },
-      { f: 'feelings', q: 'q_feelings', h: 'h_feelings', tipo: 'tope', ops: FEELINGS, tope: 3, req: true }
+      { f: 'axes', q: 'q_axes', tipo: 'ejes', ejes: AXES, a11y: 'ax_a11y', req: true }
     ] },
 
     { titulo: 'gd_s6', preguntas: [
@@ -196,16 +177,11 @@ window.BORSOGA_BRIEF({
         si: function (a) { return a.hasRefs === YES; },
         req: function (a, F) { return !!String(a.refsText).trim() || F.refFiles.length > 0; } },
       { f: 'refsWhy', q: 'q_refsWhy', h: 'h_refsWhy', tipo: 'area',
-        si: function (a) { return a.hasRefs === YES; } },
-      { f: 'avoidBrands', q: 'q_avoidBrands', tipo: 'area' }
+        si: function (a) { return a.hasRefs === YES; } }
     ] },
 
     { titulo: 'gd_s8', preguntas: [
       { f: 'touchpoints', q: 'q_touchpoints', tipo: 'checks', ops: TOUCHPOINTS, req: true },
-      { f: 'topTouchpoints', q: 'q_topTouchpoints', h: 'h_topTouchpoints', tipo: 'tope',
-        ops: function (a) { return a.touchpoints; }, tope: topeTop,
-        si: function (a) { return a.touchpoints.length > 0; },
-        req: function (a) { return a.topTouchpoints.length >= topeTop(a); } },
       { f: 'packagingType', q: 'q_packagingType', tipo: 'area',
         si: function (a) { return tiene(a, 'touchpoints', PACKAGING); } },
       { f: 'packagingScope', q: 'q_packagingScope', tipo: 'chips', ops: PACKAGING_SCOPE, req: true,
@@ -219,15 +195,6 @@ window.BORSOGA_BRIEF({
     { titulo: 'gd_s9', preguntas: [
       { f: 'languages', q: 'q_languages', tipo: 'chipchecks', ops: LANGUAGES, req: true },
       { f: 'restrictions', q: 'q_restrictions', h: 'h_restrictions', tipo: 'area' }
-    ] },
-
-    { titulo: 'gd_s10', preguntas: [
-      { f: 'success', q: 'q_success', h: 'h_success', tipo: 'area', req: true },
-      { f: 'launchDate', q: 'q_launchDate', tipo: 'chips', ops: YES_NO, req: true },
-      { f: 'launchDateValue', q: 'q_whichDate', tipo: 'fecha', req: true,
-        si: function (a) { return a.launchDate === YES; } },
-      { f: 'whatHappens', q: 'q_whatHappens', h: 'h_whatHappens', tipo: 'texto',
-        si: function (a) { return a.launchDate === YES; } }
     ] },
 
     { titulo: 'gd_s11', preguntas: [
@@ -257,26 +224,18 @@ window.BORSOGA_BRIEF({
     filas.push(['sum_whatDoes', a.whatDoes || raya]);
     filas.push(['sum_category', val(a.category)]);
     filas.push(['sum_stage', val(a.stage)]);
-    filas.push(['sum_markets', lista(a.markets) || raya]);
     filas.push(['sum_diff', a.diff || raya]);
-    if (a.competitors) filas.push(['sum_competitors', a.competitors]);
     if (a.vsComp.length) filas.push(['sum_vsComp', lista(a.vsComp)]);
     filas.push(['sum_sellsTo', val(a.sellsTo)]);
     filas.push(['sum_personality', lista(a.personality) || raya]);
-    if (a.notPersonality.length) filas.push(['sum_notPersonality', lista(a.notPersonality)]);
     filas.push(['sum_axes', AXES.map(function (ax, i) {
       return a.axes[i] ? h.t(ax[0]) + ' ' + a.axes[i] + '/5 ' + h.t(ax[1]) : '';
     }).filter(Boolean).join(' · ') || raya]);
-    filas.push(['sum_feelings', lista(a.feelings) || raya]);
     if (a.meaningWhich) filas.push(['sum_meaning', a.meaningWhich]);
     filas.push(['sum_colors', val(a.brandColors) + (a.whichColors ? ' · ' + a.whichColors : '')]);
     if (a.refsText) filas.push(['sum_refs', a.refsText]);
     filas.push(['sum_touchpoints', lista(a.touchpoints) || raya]);
-    filas.push(['sum_top', lista(a.topTouchpoints) || raya]);
     filas.push(['sum_languages', lista(a.languages) || raya]);
-    filas.push(['sum_success', a.success || raya]);
-    filas.push(['sum_launch', a.launchDateValue
-      ? a.launchDateValue + (a.whatHappens ? ' · ' + a.whatHappens : '') : val(a.launchDate)]);
     filas.push(['sum_approvers', val(a.approvers)]);
     return filas;
   }

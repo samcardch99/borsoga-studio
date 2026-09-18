@@ -14,7 +14,7 @@
       gd_s10: 'Objetivo del proyecto',
       gd_s11: 'Decisiones',
       gd_s12: 'Para terminar',
-      gd_step_counter: 'Paso {n} de 12',
+      gd_step_counter: 'Paso {n} de 11',
       gd_resume_line: 'Lo dejaste en el paso {n}.',
 
       q_company: '¿Cuál es el nombre de la empresa o marca?',
@@ -166,7 +166,7 @@
       gd_s10: 'Project goal',
       gd_s11: 'Decisions',
       gd_s12: 'To finish',
-      gd_step_counter: 'Step {n} of 12',
+      gd_step_counter: 'Step {n} of 11',
       gd_resume_line: 'You were on step {n}.',
 
       q_company: "What's the name of the company or brand?",
