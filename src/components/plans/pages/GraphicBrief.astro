@@ -33,6 +33,12 @@ const i18n = createI18n(lang);
 >
   <I18nBundle lang={lang} extra="gd" />
   <BriefShell lang={lang} backHref={route("graphicDesign", lang)} />
+  {/* Bundled, not inlined: this one imports @vercel/blob/client, so it has to
+      go through Vite. It only has to define window.borsogaUpload before the
+      user submits, so a deferred module script is in time. */}
+  <script>
+    import "../../../plans/client/upload-client.js";
+  </script>
   {/* brief.js publishes window.BORSOGA_BRIEF; the spec calls it. Order matters. */}
   <script is:inline set:html={briefScript} />
   <script is:inline set:html={specScript} />
