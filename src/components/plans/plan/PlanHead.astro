@@ -1,0 +1,28 @@
+---
+import Rings from "./Rings.astro";
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props {
+  lang: Lang;
+  num: string;
+  /** Plan name — carries a <br> in the design, so rendered as HTML. */
+  name: string;
+  tagline: string;
+  desc?: string;
+  rings: number;
+  /** "Most chosen" flag on Premium. */
+  badge?: boolean;
+}
+const { lang, num, name, tagline, desc, rings, badge = false } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-head-top">
+  <div class="pl-head-meta">
+    <div class="pl-head-num">{i18n.T(num)}</div>
+    {badge && <div class="pl-badge">{i18n.t("mas_elegido")}</div>}
+  </div>
+  <Rings n={rings} />
+</div>
+<h2 class="pl-name" set:html={name} />
+<p class="pl-tagline">{i18n.T(tagline)}</p>
+{desc && <p class="pl-desc">{i18n.T(desc)}</p>}

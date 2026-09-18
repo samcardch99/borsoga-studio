@@ -1,0 +1,11 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; id: string; eyebrow: string; title: string }
+const { lang, id, eyebrow, title } = Astro.props;
+const i18n = createI18n(lang);
+---
+<section id={id} class="plans-wrap pl-line">
+  <div class="plans-eyebrow pl-line-eyebrow">{i18n.T(eyebrow)}</div>
+  <h2 class="plans-h2" set:html={title} />
+</section>

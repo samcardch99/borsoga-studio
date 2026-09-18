@@ -1,0 +1,229 @@
+---
+// Funnel home page — the services cover.
+//
+// Ported from the generator's `servicios.py`. The most elaborate page of the
+// set: a black curtain falls over the hero on load, the logo swaps colour with
+// scroll, and each service name crosses with its description on hover. Two
+// decisions kept from the original:
+//
+//   · The curtain is MEASURED in JS (the black lands exactly at the foot of the
+//     headline and dissolves in the gap before the paragraph). With no JS there
+//     is no curtain and the hero reads black-on-white: legible, dependency-free.
+//   · The design's form posted nowhere — its onSend only painted the receipt.
+//     Here it goes to /api/submit as service `contacto`, because a cover that
+//     collects data and drops it is worse than no form at all.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import I18nBundle from "../I18nBundle.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import homeScript from "../../../plans/client/home.js?raw";
+import "../../../styles/plans-home.css";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+const t = (k: string) => i18n.t(k);
+
+const SERVICES = [
+  { n: "srv_n1", name: "srv_name1", line: "srv_line1", what: "srv_what1", key: "interior" },
+  { n: "srv_n2", name: "srv_name2", line: "srv_line2", what: "srv_what2", key: "avPlans" },
+  { n: "srv_n3", name: "srv_name3", line: "srv_line3", what: "srv_what3", key: "graphicDesign" },
+  { n: "srv_n4", name: "srv_name4", line: "srv_line4", what: "srv_what4", key: "webDesign" },
+] as const;
+
+const PROOF = [
+  { label: "srv_proof_l1", desc: "srv_proof_d1", img: "interior-design", alt: "srv_name1", w: 2400, h: 1350, key: "interior" },
+  { label: "srv_proof_l2", desc: "srv_proof_d2", img: "architectural-visualization", alt: "srv_name2", w: 2400, h: 1350, key: "avPlans" },
+  { label: "srv_proof_l3", desc: "srv_proof_d3", img: "branding", alt: "srv_name3", w: 2400, h: 1601, key: "graphicDesign" },
+  { label: "srv_proof_l4", desc: "srv_proof_d4", img: "web-app", alt: "srv_name4", w: 2400, h: 1601, key: "webDesign" },
+] as const;
+
+// Initial curtain, before JS measures the real headline height. 430px of solid
+// black then a 190px tail; the script replaces it with a smootherstep ramp.
+const CURTAIN_B = 430;
+const CURTAIN_TAIL = 190;
+const ramp = (from: number, len: number, steps = 14) =>
+  Array.from({ length: steps + 1 }, (_, i) => {
+    const p = i / steps;
+    const ss = p * p * p * (p * (p * 6 - 15) + 10);
+    return `rgba(0,0,0,${(1 - ss).toFixed(3)}) ${Math.round(from + len * p)}px`;
+  }).join(",");
+const CURTAIN = `linear-gradient(to bottom,#000 0,#000 ${CURTAIN_B}px,${ramp(CURTAIN_B, CURTAIN_TAIL)})`;
+---
+
+<PlansLayout
+  routeKey="home"
+  lang={lang}
+  title={t("meta_t_servicios")}
+  description={t("srv_authorship").slice(0, 155)}
+  chrome={false}
+  ctaHref="#propuesta"
+  ctaForm="meeting"
+>
+  <I18nBundle lang={lang} />
+
+  <div class="bs-page">
+    <div id="bs-curtain" aria-hidden="true"><div style={`background:${CURTAIN}`}></div></div>
+
+    {/* Where the navbar reads as "over black". Not the hero section, which runs
+        on past the curtain into white — marking that kept the navbar white over
+        a white background. Not the curtain either, whose bottom edge is where
+        the fade has ALREADY finished. This ends at the MIDPOINT of the fade,
+        which is where the background stops being dark enough to carry white
+        text, and home.js keeps its height in sync with the measured curtain. */}
+    <div id="bs-navzone" data-navbar-dark data-navbar-transparent aria-hidden="true"></div>
+
+    {/* The bespoke sticky header is gone — the real site navbar replaces it.
+        It reproduces the same behaviour natively: data-navbar-dark turns it
+        white over the black curtain, data-navbar-transparent drops the frosted
+        panel, and both revert as the hero scrolls out from under it. */}
+    <main id="main" class="plans-wrap">
+      <section class="bs-hero-sec">
+        <div class="bs-fade bs-eyebrow" style="animation-delay:.65s">{t("srv_eyebrow")}</div>
+        <h1 id="bs-h1" class="bs-fade" style="animation-delay:.78s">{t("srv_title")}</h1>
+        <p id="bs-hero" class="bs-fade" style="animation-delay:.88s">{t("srv_authorship")}</p>
+      </section>
+
+      <div class="bs-fade bs-sequence" style="animation-delay:.95s">{t("srv_sequence")}</div>
+
+      <section class="bs-rows">
+        {
+          SERVICES.map(({ n, name, line, what, key }, i) => (
+            <div class="srv-row" data-open="false">
+              <button type="button" class="srv-head" data-toggle={i}>
+                <span class="srv-num">
+                  <span class="srv-bullet" />
+                  <span class="srv-num-t">{t(n)}</span>
+                </span>
+                <span class="srv-swap">
+                  <h2 class="srv-name">{t(name)}</h2>
+                  <p class="srv-what">{t(what)}</p>
+                </span>
+              </button>
+              <div class="srv-body">
+                <p class="srv-line">{t(line)}</p>
+                <a href={route(key, lang)} class="srv-btn">{t("srv_cta_plans")}</a>
+              </div>
+            </div>
+          ))
+        }
+      </section>
+    </main>
+
+    <section class="bs-dev" data-navbar-dark>
+      <div class="plans-wrap bs-dev-inner">
+        <div class="bs-dev-eyebrow">{t("srv_form_eyebrow")}</div>
+        <h2 class="bs-dev-title">{t("srv_dev_title")}</h2>
+        <p class="bs-dev-lead">{t("srv_form_lead")}</p>
+        <button type="button" class="srv-btn-inv" data-form="developer">{t("srv_dev_cta")}</button>
+      </div>
+    </section>
+
+    <div class="plans-wrap">
+      <section id="prueba" class="bs-proof">
+        <div class="bs-proof-head">
+          <div class="bs-proof-eyebrow">{t("srv_proof_eyebrow")}</div>
+          <h2 class="bs-proof-title">{t("srv_proof_title")}</h2>
+          <p class="bs-proof-lead">{t("srv_proof_lead")}</p>
+          <div class="bs-proof-credit">{t("srv_proof_credit")}</div>
+        </div>
+        <div class="bs-proof-grid">
+          {
+            PROOF.map(({ label, desc, img, alt, w, h, key }) => (
+              <a href={route(key, lang)} class="srv-proof-card">
+                <div class="srv-proof-media">
+                  <img
+                    src={`/plans/assets/services/${img}-2400.webp`}
+                    alt={t(alt)}
+                    width={w}
+                    height={h}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="bs-proof-cap">
+                  <div class="bs-proof-label">{t(label)}</div>
+                  <div class="bs-proof-desc">{t(desc)}</div>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="bs-meet">
+        <div class="bs-meet-eyebrow">{t("srv_lost_q")}</div>
+        <h2 class="bs-meet-title">{t("srv_meet_title")}</h2>
+        <p class="bs-meet-sub">{t("srv_meet_sub")}</p>
+        <button type="button" class="srv-btn-dark bs-meet-cta" data-form="meeting">{t("srv_meet_cta")}</button>
+      </section>
+    </div>
+
+    <footer class="bs-footer">
+      <div class="plans-wrap bs-footer-inner">
+        <span class="bs-footer-note">{t("srv_footer")}</span>
+        <a href={route("privacy", lang)} class="bs-footer-link">{t("chrome_privacy")}</a>
+      </div>
+    </footer>
+
+    <div id="bs-modal" hidden role="dialog" aria-modal="true" aria-labelledby="bs-modal-t">
+      <div class="bs-modal-box">
+        <div class="bs-modal-top">
+          <h2 id="bs-modal-t">{t("srv_form_title")}</h2>
+          <button type="button" id="bs-close">{t("srv_close")}</button>
+        </div>
+        <div id="bs-svc" hidden>
+          <div class="bs-svc-k">{t("srv_form_service")}</div>
+          <div id="bs-svc-l"></div>
+        </div>
+        <div id="bs-form">
+          <div class="bs-fields">
+            <input class="bs-in" type="text" name="name" placeholder={t("srv_ph_name")} />
+            <input
+              class="bs-in"
+              type="email"
+              name="email"
+              placeholder={t("srv_ph_email")}
+              autocomplete="email"
+              inputmode="email"
+              spellcheck="false"
+            />
+            <input class="bs-in" type="tel" name="phone" placeholder={t("srv_ph_phone")} />
+          </div>
+          <div id="bs-bad" hidden>{t("srv_email_bad")}</div>
+          <div id="bs-sug" hidden>
+            <span id="bs-sug-t"></span>
+            <button type="button" id="bs-fix">{t("srv_fix")}</button>
+          </div>
+          <textarea class="bs-in bs-ta" name="project" rows="4" placeholder={t("srv_ph_project")}></textarea>
+          {/* Bot trap: a real person never fills a field they cannot see. */}
+          <input type="text" name="bot" tabindex="-1" autocomplete="off" aria-hidden="true" class="bs-bot" />
+          <div class="bs-send-row">
+            <button type="button" id="bs-send">{t("srv_form_send")}</button>
+            <span class="bs-send-note">{t("srv_form_note")}</span>
+          </div>
+          <p id="bs-err" hidden></p>
+        </div>
+        <div id="bs-sent" hidden>
+          {/* The centre path is written as the CHECK, not the circle: if the
+              GSAP CDN fails the mark simply shows finished. */}
+          <svg id="bs-mark" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+            <circle id="bs-mk-ring" cx="60" cy="60" r="55" stroke="#fff" stroke-width="1.5" opacity=".55" />
+            <path id="bs-mk-l" d="M50.2,23.3A38,38 0 0,0 50.2,96.7" stroke="#fff" stroke-width="7" stroke-linecap="round" />
+            <path id="bs-mk-r" d="M69.8,23.3A38,38 0 0,1 69.8,96.7" stroke="#fff" stroke-width="7" stroke-linecap="round" />
+            <path id="bs-mk-c" d="M44.5,59L53.5,68L76.5,45L82,50.5L53.5,79L39,64.5Z" fill="#fff" />
+          </svg>
+          <div class="bs-sent-copy">
+            <div id="bs-sent-t"></div>
+            <div id="bs-sent-s"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline set:html={homeScript} />
+</PlansLayout>

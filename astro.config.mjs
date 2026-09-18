@@ -26,9 +26,15 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      // Keep the experimental orbit view out of the index (it duplicates
-      // /projects and links to non-canonical, un-lowercased work URLs).
-      filter: (page) => !page.includes('/projects-orbit'),
+      // Keep out of the index:
+      //  · the experimental orbit view (it duplicates /projects and links to
+      //    non-canonical, un-lowercased work URLs);
+      //  · the funnel's four tool pages — the two configurators and the two
+      //    briefs. They are tools, not entry pages, and they carry
+      //    noindex,follow. The retired generator excluded them too.
+      filter: (page) =>
+        !page.includes('/projects-orbit') &&
+        !/\/plans\/(es\/)?(configurator|configurador|av-configurator|configurador-av|web-brief|cuestionario-web|graphic-brief|cuestionario-grafico)\//.test(page),
     }),
   ],
 });

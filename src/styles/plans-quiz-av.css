@@ -1,0 +1,19 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Architectural-visualization overrides on top of plans-quiz.css.
+
+   The AV design inverts selection to black and raises the steppers to 44px (a
+   real touch target). Interior design does not — which is why these are an
+   override rather than an edit to the shared file.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.q-card[aria-pressed=true],.q-chip[aria-pressed=true],.q-space[aria-pressed=true]{
+background:#000!important;color:#fff!important;border-color:#000!important}
+.q-card[aria-pressed=true] .q-radio,.q-space[aria-pressed=true] .q-radio{
+border-color:#fff;border-width:5px}
+.q-card[aria-pressed=true] .q-box{background:#fff;border-color:#fff}
+.q-card,.q-chip,.q-space{color:rgba(0,0,0,.62)}
+.q-space[aria-pressed=true]{box-shadow:0 0 0 1.5px #000}
+.q-space[aria-pressed=true] .q-step{border-color:rgba(255,255,255,.55);color:#fff}
+.q-space[aria-pressed=true] .q-step:disabled{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.35)}
+.q-step{width:44px;height:44px;background:transparent}
+.q-invalid .q-card[aria-pressed=true],.q-invalid .q-chip[aria-pressed=true]{box-shadow:0 0 0 1.5px #b42318!important}

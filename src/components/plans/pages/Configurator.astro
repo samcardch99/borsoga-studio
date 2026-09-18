@@ -1,0 +1,48 @@
+---
+// Interior design configurator — 6 steps. Ported from the generator's
+// `quiz.py`.
+//
+// The logic stays on the client because the design demands it: conditional
+// questions appear instantly, the image counter updates live and the spaces
+// carry quantity steppers.
+//
+// api/submit.ts (a Vercel function) validates and stores. Because a PERSON
+// sets the price, the client-side routing only decides which email template
+// goes out; the server recomputes it anyway for the internal notification, so
+// a tampered client cannot misinform the studio.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import QuizShell from "../QuizShell.astro";
+import I18nBundle from "../I18nBundle.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import quizScript from "../../../plans/client/quiz.js?raw";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+---
+
+<PlansLayout
+  routeKey="configurator"
+  lang={lang}
+  title={i18n.t("meta_t_quiz")}
+  description={i18n.T(
+    "Responde seis preguntas sobre tu espacio y te enviamos un estimado en menos de 24 horas.",
+  )}
+  nav={false}
+  chrome={false}
+  noindex
+>
+  <I18nBundle lang={lang} branches={["ui", "msg", "opt", "plural"]} />
+  <QuizShell lang={lang} backHref={route("interior", lang)} />
+  {/* Bundled, not inlined: this one imports @vercel/blob/client, so it has to
+      go through Vite. It only has to define window.borsogaUpload before the
+      user reaches a file field, so a deferred module script is in time. */}
+  <script>
+    import "../../../plans/client/upload-client.js";
+  </script>
+  <script is:inline set:html={quizScript} />
+</PlansLayout>

@@ -1,0 +1,14 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; text: string; dark?: boolean }
+const { lang, text, dark = false } = Astro.props;
+const i18n = createI18n(lang);
+---
+<details class="pl-exc">
+  <summary class={dark ? "exc-w" : "exc"}>
+    <span>{i18n.t("lo_que_este_plan_no_incluye")}</span>
+    <span aria-hidden="true">+</span>
+  </summary>
+  <p>{i18n.T(text)}</p>
+</details>

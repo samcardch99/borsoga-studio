@@ -1,0 +1,345 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Funnel home page — ported verbatim from the retired generator
+   (borsoga-funnel/src/servicios.py, CSS block).
+
+   Kept global rather than Astro-scoped on purpose: the rules key off #bs-*
+   IDs and off a `.js` class that the page script puts on <html>, which is
+   outside the component. Astro's scoping would rewrite `.js .bs-fade` to
+   `.js[data-astro-cid-…] .bs-fade[…]` and the fade-in would never fire.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@keyframes bs-in { from { opacity:0 } to { opacity:1 } }
+@keyframes bs-fall { from { transform:translate3d(0,-100%,0) } to { transform:none } }
+#bs-curtain{position:absolute;top:-170px;left:0;right:0;pointer-events:none;z-index:0;overflow:hidden;
+height:620px;min-height:clamp(420px,62vw,640px)}
+#bs-curtain>div{height:100%;min-height:clamp(420px,62vw,640px);
+animation:bs-fall 1.6s cubic-bezier(.16,.86,.22,1) both}
+.js .bs-fade{opacity:0}
+.js .bs-fade.on{animation:bs-in .9s ease-out both}
+.srv-row{border-top:1px solid rgba(0,0,0,.14);padding:clamp(28px,4vw,46px) 0;display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(20px,3vw,40px);align-items:start}
+.srv-head{display:flex;align-items:flex-start;gap:clamp(14px,2vw,22px);cursor:pointer;
+-webkit-tap-highlight-color:transparent;-webkit-appearance:none;appearance:none;background:none;border:none;
+color:inherit;text-align:left;padding:0;width:100%;font:inherit}
+.srv-swap{position:relative;flex:1;min-width:0;align-self:stretch;min-height:clamp(76px,7vw,96px)}
+.srv-name,.srv-what{position:absolute;inset:0;margin:0;transition:opacity .3s ease,transform .3s ease}
+.srv-name{font-size:clamp(23px,2.9vw,34px);font-weight:600;letter-spacing:-.025em;line-height:1.08;max-width:14ch}
+.srv-what{font-size:clamp(15px,1.5vw,18px);font-weight:300;line-height:1.45;letter-spacing:-.01em;
+color:rgba(0,0,0,.82);opacity:0;transform:translateY(6px);pointer-events:none}
+.srv-row[data-open=true] .srv-name{opacity:0;transform:translateY(-6px);pointer-events:none}
+.srv-row[data-open=true] .srv-what{opacity:1;transform:none;pointer-events:auto}
+.srv-proof-card{color:inherit;transition:background-color .35s ease}
+.srv-proof-media{position:relative;isolation:isolate}
+.srv-proof-media::after{content:"";position:absolute;inset:0;z-index:1;background:#000;opacity:0;
+transition:opacity .35s ease;pointer-events:none}
+.srv-proof-media img{transition:transform .55s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover){
+  .srv-proof-card:hover{background:rgba(0,0,0,.035)}
+  .srv-proof-card:hover .srv-proof-media::after{opacity:.12}
+  .srv-proof-card:hover .srv-proof-media img{transform:scale(1.035)}
+}
+.srv-proof-card:focus-visible .srv-proof-media::after{opacity:.12}
+.srv-proof-card:focus-visible .srv-proof-media img{transform:scale(1.035)}
+/* Mismo barrido de relleno que las páginas de planes: el color sube desde el
+   borde inferior en vez de encenderse de golpe. El ::before va detrás del texto
+   con z-index:-1, y el isolation:isolate evita que se cuele por debajo del
+   fondo propio del botón. */
+.srv-btn,.srv-btn-inv,.srv-btn-dark{position:relative;overflow:hidden;isolation:isolate;
+transition:color .3s ease,border-color .3s ease}
+.srv-btn::before,.srv-btn-inv::before,.srv-btn-dark::before{content:"";position:absolute;inset:0;z-index:-1;
+transform:scaleY(0);transform-origin:50% 100%;transition:transform .38s cubic-bezier(.22,1,.36,1)}
+.srv-btn{background:#fff;color:#000}
+.srv-btn-inv,.srv-btn-dark{background:#000;color:#fff}
+.srv-btn::before{background:#000}
+.srv-btn-inv::before{background:#fff}
+.srv-btn-dark::before{background:rgba(255,255,255,.16)}
+@media (hover:hover){
+  .srv-btn:hover::before,.srv-btn-inv:hover::before,.srv-btn-dark:hover::before{transform:scaleY(1)}
+  .srv-btn:hover{color:#fff}
+  .srv-btn-inv:hover{color:#000}
+}
+#bs-sent{background:#000;color:#fff;padding:clamp(28px,4vw,40px);display:flex;
+flex-direction:column;gap:clamp(16px,2.2vw,22px);align-items:flex-start}
+#bs-mark{width:clamp(64px,9vw,84px);height:auto;flex:none;overflow:visible}
+.js #bs-mark{opacity:0}
+#bs-mark.on{opacity:1;transition:opacity .35s ease}
+#bs-modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.62);display:flex;
+align-items:flex-start;justify-content:center;padding:clamp(16px,4vw,56px);overflow:auto}
+#bs-modal[hidden]{display:none}
+.bs-in{border:1px solid rgba(0,0,0,.2);background:#fff;padding:16px;font-size:15px;width:100%;font-family:inherit}
+.bs-in:focus{outline:none;border-color:#000}
+@media (prefers-reduced-motion:reduce){
+  #bs-curtain>div,.js .bs-fade.on{animation:none}
+  .js .bs-fade{opacity:1}
+  .srv-name,.srv-what{transition:none}
+  .srv-proof-card,.srv-proof-media::after,.srv-proof-media img{transition:none}
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   What follows was inline `style=""` in the generator, where every element was
+   written as one f-string. Same values, now addressable.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.bs-page { position: relative; min-height: 100vh; }
+
+/* ── Header: transparent over the curtain, white once you scroll past it ── */
+#bs-header {
+  position: sticky; top: 0; z-index: 30;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+.bs-header-inner {
+  height: 68px; display: flex; align-items: center;
+  justify-content: space-between; gap: 20px;
+}
+.bs-logo { position: relative; width: 132px; flex: none; }
+#bs-logo-b, #bs-logo-w {
+  width: 132px; height: auto; display: block;
+  transition: opacity 0.35s ease;
+}
+#bs-logo-b { opacity: 0; }
+#bs-logo-w { position: absolute; top: 0; left: 0; opacity: 1; }
+
+/* ── Hero. z-index:1 keeps the copy above the curtain, which is z-index:0. ── */
+.bs-hero-sec {
+  padding: clamp(44px, 8vw, 96px) 0 clamp(26px, 4vw, 40px);
+  display: flex; flex-direction: column; gap: clamp(18px, 2.6vw, 26px);
+}
+.bs-eyebrow {
+  position: relative; z-index: 1;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(255, 255, 255, 0.6);
+}
+#bs-h1 {
+  position: relative; z-index: 1; margin: 0; color: #fff;
+  font-size: clamp(26px, 3.6vw, 42px); font-weight: 400;
+  letter-spacing: -0.02em; line-height: 1.28; max-width: 34ch;
+}
+/* The big top margin is the gap the curtain dissolves into. */
+#bs-hero {
+  position: relative; z-index: 1;
+  font-size: clamp(16px, 1.6vw, 19px); font-weight: 300; line-height: 1.55;
+  color: rgba(0, 0, 0, 0.6); max-width: 52ch;
+  margin-top: clamp(88px, 9vw, 140px);
+}
+.bs-sequence {
+  position: relative; z-index: 1;
+  border-top: 1px solid rgba(0, 0, 0, 0.14); padding-top: 16px;
+  font-size: 13px; line-height: 1.6; color: rgba(0, 0, 0, 0.62); max-width: 60ch;
+}
+
+/* ── The four service rows ── */
+.bs-rows { padding-top: clamp(8px, 1.6vw, 16px); }
+.srv-num { display: flex; align-items: center; gap: 11px; flex: none; }
+.srv-bullet {
+  width: 15px; height: 15px; border: 1.5px solid #000;
+  border-radius: 50%; flex: none;
+}
+.srv-num-t {
+  font-size: clamp(30px, 3.6vw, 44px); font-weight: 600;
+  letter-spacing: -0.04em; line-height: 0.9;
+}
+.srv-body {
+  display: flex; flex-direction: column;
+  gap: clamp(20px, 2.6vw, 28px); align-items: flex-start;
+}
+.srv-line {
+  margin: 0; font-size: clamp(16px, 1.6vw, 19px); font-weight: 300;
+  line-height: 1.5; color: rgba(0, 0, 0, 0.72); max-width: 38ch;
+}
+.srv-btn, .srv-btn-inv, .srv-btn-dark {
+  padding: 20px 34px; min-height: 44px; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; display: inline-block;
+}
+.srv-btn { border: 1px solid #000; }
+.srv-btn-inv { border: 1px solid #fff; }
+.srv-btn-dark { border: 1px solid #000; }
+
+/* ── Developer band ── */
+.bs-dev { background: #000; color: #fff; }
+.bs-dev-inner {
+  padding-top: clamp(36px, 6vw, 76px); padding-bottom: clamp(36px, 6vw, 76px);
+  display: flex; flex-direction: column;
+  gap: clamp(20px, 2.8vw, 30px); align-items: flex-start;
+}
+.bs-dev-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(255, 255, 255, 0.5);
+}
+.bs-dev-title {
+  margin: 0; font-size: clamp(26px, 3.8vw, 44px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.04; max-width: 24ch;
+}
+.bs-dev-lead {
+  margin: 0; font-size: clamp(16px, 1.7vw, 20px); font-weight: 300;
+  line-height: 1.5; color: rgba(255, 255, 255, 0.68); max-width: 46ch;
+}
+
+/* ── Proof grid ── */
+.bs-proof {
+  scroll-margin-top: 80px;
+  padding: clamp(44px, 7vw, 88px) 0 clamp(32px, 5vw, 56px);
+  display: flex; flex-direction: column; gap: clamp(24px, 3.4vw, 36px);
+}
+.bs-proof-head { display: flex; flex-direction: column; gap: 14px; }
+.bs-proof-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.62);
+}
+.bs-proof-title {
+  margin: 0; font-size: clamp(24px, 3.4vw, 40px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.06; max-width: 22ch;
+}
+.bs-proof-lead {
+  margin: 0; font-size: clamp(16px, 1.6vw, 19px); font-weight: 300;
+  line-height: 1.55; color: rgba(0, 0, 0, 0.65); max-width: 52ch;
+}
+.bs-proof-credit {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.62);
+}
+.bs-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(46%, 230px)), 1fr));
+  gap: clamp(14px, 2vw, 20px);
+}
+/* The negative margin lets the hover wash bleed past the card's own box
+   without shifting the grid. */
+.srv-proof-card {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 10px; margin: -10px;
+}
+.srv-proof-media {
+  width: 100%; aspect-ratio: 4 / 3;
+  background: rgba(0, 0, 0, 0.04); overflow: hidden;
+}
+.srv-proof-media img {
+  width: 100%; height: 100%; display: block; object-fit: cover;
+}
+.bs-proof-cap { display: flex; flex-direction: column; gap: 6px; }
+.bs-proof-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.bs-proof-desc { font-size: 14px; line-height: 1.5; color: rgba(0, 0, 0, 0.6); }
+
+/* ── Closing "let's meet" ── */
+.bs-meet {
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  padding: clamp(44px, 7vw, 88px) 0 clamp(56px, 9vw, 112px);
+  display: flex; flex-direction: column;
+  gap: clamp(18px, 2.4vw, 24px); align-items: flex-start;
+}
+.bs-meet-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.62);
+}
+.bs-meet-title {
+  margin: 0; font-size: clamp(28px, 4.2vw, 48px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.04; max-width: 24ch;
+}
+.bs-meet-sub {
+  margin: 0; font-size: clamp(16px, 1.7vw, 20px); font-weight: 300;
+  line-height: 1.5; color: rgba(0, 0, 0, 0.65); max-width: 44ch;
+}
+.bs-meet-cta { margin-top: clamp(6px, 1vw, 10px); }
+
+/* ── Footer (the home page has its own, lighter than the funnel's) ── */
+.bs-footer { border-top: 1px solid rgba(0, 0, 0, 0.12); }
+.bs-footer-inner {
+  padding-top: 22px; padding-bottom: 22px;
+  display: flex; flex-wrap: wrap; gap: 16px;
+  align-items: center; justify-content: space-between;
+}
+.bs-footer-note {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.62);
+}
+.bs-footer-link {
+  font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.45);
+}
+
+/* ── Contact modal ── */
+.bs-modal-box {
+  background: #fff; color: #000; width: min(100%, 600px);
+  border: 1px solid #000; padding: clamp(24px, 4vw, 40px);
+  display: flex; flex-direction: column; gap: clamp(20px, 2.6vw, 28px);
+}
+.bs-modal-top {
+  display: flex; gap: 20px;
+  align-items: flex-start; justify-content: space-between;
+}
+#bs-modal-t {
+  margin: 0; font-size: clamp(24px, 3.2vw, 34px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.06; max-width: 20ch;
+}
+#bs-close {
+  background: transparent; border: none; padding: 12px 4px; min-height: 44px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.62); flex: none;
+}
+#bs-svc {
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+  padding: 14px 0; display: flex; flex-wrap: wrap;
+  gap: 6px 16px; align-items: baseline;
+}
+.bs-svc-k {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.62);
+}
+#bs-svc-l { font-size: 16px; font-weight: 500; line-height: 1.4; }
+#bs-form { display: flex; flex-direction: column; gap: clamp(16px, 2.2vw, 22px); }
+.bs-fields {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+#bs-bad { font-size: 13px; line-height: 1.55; color: rgba(0, 0, 0, 0.6); }
+#bs-sug {
+  border: 1px solid #000; padding: 14px 16px;
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+}
+#bs-sug-t { font-size: 15px; line-height: 1.45; }
+#bs-fix, #bs-send {
+  background: #000; color: #fff; border: 1px solid #000;
+  padding: 15px 24px; min-height: 44px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+#bs-fix { flex: none; }
+.bs-ta { line-height: 1.55; resize: vertical; }
+.bs-bot { position: absolute; left: -9999px; }
+.bs-send-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.bs-send-note {
+  font-size: 13px; line-height: 1.5;
+  color: rgba(0, 0, 0, 0.55); max-width: 34ch;
+}
+#bs-err {
+  margin: 0; font-size: 14px; color: #b42318;
+  border-left: 2px solid #b42318; padding-left: 12px;
+}
+.bs-sent-copy { display: flex; flex-direction: column; gap: 10px; }
+#bs-sent-t {
+  font-size: clamp(25px, 3.3vw, 34px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1.05;
+}
+#bs-sent-s {
+  font-size: 17px; font-weight: 300; line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7); max-width: 34ch;
+}
+
+/* Invisible marker: it only exists so the site navbar knows where the black
+   gradient stops being black. The default height matches the curtain's initial
+   geometry (430px of solid black + half of the 190px tail, less the 170px the
+   curtain starts above the page), so the navbar reads correctly even before
+   home.js measures — and if the script never runs. */
+#bs-navzone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 355px;
+  pointer-events: none;
+  z-index: 0;
+}

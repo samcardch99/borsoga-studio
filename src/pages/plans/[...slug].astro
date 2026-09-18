@@ -1,0 +1,34 @@
+---
+// Every /plans route, in both languages, from one file.
+//
+// The slugs differ per language (/plans/configurator/ vs
+// /plans/es/configurador/), so a plain folder-per-page layout would mean
+// writing each page twice. Here getStaticPaths emits the language variants and
+// each page is authored once, as a component under components/plans/pages/.
+import { LANGS, ROUTES, route, type Lang, type RouteKey } from "../../plans/config";
+import { PAGES } from "../../components/plans/pages";
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const key of Object.keys(ROUTES) as RouteKey[]) {
+    for (const lang of LANGS) {
+      // route() gives "/plans/es/configurador/"; the param is what follows
+      // "/plans/", with no leading or trailing slash. The home pages yield ""
+      // and "es", which Astro maps to /plans/ and /plans/es/.
+      const slug = route(key, lang).replace(/^\/plans\/?/, "").replace(/\/$/, "");
+      paths.push({ params: { slug: slug || undefined }, props: { routeKey: key, lang } });
+    }
+  }
+  return paths;
+}
+
+interface Props {
+  routeKey: RouteKey;
+  lang: Lang;
+}
+
+const { routeKey, lang } = Astro.props;
+const Page = PAGES[routeKey];
+---
+
+<Page lang={lang} />

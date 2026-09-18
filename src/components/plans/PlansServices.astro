@@ -1,0 +1,107 @@
+---
+// "The four services" — the cross-sell grid every funnel page carries. The card
+// for the page you are on is not a link: it is outlined and labelled "You are
+// here" instead, so the grid doubles as a position indicator.
+import { route, type Lang, type RouteKey } from "../../plans/config";
+import { createI18n } from "../../plans/i18n";
+
+interface Props {
+  lang: Lang;
+  /** The page this grid is rendered on, so it can mark itself. */
+  current: RouteKey;
+}
+
+const { lang, current } = Astro.props;
+const i18n = createI18n(lang);
+
+// Order and names come from the design. Each URL names its own service.
+const SERVICES = [
+  { num: "Servicio 01", name: "Interior Design", note: "Essential · Premium · Edition", key: "interior" },
+  { num: "Servicio 02", name: "Architectural Visualization", note: "Essential · Premium · Edition", key: "avPlans" },
+  { num: "Servicio 03", name: "Branding", note: "Brand · Social · Marketing", key: "graphicDesign" },
+  { num: "Servicio 04", name: "Web y App", note: "Essential · Premium · Edition", key: "webDesign" },
+] as const satisfies readonly { num: string; name: string; note: string; key: RouteKey }[];
+---
+
+<section id="servicios" class="plans-services">
+  <div class="plans-wrap plans-services-inner">
+    <div class="plans-services-head">
+      <div class="plans-eyebrow plans-services-eyebrow">{i18n.T("El estudio")}</div>
+      <h2 class="plans-h2">{i18n.t("chrome_nav_services")}</h2>
+    </div>
+    <div class="plans-services-grid">
+      {
+        SERVICES.map(({ num, name, note, key }) => {
+          const here = key === current;
+          const Tag = here ? "div" : "a";
+          const props = here ? {} : { href: route(key, lang), class: "svc" };
+          return (
+            <Tag class:list={["m-svc", "plans-svc", here && "plans-svc--here", !here && "svc"]} {...props}>
+              <span class="plans-svc-num">{i18n.T(num)}</span>
+              <span class="plans-svc-name">{i18n.T(name)}</span>
+              <span class:list={["plans-svc-note", here && "plans-svc-note--here"]}>
+                {here ? i18n.t("estas_aqui") : i18n.T(note)}
+              </span>
+            </Tag>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .plans-services {
+    border-top: 1px solid rgba(0, 0, 0, 0.14);
+    background: rgba(0, 0, 0, 0.025);
+    scroll-margin-top: var(--nav-h, 68px);
+  }
+  .plans-services-inner {
+    padding-top: clamp(56px, 8vw, 104px);
+    padding-bottom: clamp(56px, 8vw, 104px);
+  }
+  .plans-services-head {
+    max-width: 60ch;
+    margin-bottom: clamp(32px, 5vw, 56px);
+  }
+  .plans-services-eyebrow {
+    margin-bottom: 18px;
+  }
+  .plans-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+  }
+  .plans-svc {
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+    padding: clamp(22px, 2.4vw, 30px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  /* The current card sits above its neighbours so its full outline shows —
+     the grid overlaps borders with a 1px gap. */
+  .plans-svc--here {
+    box-shadow: 0 0 0 1.5px #000;
+    position: relative;
+    z-index: 1;
+  }
+  .plans-svc-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  .plans-svc-name {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .plans-svc-note {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.6);
+  }
+</style>

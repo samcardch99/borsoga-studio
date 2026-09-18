@@ -1,0 +1,20 @@
+---
+// Proof cards whose image has not been shot yet: the slot shows its own label
+// so the page still communicates what belongs there.
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; items: readonly (readonly [string, string, string])[] }
+const { lang, items } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-slots">
+  {items.map(([label, desc, slot]) => (
+    <div class="m-tile pl-slot">
+      <div class="pl-slot-media">{i18n.t(slot)}</div>
+      <div class="pl-slot-body">
+        <div class="pl-slot-label">{label}</div>
+        <p class="pl-slot-d">{i18n.t(desc)}</p>
+      </div>
+    </div>
+  ))}
+</div>

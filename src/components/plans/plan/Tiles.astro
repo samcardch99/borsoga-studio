@@ -1,0 +1,16 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; items: readonly (readonly [string, string, string])[] }
+const { lang, items } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-tiles">
+  {items.map(([num, title, desc]) => (
+    <div class="m-tile pl-tile">
+      <div class="pl-tile-num">{i18n.T(num)}</div>
+      <h3 class="pl-tile-t">{i18n.T(title)}</h3>
+      <p class="pl-tile-d">{i18n.T(desc)}</p>
+    </div>
+  ))}
+</div>

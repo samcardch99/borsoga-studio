@@ -1,0 +1,15 @@
+---
+import Rings from "./Rings.astro";
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; label: string; text: string; rings: number }
+const { lang, label, text, rings } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-inherit">
+  <div class="pl-inherit-top">
+    <Rings n={rings} small />
+    <div class="pl-inherit-label">{i18n.T(label)}</div>
+  </div>
+  <p class="pl-inherit-p">{i18n.T(text)}</p>
+</div>

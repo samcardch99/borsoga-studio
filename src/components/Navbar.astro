@@ -2,6 +2,31 @@
 import logoSrc from "../assets/logo.svg?url";
 import logoStackedSrc from "../assets/logo-stacked.svg?url";
 import RightUpArrow from "../assets/icons/right_up.svg";
+
+interface Props {
+	/** Where the CTA points. Defaults to the contact block in the site footer.
+	 *  The /plans funnel overrides it with each page's own closing anchor, so
+	 *  the button doesn't drop a visitor out of the funnel mid-price-list. */
+	ctaHref?: string;
+	/** Hide the CTA entirely (unused today; kept for pages with their own). */
+	showCta?: boolean;
+	/** Sets data-form on the CTA. The funnel home has no contact SECTION — its
+	 *  contact form is a modal that the page script opens from any
+	 *  [data-form] element, and it calls preventDefault, so the href is only
+	 *  the no-JS fallback. */
+	ctaForm?: string;
+	/** The nav LINK to contact — navigation, not conversion, so it is separate
+	 *  from the CTA. #contact lives in the site footer, which /plans does not
+	 *  render, so the funnel passes the absolute /#contact instead. */
+	contactHref?: string;
+}
+
+const {
+	ctaHref = "#contact",
+	showCta = true,
+	ctaForm,
+	contactHref = "#contact",
+} = Astro.props;
 ---
 
 <!-- Navbar — padding H: 4rem (40px en HD) -->
@@ -11,19 +36,29 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     data-frosted="true"
     class="fixed z-100 w-full flex items-center justify-between px-[2.4rem] md:px-[4.2rem] lg:px-16 py-[2vh] transition-all duration-500"
 >
-    <a href="/" aria-label="Borsoga Studio">
-        <!-- stacked mark on mobile/tablet, horizontal wordmark on desktop (from Figma) -->
-        <img
-            src={logoStackedSrc}
-            alt="Borsoga Studio"
-            class="nav-logo block lg:hidden h-[3.8rem] w-auto transition-[filter] duration-300"
-        />
-        <img
-            src={logoSrc}
-            alt="Borsoga Studio"
-            class="nav-logo hidden lg:block h-[3.8rem] w-auto transition-[filter] duration-300"
-        />
-    </a>
+    <div class="flex items-center gap-6">
+        <!-- The logo always returns to the site home, from anywhere — including
+             inside the /plans funnel. -->
+        <a href="/" aria-label="Borsoga Studio">
+            <!-- stacked mark on mobile/tablet, horizontal wordmark on desktop (from Figma) -->
+            <img
+                src={logoStackedSrc}
+                alt="Borsoga Studio"
+                class="nav-logo block lg:hidden h-[3.8rem] w-auto transition-[filter] duration-300"
+            />
+            <img
+                src={logoSrc}
+                alt="Borsoga Studio"
+                class="nav-logo hidden lg:block h-[3.8rem] w-auto transition-[filter] duration-300"
+            />
+        </a>
+
+        <!-- The funnel fills this with its language switcher. It sits beside the
+             logo, not at the right edge: the right edge belongs to the CTA
+             layer, which is a separate fixed layer at z-120 and would cover it.
+             Empty everywhere else, and an empty slot renders nothing. -->
+        <slot name="nav-extra" />
+    </div>
 
     <ul
         class="absolute left-1/2 -translate-x-1/2 hidden lg:flex gap-16 list-none m-0 p-0"
@@ -46,14 +81,21 @@ import RightUpArrow from "../assets/icons/right_up.svg";
         </li>
         <li>
             <a
-                href="#contact"
+                href="/plans/"
+                class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
+            >
+                Plans
+            </a>
+        </li>
+        <li>
+            <a
+                href={contactHref}
                 class="nav-link no-underline font-bold text-[1.4rem] tracking-[0.02em] transition-[color,opacity] duration-300 hover:opacity-65"
             >
                 Contact
             </a>
         </li>
     </ul>
-
 </nav>
 
 <!--
@@ -68,9 +110,10 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     <!-- Phone: CTA centered between logo & burger (Figma: Menu Closed).
          Tablet: right-aligned next to the burger (margin clears its width).
          Desktop: right-aligned, no burger. -->
-    <div class="min-h-[3.8rem] flex items-center md:mr-[6.6rem] lg:mr-0">
+    <div class="min-h-[3.8rem] flex items-center md:mr-[6.6rem] lg:mr-0" style={showCta ? undefined : "display:none"}>
         <a
-            href="#contact"
+            href={ctaHref}
+            data-form={ctaForm}
             class="nav-cta pointer-events-auto inline-flex items-center gap-1 md:gap-2 no-underline font-light text-[1.3rem] md:text-[1.6rem] lg:text-[1.25rem] py-[0.9rem] px-[1.9rem] md:py-[1.1rem] md:px-[2.2rem] lg:py-3 lg:px-6 rounded-full whitespace-nowrap tracking-wider hover:opacity-90"
         >
             BEGIN A DIALOGUE
@@ -113,7 +156,13 @@ import RightUpArrow from "../assets/icons/right_up.svg";
                 </a>
             </li>
             <li class="navm__item">
-                <a class="navm__link" href="#contact">
+                <a class="navm__link" href="/plans/">
+                    <span>PLANS</span>
+                    <RightUpArrow class="navm__arrow" aria-hidden="true" />
+                </a>
+            </li>
+            <li class="navm__item">
+                <a class="navm__link" href={contactHref}>
                     <span>CONTACT</span>
                     <RightUpArrow class="navm__arrow" aria-hidden="true" />
                 </a>
@@ -160,6 +209,16 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     /* Dark theme (sobre secciones claras) — textos negros */
     #main-nav[data-theme="dark"] .nav-link {
         color: black;
+    }
+
+    /* The funnel's language switcher lives in the nav-extra slot, so it is a
+       child component with its own scope — :global to reach it. It inherits
+       `color`, which is all it needs to follow the theme. */
+    #main-nav[data-theme="light"] :global(#nav-lang) {
+        color: #fff;
+    }
+    #main-nav[data-theme="dark"] :global(#nav-lang) {
+        color: #000;
     }
     #main-nav[data-theme="dark"] .nav-logo {
         filter: invert(1);
@@ -335,6 +394,10 @@ import RightUpArrow from "../assets/icons/right_up.svg";
     :global(html.menu-open) .navm__item:nth-child(3),
     :global(html.menu-open) .navm__item:nth-child(3)::after {
         transition-delay: 0.3s;
+    }
+    :global(html.menu-open) .navm__item:nth-child(4),
+    :global(html.menu-open) .navm__item:nth-child(4)::after {
+        transition-delay: 0.4s;
     }
     .navm__link {
         display: flex;

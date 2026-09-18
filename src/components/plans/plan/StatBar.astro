@@ -1,0 +1,18 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; stats: { n: string; label: string }[] }
+const { lang, stats } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-statbar">
+  {stats.map(({ n, label }, i) => (
+    <>
+      {i > 0 && <div class="pl-statsep" aria-hidden="true" />}
+      <div class="pl-stat">
+        <span class="pl-stat-n">{n}</span>
+        <span class="pl-stat-l">{i18n.T(label)}</span>
+      </div>
+    </>
+  ))}
+</div>

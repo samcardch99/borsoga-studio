@@ -1,0 +1,17 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; byKey?: boolean; wideLabel?: boolean; items: readonly (readonly [string, string, string])[] }
+const { lang, items, byKey = false, wideLabel = false } = Astro.props;
+const tr = (s: string) => (byKey ? i18n.t(s) : i18n.T(s));
+const i18n = createI18n(lang);
+---
+<div class="pl-tilegrid">
+  {items.map(([n, title, when]) => (
+    <div class="m-tile pl-rev">
+      <div class="pl-rev-n">{n}</div>
+      <p class="pl-rev-t">{tr(title)}</p>
+      <div class:list={[wideLabel ? "plans-eyebrow" : "pl-rev-w"]}>{tr(when)}</div>
+    </div>
+  ))}
+</div>

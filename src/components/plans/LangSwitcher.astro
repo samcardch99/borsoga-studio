@@ -1,0 +1,68 @@
+---
+// Language switcher — real links to the same page in the other language: no JS,
+// indexable, and backed by the <head> hreflang. Everything inherits `color`
+// from its container and tells active from inactive by opacity, so the home
+// page header (which fades white → black on scroll) can recolour the whole
+// group by changing one property instead of repainting each piece.
+import { alternates, type Lang, type RouteKey } from "../../plans/config";
+import { createI18n } from "../../plans/i18n";
+
+interface Props {
+  routeKey: RouteKey;
+  lang: Lang;
+  /** Inherited by the links; the home header animates this on scroll. */
+  color?: string;
+  id?: string;
+}
+
+const { routeKey, lang, color = "#000", id } = Astro.props;
+const i18n = createI18n(lang);
+const links = alternates(routeKey);
+---
+
+<div
+  id={id}
+  class="plans-langs"
+  style={`color:${color}`}
+  role="group"
+  aria-label={i18n.t("chrome_lang")}
+>
+  {
+    links.map(({ lang: l, href }, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true" class="plans-lang-sep">/</span>}
+        {l === lang ? (
+          <span aria-current="true" class="plans-lang">{l}</span>
+        ) : (
+          <a data-i18n-link href={href} hreflang={l} class="plans-lang plans-lang--off">{l}</a>
+        )}
+      </>
+    ))
+  }
+</div>
+
+<style>
+  .plans-langs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.35s ease;
+  }
+  .plans-lang {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+  .plans-lang--off {
+    opacity: 0.5;
+  }
+  .plans-lang-sep {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: inherit;
+    opacity: 0.35;
+  }
+</style>

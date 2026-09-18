@@ -1,0 +1,136 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Configurator UI — ported verbatim from the retired generator
+   (borsoga-funnel/src/quiz.py, QUIZ_CSS). Shared by both configurators:
+   interior design and architectural visualization are different services but
+   the same piece of interface, and duplicating the styles would have meant
+   they drifted apart immediately.
+
+   Global, not Astro-scoped: quiz.js builds the whole step UI at runtime, so
+   none of those elements exist at build time to receive a scope attribute.
+
+   ── DESVIACIONES DEL ORIGINAL (accesibilidad, 2026-09-18) ──────────────────
+   Todo lo demás es literal. Estos bordes e indicadores incumplían WCAG 2.1
+   SC 1.4.11 (3:1 para lo que identifica un componente y su estado); están
+   subidos a rgba(0,0,0,.45) = 3.36:1. Los separadores decorativos y los
+   estados deshabilitados NO se han tocado: los primeros no son componentes
+   y los segundos están exentos por SC 1.4.3.
+     · borde de opción 1.61:1 → 3.36:1
+     · borde de opción 1.45:1 → 3.36:1
+     · hover: conserva el salto ×3 del original sobre el reposo ya accesible
+     · indicador de radio 1.98:1 → 3.36:1
+     · indicador de casilla 1.98:1 → 3.36:1
+     · borde de campo 1.69:1 → 3.36:1
+     · borde de espacio 1.38:1 → 3.36:1
+     · borde del stepper 1.98:1 → 3.36:1
+     · borde de zona de archivos 2.38:1 → 3.36:1
+     · borde de tarjeta de nivel 1.45:1 → 3.36:1
+     · botones de barra en móvil 1.55:1 → 3.36:1
+   Para volver al aspecto exacto del dominio antiguo, deshacer estas líneas.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.q-wrap{min-height:100vh;display:flex;flex-direction:column}
+.q-main{width:min(100%,1080px);margin:0 auto;padding:clamp(32px,5vw,56px) clamp(20px,4vw,40px) 140px;flex:1}
+.q-group{margin-bottom:clamp(34px,5vw,52px)}
+.q-q{font-size:clamp(19px,2.2vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.3;margin:0 0 6px}
+.q-hint{font-size:14px;line-height:1.55;color:rgba(0,0,0,.55);margin:0 0 16px;max-width:62ch}
+.q-opts{display:flex;flex-wrap:wrap;gap:10px}
+.q-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.q-chip,.q-card{font-family:inherit;text-align:left;cursor:pointer;transition:border-color .18s ease,background .18s ease,color .18s ease}
+.q-chip{border:1px solid rgba(0,0,0,.45);background:#fff;padding:14px 20px;font-size:15px;color:rgba(0,0,0,.75)}
+.q-chip[aria-pressed=true]{border:1.5px solid #000;background:#000;color:#fff;padding:13.5px 19.5px;font-weight:500}
+.q-card{border:1px solid rgba(0,0,0,.45);background:#fff;padding:20px 22px;display:flex;align-items:center;gap:14px;width:100%;font-size:16px;line-height:1.35}
+.q-card[aria-pressed=true]{border:1.5px solid #000;padding:19.5px 21.5px;font-weight:500}
+@media (hover:hover){.q-chip:hover,.q-card:hover{border-color:rgba(0,0,0,.75)}}
+.q-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(0,0,0,.45);flex:none}
+.q-card[aria-pressed=true] .q-radio{border:5px solid #000}
+.q-box{width:20px;height:20px;border:1.5px solid rgba(0,0,0,.45);flex:none}
+.q-card[aria-pressed=true] .q-box{background:#000;border-color:#000}
+.q-in{font-family:inherit;font-size:16px;padding:15px 16px;border:1px solid rgba(0,0,0,.45);background:#fff;width:100%}
+.q-in:focus{outline:none;border-color:#000}
+.q-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.q-space{background:#fff;padding:15px 15px 15px 20px;display:flex;align-items:center;gap:12px;
+justify-content:space-between;min-height:64px;box-shadow:0 0 0 1px rgba(0,0,0,.45);cursor:pointer}
+.q-space[aria-pressed=true]{box-shadow:0 0 0 1.5px #000;position:relative;z-index:1}
+.q-step{width:30px;height:30px;background:#fff;border:1px solid rgba(0,0,0,.45);font-size:16px;
+line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex:none;cursor:pointer}
+.q-step:disabled{border-color:rgba(0,0,0,.1);color:rgba(0,0,0,.24);cursor:default}
+.q-note{border:1px solid rgba(0,0,0,.16);padding:16px 18px;font-size:14px;line-height:1.6;
+color:rgba(0,0,0,.7);margin-top:14px}
+.q-note.warn{border-color:#000;background:rgba(0,0,0,.03)}
+.q-drop{border:1px dashed rgba(0,0,0,.45);background:#fff;padding:clamp(22px,3vw,30px);display:flex;
+align-items:center;gap:18px;cursor:pointer;flex-wrap:wrap;width:100%}
+.q-drop.has{border-style:solid;border-color:#000}
+.q-drop input{position:absolute;width:1px;height:1px;opacity:0}
+.q-file{display:flex;gap:10px;font-size:14px;color:rgba(0,0,0,.65);padding:7px 0}
+.q-nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid rgba(0,0,0,.14);z-index:30}
+.q-nav-in{width:min(100%,1080px);margin:0 auto;padding:16px clamp(20px,4vw,40px);display:flex;
+align-items:center;justify-content:space-between;gap:16px}
+.q-nav-group{display:flex;align-items:center;gap:20px;min-width:0}
+.q-nav-icon{display:none}
+.q-back{background:none;border:none;font-size:11px;font-weight:600;letter-spacing:.12em;
+text-transform:uppercase;padding:8px 0;cursor:pointer;border-bottom:1px solid #000}
+.q-back:disabled{color:rgba(0,0,0,.22);border-bottom-color:transparent;cursor:default}
+.q-next{background:#000;color:#fff;border:1px solid #000;padding:16px 30px;font-size:11px;
+font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.q-next:disabled{background:rgba(0,0,0,.08);color:rgba(0,0,0,.34);border-color:transparent;cursor:default}
+.q-seg{display:flex;gap:3px;width:min(100%,1080px);margin:0 auto;padding:0 clamp(20px,4vw,40px) 0}
+.q-seg i{flex:1 1 0;height:3px;background:rgba(0,0,0,.14)}
+.q-seg i.on{background:#000}
+.q-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;margin-top:36px}
+.q-sum div{background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.12);padding:16px 18px}
+.q-sum dt{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+color:rgba(0,0,0,.45);margin-bottom:6px}
+.q-sum dd{margin:0;font-size:15px;line-height:1.45}
+.q-err{font-size:14px;color:#000;border-left:2px solid #000;padding-left:12px;margin-top:10px}
+.q-lvl{border:1px solid rgba(0,0,0,.45);background:#fff;padding:0;cursor:pointer;
+display:flex;flex-direction:column;text-align:left}
+.q-lvl[aria-pressed=true]{border:1.5px solid #000}
+/* Estado "falta responder". Rojo contenido, del mismo registro que el resto
+   del diseño: marco, no relleno chillón. */
+.q-invalid .q-card,.q-invalid .q-chip,.q-invalid .q-in,.q-invalid .q-space,.q-invalid .q-lvl{
+box-shadow:0 0 0 1.5px #b42318!important;border-color:#b42318!important}
+.q-invalid .q-drop{border-color:#b42318}
+.q-invalid .q-q{color:#b42318}
+.q-falta{margin:12px 0 0;font-size:13px;font-weight:500;color:#b42318;
+display:flex;align-items:center;gap:7px}
+.q-falta::before{content:"";width:6px;height:6px;background:#b42318;flex:none}
+@media (prefers-reduced-motion:no-preference){
+  .q-invalid{animation:q-shake .3s ease}
+  @keyframes q-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+}
+.q-slot{aspect-ratio:4/3;background:rgba(0,0,0,.04);display:flex;align-items:center;
+justify-content:center;font-size:12px;color:rgba(0,0,0,.32);letter-spacing:.08em;text-transform:uppercase}
+@media (max-width:640px){
+  .q-main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  .q-nav-in{padding:9px 12px calc(9px + env(safe-area-inset-bottom,0px));gap:8px}
+  .q-nav-group{gap:8px}
+  .q-nav-status{flex:1;justify-content:flex-end}
+  .q-back,.q-next{width:42px;height:42px;min-width:42px;padding:0;border:1px solid rgba(0,0,0,.45);
+    display:inline-flex;align-items:center;justify-content:center}
+  .q-back{background:#fff}
+  .q-back:disabled{border-color:rgba(0,0,0,.08)}
+  .q-next{background:#000;border-color:#000}
+  .q-nav-icon{width:19px;height:19px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round}
+  .q-btn-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  #q-count{display:none}
+  #q-aviso{font-size:10px!important;line-height:1.2;max-width:12ch;text-align:right}
+}
+
+/* ── Shell chrome (inline styles in the generator) ── */
+.q-head { position: sticky; top: 0; z-index: 30; background: #fff; border-bottom: 1px solid rgba(0, 0, 0, 0.12); }
+.q-head-in {
+  width: min(100%, 1080px); margin: 0 auto; padding: 0 clamp(20px, 4vw, 40px);
+  height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+.q-logo { width: 126px; height: auto; display: block; }
+.q-head-right { display: flex; align-items: center; gap: 14px; }
+.q-plan-box { display: flex; align-items: center; gap: 9px; border: 1px solid rgba(0, 0, 0, 0.16); padding: 7px 12px; }
+#q-plan { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+#q-saved { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0, 0, 0, 0.4); }
+.q-save { border-bottom-color: rgba(0, 0, 0, 0.25); }
+#q-aviso { font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #b42318; }
+#q-count { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0, 0, 0, 0.45); }
+.q-nojs { font-size: 17px; line-height: 1.6; }
+.q-nojs-mail { border-bottom: 1px solid; }

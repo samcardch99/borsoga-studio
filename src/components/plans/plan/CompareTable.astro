@@ -1,0 +1,68 @@
+---
+// Feature comparison grid. Rows are [label, ...cells]; a cell is `true` (dot),
+// `false` (dash) or a string. The last column is shaded because it is the
+// inverted Edition tier and needs to read as the emphasis.
+//
+// Built as role="table" divs rather than a real <table> because the layout is a
+// CSS grid with a sticky header — and every cell carries an aria-label so the
+// dot and the dash are announced as yes and no, not as decoration.
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+import "../../../styles/plans-plan.css";
+
+export type Cell = boolean | string;
+export interface Col { num: string; name: string; inv?: boolean }
+
+interface Props {
+  lang: Lang;
+  rows: readonly (readonly [string, ...Cell[]])[];
+  cols: readonly Col[];
+  grid?: string;
+  sticky?: boolean;
+}
+
+const {
+  lang,
+  rows,
+  cols,
+  grid = "minmax(140px,1.9fr) repeat(3,minmax(58px,1fr))",
+  sticky = true,
+} = Astro.props;
+const i18n = createI18n(lang);
+const n = cols.length;
+---
+
+<div role="table" class="m-table">
+  <div role="row" class:list={["cmp-h", sticky && "cmp-h--sticky"]} style={`display:grid;grid-template-columns:${grid}`}>
+    <div class="cmp-corner"></div>
+    {cols.map(({ num, name, inv }) => (
+      <div role="columnheader" class:list={["cmp-col", inv && "cmp-col--inv"]}>
+        {num && <span class="cmp-col-num">{num}</span>}
+        <span class="cmp-col-t">{i18n.T(name)}</span>
+      </div>
+    ))}
+  </div>
+  {rows.map((row) => {
+    const [label, ...vals] = row;
+    return (
+      <div role="row" class="cmp-row" style={`display:grid;grid-template-columns:${grid}`}>
+        <div role="rowheader" class="cmp-rowhead">{i18n.T(label)}</div>
+        {vals.map((v, i) => (
+          <div
+            role="cell"
+            aria-label={v === true ? i18n.t("cmp_si") : v === false ? i18n.t("cmp_no") : i18n.T(v)}
+            class:list={["cmp-cell", i === n - 1 && "cmp-cell--shade"]}
+          >
+            {v === true ? (
+              <span class="cmp-yes" />
+            ) : v === false ? (
+              <span class="cmp-no" />
+            ) : (
+              <span class="cmp-txt">{i18n.T(v)}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  })}
+</div>

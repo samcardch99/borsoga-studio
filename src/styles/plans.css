@@ -1,0 +1,281 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Funnel (/plans) — ported from the retired Python generator's BASE_CSS and
+   inline style constants (borsoga-funnel/src/shell.py).
+
+   EVERYTHING is scoped under `.plans`. The generator owned its whole document
+   and could style bare `body`, `a`, `ul`; here the funnel is a section of a
+   site that already has its own resets and a different page background, so a
+   bare element selector would leak both ways.
+
+   Sizes stay in px on purpose. The site redefines the root font-size
+   (1rem = 10px, fluid above 1440px), so rem here would silently rescale a
+   layout that was tuned in px against clamp() breakpoints.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* The funnel is white; the site is #f7f7f7. Paint the document so overscroll
+   past the top or bottom edge doesn't reveal the other background. */
+body:has(.plans) {
+  background: #fff;
+}
+
+/* Height of the real site navbar, which is `fixed` and therefore out of flow:
+   its py-[2vh] top and bottom plus a 3.8rem tall logo. Content under it has to
+   reserve the space itself. Kept as a variable because the funnel home also
+   needs it to offset its curtain. */
+.plans {
+  --nav-h: calc(4vh + 3.8rem);
+}
+
+.plans--nav > #main,
+.plans--nav > .bs-page {
+  padding-top: var(--nav-h);
+}
+
+.plans {
+  background: #fff;
+  color: #000;
+  font-family: "Poppins", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+  scroll-behavior: smooth;
+}
+
+/* The element reset goes through :where(), so the whole block weighs
+   (0,0,1) — exactly what the generator's bare `a {}` / `button {}` selectors
+   weighed. Written as `.plans button` it weighs (0,1,1) and BEATS every
+   single-class component rule: `.plans button{color:inherit}` was overriding
+   `.qb-next{color:#fff}`, so the Continue button rendered its label in
+   inherited black on its own black pill — invisible. Scoping a reset must not
+   promote it above what it is resetting. */
+:where(.plans) *,
+:where(.plans) *::before,
+:where(.plans) *::after {
+  box-sizing: border-box;
+}
+
+:where(.plans) a {
+  color: #000;
+  text-decoration: none;
+}
+:where(.plans) ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where(.plans) summary {
+  cursor: pointer;
+  list-style: none;
+}
+:where(.plans) summary::-webkit-details-marker {
+  display: none;
+}
+:where(.plans) summary::marker {
+  content: "";
+}
+:where(.plans) button {
+  font-family: inherit;
+  cursor: pointer;
+  color: inherit;
+}
+:where(.plans) img {
+  max-width: 100%;
+}
+
+/* The browser hides [hidden] with display:none, but any `display` written in a
+   style attribute wins on specificity and the element stays visible. This bit
+   the "did you mean…?" email suggestion box: it carried display:flex inline, so
+   it showed permanently — orphan button, no question — even while hidden. */
+.plans [hidden] {
+  display: none !important;
+}
+
+.plans :focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+/* ── Layout primitives (WRAP / EYEBROW / H2 / CARD / COL_* / LIST_HEAD / LI) ── */
+
+.plans-wrap {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 48px);
+}
+
+.plans-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.plans-h2 {
+  margin: 0;
+  font-size: clamp(26px, 3.8vw, 42px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.plans-h3 {
+  margin: 0 0 16px;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.plans-p {
+  margin: 0 0 18px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.78);
+}
+
+.plans-card {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #fff;
+  padding: clamp(26px, 4vw, 58px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(30px, 4vw, 64px);
+}
+
+.plans-col-l {
+  flex: 1 1 320px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3vw, 28px);
+}
+
+.plans-col-r {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(26px, 3vw, 36px);
+}
+
+.plans-list-head {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.45);
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.plans-li {
+  display: flex;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.plans-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #000;
+  flex: none;
+  margin-top: 7px;
+}
+
+/* ── Buttons ── */
+
+.plans-btn {
+  padding: 17px 22px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  display: block;
+}
+
+.plans .btn-d {
+  background: #000;
+  color: #fff;
+  border: 1px solid #000;
+}
+.plans .btn-d:hover {
+  background: rgba(0, 0, 0, 0.82);
+  border-color: rgba(0, 0, 0, 0.82);
+  color: #fff;
+}
+.plans .btn-l {
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+}
+.plans .btn-l:hover {
+  background: #000;
+  color: #fff;
+}
+.plans .btn-w {
+  background: #fff;
+  color: #000;
+  border: 1px solid #fff;
+}
+.plans .btn-w:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.85);
+  color: #000;
+}
+.plans .btn-o {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+}
+.plans .btn-o:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* ── Chrome and shared states ── */
+
+.plans .nav-m:hover {
+  color: rgba(0, 0, 0, 0.85);
+}
+.plans .svc:hover {
+  box-shadow: 0 0 0 1.5px #000 !important;
+}
+.plans .exc {
+  color: rgba(0, 0, 0, 0.5);
+}
+.plans .exc:hover {
+  color: #000;
+}
+.plans .exc-w {
+  color: rgba(255, 255, 255, 0.6);
+}
+.plans .exc-w:hover {
+  color: #fff;
+}
+
+.plans .skip {
+  position: absolute;
+  left: -9999px;
+}
+.plans .skip:focus {
+  left: 12px;
+  top: 12px;
+  z-index: 99;
+  background: #000;
+  color: #fff;
+  padding: 12px 18px;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .plans .cmp-h {
+    top: 0 !important;
+  }
+  .plans .nav-services {
+    display: none !important;
+  }
+}

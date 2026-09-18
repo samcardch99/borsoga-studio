@@ -1,0 +1,11 @@
+---
+// One plan, as a bordered card. The Edition tier inverts to black — `.plan-dark`
+// flips the palette tokens for everything inside it.
+interface Props { id: string; dark?: boolean; last?: boolean }
+const { id, dark = false, last = false } = Astro.props;
+---
+<section id={id} class:list={["plans-wrap", "pl-card-sec", last && "pl-card-sec--last"]}>
+  <article class:list={["m-card", "plan-scope", dark ? "plan-dark pl-card-dark" : "plans-card"]}>
+    <slot />
+  </article>
+</section>

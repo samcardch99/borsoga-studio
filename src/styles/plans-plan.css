@@ -1,0 +1,359 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Plan-page primitives — shared by interior design, architectural
+   visualization, web and branding. Ported from the generator's helpers in
+   build.py (hero, plan_nav, plan_head, ctas, ideal, wrapper) and shell.py
+   (rings, bullets, block, stat, statbar, inherit_box, excluye, compare_table,
+   section_head, transversal).
+
+   The generator threaded a `white=True` flag through every one of those
+   functions and rebuilt each colour string by hand. Here the two palettes are
+   custom properties and `.plan-dark` flips them, so no component branches on
+   the variant. Values are the originals, unchanged.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.plan-scope {
+  --pl-text: #000;
+  --pl-eyebrow: rgba(0, 0, 0, 0.45);
+  --pl-desc: rgba(0, 0, 0, 0.68);
+  --pl-body: rgba(0, 0, 0, 0.72);
+  --pl-muted: rgba(0, 0, 0, 0.6);
+  --pl-stat: rgba(0, 0, 0, 0.55);
+  --pl-border: rgba(0, 0, 0, 0.14);
+  --pl-border-soft: rgba(0, 0, 0, 0.08);
+  --pl-dot: #000;
+  --pl-inherit-bg: rgba(0, 0, 0, 0.035);
+  --pl-inherit-text: rgba(0, 0, 0, 0.6);
+  --pl-inherit-label: rgba(0, 0, 0, 0.5);
+}
+
+.plan-dark {
+  --pl-text: #fff;
+  --pl-eyebrow: rgba(255, 255, 255, 0.5);
+  --pl-desc: rgba(255, 255, 255, 0.7);
+  --pl-body: rgba(255, 255, 255, 0.72);
+  --pl-muted: rgba(255, 255, 255, 0.6);
+  --pl-stat: rgba(255, 255, 255, 0.6);
+  --pl-border: rgba(255, 255, 255, 0.22);
+  --pl-border-soft: rgba(255, 255, 255, 0.1);
+  --pl-dot: #fff;
+  --pl-inherit-bg: rgba(255, 255, 255, 0.07);
+  --pl-inherit-text: rgba(255, 255, 255, 0.62);
+  --pl-inherit-label: rgba(255, 255, 255, 0.55);
+  background: #000;
+  color: #fff;
+}
+
+/* ── Hero ── */
+.pl-hero { padding-top: clamp(56px, 10vw, 132px); padding-bottom: clamp(40px, 6vw, 72px); }
+.pl-hero-eyebrow { margin-bottom: clamp(24px, 4vw, 40px); }
+.pl-hero h1 {
+  margin: 0; font-size: clamp(38px, 7.4vw, 78px); font-weight: 600;
+  letter-spacing: -0.035em; line-height: 0.98; max-width: 16ch;
+}
+.pl-hero-lead {
+  margin: clamp(24px, 4vw, 40px) 0 0; font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 300; line-height: 1.5; color: rgba(0, 0, 0, 0.68); max-width: 56ch;
+}
+
+/* ── Jump nav ── */
+.pl-nav { padding-bottom: clamp(40px, 6vw, 64px); }
+.pl-nav-inner {
+  display: flex; flex-wrap: wrap; gap: 1px;
+  background: rgba(0, 0, 0, 0.12); border: 1px solid rgba(0, 0, 0, 0.12);
+}
+.pnav {
+  flex: 1 1 150px; background: #fff; padding: 18px 20px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.pnav-num { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; color: rgba(0, 0, 0, 0.42); }
+.pnav-t { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+
+/* ── Plan card ── */
+.pl-card-sec { padding-bottom: clamp(16px, 2vw, 24px); scroll-margin-top: calc(var(--nav-h, 68px) + 20px); }
+.pl-card-sec--last { padding-bottom: clamp(56px, 8vw, 104px); }
+.pl-card-dark {
+  padding: clamp(26px, 4vw, 58px);
+  display: flex; flex-wrap: wrap; gap: clamp(30px, 4vw, 64px);
+}
+
+/* ── Plan head ── */
+.pl-head-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.pl-head-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding-top: 6px; }
+.pl-head-num {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--pl-eyebrow);
+}
+.pl-badge {
+  background: #000; color: #fff; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 10px;
+}
+.plan-dark .pl-badge { background: #fff; color: #000; }
+.pl-name {
+  margin: 0; font-size: clamp(32px, 5vw, 54px); font-weight: 600;
+  letter-spacing: -0.03em; line-height: 1;
+}
+.pl-tagline {
+  margin: 0; font-size: clamp(18px, 1.7vw, 23px); font-weight: 300;
+  line-height: 1.4; color: var(--pl-text);
+}
+.pl-desc { margin: 0; font-size: 16px; line-height: 1.55; color: var(--pl-desc); }
+
+/* ── Rings: one concentric outline per plan tier ── */
+.pl-rings { position: relative; width: 64px; height: 64px; flex: none; }
+.pl-rings > div { position: absolute; border: 1.5px solid var(--pl-text); border-radius: 50%; }
+
+/* ── Stats ── */
+.pl-statbar {
+  display: flex; align-items: center; gap: 16px;
+  border-top: 1px solid var(--pl-border); border-bottom: 1px solid var(--pl-border);
+  padding: 14px 0; flex-wrap: wrap;
+}
+.pl-statsep { width: 1px; height: 18px; background: var(--pl-border); }
+.pl-stat { display: flex; align-items: center; gap: 10px; }
+.pl-stat-n { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.pl-stat-l {
+  font-size: 12px; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--pl-stat);
+}
+
+/* ── CTAs ── */
+.pl-ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.pl-ctas > a { flex: 1 1 190px; }
+
+/* ── Lists ── */
+.pl-block-head {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--pl-eyebrow); padding-bottom: 14px; border-bottom: 1px solid var(--pl-border);
+}
+.pl-li {
+  display: flex; gap: 14px; padding: 13px 0;
+  border-bottom: 1px solid var(--pl-border-soft);
+  font-size: 16px; line-height: 1.45;
+}
+.pl-li-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--pl-dot); flex: none; margin-top: 7px;
+}
+
+/* ── "Everything in the previous plan" box ── */
+.pl-inherit { background: var(--pl-inherit-bg); padding: 20px 22px; }
+.pl-inherit-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.pl-inherit-rings { position: relative; width: 20px; height: 20px; flex: none; }
+.pl-inherit-rings > div {
+  position: absolute; border: 1.5px solid var(--pl-eyebrow); border-radius: 50%;
+}
+.pl-inherit-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--pl-inherit-label);
+}
+.pl-inherit-p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--pl-inherit-text); }
+
+/* ── "Ideal for" ── */
+.pl-ideal { border-top: 1px solid var(--pl-border); padding-top: 18px; }
+.pl-ideal-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--pl-eyebrow); margin-bottom: 8px;
+}
+.pl-ideal-p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--pl-body); }
+
+/* ── "What this plan does NOT include" ── */
+.pl-exc { border-top: 1px solid var(--pl-border); padding-top: 16px; }
+.pl-exc summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.pl-exc p { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: var(--pl-muted); }
+
+/* ── Section head / transversal line ── */
+.pl-sec-head { max-width: 60ch; margin-bottom: clamp(32px, 5vw, 56px); }
+.pl-sec-head-eyebrow { margin-bottom: 18px; }
+.pl-sec-lead {
+  margin: 18px 0 0; font-size: 17px; font-weight: 300;
+  line-height: 1.55; color: rgba(0, 0, 0, 0.65);
+}
+.pl-transversal {
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+.pl-transversal-inner { padding-top: clamp(32px, 5vw, 56px); padding-bottom: clamp(32px, 5vw, 56px); }
+.pl-transversal p {
+  margin: 0; font-size: clamp(18px, 2.2vw, 26px); font-weight: 300;
+  line-height: 1.4; letter-spacing: -0.01em; max-width: 44ch;
+}
+.pl-band { background: rgba(0, 0, 0, 0.025); scroll-margin-top: var(--nav-h, 68px); }
+.pl-band-inner, .pl-sec-inner {
+  padding-top: clamp(56px, 8vw, 104px); padding-bottom: clamp(56px, 8vw, 104px);
+}
+.pl-sec-bordered { border-top: 1px solid rgba(0, 0, 0, 0.14); }
+
+/* ── Comparison table ── */
+.m-table { background: #fff; border: 1px solid rgba(0, 0, 0, 0.14); }
+.cmp-h { border-bottom: 1px solid rgba(0, 0, 0, 0.18); background: #fff; }
+/* Sticky under the 68px funnel header; plain on the maintenance table, which
+   is short enough not to need it. */
+/* Sticks below the site navbar, which is `fixed` — the offset used to be the
+   funnel's own 68px sticky header, which the navbar replaced. */
+.cmp-h--sticky { position: sticky; top: var(--nav-h, 68px); z-index: 10; }
+.cmp-corner { padding: 16px clamp(12px, 2vw, 20px); }
+.cmp-col {
+  padding: 14px 8px; text-align: center; border-left: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex; flex-direction: column; gap: 4px; justify-content: flex-end;
+}
+.cmp-col--inv { background: #000; color: #fff; }
+.cmp-col-num { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; color: rgba(0, 0, 0, 0.4); }
+.cmp-col--inv .cmp-col-num { color: rgba(255, 255, 255, 0.5); }
+.cmp-col-t { font-size: clamp(10px, 1.1vw, 13px); font-weight: 600; letter-spacing: -0.01em; line-height: 1.15; }
+.cmp-row { border-bottom: 1px solid rgba(0, 0, 0, 0.08); }
+.cmp-rowhead {
+  padding: 14px clamp(12px, 2vw, 20px); font-size: clamp(13px, 1.2vw, 15px);
+  line-height: 1.35; display: flex; align-items: center;
+}
+.cmp-cell {
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex; align-items: center; justify-content: center; padding: 12px 6px;
+}
+.cmp-cell--shade { background: rgba(0, 0, 0, 0.045); }
+.cmp-yes { width: 9px; height: 9px; border-radius: 50%; background: #000; display: block; }
+.cmp-no { width: 12px; height: 1px; background: rgba(0, 0, 0, 0.3); display: block; }
+.cmp-txt { font-size: clamp(11px, 1vw, 13px); font-weight: 500; text-align: center; line-height: 1.25; }
+
+/* ── Product-line heading (Brand Identity / Social / Marketing) ── */
+.pl-line { padding-bottom: clamp(28px, 4vw, 44px); scroll-margin-top: calc(var(--nav-h, 68px) + 20px); }
+.pl-line-eyebrow { margin-bottom: 14px; }
+
+/* ── List variants. `plain` drops the bullets and rules (the "possible
+      applications" list reads as a set, not a checklist); `tight` keeps the
+      bullets but closes the spacing for the marketing groups. ── */
+.pl-list--plain { display: flex; flex-direction: column; gap: 7px; padding-top: 14px; }
+.pl-list--plain li { font-size: 15px; line-height: 1.5; color: rgba(0, 0, 0, 0.7); }
+.pl-list--tight { display: flex; flex-direction: column; padding-top: 4px; }
+
+/* ── Social product tiles ── */
+.pl-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; }
+.pl-tile {
+  background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+  padding: clamp(22px, 2.6vw, 32px);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.pl-tile-num {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.45);
+}
+.pl-tile-t { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -0.02em; }
+.pl-tile-d { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(0, 0, 0, 0.68); }
+
+/* ── Note box ("scope criterion", "not included by default") ── */
+.pl-note { border: 1px solid rgba(0, 0, 0, 0.14); padding: 18px 20px; }
+.pl-note--top { margin-top: 20px; }
+.pl-note-eyebrow { margin-bottom: 8px; }
+.pl-note p { margin: 0; font-size: 14px; line-height: 1.6; color: rgba(0, 0, 0, 0.65); }
+.pl-criterio {
+  margin-top: clamp(32px, 4vw, 48px);
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  padding-top: 22px; max-width: 70ch;
+}
+.pl-criterio-eyebrow { margin-bottom: 10px; }
+.pl-criterio p { margin: 0; font-size: 16px; line-height: 1.6; color: rgba(0, 0, 0, 0.7); }
+
+/* ── Marketing groups panel ── */
+.pl-groups {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(28px, 4vw, 52px); background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.14); padding: clamp(26px, 4vw, 44px);
+}
+.pl-split {
+  display: flex; flex-wrap: wrap;
+  gap: clamp(28px, 4vw, 52px); margin-top: clamp(28px, 4vw, 44px);
+}
+.pl-split-a { flex: 1 1 380px; }
+.pl-split-b { flex: 1 1 320px; }
+.pl-band--bordered { border-top: 1px solid rgba(0, 0, 0, 0.14); }
+
+/* ── Extras (INT_EXTRAS): bordered cards whose CTA sits flush to the bottom
+      via margin-top:auto, so uneven copy still lines the buttons up. ── */
+.pl-extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(20px, 3vw, 32px); }
+.pl-extra {
+  border: 1px solid rgba(0, 0, 0, 0.14); background: #fff;
+  padding: clamp(26px, 3vw, 40px);
+  display: flex; flex-direction: column; gap: 16px;
+}
+.pl-extra-t { margin: 0; font-size: clamp(24px, 3vw, 32px); font-weight: 600; letter-spacing: -0.02em; }
+.pl-extra-d { margin: 0; font-size: 16px; line-height: 1.55; color: rgba(0, 0, 0, 0.68); }
+.pl-extra-foot { border-top: 1px solid rgba(0, 0, 0, 0.14); padding-top: 16px; }
+.pl-extra-foot-k {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.45); margin-bottom: 8px;
+}
+.pl-extra-foot p { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(0, 0, 0, 0.7); }
+.pl-extra-cta { margin-top: auto; }
+
+/* ── Revision + condition tiles ── */
+.pl-tilegrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; }
+.pl-tilegrid--wide { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.pl-rev {
+  background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+  padding: clamp(22px, 2.6vw, 30px);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.pl-rev-n { font-size: 34px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.pl-rev-t { margin: 0; font-size: 16px; line-height: 1.5; flex: 1; }
+.pl-rev-w {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.45);
+}
+.pl-cond {
+  background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14);
+  padding: clamp(22px, 2.4vw, 28px);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.pl-cond-t { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; }
+.pl-cond-d { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(0, 0, 0, 0.68); }
+
+/* ── Proof cards with an empty image slot. The slot renders as a labelled grey
+      box until the photography lands; the label is the alt text, so the page
+      still says what belongs there. ── */
+.pl-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: clamp(20px, 3vw, 28px); }
+.pl-slot { background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.14); }
+.pl-slot-media {
+  aspect-ratio: 4 / 3; background: rgba(0, 0, 0, 0.04);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.32); text-align: center; padding: 16px;
+}
+.pl-slot-body { padding: 20px 22px; }
+.pl-slot-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(0, 0, 0, 0.45); margin-bottom: 6px;
+}
+.pl-slot-d { margin: 0; font-size: 15px; line-height: 1.55; color: rgba(0, 0, 0, 0.68); }
+
+/* ── Developers band ── */
+.pl-dev {
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+}
+.pl-dev-inner {
+  padding-top: clamp(28px, 4vw, 44px); padding-bottom: clamp(28px, 4vw, 44px);
+  display: flex; flex-wrap: wrap; gap: 16px;
+  align-items: baseline; justify-content: space-between;
+}
+.pl-dev-q { font-size: clamp(17px, 2vw, 22px); font-weight: 300; }
+.pl-dev-a {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  border-bottom: 1px solid #000; padding-bottom: 2px;
+}
+
+/* ── Definition columns ("what is a view", "what is a scene") ── */
+.pl-defs { display: flex; flex-wrap: wrap; gap: clamp(24px, 4vw, 44px); margin-bottom: clamp(32px, 5vw, 52px); }
+.pl-def { flex: 1 1 280px; border-left: 2px solid #000; padding-left: 18px; }
+.pl-def-k { margin-bottom: 8px; }
+.pl-def p { margin: 0; font-size: 15px; line-height: 1.6; color: rgba(0, 0, 0, 0.7); }
+
+/* Compact extras (the AV page fits four across, not two) */
+.pl-extras--compact { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: clamp(18px, 2.4vw, 26px); }
+.pl-extra--compact { padding: clamp(26px, 3vw, 36px); gap: 14px; }
+.pl-extra--compact .pl-extra-t { font-size: clamp(21px, 2.4vw, 26px); }
+.pl-extra--compact .pl-extra-d { font-size: 15px; }
+.pl-extra--compact .pl-extra-foot { padding-top: 14px; }
+.pl-extra--compact .pl-extra-foot-k { letter-spacing: 0.2em; color: rgba(0, 0, 0, 0.45); margin-bottom: 6px; }
+.pl-extra--compact .pl-extra-foot p { font-size: 14px; }

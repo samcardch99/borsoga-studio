@@ -1,0 +1,12 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; eyebrow: string; title: string; lead?: string }
+const { lang, eyebrow, title, lead } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="m-head pl-sec-head">
+  <div class="plans-eyebrow pl-sec-head-eyebrow">{i18n.T(eyebrow)}</div>
+  <h2 class="plans-h2">{i18n.T(title)}</h2>
+  {lead && <p class="pl-sec-lead">{i18n.T(lead)}</p>}
+</div>

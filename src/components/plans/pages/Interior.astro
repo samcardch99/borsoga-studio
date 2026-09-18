@@ -1,0 +1,196 @@
+---
+// Interior design plans — ported from the generator's `page_visualizacion()`.
+// Unlike the other plan pages the CTA goes straight to the configurator, not to
+// a brief: this is the service with a real estimate flow behind it.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import PlansServices from "../PlansServices.astro";
+import PlansCta from "../PlansCta.astro";
+import Hero from "../plan/Hero.astro";
+import PlanNav from "../plan/PlanNav.astro";
+import Card from "../plan/Card.astro";
+import PlanHead from "../plan/PlanHead.astro";
+import StatBar from "../plan/StatBar.astro";
+import Ctas from "../plan/Ctas.astro";
+import Block from "../plan/Block.astro";
+import InheritBox from "../plan/InheritBox.astro";
+import Excludes from "../plan/Excludes.astro";
+import SectionHead from "../plan/SectionHead.astro";
+import CompareTable from "../plan/CompareTable.astro";
+import ExtraCard from "../plan/ExtraCard.astro";
+import RevisionTiles from "../plan/RevisionTiles.astro";
+import ConditionTiles from "../plan/ConditionTiles.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import {
+  INT_ESSENTIAL_INCLUYE, INT_ESSENTIAL_RECIBES, INT_ESSENTIAL_NO,
+  INT_PREMIUM_SUMA, INT_PREMIUM_RECIBES, INT_PREMIUM_NO, INT_INHERIT_PREMIUM,
+  INT_EDITION_SUMA, INT_EDITION_RECIBES, INT_EDITION_NO, INT_INHERIT_EDITION,
+  INT_EXTRAS, INT_COMPARE, INT_REVISIONES, INT_CONDICIONES,
+} from "../../../plans/plan-content";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+const cfg = route("configurator", lang);
+---
+
+<PlansLayout
+  routeKey="interior"
+  lang={lang}
+  title={i18n.t("meta_t_interior")}
+  description={i18n.T(
+    "Tres planes de visualización de interiores en Florida: Essential, Premium y Borsoga Edition. Desde una habitación hasta la casa completa.",
+  )}
+  ctaHref="#configurador"
+>
+  <Hero
+    lang={lang}
+    eyebrow="Interior design"
+    title="Elige hasta dónde llega tu proyecto"
+    lead="Tres planes. Tú eliges cuántos espacios quieres diseñar, desde una habitación hasta la casa completa. El plan decide qué tan lejos llevamos cada uno."
+  />
+
+  <PlanNav
+    lang={lang}
+    items={[
+      { id: "essential", num: "PLAN 01", title: "Essential" },
+      { id: "premium", num: "PLAN 02", title: "Premium" },
+      { id: "edition", num: "PLAN 03", title: "Borsoga Edition" },
+    ]}
+  />
+
+  <Card id="essential">
+    <div class="plans-col-l">
+      <PlanHead lang={lang} num="Plan 01" name="Essential" tagline="Ve tu espacio antes de construirlo." rings={1} />
+      <StatBar lang={lang} stats={[{ n: "2", label: "revisiones" }]} />
+      <Ctas
+        lang={lang}
+        primary="Comienza tu proyecto"
+        secondary="Ver un proyecto real"
+        href={`${cfg}?plan=Essential`}
+      />
+    </div>
+    <div class="plans-col-r">
+      <Block lang={lang} title="Incluye" items={INT_ESSENTIAL_INCLUYE} />
+      <Block lang={lang} title="Qué recibes" items={INT_ESSENTIAL_RECIBES} />
+      <Excludes lang={lang} text={INT_ESSENTIAL_NO} />
+    </div>
+  </Card>
+
+  <Card id="premium">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 02"
+        name="Premium"
+        tagline="Para que se construya como lo diseñaste. Tu contratista y tu carpintero no tienen que adivinar."
+        rings={2}
+      />
+      <StatBar lang={lang} stats={[{ n: "3", label: "revisiones" }]} />
+      <Ctas
+        lang={lang}
+        primary="Comienza tu experiencia"
+        secondary="Ver un proyecto real"
+        href={`${cfg}?plan=Premium`}
+      />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo del plan Essential" text={INT_INHERIT_PREMIUM} rings={1} />
+      <Block lang={lang} title="Y además" items={INT_PREMIUM_SUMA} />
+      <Block lang={lang} title="Qué recibes" items={INT_PREMIUM_RECIBES} />
+      <Excludes lang={lang} text={INT_PREMIUM_NO} />
+    </div>
+  </Card>
+
+  <Card id="edition" dark last>
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 03"
+        name="Borsoga<br>Edition"
+        tagline="El proyecto completo, con una idea detrás. Disponible en toda Florida."
+        rings={3}
+      />
+      <StatBar lang={lang} stats={[{ n: "4", label: "revisiones" }, { n: "2", label: "presenciales" }]} />
+      <Ctas
+        lang={lang}
+        primary="Solicita tu Borsoga Edition"
+        secondary="Ver un proyecto real"
+        href={`${cfg}?plan=Borsoga+Edition`}
+        dark
+      />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo del plan Premium" text={INT_INHERIT_EDITION} rings={2} />
+      <Block lang={lang} title="Y además" items={INT_EDITION_SUMA} />
+      <Block lang={lang} title="Qué recibes" items={INT_EDITION_RECIBES} />
+      <Excludes lang={lang} text={INT_EDITION_NO} dark />
+    </div>
+  </Card>
+
+  <section class="pl-band pl-band--bordered">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead
+        lang={lang}
+        eyebrow="Extras"
+        title="Dos formas de ver tu proyecto antes de que exista"
+        lead="Se cotizan aparte y funcionan con cualquiera de los tres planes."
+      />
+      <div class="pl-extras">
+        {
+          INT_EXTRAS.map(([num, title, desc, delivery]) => (
+            <ExtraCard lang={lang} num={num} title={title} desc={desc} delivery={delivery} href={cfg} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="pl-sec-bordered">
+    <div class="plans-wrap pl-sec-inner">
+      <SectionHead lang={lang} eyebrow="Comparación" title="Qué incluye cada plan" />
+      <CompareTable
+        lang={lang}
+        rows={INT_COMPARE}
+        cols={[
+          { num: "01", name: "Essential" },
+          { num: "02", name: "Premium" },
+          { num: "03", name: "Borsoga Edition", inv: true },
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="pl-band pl-band--bordered">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead
+        lang={lang}
+        eyebrow="Revisiones"
+        title="Cómo funcionan las revisiones"
+        lead="Cada revisión tiene su momento y su tema."
+      />
+      <RevisionTiles lang={lang} items={INT_REVISIONES} />
+    </div>
+  </section>
+
+  <section class="pl-sec-bordered">
+    <div class="plans-wrap pl-sec-inner">
+      <SectionHead lang={lang} eyebrow="Condiciones" title="Lo que aplica a los tres planes" />
+      <ConditionTiles lang={lang} items={INT_CONDICIONES} />
+    </div>
+  </section>
+
+  <PlansServices lang={lang} current="interior" />
+
+  <PlansCta
+    lang={lang}
+    title="¿No sabes cuál te toca?"
+    body="Responde seis preguntas sobre tu espacio y te enviamos un estimado en menos de 24 horas."
+    btn="Empezar"
+    href={cfg}
+    anchor="configurador"
+  />
+</PlansLayout>

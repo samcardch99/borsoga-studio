@@ -1,0 +1,282 @@
+---
+// Graphic design — ported from the generator's `page_grafico()` in build.py.
+// Three product lines rather than three tiers of one product: Brand Identity,
+// Social Media Design and Marketing & Graphic Design, each with its own plans.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import PlansServices from "../PlansServices.astro";
+import PlansCta from "../PlansCta.astro";
+import Hero from "../plan/Hero.astro";
+import PlanNav from "../plan/PlanNav.astro";
+import LineHead from "../plan/LineHead.astro";
+import Card from "../plan/Card.astro";
+import PlanHead from "../plan/PlanHead.astro";
+import StatBar from "../plan/StatBar.astro";
+import Ctas from "../plan/Ctas.astro";
+import Block from "../plan/Block.astro";
+import InheritBox from "../plan/InheritBox.astro";
+import Ideal from "../plan/Ideal.astro";
+import SectionHead from "../plan/SectionHead.astro";
+import Transversal from "../plan/Transversal.astro";
+import Tiles from "../plan/Tiles.astro";
+import NoteBox from "../plan/NoteBox.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import {
+  BRAND_ESSENTIALS, BRAND_PREMIUM, BRAND_APLICACIONES, BRAND_EDITION_GROUPS,
+  BRAND_INHERIT_PREMIUM, BRAND_INHERIT_EDITION,
+  SOCIAL_PRODUCTS, SOCIAL_ESSENTIAL, SOCIAL_PREMIUM, SOCIAL_EDITION_GROUPS, SOCIAL_INHERIT,
+  MARKETING_GROUPS, COMERCIALIZACION,
+} from "../../../plans/plan-content";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+const brief = route("graphicBrief", lang);
+const plan = (p: string) => `${brief}?plan=${p}`;
+---
+
+<PlansLayout
+  routeKey="graphicDesign"
+  lang={lang}
+  title={i18n.t("meta_t_grafico")}
+  description={i18n.T(
+    "Brand Identity, Social Media Design y Marketing & Graphic Design. Una sola dirección creativa, desde la identidad hasta cada punto de contacto.",
+  )}
+  ctaHref="#propuesta"
+>
+  <Hero
+    lang={lang}
+    eyebrow="Diseño gráfico"
+    title="Una sola dirección creativa"
+    lead="Todos los productos comparten el mismo estándar de autoría, criterio y calidad. Lo que cambia no es el cuidado del diseño, sino el alcance del sistema. Así, el nivel Essential no se entiende como una versión recortada, sino como una solución completa a menor escala."
+  />
+
+  <PlanNav
+    lang={lang}
+    items={[
+      { id: "brand", num: "LÍNEA 01", title: "Brand Identity" },
+      { id: "social", num: "LÍNEA 02", title: "Social Media Design" },
+      { id: "marketing", num: "LÍNEA 03", title: "Marketing &amp; Graphic Design" },
+    ]}
+  />
+
+  {/* ── Line 01 · Brand Identity ── */}
+  <LineHead lang={lang} id="brand" eyebrow="Línea 01" title="Brand Identity" />
+
+  <Card id="brand-01">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 01"
+        name="Brand<br>Essentials"
+        tagline="Una base visual completa. Clara, coherente y lista para crecer."
+        desc="Identidad visual esencial para negocios que necesitan presentarse de forma profesional sin construir todavía un sistema de marca extenso."
+        rings={1}
+      />
+      <StatBar lang={lang} stats={[{ n: "1", label: "ronda de revisiones" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={plan("Brand-Essentials")} />
+    </div>
+    <div class="plans-col-r">
+      <Block lang={lang} title="Incluye" items={BRAND_ESSENTIALS} />
+      <Ideal
+        lang={lang}
+        text="Emprendimientos, profesionales y negocios que necesitan una identidad visual seria, coherente y lista para utilizarse."
+      />
+    </div>
+  </Card>
+
+  <Card id="brand-02">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 02"
+        name="Brand<br>Premium"
+        tagline="De una identidad visual a un sistema de marca."
+        desc="Todo lo de Brand Essentials, con mayor profundidad conceptual, flexibilidad gráfica y aplicaciones que permiten que la marca funcione de forma consistente en distintos puntos de contacto."
+        rings={2}
+        badge
+      />
+      <StatBar lang={lang} stats={[{ n: "2", label: "rondas de revisiones" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={plan("Brand-Premium")} />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo de Brand Essentials" text={BRAND_INHERIT_PREMIUM} rings={1} />
+      <Block lang={lang} title="Suma a Essentials" items={BRAND_PREMIUM} />
+      <Block lang={lang} title="Aplicaciones posibles" items={BRAND_APLICACIONES} variant="plain" />
+      <Ideal
+        lang={lang}
+        text="Marcas activas que necesitan verse consistentes en web, redes, materiales comerciales y aplicaciones físicas o digitales."
+      />
+    </div>
+  </Card>
+
+  <Card id="brand-03" dark last>
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 03"
+        name="Brand Borsoga<br>Edition"
+        tagline="No un logo. Una dirección creativa construida alrededor de la marca."
+        desc="Incluye todo lo de Brand Premium, pero el proyecto deja de centrarse únicamente en la identidad y pasa a construir un ecosistema visual completo, preparado para comunicación, campañas y crecimiento."
+        rings={3}
+      />
+      <StatBar lang={lang} stats={[{ n: "3", label: "rondas de revisiones" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={plan("Brand-Edition")} dark />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo de Brand Premium" text={BRAND_INHERIT_EDITION} rings={2} />
+      {BRAND_EDITION_GROUPS.map(([title, items]) => <Block lang={lang} title={title} items={items} />)}
+      <Ideal
+        lang={lang}
+        text="Empresas que necesitan una identidad con profundidad, dirección creativa y un sistema visual capaz de sostener múltiples canales y campañas."
+      />
+    </div>
+  </Card>
+
+  <Transversal lang={lang} text="El mismo estándar de diseño. Lo que cambia es la profundidad del sistema." />
+
+  {/* ── Line 02 · Social Media Design ── */}
+  <section id="social" class="pl-band pl-band--bordered">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead
+        lang={lang}
+        eyebrow="Línea 02"
+        title="Social Media Design"
+        lead="Contenido diseñado como un sistema visual, no como publicaciones aisladas. Cada formato se considera un producto diferente porque cambia la cantidad de diseño, narrativa, adaptación y edición necesaria. La identidad de la marca se mantiene como base común en todos los formatos."
+      />
+      <Tiles lang={lang} items={SOCIAL_PRODUCTS} />
+      <div class="pl-criterio">
+        <div class="plans-eyebrow pl-criterio-eyebrow">{i18n.T("Criterio de alcance")}</div>
+        <p>
+          {
+            i18n.T(
+              "Un post estático, un carrusel y un reel no se contabilizan como la misma unidad de trabajo. Cada formato tiene un nivel distinto de diseño, estructura, edición y producción; por eso puede cotizarse de forma independiente o combinarse dentro de planes mensuales.",
+            )
+          }
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="plans-wrap pl-social-plans">
+    <SectionHead lang={lang} eyebrow="Planes mensuales" title="Tres niveles de producción y acompañamiento" />
+  </section>
+
+  <Card id="social-01">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Social · Plan 01"
+        name="Social<br>Essential"
+        tagline="Presencia visual constante, sin perder coherencia de marca."
+        desc="Plan mensual para negocios que necesitan mantener sus canales activos con una línea gráfica clara y consistente."
+        rings={1}
+      />
+      <StatBar lang={lang} stats={[{ n: "8", label: "piezas al mes" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={plan("Social-Essential")} />
+    </div>
+    <div class="plans-col-r">
+      <Block lang={lang} title="Incluye" items={SOCIAL_ESSENTIAL} />
+      <Ideal
+        lang={lang}
+        text="Negocios que ya tienen una identidad definida y necesitan una presencia visual estable y profesional en redes."
+      />
+    </div>
+  </Card>
+
+  <Card id="social-02">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Social · Plan 02"
+        name="Social<br>Premium"
+        tagline="Más formatos, más narrativa y una dirección visual mensual."
+        desc="Todo lo de Social Essential, con una mezcla más completa de formatos y un mayor nivel de dirección visual."
+        rings={2}
+        badge
+      />
+      <StatBar lang={lang} stats={[{ n: "12–16", label: "piezas al mes" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={plan("Social-Premium")} />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo de Social Essential" text={SOCIAL_INHERIT} rings={1} />
+      <Block lang={lang} title="Suma a Essential" items={SOCIAL_PREMIUM} />
+      <Ideal
+        lang={lang}
+        text="Marcas activas que publican con frecuencia y necesitan diversidad de formatos sin perder una dirección visual reconocible."
+      />
+    </div>
+  </Card>
+
+  <Card id="social-03" dark last>
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Social · Plan 03"
+        name="Social Borsoga<br>Edition"
+        tagline="No más contenido. Más dirección creativa."
+        desc="Borsoga funciona como una extensión del equipo creativo de la marca. El objetivo no es aumentar únicamente la cantidad de publicaciones, sino dirigir cómo la marca se ve, se mueve y comunica visualmente a lo largo del tiempo."
+        rings={3}
+      />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={plan("Social-Edition")} dark />
+    </div>
+    <div class="plans-col-r">
+      {SOCIAL_EDITION_GROUPS.map(([title, items]) => <Block lang={lang} title={title} items={items} />)}
+      <Ideal
+        lang={lang}
+        text="Marcas que necesitan un equipo creativo externo capaz de sostener y dirigir su presencia visual de manera continua."
+      />
+    </div>
+  </Card>
+
+  <Transversal lang={lang} text="Misma dirección visual. Distinto nivel de producción y acompañamiento." />
+
+  {/* ── Line 03 · Marketing & Graphic Design ── */}
+  <section id="marketing" class="pl-band pl-band--bordered">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead
+        lang={lang}
+        eyebrow="Línea 03"
+        title="Marketing &amp; Graphic Design"
+        lead="Diseño aplicado a ventas, comunicación, campañas y materiales de marca. Esta categoría agrupa proyectos que no pertenecen necesariamente a la creación de una identidad ni a la producción mensual de redes sociales. Cada pieza se desarrolla alrededor del sistema visual de la marca y se cotiza según alcance, extensión y complejidad."
+      />
+      <div class="pl-groups">
+        {MARKETING_GROUPS.map(([title, items]) => <Block lang={lang} title={title} items={items} variant="tight" />)}
+      </div>
+      <div class="pl-split">
+        <div class="pl-split-a">
+          <Block lang={lang} title="Cómo se comercializa" items={COMERCIALIZACION} />
+        </div>
+        <div class="pl-split-b">
+          <Ideal
+            lang={lang}
+            text="Empresas que necesitan materiales comerciales o de comunicación específicos, diseñados con el mismo criterio visual de su marca."
+          />
+          <NoteBox
+            lang={lang}
+            label="No incluido por defecto"
+            text="Community management · Pauta publicitaria · Grabación presencial · Fotografía · Copywriting estratégico · Gestión de influencers. Se cotizan como servicios adicionales."
+            spaced
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <PlansServices lang={lang} current="graphicDesign" />
+
+  <PlansCta
+    lang={lang}
+    title="Una sola dirección creativa, desde la identidad hasta cada punto de contacto."
+    body="Cuéntanos el tipo de proyecto, el alcance y el plazo. Te mandamos una propuesta."
+    btn="Solicitar propuesta"
+    href={brief}
+  />
+</PlansLayout>
+
+<style>
+  .pl-social-plans { padding-top: clamp(56px, 8vw, 104px); }
+</style>

@@ -1,0 +1,25 @@
+---
+// A plan's buttons. The first asks for a proposal; the second shows work.
+// They have gone to different places since the questionnaire existed: one opens
+// the form with the plan already in the URL, the other drops to the closing
+// section. With no `secondary` only the first renders — web design has no real
+// piece to show yet, and a button that leads nowhere is worse than no button.
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props {
+  lang: Lang;
+  primary: string;
+  secondary?: string | null;
+  href: string;
+  href2?: string;
+  dark?: boolean;
+}
+const { lang, primary, secondary, href, href2, dark = false } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-ctas">
+  <a href={href} class={`plans-btn ${dark ? "btn-w" : "btn-d"}`}>{i18n.T(primary)}</a>
+  {secondary && (
+    <a href={href2 ?? href} class={`plans-btn ${dark ? "btn-o" : "btn-l"}`}>{i18n.T(secondary)}</a>
+  )}
+</div>

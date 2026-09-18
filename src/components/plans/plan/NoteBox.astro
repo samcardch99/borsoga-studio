@@ -1,0 +1,11 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; label: string; text: string; spaced?: boolean }
+const { lang, label, text, spaced = false } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class:list={["pl-note", spaced && "pl-note--top"]}>
+  <div class="plans-eyebrow pl-note-eyebrow">{i18n.T(label)}</div>
+  <p>{i18n.T(text)}</p>
+</div>

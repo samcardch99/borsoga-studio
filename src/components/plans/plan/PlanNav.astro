@@ -1,0 +1,18 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+import "../../../styles/plans-plan.css";
+interface Props { lang: Lang; items: { id: string; num: string; title: string }[] }
+const { lang, items } = Astro.props;
+const i18n = createI18n(lang);
+---
+<nav class="plans-wrap pl-nav">
+  <div class="pl-nav-inner">
+    {items.map(({ id, num, title }) => (
+      <a href={`#${id}`} class="pnav">
+        <span class="pnav-num">{i18n.T(num)}</span>
+        <span class="pnav-t">{i18n.T(title)}</span>
+      </a>
+    ))}
+  </div>
+</nav>

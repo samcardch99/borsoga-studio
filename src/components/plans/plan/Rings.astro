@@ -1,0 +1,9 @@
+---
+// One concentric outline per plan tier: Essential 1, Premium 2, Edition 3.
+interface Props { n: number; small?: boolean }
+const { n, small = false } = Astro.props;
+const step = small ? 6 : 11;
+---
+<div class={small ? "pl-inherit-rings" : "pl-rings"} aria-hidden="true">
+  {Array.from({ length: n }, (_, i) => <div style={`inset:${i * step}px`} />)}
+</div>

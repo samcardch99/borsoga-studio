@@ -1,0 +1,73 @@
+---
+import LangSwitcher from "./LangSwitcher.astro";
+import { route, type Lang, type RouteKey } from "../../plans/config";
+import { createI18n } from "../../plans/i18n";
+
+interface Props {
+  routeKey: RouteKey;
+  lang: Lang;
+}
+
+const { routeKey, lang } = Astro.props;
+const i18n = createI18n(lang);
+---
+
+<footer class="plans-footer" data-navbar-dark>
+  <div class="plans-wrap plans-footer-inner">
+    <img
+      src="/plans/assets/logo-blanco.png"
+      alt="Borsoga"
+      width="1629"
+      height="333"
+      class="plans-footer-logo"
+    />
+    <div class="plans-footer-meta">
+      <a href={route("privacy", lang)} class="plans-footer-link">{i18n.t("chrome_privacy")}</a>
+      <span class="plans-footer-legal">Borsoga LLC · Miami, Florida</span>
+      <LangSwitcher routeKey={routeKey} lang={lang} color="#fff" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .plans-footer {
+    background: #000;
+    color: #fff;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+  }
+  .plans-footer-inner {
+    padding-top: 32px;
+    padding-bottom: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .plans-footer-logo {
+    width: 126px;
+    height: auto;
+    display: block;
+  }
+  .plans-footer-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+  }
+  .plans-footer-link,
+  .plans-footer-legal {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .plans-footer-link {
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .plans-footer-link:hover {
+    color: #fff;
+  }
+  .plans-footer-legal {
+    color: rgba(255, 255, 255, 0.45);
+  }
+</style>

@@ -26,7 +26,23 @@ interface Props {
 	type?: "website" | "article";
 	/** Set true on experimental/duplicate pages to keep them out of the index. */
 	noindex?: boolean;
+	/** Override the robots directive. The funnel's tool pages use
+	 *  "noindex,follow": keep them out of the index, but let the links they
+	 *  carry still count. */
+	robots?: string;
 	showChrome?: boolean;
+	/** Finer control than showChrome, which drives both. The /plans funnel wants
+	 *  the site navbar but its OWN footer, so it sets showFooter={false}. */
+	showNav?: boolean;
+	showFooter?: boolean;
+	/** Passed through to the navbar CTA. */
+	navCtaHref?: string;
+	navCtaForm?: string;
+	navContactHref?: string;
+	/** Document language. The site is English; the /plans funnel also serves es. */
+	lang?: string;
+	/** Open Graph locale. Derived from `lang` when omitted. */
+	ogLocale?: string;
 }
 
 const {
@@ -35,7 +51,15 @@ const {
 	image = DEFAULT_OG_IMAGE,
 	type = "website",
 	noindex = false,
+	robots,
 	showChrome = true,
+	showNav = showChrome,
+	showFooter = showChrome,
+	navCtaHref,
+	navCtaForm,
+	navContactHref,
+	lang = "en",
+	ogLocale = lang === "es" ? "es_US" : "en_US",
 } = Astro.props;
 
 // "{Page} — Borsoga Studio", or the full brand title on the home page.
@@ -116,7 +140,7 @@ const jsonLd = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -129,7 +153,7 @@ const jsonLd = {
 		<link rel="canonical" href={canonical} />
 		<meta
 			name="robots"
-			content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"}
+			content={robots ?? (noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large")}
 		/>
 		<meta name="theme-color" content="#0a0a0a" />
 	<!-- Suppress Chrome/Edge's automatic translate prompt -->
@@ -170,7 +194,7 @@ const jsonLd = {
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
 		<meta property="og:image" content={ogImage} />
-		<meta property="og:locale" content="en_US" />
+		<meta property="og:locale" content={ogLocale} />
 
 		<!-- ── Twitter / X ── -->
 		<meta name="twitter:card" content="summary_large_image" />
@@ -192,9 +216,13 @@ const jsonLd = {
 		<ClientRouter />
 	</head>
 	<body>
-		{showChrome && <Navbar />}
+		{showNav && (
+			<Navbar ctaHref={navCtaHref} ctaForm={navCtaForm} contactHref={navContactHref}>
+				<slot name="nav-extra" slot="nav-extra" />
+			</Navbar>
+		)}
 		<slot />
-		{showChrome && <Footer />}
+		{showFooter && <Footer />}
 	</body>
 </html>
 
@@ -261,9 +289,14 @@ const jsonLd = {
 		// pages already push the GPU — so skip it entirely. ScrollTrigger falls
 		// back to its own native scroll listener; the lenis:ready contract is
 		// kept so dependent components still initialize.
+		// The /plans funnel is long forms, steppers and modals — hijacked
+		// scrolling fights native focus-into-view on every field, so it runs
+		// on plain native scrolling. The lenis:ready contract is still
+		// honoured so any shared component waiting on it still initializes.
 		if (
-			window.matchMedia("(pointer: coarse)").matches &&
-			location.pathname.startsWith("/works/")
+			location.pathname.startsWith("/plans/") ||
+			(window.matchMedia("(pointer: coarse)").matches &&
+				location.pathname.startsWith("/works/"))
 		) {
 			(window as any).lenisReady = true;
 			window.dispatchEvent(new CustomEvent("lenis:ready"));

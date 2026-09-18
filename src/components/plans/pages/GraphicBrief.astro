@@ -1,0 +1,39 @@
+---
+// Brand identity questionnaire — 12 steps — ported from the generator's `brief.page()`.
+//
+// Only ui and msg of the shared dictionary are shipped: this questionnaire's
+// option vocabulary comes entirely from its own table (`gd`), and the other
+// services' vocabulary has no business here.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import BriefShell from "../BriefShell.astro";
+import I18nBundle from "../I18nBundle.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import briefScript from "../../../plans/client/brief.js?raw";
+import specScript from "../../../plans/client/brief_grafico.js?raw";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+---
+
+<PlansLayout
+  routeKey="graphicBrief"
+  lang={lang}
+  title={i18n.t("meta_t_brief_gd")}
+  description={i18n.T(
+    "Cuéntanos la marca, su público y su personalidad. Doce pasos para que la identidad se diseñe sobre lo que la empresa es, no sobre suposiciones.",
+  )}
+  nav={false}
+  chrome={false}
+  noindex
+>
+  <I18nBundle lang={lang} extra="gd" />
+  <BriefShell lang={lang} backHref={route("graphicDesign", lang)} />
+  {/* brief.js publishes window.BORSOGA_BRIEF; the spec calls it. Order matters. */}
+  <script is:inline set:html={briefScript} />
+  <script is:inline set:html={specScript} />
+</PlansLayout>

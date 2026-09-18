@@ -1,0 +1,39 @@
+---
+// Web design questionnaire — 10 steps — ported from the generator's `brief.page()`.
+//
+// Only ui and msg of the shared dictionary are shipped: this questionnaire's
+// option vocabulary comes entirely from its own table (`dw`), and the other
+// services' vocabulary has no business here.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import BriefShell from "../BriefShell.astro";
+import I18nBundle from "../I18nBundle.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import briefScript from "../../../plans/client/brief.js?raw";
+import specScript from "../../../plans/client/brief_web.js?raw";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+---
+
+<PlansLayout
+  routeKey="webBrief"
+  lang={lang}
+  title={i18n.t("meta_t_brief_web")}
+  description={i18n.T(
+    "Cuéntanos el proyecto, el público y las funcionalidades que necesita tu sitio. Diez pasos y una propuesta escrita por una persona del estudio.",
+  )}
+  nav={false}
+  chrome={false}
+  noindex
+>
+  <I18nBundle lang={lang} extra="dw" />
+  <BriefShell lang={lang} backHref={route("webDesign", lang)} />
+  {/* brief.js publishes window.BORSOGA_BRIEF; the spec calls it. Order matters. */}
+  <script is:inline set:html={briefScript} />
+  <script is:inline set:html={specScript} />
+</PlansLayout>

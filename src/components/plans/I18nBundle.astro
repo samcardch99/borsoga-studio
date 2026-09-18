@@ -1,0 +1,56 @@
+---
+// Ships the active language's strings to the page's client scripts, as the
+// generator's bundle_i18n()/bundle_extra() did.
+//
+// Only ONE language is embedded — no page needs the other — and only the
+// branches the page actually uses. `opt` is the questionnaire vocabulary (800+
+// entries in English); without this trim the English home page carried 67 KB of
+// strings it would never paint.
+import { API_ORIGIN, route, type Lang } from "../../plans/config";
+import { EXTRA, type ExtraName } from "../../plans/i18n";
+import esDict from "../../plans/i18n/es.js";
+import enDict from "../../plans/i18n/en.js";
+
+interface Props {
+  lang: Lang;
+  /** Branches to embed. The interactive pages add "opt" and "plural". */
+  branches?: ("ui" | "msg" | "opt" | "plural")[];
+  /** A questionnaire's own table, merged on top of the shared strings. */
+  extra?: ExtraName;
+}
+
+const { lang, branches = ["ui", "msg"], extra } = Astro.props;
+
+// The client scripts link to the privacy policy. They used to hardcode the
+// generator's paths (/politica-de-privacidad/, /en/privacy-policy/), which no
+// longer exist — the funnel moved under /plans/ and the languages inverted.
+// Resolve it here, from the same route table the pages use.
+const privacyUrl = route("privacy", lang);
+
+const dicts: Record<Lang, any> = { es: (esDict as any).es, en: (enDict as any).en };
+const d = dicts[lang];
+
+const payload: Record<string, unknown> = { name: lang, locale: d.locale };
+for (const b of branches) payload[b] = d[b];
+
+const extraPayload = extra
+  ? Object.fromEntries(
+      (["ui", "msg", "opt"] as const)
+        .map((b) => [b, (EXTRA[extra][lang] as any)?.[b]])
+        .filter(([, v]) => v),
+    )
+  : null;
+---
+
+<script
+  is:inline
+  set:html={`window.BORSOGA_LANG=${JSON.stringify(lang)};
+window.BORSOGA_API=${JSON.stringify(API_ORIGIN)};
+window.BORSOGA_PRIVACY=${JSON.stringify(privacyUrl)};
+window.BORSOGA_I18N=Object.assign(window.BORSOGA_I18N||{},${JSON.stringify({ [lang]: payload })});${
+    extraPayload
+      ? `
+(function(x,d){var b=(window.BORSOGA_I18N||{})[x];if(!b)return;for(var r in d){b[r]=Object.assign(b[r]||{},d[r]);}})(${JSON.stringify(lang)},${JSON.stringify(extraPayload)});`
+      : ""
+  }`}
+/>

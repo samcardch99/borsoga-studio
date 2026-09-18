@@ -1,0 +1,72 @@
+---
+// Shared chrome for both configurators. `<main>` ships EMPTY on purpose: the
+// whole step UI is built at runtime by quiz.js / quiz-av.js, because the design
+// needs it — conditional questions appear instantly, the image counter updates
+// live and the spaces carry quantity steppers. A paged form would lose all three.
+import { createI18n } from "../../plans/i18n";
+import type { Lang } from "../../plans/config";
+import "../../styles/plans-quiz.css";
+
+interface Props {
+  lang: Lang;
+  /** Back to this service's own plans. */
+  backHref: string;
+}
+
+const { lang, backHref } = Astro.props;
+const i18n = createI18n(lang);
+---
+
+<div class="q-wrap">
+  <header class="q-head">
+    <div class="q-head-in">
+      <a href={backHref} aria-label={i18n.T("Volver a los planes")}>
+        <img src="/plans/assets/logo-negro.png" alt="Borsoga" width="1629" height="333" class="q-logo" />
+      </a>
+      <div class="q-head-right">
+        <div class="q-plan-box">
+          <span id="q-ring" aria-hidden="true"></span>
+          <span id="q-plan"></span>
+        </div>
+        <span id="q-saved"></span>
+      </div>
+    </div>
+    <div class="q-seg" id="q-seg" aria-hidden="true"></div>
+  </header>
+
+  <main class="q-main" id="q-main">
+    <noscript>
+      <p class="q-nojs">
+        {i18n.t("q_nojs_1")}
+        <a href="mailto:borsogastudio@gmail.com" class="q-nojs-mail">borsogastudio@gmail.com</a>
+        {i18n.t("q_nojs_2")}
+      </p>
+    </noscript>
+  </main>
+
+  {/* Shared bar for both configurators: accessible text, icons on mobile. */}
+  <div class="q-nav" id="q-nav" hidden>
+    <div class="q-nav-in">
+      <div class="q-nav-group">
+        <button class="q-back" id="q-back" type="button" aria-label={i18n.t("q_back")}>
+          <svg class="q-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+          <span class="q-btn-label">{i18n.t("q_back")}</span>
+        </button>
+        <button class="q-back q-save" id="q-save" type="button" aria-label={i18n.t("q_save")}>
+          <svg class="q-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4h10l2 2v14H6z" /><path d="M9 4v6h6V4M9 20v-6h6v6" />
+          </svg>
+          <span class="q-btn-label">{i18n.t("q_save")}</span>
+        </button>
+      </div>
+      <div class="q-nav-group q-nav-status">
+        <span id="q-aviso" hidden></span>
+        <span id="q-count"></span>
+        <button class="q-next" id="q-next" type="button" aria-label={i18n.T("Continuar")}>
+          <svg class="q-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+          <span class="q-btn-label">{i18n.T("Continuar")}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

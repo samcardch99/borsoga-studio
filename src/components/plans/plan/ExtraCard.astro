@@ -1,0 +1,29 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props {
+  lang: Lang;
+  num: string;
+  title: string;
+  desc: string;
+  delivery: string;
+  href: string;
+  /** The AV page fits four of these across instead of two. */
+  compact?: boolean;
+  /** AV addresses its copy by key; interior design passes source strings. */
+  byKey?: boolean;
+}
+const { lang, num, title, desc, delivery, href, compact = false, byKey = false } = Astro.props;
+const i18n = createI18n(lang);
+const tr = (s: string) => (byKey ? i18n.t(s) : i18n.T(s));
+---
+<article class:list={["m-tile", "pl-extra", compact && "pl-extra--compact"]}>
+  <div class="plans-eyebrow">{tr(num)}</div>
+  <h3 class="pl-extra-t">{tr(title)}</h3>
+  <p class="pl-extra-d">{tr(desc)}</p>
+  <div class="pl-extra-foot">
+    <div class="pl-extra-foot-k">{i18n.t("como_se_entrega")}</div>
+    <p>{tr(delivery)}</p>
+  </div>
+  <a href={href} class="btn-l plans-btn pl-extra-cta">{i18n.t("pedir_cotizacion")}</a>
+</article>

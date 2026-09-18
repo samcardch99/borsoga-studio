@@ -1,0 +1,26 @@
+---
+// A titled bullet list ("Includes", "Adds to Essential", …).
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props {
+  lang: Lang;
+  title: string;
+  items: readonly string[];
+  /** `plain` drops the bullets and rules; `tight` keeps them, closer together. */
+  variant?: "default" | "plain" | "tight";
+}
+const { lang, title, items, variant = "default" } = Astro.props;
+const plain = variant === "plain";
+const i18n = createI18n(lang);
+---
+<div>
+  <div class="pl-block-head">{i18n.T(title)}</div>
+  <ul class:list={[variant !== "default" && `pl-list--${variant}`]}>
+    {items.map((x) => (
+      <li class:list={[!plain && "m-li", !plain && "pl-li"]}>
+        {!plain && <span class="pl-li-dot" aria-hidden="true" />}
+        <span>{i18n.T(x)}</span>
+      </li>
+    ))}
+  </ul>
+</div>

@@ -1,0 +1,121 @@
+---
+// Layout for every /plans route.
+//
+// Wraps the site Layout rather than replacing it, so the funnel keeps the
+// <head>, Organization/WebSite schema and Open Graph the rest of the site
+// already has.
+//
+// Chrome, in two independent switches:
+//
+//   nav     the REAL borsogastudio navbar. Its logo goes to the site home, and
+//           it carries the Plans link, so the funnel and the site link both
+//           ways through one component. The funnel adds its language switcher
+//           into the navbar's nav-extra slot, because the bar it used to live
+//           in is gone.
+//   chrome  the funnel's own <main> + footer. Off for pages that bring their
+//           own (the home page's curtain footer, the questionnaires' shells).
+//
+// The site FOOTER is always off here: the funnel has its own, and the site's
+// carries the #contact block that the navbar CTA points at elsewhere.
+import Layout from "./Layout.astro";
+import PlansFooter from "../components/plans/PlansFooter.astro";
+import LangSwitcher from "../components/plans/LangSwitcher.astro";
+import { alternates, route, OG_LOCALE, type Lang, type RouteKey } from "../plans/config";
+import { createI18n } from "../plans/i18n";
+import "../styles/plans.css";
+
+interface Props {
+  routeKey: RouteKey;
+  lang: Lang;
+  title: string;
+  description: string;
+  image?: string;
+  /** Show the real site navbar. Off on the questionnaires and configurators,
+   *  which are focused tools with their own minimal header. */
+  nav?: boolean;
+  /** Where the navbar CTA points on this page — its own closing anchor, so the
+   *  button doesn't drop a visitor out of the funnel mid-price-list. */
+  ctaHref?: string;
+  /** Opens the home page's contact modal instead of navigating. */
+  ctaForm?: string;
+  /** Render the funnel's <main> + footer. */
+  chrome?: boolean;
+  /** The configurators are tools, not entry pages — they stay out of the index,
+   *  but with `follow` so the links they carry still count. */
+  noindex?: boolean;
+}
+
+const {
+  routeKey,
+  lang,
+  title,
+  description,
+  image,
+  nav = true,
+  ctaHref,
+  ctaForm,
+  chrome = true,
+  noindex = false,
+} = Astro.props;
+
+const i18n = createI18n(lang);
+const origin = Astro.site ?? new URL("https://borsogastudio.com");
+
+// The funnel's meta_t_* strings already end in "— Borsoga Studio" (they were
+// whole <title>s in the generator, which had no site layout to compose with).
+// Layout appends the brand itself, so strip it or every title says it twice.
+const pageTitle = title.replace(/\s*—\s*Borsoga Studio\s*$/u, "");
+
+// Reciprocal hreflang: every version declares them all, itself included, which
+// is what Google requires to avoid treating them as duplicates. x-default
+// points at the language served without a prefix.
+const alts = alternates(routeKey);
+const xDefault = route(routeKey, "en");
+---
+
+<Layout
+  title={pageTitle}
+  description={description}
+  lang={lang}
+  ogLocale={OG_LOCALE[lang]}
+  showNav={nav}
+  showFooter={false}
+  navCtaHref={ctaHref}
+  navCtaForm={ctaForm}
+  {/* #contact lives in the site footer, which the funnel doesn't render. */}
+  navContactHref="/#contact"
+  image={image}
+  noindex={noindex}
+  robots={noindex ? "noindex,follow" : undefined}
+>
+  <Fragment slot="head">
+    {alts.map(({ lang: l, href }) => (
+      <link rel="alternate" hreflang={l} href={new URL(href, origin).href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL(xDefault, origin).href} />
+  </Fragment>
+
+  {
+    nav && (
+      <Fragment slot="nav-extra">
+        <LangSwitcher routeKey={routeKey} lang={lang} color="currentColor" id="nav-lang" />
+      </Fragment>
+    )
+  }
+
+  <div class:list={["plans", nav && "plans--nav"]}>
+    <a href="#main" class="skip">{i18n.t("chrome_skip")}</a>
+    {
+      chrome ? (
+        <>
+          <main id="main">
+            <slot />
+          </main>
+          <PlansFooter routeKey={routeKey} lang={lang} />
+        </>
+      ) : (
+        <slot />
+      )
+    }
+  </div>
+</Layout>

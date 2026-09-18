@@ -1,0 +1,12 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; text: string }
+const { lang, text } = Astro.props;
+const i18n = createI18n(lang);
+---
+<section class="pl-transversal">
+  <div class="plans-wrap pl-transversal-inner">
+    <p>{i18n.T(text)}</p>
+  </div>
+</section>

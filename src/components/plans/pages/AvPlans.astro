@@ -1,0 +1,206 @@
+---
+// Architectural visualization plans — ported from the generator's
+// `planes_av.py`. This page addresses its copy by KEY throughout (av_p1_i1,
+// av_c3, …) rather than by Spanish source string, so everything here goes
+// through t(), and the components that take both are told `byKey`.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import PlansServices from "../PlansServices.astro";
+import PlansCta from "../PlansCta.astro";
+import PlanNav from "../plan/PlanNav.astro";
+import Card from "../plan/Card.astro";
+import Rings from "../plan/Rings.astro";
+import StatBar from "../plan/StatBar.astro";
+import Block from "../plan/Block.astro";
+import InheritBox from "../plan/InheritBox.astro";
+import Excludes from "../plan/Excludes.astro";
+import SectionHead from "../plan/SectionHead.astro";
+import CompareTable from "../plan/CompareTable.astro";
+import SlotCards from "../plan/SlotCards.astro";
+import ExtraCard from "../plan/ExtraCard.astro";
+import RevisionTiles from "../plan/RevisionTiles.astro";
+import ConditionTiles from "../plan/ConditionTiles.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import { COMPARE, CONDICIONES, REVISIONES, EXTRAS, PRUEBA } from "../../../plans/av-content";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+const t = (k: string) => i18n.t(k);
+const cfg = route("avConfigurator", lang);
+
+const PLAN_URL: Record<string, string> = {
+  Essential: "Essential",
+  Premium: "Premium",
+  "Borsoga Edition": "Borsoga+Edition",
+};
+
+const PLANS = [
+  {
+    id: "essential", num: "plan_01", name: "essential", line: "av_p1_line",
+    stats: [{ n: "2", label: "revisiones_2" }],
+    cta: "comienza_tu_proyecto", urlPlan: "Essential", rings: 1,
+    includes: Array.from({ length: 7 }, (_, i) => `av_p1_i${i + 1}`),
+    receives: ["av_p1_g1"], not: "av_p1_not", inherits: null, dark: false,
+  },
+  {
+    id: "premium", num: "plan_02", name: "premium", line: "av_p2_line",
+    stats: [{ n: "3", label: "revisiones_2" }],
+    cta: "comienza_tu_experiencia", urlPlan: "Premium", rings: 2,
+    includes: Array.from({ length: 7 }, (_, i) => `av_p2_a${i + 1}`),
+    receives: ["av_p2_g1", "av_p2_g2"], not: "av_p2_not",
+    inherits: { label: "todo_lo_del_plan_essential", text: "av_p2_inherit", rings: 1 }, dark: false,
+  },
+  {
+    id: "edition", num: "plan_03", name: null, line: "av_p3_line",
+    stats: [{ n: "4", label: "revisiones_2" }, { n: "10K", label: "av_renders" }],
+    cta: "solicita_tu_borsoga_edition", urlPlan: "Borsoga Edition", rings: 3,
+    includes: Array.from({ length: 7 }, (_, i) => `av_p3_a${i + 1}`),
+    receives: Array.from({ length: 5 }, (_, i) => `av_p3_g${i + 1}`), not: "av_p3_not",
+    inherits: { label: "todo_lo_del_plan_premium", text: "av_p3_inherit", rings: 2 }, dark: true,
+  },
+] as const;
+
+const DEFS = [
+  ["av_def_view_t", "av_def_view_d"],
+  ["av_def_scene_t", "av_def_scene_d"],
+] as const;
+---
+
+<PlansLayout
+  routeKey="avPlans"
+  lang={lang}
+  title={t("meta_t_av")}
+  description={t("av_lead").slice(0, 155)}
+  ctaHref="#cierre"
+>
+  <section class="m-hero plans-wrap pl-hero">
+    <div class="plans-eyebrow m-eyebrow pl-hero-eyebrow">{t("av_eyebrow")}</div>
+    <h1>{t("av_title")}</h1>
+    <p class="pl-hero-lead">{t("av_lead")}</p>
+  </section>
+
+  <PlanNav
+    lang={lang}
+    items={[
+      { id: "essential", num: "PLAN 01", title: t("essential") },
+      { id: "premium", num: "PLAN 02", title: t("premium") },
+      { id: "edition", num: "PLAN 03", title: t("borsoga_edition") },
+    ]}
+  />
+
+  {
+    PLANS.map((p, i) => (
+      <Card id={p.id} dark={p.dark} last={i === PLANS.length - 1}>
+        <div class="plans-col-l">
+          <div class="pl-head-top">
+            <div class="pl-head-num">{t(p.num)}</div>
+            <Rings n={p.rings} />
+          </div>
+          <h2 class="pl-name" set:html={p.name ? t(p.name) : `${t("borsoga")}<br>${t("edition")}`} />
+          <p class="pl-tagline">{t(p.line)}</p>
+          <StatBar lang={lang} stats={p.stats.map((s) => ({ n: s.n, label: t(s.label) }))} />
+          <div class="pl-ctas">
+            <a href={`${cfg}?plan=${PLAN_URL[p.urlPlan]}`} class={`plans-btn ${p.dark ? "btn-w" : "btn-d"}`}>
+              {t(p.cta)}
+            </a>
+            <a href="#prueba" class={`plans-btn ${p.dark ? "btn-o" : "btn-l"}`}>{t("ver_un_proyecto_real")}</a>
+          </div>
+        </div>
+        <div class="plans-col-r">
+          {p.inherits && (
+            <InheritBox lang={lang} label={t(p.inherits.label)} text={t(p.inherits.text)} rings={p.inherits.rings} />
+          )}
+          <Block lang={lang} title={p.inherits ? t("y_ademas") : t("incluye")} items={p.includes.map(t)} />
+          <Block lang={lang} title={t("que_recibes")} items={p.receives.map(t)} />
+          <Excludes lang={lang} text={t(p.not)} dark={p.dark} />
+        </div>
+      </Card>
+    ))
+  }
+
+  <section class="pl-dev">
+    <div class="plans-wrap pl-dev-inner">
+      <span class="pl-dev-q">{t("av_dev_q")}</span>
+      <a href={`${route("home", lang)}?form=developer`} class="nav-m pl-dev-a">{t("av_dev_link")}</a>
+    </div>
+  </section>
+
+  <section id="prueba" class="pl-band">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead lang={lang} eyebrow={t("av_proof_eyebrow")} title={t("av_proof_title")} lead={t("av_proof_lead")} />
+      <SlotCards lang={lang} items={PRUEBA} />
+    </div>
+  </section>
+
+  <section class="pl-sec-bordered">
+    <div class="plans-wrap pl-sec-inner">
+      <SectionHead lang={lang} eyebrow={t("extras")} title={t("av_extras_title")} lead={t("av_extras_lead")} />
+      <div class="pl-defs">
+        {
+          DEFS.map(([k, d]) => (
+            <div class="pl-def">
+              <div class="plans-eyebrow pl-def-k">{t(k)}</div>
+              <p>{t(d)}</p>
+            </div>
+          ))
+        }
+      </div>
+      <div class="pl-extras pl-extras--compact">
+        {
+          EXTRAS.map(([num, name, desc, how]) => (
+            <ExtraCard lang={lang} num={num} title={name} desc={desc} delivery={how} href={cfg} compact byKey />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="pl-band pl-band--bordered">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead lang={lang} eyebrow={t("comparacion")} title={t("que_incluye_cada_plan")} />
+      <CompareTable
+        lang={lang}
+        rows={COMPARE}
+        cols={[
+          { num: "01", name: t("essential") },
+          { num: "02", name: t("premium") },
+          { num: "03", name: t("borsoga_edition"), inv: true },
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="pl-sec-bordered">
+    <div class="plans-wrap pl-sec-inner">
+      <SectionHead
+        lang={lang}
+        eyebrow={t("revisiones")}
+        title={t("como_funcionan_las_revisiones")}
+        lead={t("av_rev_lead")}
+      />
+      <RevisionTiles lang={lang} items={REVISIONES} byKey wideLabel />
+    </div>
+  </section>
+
+  <section class="pl-band pl-band--bordered">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead lang={lang} eyebrow={t("condiciones")} title={t("lo_que_aplica_a_los_tres")} />
+      <ConditionTiles lang={lang} items={CONDICIONES} byKey />
+    </div>
+  </section>
+
+  <PlansServices lang={lang} current="avPlans" />
+
+  <PlansCta
+    lang={lang}
+    title={t("av_close_title")}
+    body={t("av_close_lead")}
+    btn={t("av_close_cta")}
+    href={cfg}
+    anchor="cierre"
+  />
+</PlansLayout>

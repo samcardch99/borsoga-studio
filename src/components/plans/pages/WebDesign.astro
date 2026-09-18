@@ -1,0 +1,177 @@
+---
+// Web design plans — ported from the generator's `page_web()` in build.py.
+import PlansLayout from "../../../layouts/PlansLayout.astro";
+import PlansServices from "../PlansServices.astro";
+import PlansCta from "../PlansCta.astro";
+import Hero from "../plan/Hero.astro";
+import PlanNav from "../plan/PlanNav.astro";
+import Card from "../plan/Card.astro";
+import PlanHead from "../plan/PlanHead.astro";
+import StatBar from "../plan/StatBar.astro";
+import Ctas from "../plan/Ctas.astro";
+import Block from "../plan/Block.astro";
+import InheritBox from "../plan/InheritBox.astro";
+import Ideal from "../plan/Ideal.astro";
+import SectionHead from "../plan/SectionHead.astro";
+import Transversal from "../plan/Transversal.astro";
+import CompareTable from "../plan/CompareTable.astro";
+import { route, type Lang } from "../../../plans/config";
+import { createI18n } from "../../../plans/i18n";
+import {
+  WEB_ESSENTIAL_INCLUYE,
+  WEB_PREMIUM_SUMA,
+  WEB_EDITION_GROUPS,
+  WEB_COMPARE,
+  WEB_CARE,
+  WEB_INHERIT_PREMIUM,
+  WEB_INHERIT_EDITION,
+} from "../../../plans/plan-content";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const i18n = createI18n(lang);
+const brief = route("webBrief", lang);
+---
+
+<PlansLayout
+  routeKey="webDesign"
+  lang={lang}
+  title={i18n.t("meta_t_web")}
+  description={i18n.T(
+    "Tres planes de diseño web hechos a medida desde cero: Essential, Premium y Borsoga Edition. Sin plantillas ni constructores genéricos.",
+  )}
+  ctaHref="#propuesta"
+>
+  <Hero
+    lang={lang}
+    eyebrow="Diseño web"
+    title="Un sitio hecho a medida, no ensamblado"
+    lead="Los tres planes comparten el mismo estándar de autoría y calidad. Lo que cambia no es el esfuerzo, sino el alcance del sistema. Eso hace que Essential no se lea como una versión recortada, sino como una pieza completa a menor escala."
+  />
+
+  <PlanNav
+    lang={lang}
+    items={[
+      { id: "essential", num: "PLAN 01", title: "Web Essential" },
+      { id: "premium", num: "PLAN 02", title: "Web Premium" },
+      { id: "edition", num: "PLAN 03", title: "Web Borsoga Edition" },
+    ]}
+  />
+
+  <Card id="essential">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 01"
+        name="Web<br>Essential"
+        tagline="Una pieza completa. Diseñada, no ensamblada."
+        desc="Sitio de presencia profesional, hecho a medida desde cero. Sin plantillas, sin constructores genéricos."
+        rings={1}
+      />
+      <StatBar lang={lang} stats={[{ n: "5", label: "secciones" }, { n: "1", label: "ronda de revisiones" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={`${brief}?plan=Web-Essential`} />
+    </div>
+    <div class="plans-col-r">
+      <Block lang={lang} title="Incluye" items={WEB_ESSENTIAL_INCLUYE} />
+      <Ideal
+        lang={lang}
+        text="Profesionales, estudios y negocios que necesitan una presencia digital seria y bien construida."
+      />
+    </div>
+  </Card>
+
+  <Card id="premium">
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 02"
+        name="Web<br>Premium"
+        tagline="Un sitio que trabaja, crece y se mantiene."
+        desc="Todo lo de Essential, más profundidad de contenido, movimiento y capacidad de gestión."
+        rings={2}
+        badge
+      />
+      <StatBar lang={lang} stats={[{ n: "12", label: "páginas" }, { n: "2", label: "rondas de revisiones" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={`${brief}?plan=Web-Premium`} />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo del plan Web Essential" text={WEB_INHERIT_PREMIUM} rings={1} />
+      <Block lang={lang} title="Suma a Essential" items={WEB_PREMIUM_SUMA} />
+      <Ideal
+        lang={lang}
+        text="Marcas activas que publican contenido, hacen campañas y necesitan que el sitio evolucione."
+      />
+    </div>
+  </Card>
+
+  <Card id="edition" dark last>
+    <div class="plans-col-l">
+      <PlanHead
+        lang={lang}
+        num="Plan 03"
+        name="Web Borsoga<br>Edition"
+        tagline="No un sitio. Una plataforma diseñada alrededor de tu operación."
+        desc="Desarrollo a medida: el sitio deja de ser una vitrina y pasa a ser infraestructura de negocio."
+        rings={3}
+      />
+      <StatBar lang={lang} stats={[{ n: "3", label: "rondas" }, { n: "6", label: "meses de soporte" }]} />
+      <Ctas lang={lang} primary="Solicitar propuesta" href={`${brief}?plan=Web-Edition`} dark />
+    </div>
+    <div class="plans-col-r">
+      <InheritBox lang={lang} label="Todo lo del plan Web Premium" text={WEB_INHERIT_EDITION} rings={2} />
+      {WEB_EDITION_GROUPS.map(([title, items]) => <Block lang={lang} title={title} items={items} />)}
+      <Ideal lang={lang} text="Negocios que venden, operan o gestionan clientes a través de internet." />
+    </div>
+  </Card>
+
+  <Transversal
+    lang={lang}
+    text="Los tres planes se diseñan y desarrollan dentro del estudio. Una sola autoría, de la idea al código."
+  />
+
+  <section id="mantenimiento" class="pl-band">
+    <div class="plans-wrap pl-band-inner">
+      <SectionHead
+        lang={lang}
+        eyebrow="Mantenimiento"
+        title="Planes de mantenimiento opcionales"
+        lead="Contratables por mes o por año, de forma independiente al proyecto."
+      />
+      <CompareTable
+        lang={lang}
+        rows={WEB_CARE}
+        cols={[{ num: "", name: "CARE" }, { num: "", name: "CARE +", inv: true }]}
+        grid="minmax(160px,2fr) repeat(2,minmax(80px,1fr))"
+        sticky={false}
+      />
+    </div>
+  </section>
+
+  <section class="pl-sec-bordered">
+    <div class="plans-wrap pl-sec-inner">
+      <SectionHead lang={lang} eyebrow="Comparación" title="Qué incluye cada plan" />
+      <CompareTable
+        lang={lang}
+        rows={WEB_COMPARE}
+        cols={[
+          { num: "01", name: "Essential" },
+          { num: "02", name: "Premium" },
+          { num: "03", name: "Borsoga Edition", inv: true },
+        ]}
+      />
+    </div>
+  </section>
+
+  <PlansServices lang={lang} current="webDesign" />
+
+  <PlansCta
+    lang={lang}
+    title="¿No sabes cuál te toca?"
+    body="Cuéntanos el tipo de proyecto, el alcance y el plazo. Te mandamos una propuesta con el plan que te sirve."
+    btn="Solicitar propuesta"
+    href={brief}
+  />
+</PlansLayout>

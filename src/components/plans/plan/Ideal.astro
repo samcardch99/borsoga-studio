@@ -1,0 +1,11 @@
+---
+import { createI18n } from "../../../plans/i18n";
+import type { Lang } from "../../../plans/config";
+interface Props { lang: Lang; text: string }
+const { lang, text } = Astro.props;
+const i18n = createI18n(lang);
+---
+<div class="pl-ideal">
+  <div class="pl-ideal-label">{i18n.t("ideal_para")}</div>
+  <p class="pl-ideal-p">{i18n.T(text)}</p>
+</div>
