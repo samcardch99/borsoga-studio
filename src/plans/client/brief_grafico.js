@@ -39,7 +39,6 @@ var B2C = 'Consumidores — B2C';
 var B2B = 'Empresas — B2B';
 var BOTH = 'Ambos';
 var SELLS_TO = [B2C, B2B, BOTH, 'Otro'];
-var DECISION_MAKER = ['Founder / Owner', 'CEO / Dirección', 'Marketing', 'Procurement', 'Recursos Humanos', 'Arquitectos / Diseñadores', 'Desarrolladores / Inversionistas', 'Otro'];
 
 var TRAITS = ['Elegante', 'Moderna', 'Sofisticada', 'Premium', 'Cercana', 'Humana', 'Profesional', 'Confiable', 'Innovadora', 'Audaz', 'Minimalista', 'Técnica', 'Exclusiva', 'Artesanal', 'Dinámica', 'Juvenil', 'Atemporal', 'Disruptiva', 'Seria', 'Cálida'];
 var AXES = [['ax1a', 'ax1b'], ['ax2a', 'ax2b'], ['ax3a', 'ax3b'], ['ax4a', 'ax4b'], ['ax5a', 'ax5b'], ['ax6a', 'ax6b']];
@@ -84,7 +83,7 @@ window.BORSOGA_BRIEF({
     identityAge: '', changeReason: [], keepWhat: '', changeWhat: '', currentLink: '',
     whatDoes: '', products: '', mainProduct: '', category: '', stage: '',
     problem: '', diff: '', vsComp: [],
-    sellsTo: '', idealCompanies: '', decisionMaker: [],
+    sellsTo: '', idealCompanies: '',
     personality: [], axes: {},
     meaning: '', meaningWhich: '', avoidElements: '', brandColors: '', whichColors: '',
     avoidColors: '', whichAvoidColors: '',
@@ -102,7 +101,7 @@ window.BORSOGA_BRIEF({
     if (!conIdentidad(a)) {
       a.identityAge = ''; a.changeReason = []; a.keepWhat = ''; a.changeWhat = ''; a.currentLink = '';
     }
-    if (a.sellsTo !== B2B && a.sellsTo !== BOTH) { a.idealCompanies = ''; a.decisionMaker = []; }
+    if (a.sellsTo !== B2B && a.sellsTo !== BOTH) a.idealCompanies = '';
     if (a.meaning !== YES) a.meaningWhich = '';
     if (a.brandColors !== COLORS_KEEP && a.brandColors !== COLORS_OPEN) a.whichColors = '';
     if (a.avoidColors !== YES) a.whichAvoidColors = '';
@@ -148,8 +147,6 @@ window.BORSOGA_BRIEF({
     { titulo: 'gd_s4', preguntas: [
       { f: 'sellsTo', q: 'q_sellsTo', tipo: 'chips', ops: SELLS_TO, req: true },
       { f: 'idealCompanies', q: 'q_idealCompanies', tipo: 'area', req: true,
-        si: function (a) { return a.sellsTo === B2B || a.sellsTo === BOTH; } },
-      { f: 'decisionMaker', q: 'q_decisionMaker', tipo: 'checks', ops: DECISION_MAKER,
         si: function (a) { return a.sellsTo === B2B || a.sellsTo === BOTH; } }
     ] },
 

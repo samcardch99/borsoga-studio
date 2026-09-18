@@ -50,7 +50,6 @@
       h_idealClient: 'Puedes pensar en: edad aproximada, ubicación, estilo de vida, necesidades, intereses, nivel adquisitivo (si es relevante).',
       q_clientSeeks: '¿Qué busca principalmente ese cliente cuando elige una marca como la tuya?',
       q_idealCompanies: '¿Qué tipo de empresas son tus clientes ideales?',
-      q_decisionMaker: 'Dentro de esas empresas, ¿quién suele tomar la decisión de compra?',
 
       q_personality: 'Si tu marca fuera una persona, ¿cómo debería ser?',
       h_personality: 'Selecciona máximo 5.',
@@ -205,7 +204,6 @@
       h_idealClient: 'You can think about: approximate age, location, lifestyle, needs, interests, spending power (if relevant).',
       q_clientSeeks: 'What does that client mainly look for when choosing a brand like yours?',
       q_idealCompanies: 'What kind of companies are your ideal clients?',
-      q_decisionMaker: 'Within those companies, who usually makes the buying decision?',
 
       q_personality: 'If your brand were a person, what should they be like?',
       h_personality: 'Pick a maximum of 5.',
@@ -337,13 +335,7 @@
       'Empresas — B2B': 'Businesses — B2B',
       'Ambos': 'Both',
 
-      'Founder / Owner': 'Founder / Owner',
-      'CEO / Dirección': 'CEO / Leadership',
       'Marketing': 'Marketing',
-      'Procurement': 'Procurement',
-      'Recursos Humanos': 'Human Resources',
-      'Arquitectos / Diseñadores': 'Architects / Designers',
-      'Desarrolladores / Inversionistas': 'Developers / Investors',
 
       'Elegante': 'Elegant', 'Moderna': 'Modern', 'Sofisticada': 'Sophisticated', 'Premium': 'Premium',
       'Cercana': 'Approachable', 'Humana': 'Human', 'Profesional': 'Professional', 'Confiable': 'Trustworthy',
