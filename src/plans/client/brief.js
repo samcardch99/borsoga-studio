@@ -12,7 +12,7 @@
  * Portado de los artboards 'Cuestionario Diseno Web' y 'Cuestionario Diseno
  * Grafico'. A diferencia de los configuradores de interiorismo y AV —donde cada
  * paso tiene widgets propios (steppers de espacios, contador de imágenes)—,
- * estos dos son la misma pieza con otras preguntas: diez y once pasos de
+ * estos dos son la misma pieza con otras preguntas: diez pasos cada uno, de
  * opciones, texto libre, ejes y subidas de archivos. Así que las preguntas son
  * datos (`brief_web.js`, `brief_grafico.js`) y esto las pinta. Duplicar
  * novecientas líneas casi idénticas habría significado que se desincronizaran a

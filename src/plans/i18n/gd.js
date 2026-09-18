@@ -12,9 +12,8 @@
       gd_s8: 'Dónde vivirá la marca',
       gd_s9: 'Necesidades especiales',
       gd_s10: 'Objetivo del proyecto',
-      gd_s11: 'Decisiones',
       gd_s12: 'Para terminar',
-      gd_step_counter: 'Paso {n} de 11',
+      gd_step_counter: 'Paso {n} de 10',
       gd_resume_line: 'Lo dejaste en el paso {n}.',
 
       q_company: '¿Cuál es el nombre de la empresa o marca?',
@@ -97,7 +96,6 @@
       q_whatHappens: '¿Qué ocurrirá en esa fecha?',
       h_whatHappens: 'Ejemplo: lanzamiento, evento, apertura, nuevo sitio web, campaña, presentación a inversionistas.',
 
-      q_approvers: '¿Quién participará en la aprobación de la identidad?',
       q_anythingElse: '¿Hay algo importante sobre tu empresa, tu historia o este proyecto que no te hayamos preguntado?',
 
       gd_contact: 'Tus datos',
@@ -150,7 +148,6 @@
       sum_languages: 'Idiomas',
       sum_success: 'Éxito del proyecto',
       sum_launch: 'Fecha de lanzamiento',
-      sum_approvers: 'Aprobación'
     }
   };
 
@@ -166,9 +163,8 @@
       gd_s8: 'Where the brand will live',
       gd_s9: 'Special needs',
       gd_s10: 'Project goal',
-      gd_s11: 'Decisions',
       gd_s12: 'To finish',
-      gd_step_counter: 'Step {n} of 11',
+      gd_step_counter: 'Step {n} of 10',
       gd_resume_line: 'You were on step {n}.',
 
       q_company: "What's the name of the company or brand?",
@@ -251,7 +247,6 @@
       q_whatHappens: 'What will happen on that date?',
       h_whatHappens: 'Example: a launch, an event, an opening, a new website, a campaign, an investor presentation.',
 
-      q_approvers: 'Who will take part in approving the identity?',
       q_anythingElse: "Is there anything important about your company, your history or this project that we haven't asked you?",
 
       gd_contact: 'Your details',
@@ -371,11 +366,6 @@
       'Inglés': 'English',
       'Español': 'Spanish',
       'Inglés + Español': 'English + Spanish',
-
-      'Una persona': 'One person',
-      'Dos personas': 'Two people',
-      'Tres o más personas': 'Three or more people',
-      'Un equipo/directiva': 'A team or board'
     },
     msg: {
       gd_final_title: 'THANK YOU.',
@@ -410,7 +400,6 @@
       sum_languages: 'Languages',
       sum_success: 'Project success',
       sum_launch: 'Launch date',
-      sum_approvers: 'Approval'
     }
   };
 export default { es: ES, en: EN };

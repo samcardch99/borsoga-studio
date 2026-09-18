@@ -1517,7 +1517,7 @@ export default {
     "Tres planes de visualización de interiores en Florida: Essential, Premium y Borsoga Edition. Desde una habitación hasta la casa completa.": "Three interior visualization plans in Florida: Essential, Premium and Borsoga Edition. From a single room to the whole house.",
     "Brand Identity, Social Media Design y Marketing & Graphic Design. Una sola dirección creativa, desde la identidad hasta cada punto de contacto.": "Brand Identity, Social Media Design and Marketing & Graphic Design. One creative direction, from the identity to every touchpoint.",
     "Cuéntanos el proyecto, el público y las funcionalidades que necesita tu sitio. Diez pasos y una propuesta escrita por una persona del estudio.": "Tell us about the project, the audience and the features your site needs. Ten steps, and a proposal written by a person at the studio.",
-    "Cuéntanos la marca, su público y su personalidad. Once pasos para que la identidad se diseñe sobre lo que la empresa es, no sobre suposiciones.": "Tell us about the brand, its audience and its personality. Eleven steps, so the identity is designed around what the company is, not around assumptions.",
+    "Cuéntanos la marca, su público y su personalidad. Diez pasos para que la identidad se diseñe sobre lo que la empresa es, no sobre suposiciones.": "Tell us about the brand, its audience and its personality. Ten steps, so the identity is designed around what the company is, not around assumptions.",
     "Cuéntanos las escenas que necesitas y te enviamos tu rango de inversión.": "Tell us the scenes you need and we'll send you your investment range.",
     "Archivos que subes": "Files you upload",
     "Corregir cualquier dato incorrecto.": "Correct any inaccurate data.",

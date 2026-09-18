@@ -4,7 +4,7 @@
 // Calls window.BORSOGA_BRIEF, so brief.js must load first.
 
 /**
- * Cuestionario de Diseño Gráfico (identidad de marca) — 11 pasos.
+ * Cuestionario de Diseño Gráfico (identidad de marca) — 10 pasos.
  *
  * Portado del artboard 'Cuestionario Diseno Grafico'. Igual que el de diseño
  * web: las constantes se quedan en español porque son el valor canónico que
@@ -55,7 +55,6 @@ var UNDEFINED_YET = 'Todavía no está definido';
 var PACKAGING_SCOPE = [YES, NO, UNDEFINED_YET];
 var SPACES = ['Uno', 'Varios', UNDEFINED_YET];
 var LANGUAGES = ['Inglés', 'Español', 'Inglés + Español', 'Otro'];
-var APPROVERS = ['Una persona', 'Dos personas', 'Tres o más personas', 'Un equipo/directiva'];
 
 var conIdentidad = function (a) {
   return a.projectType === REDESIGN || a.projectType === REFRESH || a.projectType === EXTEND;
@@ -90,7 +89,12 @@ window.BORSOGA_BRIEF({
     refBrands: '', hasRefs: '', refsText: '', refsWhy: '',
     touchpoints: [], packagingType: '', packagingScope: '', spaces: '',
     languages: [], restrictions: '',
-    approvers: '', anythingElse: '',
+    anythingElse: '',
+    // TEMPORAL: la pregunta de aprobación ya no existe, pero la función de
+    // Vercel desplegada todavía la exige (68c46ac, que la quita, espera a que
+    // Vercel vuelva a desplegar). Sin este valor, todos los envíos fallarían.
+    // Borrar esta línea cuando 68c46ac esté en producción.
+    approvers: '—',
     contactName: '', email: '', phone: '', privacy: false, bot: ''
   },
 
@@ -195,10 +199,6 @@ window.BORSOGA_BRIEF({
       { f: 'restrictions', q: 'q_restrictions', h: 'h_restrictions', tipo: 'area' }
     ] },
 
-    { titulo: 'gd_s11', preguntas: [
-      { f: 'approvers', q: 'q_approvers', tipo: 'cards', ops: APPROVERS, req: true }
-    ] },
-
     { titulo: 'gd_s12', preguntas: [
       { f: 'anythingElse', q: 'q_anythingElse', tipo: 'area' },
       { f: 'contacto', q: 'gd_contact', tipo: 'contacto', req: true,
@@ -235,7 +235,6 @@ window.BORSOGA_BRIEF({
     if (a.refsText) filas.push(['sum_refs', a.refsText]);
     filas.push(['sum_touchpoints', lista(a.touchpoints) || raya]);
     filas.push(['sum_languages', lista(a.languages) || raya]);
-    filas.push(['sum_approvers', val(a.approvers)]);
     return filas;
   }
 });
