@@ -22,8 +22,8 @@
  * mano. El total de imágenes es la suma de (escenas × vistas) por unidad, no
  * una función del tamaño como en interiorismo.
  *
- * Los textos vienen de i18n/es.js. El inglés existe pero está a medias (254
- * claves siguen en español), así que el selector no se publica todavía.
+ * Los textos vienen de i18n/es.js; los ingleses, de i18n/en.js. Todo lo que se
+ * ve pasa por t() (por clave) o TR() / lbl() (por la cadena española).
  */
 (function () {
 'use strict';
@@ -224,8 +224,10 @@ function viewsOf(key) {
 }
 function sceneTotal() { return unitsOf(S.a).reduce(function (n, u) { return n + u.scenes; }, 0); }
 function imageTotal() { return unitsOf(S.a).reduce(function (n, u) { return n + u.scenes * viewsOf(u.key); }, 0); }
-function sceneSummary() {
-  return unitsOf(S.a).map(function (u) { return u.scenes + '× ' + u.label; }).join(' · ');
+// `shown`: en el idioma de la página, para la pantalla final. Sin él, en
+// español: es lo que viaja al servidor en `derived.sceneSummary`.
+function sceneSummary(shown) {
+  return unitsOf(S.a).map(function (u) { return u.scenes + '× ' + (shown ? TR(u.label) : u.label); }).join(' · ');
 }
 
 function unsureCount() {
@@ -251,13 +253,13 @@ function recommendPlan() {
 }
 function route() {
   var a = S.a, plan = PICKED || recommendPlan(), days = daysUntil(a.launchDate);
-  if (plan === 'Borsoga Edition') return ['call','Vamos a hablar', t('route_edition','Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.')];
-  if (a.material === MAT_NONE) return ['call','Vamos a hablar', t('avq_route_nomat')];
-  if (sceneTotal() > 6) return ['call','Vamos a hablar', fill(t('avq_route_scenes'), { n: sceneTotal() })];
-  if (a.launch === LAUNCH_FIXED && days !== null && days < 28) return ['call','Vamos a hablar', t('avq_route_rush')];
-  if (a.projectType === TYPE_MIXED) return ['call','Vamos a hablar', t('avq_route_mixed')];
-  if (unsureCount() >= 4) return ['range','Te enviamos un rango', t('route_unsure','Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.')];
-  return ['mail','Recibimos tu proyecto', t('avq_mail_body')];
+  if (plan === 'Borsoga Edition') return ['call',TR('Vamos a hablar'), t('route_edition','Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.')];
+  if (a.material === MAT_NONE) return ['call',TR('Vamos a hablar'), t('avq_route_nomat')];
+  if (sceneTotal() > 6) return ['call',TR('Vamos a hablar'), fill(t('avq_route_scenes'), { n: sceneTotal() })];
+  if (a.launch === LAUNCH_FIXED && days !== null && days < 28) return ['call',TR('Vamos a hablar'), t('avq_route_rush')];
+  if (a.projectType === TYPE_MIXED) return ['call',TR('Vamos a hablar'), t('avq_route_mixed')];
+  if (unsureCount() >= 4) return ['range',TR('Te enviamos un rango'), t('route_unsure','Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.')];
+  return ['mail',TR('Recibimos tu proyecto'), t('avq_mail_body')];
 }
 
 // ---------------------------------------------------------------- validación
@@ -394,7 +396,7 @@ function step1() {
       'Lo guardamos en este navegador para que puedas volver donde quedaste. Te lo pedimos también para poder contactarte.',
       '<div style="max-width:420px">' + field('email', 'tu@correo.com', 'email') +
       (a.email && !EMAIL_RE.test(a.email) ? '<p class="q-err">' + esc(t('srv_email_bad', 'Escríbelo completo, con arroba y dominio: nombre@correo.com')) + '</p>' : '') +
-      (sug ? '<p class="q-err">¿Quisiste decir <strong>' + esc(sug) + '</strong>? <button type="button" class="q-back" data-fix-email="1" style="margin-left:8px">Sí, corregir</button></p>' : '') +
+      (sug ? '<p class="q-err">' + fill(t('qi_didyoumean'), { email: esc(sug) }) + ' <button type="button" class="q-back" data-fix-email="1" style="margin-left:8px">' + esc(t('srv_fix')) + '</button></p>' : '') +
       '</div>', 'email');
   }
   return h;
@@ -422,8 +424,8 @@ function step2() {
       '<div class="q-grid">' + units.map(function (u) {
         var v = viewsOf(u.key);
         return '<div class="q-space" style="cursor:default">' +
-          '<span><span style="display:block">' + esc(u.label) + '</span>' +
-          '<span style="display:block;font-size:13px;color:rgba(0,0,0,.5);margin-top:2px">' + u.scenes + ' escena' + (u.scenes > 1 ? 's' : '') + '</span></span>' +
+          '<span><span style="display:block">' + lbl(u.label) + '</span>' +
+          '<span style="display:block;font-size:13px;color:rgba(0,0,0,.5);margin-top:2px">' + u.scenes + ' ' + lbl(u.scenes > 1 ? 'escenas' : 'escena') + '</span></span>' +
           '<span style="display:flex;align-items:center;gap:10px">' +
           '<button type="button" class="q-step" data-v="' + esc(u.key) + '" data-d="-1"' + (v <= 1 ? ' disabled' : '') + '>−</button>' +
           '<span style="font-size:15px;min-width:26px;text-align:center">' + v + '</span>' +
@@ -454,7 +456,7 @@ function step3() {
       (FILES.length ? FILES.length + ' ' + t(FILES.length === 1 ? 'q_files_1' : 'q_files_n') : lbl('Elegir')) + '</span></label>' +
       FILES.map(function (f, i) {
         return '<span class="q-file"><span>' + esc(f.name) + '</span>' +
-          '<button type="button" class="q-back" data-rmfile="' + i + '" style="font-size:10px">Quitar</button></span>';
+          '<button type="button" class="q-back" data-rmfile="' + i + '" style="font-size:10px">' + lbl('Quitar') + '</button></span>';
       }).join('') +
       '<div style="margin-top:14px">' + field('link', t('avq_s3_link_ph')) +
       (String(a.link || '').trim() ? '<p class="q-hint" style="margin-top:8px">' + esc(t('avq_link_added', 'Enlace añadido')) + '</p>' : '') +
@@ -501,7 +503,7 @@ function step6() {
   h += group(t('avq_s6_launch'), '', chips('launch', LAUNCH) +
     (a.launch === LAUNCH_FIXED ? '<div style="margin-top:12px;max-width:260px">' + field('launchDate', '', 'date') +
       (daysUntil(a.launchDate) !== null && daysUntil(a.launchDate) < 28
-        ? '<p class="q-err">Menos de cuatro semanas: lo confirmamos en una llamada.</p>' : '') + '</div>' : ''),
+        ? '<p class="q-err">' + lbl('Menos de cuatro semanas: lo confirmamos en una llamada.') + '</p>' : '') + '</div>' : ''),
     ['launch', 'launchDate']);
   h += group(t('avq_s6_portfolio'), '', chips('portfolio', PORTFOLIO), 'portfolio');
   h += '<div class="q-group' + (S.showErrors && MISSING.indexOf('privacy') > -1 ? ' q-invalid' : '') + '" data-fields="privacy">' +
@@ -509,53 +511,79 @@ function step6() {
     '<span class="q-box"></span><span>' + fill(t('qi_privacy_accept'), { link: '<a href="' + PRIV_URL + '" target="_blank" style="border-bottom:1px solid">' + esc(t('qi_privacy_link')) + '</a>' }) + '</span></button>' +
     '<input type="text" data-field="bot" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" value="' + esc(a.bot) + '">' +
     (S.notice ? '<p class="q-err">' + esc(S.notice) + '</p>' : '') +
-    (S.showErrors && MISSING.indexOf('privacy') > -1 ? '<p class="q-falta">Falta responder esto</p>' : '') +
-    '<p class="q-hint" style="margin-top:16px">Esto no es un contrato ni una cotización. Es la información con la que preparamos tu propuesta.</p></div>';
+    (S.showErrors && MISSING.indexOf('privacy') > -1 ? '<p class="q-falta">' + esc(t('q_missing')) + '</p>' : '') +
+    '<p class="q-hint" style="margin-top:16px">' + esc(t('qi_not_contract')) + '</p></div>';
   return h;
 }
 
 function summary() {
   var a = S.a, b = branchOf(a), r = [];
   var add = function (l, v) { if (v) r.push([l, v]); };
-  add('Plan', PICKED || ('Recomendado · ' + recommendPlan()));
-  add('Tipo de proyecto', a.projectType);
-  add('Etapa', a.stage);
-  add(t('avq_sum_role', 'Quién escribe'), a.role);
-  add('Escenas', sceneSummary());
+  // Los valores se traducen uno a uno ANTES de unirlos: la frase ya unida no
+  // existe en el diccionario.
+  var L = function (xs, sep) { return xs.filter(Boolean).map(TR).join(sep || ' · '); };
+  add('Plan', PICKED || (TR('Recomendado') + ' · ' + recommendPlan()));
+  add('Tipo de proyecto', TR(a.projectType));
+  add('Etapa', TR(a.stage));
+  add(t('avq_sum_role', 'Quién escribe'), TR(a.role));
+  add('Escenas', sceneSummary(true));
   add(t('avq_sum_images', 'Imágenes estimadas'), imageTotal());
-  if (b.asksContext) add('Contexto urbano', a.context);
-  if (b.asksInterior) add(t('avq_sum_interior', 'Diseño interior'), a.interiorDesign);
+  if (b.asksContext) add('Contexto urbano', TR(a.context));
+  if (b.asksInterior) add(t('avq_sum_interior', 'Diseño interior'), TR(a.interiorDesign));
   if (INTERIOR_OPEN.indexOf(a.interiorDesign) > -1)
     add('Marcado', t('avq_flag_interior', 'Oportunidad de interior design: el interior no está resuelto.'));
-  if (b.asksPiece) add('La pieza', a.piece);
-  add('Material', a.material + (FILES.length ? ' · ' + FILES.length + ' archivo(s)' : '') + (a.link ? ' · enlace' : ''));
-  add('Especificación', a.spec);
-  add(t('avq_sum_use', 'Uso de las imágenes'), a.uses.join(', '));
-  add('Tono', a.tone);
-  add('Extras', a.extras.length ? a.extras.join(', ') : 'Ninguno');
-  add('Alrededor del proyecto', a.cross.filter(function (v) { return v !== CROSS_NONE; }).join(', '));
+  if (b.asksPiece) add('La pieza', TR(a.piece));
+  add('Material', TR(a.material) +
+    (FILES.length ? ' · ' + FILES.length + ' ' + t(FILES.length === 1 ? 'q_files_1' : 'q_files_n') : '') +
+    (a.link ? ' · ' + TR('enlace') : ''));
+  add('Especificación', TR(a.spec));
+  add(t('avq_sum_use', 'Uso de las imágenes'), L(a.uses, ', '));
+  add('Tono', TR(a.tone));
+  add('Extras', a.extras.length ? L(a.extras, ', ') : TR('Ninguno'));
+  add('Alrededor del proyecto', L(a.cross.filter(function (v) { return v !== CROSS_NONE; }), ', '));
   add(t('avq_sum_location', 'Ubicación'), [a.city, a.country].filter(Boolean).join(', '));
-  add('Lanzamiento', a.launch === LAUNCH_FIXED ? a.launchDate : a.launch);
-  add('Portafolio', a.portfolio);
-  if (unsureCount() >= 4) add('Marcado', 'Varias respuestas sin definir. Va a rango y a llamada.');
+  add('Lanzamiento', a.launch === LAUNCH_FIXED ? a.launchDate : TR(a.launch));
+  add('Portafolio', TR(a.portfolio));
+  if (unsureCount() >= 4) add('Marcado', TR('Varias respuestas sin definir. Va a rango y a llamada.'));
   return r;
 }
 
+// El servidor decide el tipo de respuesta y devuelve sus textos en español. Si
+// coincide con el cálculo local se usan los textos locales, que ya vienen en
+// el idioma de la página; si no, los del servidor pasan por el diccionario.
+function finalRoute() {
+  var loc = route(), srv = S.result;
+  return srv && srv[0] !== loc[0] ? [srv[0], srvText(srv[1]), srvText(srv[2])] : loc;
+}
+// «Tu proyecto tiene 7 escenas…» llega con el número dentro: se busca la
+// plantilla con {n} y se rellena.
+function srvText(s) {
+  var tr = TR(s), m = /\d+/.exec(s || '');
+  if (tr !== s || !m) return tr;
+  var tpl = s.replace(m[0], '{n}'), t2 = TR(tpl);
+  return t2 !== tpl ? fill(t2, { n: m[0] }) : s;
+}
+// Los errores del servidor también llegan en español.
+function srvError(e) {
+  var m = /^Falta un dato obligatorio \((.+)\)\.$/.exec(e || '');
+  return m ? fill(TR('Falta un dato obligatorio ({campo}).'), { campo: m[1] }) : TR(e);
+}
+
 function doneScreen() {
-  var rt = S.result || route();
+  var rt = finalRoute();
   var plan = PICKED || recommendPlan();
   var h = '<div style="max-width:62ch">' +
-    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 18px">Listo</p>' +
+    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 18px">' + lbl('Listo') + '</p>' +
     '<h1 style="margin:0;font-size:clamp(32px,5vw,54px);font-weight:600;letter-spacing:-.03em;line-height:1.02">' + esc(rt[1]) + '</h1>';
   if (rt[0] === 'mail') h += '<p style="display:flex;align-items:baseline;gap:14px;margin:26px 0 0">' +
     '<strong style="font-size:34px;font-weight:600;letter-spacing:-.03em">48</strong>' +
-    '<span style="font-size:16px;color:rgba(0,0,0,.7)">Te escribimos en persona en menos de 48 horas</span></p>';
+    '<span style="font-size:16px;color:rgba(0,0,0,.7)">' + lbl('Te escribimos en persona en menos de 48 horas') + '</span></p>';
   h += '<p style="margin:22px 0 0;font-size:17px;line-height:1.6;color:rgba(0,0,0,.72)">' + esc(rt[2]) + '</p>' +
     '<div class="q-note" style="margin-top:26px"><strong style="display:block;margin-bottom:6px">' + esc(t('qi_your_plan')) + '</strong>' +
     (PICKED ? fill(t('qi_plan_picked'), { plan: esc(PICKED) })
             : fill(t('qi_plan_reco'), { plan: esc(plan) })) + '</div></div>' +
     '<dl class="q-sum">' + summary().map(function (p) {
-      return '<div><dt>' + esc(p[0]) + '</dt><dd>' + esc(p[1]) + '</dd></div>';
+      return '<div><dt>' + lbl(p[0]) + '</dt><dd>' + esc(p[1]) + '</dd></div>';
     }).join('') + '</dl>';
   return h;
 }
@@ -577,14 +605,14 @@ function render() {
     (S.touched || PICKED ? '#000' : 'rgba(0,0,0,.45)') + ';border-radius:50%;flex:none;display:block' +
     ((S.touched || PICKED) && idx > 1 ? ';box-shadow:inset 0 0 0 1.5px #fff, inset 0 0 0 3px #000' : '') +
     ((S.touched || PICKED) && idx > 2 ? ', inset 0 0 0 4.5px #fff, inset 0 0 0 6px #000' : '');
-  document.getElementById('q-saved').textContent = S.touched && !S.done ? 'Guardado' : '';
+  document.getElementById('q-saved').textContent = S.touched && !S.done ? TR('Guardado') : '';
 
   if (S.done) { nav.hidden = true; main.innerHTML = doneScreen(); window.scrollTo(0, 0); return; }
   nav.hidden = false;
   MISSING = missing();
   var fn = [step1, step2, step3, step4, step5, step6][S.step - 1];
   main.innerHTML = '<div style="margin-bottom:clamp(28px,4vw,44px)">' +
-    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 12px">' + STEPS[S.step-1][0] + '</p>' +
+    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 12px">' + lbl(STEPS[S.step-1][0]) + '</p>' +
     '<h1 style="margin:0;font-size:clamp(28px,4.4vw,44px);font-weight:600;letter-spacing:-.03em;line-height:1.05">' +
     esc(t(STEPS[S.step-1][1], STEPS[S.step-1][1])) + '</h1></div>' + fn();
 
@@ -680,7 +708,7 @@ document.getElementById('q-next').addEventListener('click', function () {
 });
 document.getElementById('q-save').addEventListener('click', function () {
   persist();
-  alert('Tus respuestas quedan guardadas en este navegador. Vuelve cuando quieras desde el mismo dispositivo.');
+  alert(TR('Tus respuestas quedan guardadas en este navegador. Vuelve cuando quieras desde el mismo dispositivo.'));
 });
 
 // ---------------------------------------------------------------- envío
@@ -700,12 +728,12 @@ function loadUploader() {
 }
 function submit() {
   var a = S.a;
-  if (a.bot) { S.notice = 'No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'; return render(); }
-  if (isDisposable(a.email)) { S.notice = 'Necesitamos un correo donde podamos enviarte la propuesta.'; return render(); }
+  if (a.bot) { S.notice = TR('No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'); return render(); }
+  if (isDisposable(a.email)) { S.notice = TR('Necesitamos un correo donde podamos enviarte la propuesta.'); return render(); }
   var sent = {};
   try { sent = JSON.parse(localStorage.getItem(SUBMIT_KEY) || '{}'); } catch (e) {}
   var k = 'av:' + String(a.email).trim().toLowerCase();
-  if ((sent[k] || 0) >= MAX_SUBMITS) { S.notice = 'Ya recibimos tu proyecto. Si necesitas cambiar algo, escríbenos.'; return render(); }
+  if ((sent[k] || 0) >= MAX_SUBMITS) { S.notice = TR('Ya recibimos tu proyecto. Si necesitas cambiar algo, escríbenos.'); return render(); }
 
   S.sending = true; S.notice = ''; render();
   var lote = Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
@@ -718,7 +746,7 @@ function submit() {
         return chain.then(function () {
           var safe = f.name.replace(/[^\w.\-]+/g, '_').slice(-80);
           return window.borsogaUpload(f, 'leads/' + lote + '/planFiles/' + safe, function (pct) {
-            S.notice = 'Subiendo ' + (hechos + 1) + ' de ' + FILES.length + ' · ' + pct + '%';
+            S.notice = fill(t('q_uploading'), { n: hechos + 1, total: FILES.length, pct: pct });
             var n = document.getElementById('q-next');
             if (n) {
               n.querySelector('.q-btn-label').textContent = S.notice;
@@ -749,7 +777,7 @@ function submit() {
     .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
     .then(function (jr) {
       S.sending = false; S.notice = '';
-      if (!jr || !jr.ok) { S.notice = (jr && jr.error) || 'No pudimos enviarlo. Inténtalo otra vez o escríbenos.'; return render(); }
+      if (!jr || !jr.ok) { S.notice = (jr && jr.error) ? srvError(jr.error) : TR('No pudimos enviarlo. Inténtalo otra vez o escríbenos.'); return render(); }
       sent[k] = (sent[k] || 0) + 1;
       try { localStorage.setItem(SUBMIT_KEY, JSON.stringify(sent)); localStorage.removeItem(KEY); } catch (e) {}
       S.result = jr.route || route();
@@ -757,8 +785,8 @@ function submit() {
     })
     .catch(function (err) {
       S.sending = false;
-      S.notice = (err && err.message) ? 'No pudimos subir tus archivos: ' + err.message
-                                      : 'No pudimos enviarlo. Revisa tu conexión e inténtalo otra vez.';
+      S.notice = (err && err.message) ? TR('No pudimos subir tus archivos:') + ' ' + err.message
+                                      : TR('No pudimos enviarlo. Revisa tu conexión e inténtalo otra vez.');
       render();
     });
 }

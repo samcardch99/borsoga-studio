@@ -245,10 +245,15 @@ function imageTotal() {
   var full = IMGS[a.size], half = Math.ceil(full / 2);
   return a.spaces.reduce(function (t, s) { return t + full + ((a.counts[s] || 1) - 1) * half; }, 0);
 }
-function spaceSummary() {
+// `shown`: en el idioma de la página, para la pantalla final. Sin él, en
+// español: es lo que viaja al servidor en `derived.spaceSummary`.
+function spaceSummary(shown) {
+  var d = (window.BORSOGA_I18N || {})[LANG] || {};
+  var en = shown && LANG !== 'es';
   return S.a.spaces.map(function (s) {
-    var n = S.a.counts[s] || 1;
-    return n + ' ' + (n > 1 ? (PLURAL[s] || low(s) + 's') : low(s));
+    var n = S.a.counts[s] || 1, one = en ? low(TR(s)) : low(s);
+    var many = en ? ((d.plural && d.plural[s]) || one + 's') : (PLURAL[s] || one + 's');
+    return n + ' ' + (n > 1 ? many : one);
   }).join(' · ');
 }
 function structuralFlag() {
@@ -276,15 +281,19 @@ function recommendPlan() {
 }
 function route() {
   var a = S.a;
+  var r = (function () {
   if (PICKED === 'Borsoga Edition') return ['call','Vamos a hablar','Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.'];
   if (a.state && !isFlorida(a.state)) return ['call','Vamos a hablar','La dirección del proyecto está fuera de Florida. Eso lo revisamos contigo antes de hablar de precio.'];
   if (a.city && !isMiamiDade(a.city)) return ['call','Vamos a hablar','Tu proyecto está fuera de Miami-Dade. Podemos hacerlo, pero el alcance y el desplazamiento los cerramos hablando.'];
   if (structuralFlag()) return ['call','Vamos a hablar','Tu proyecto mueve paredes o toca la fachada. Eso necesita un arquitecto o ingeniero con licencia, así que lo armamos contigo antes de dar un número.'];
-  if (unitTotal() > 6) return ['call','Vamos a hablar','Tu proyecto tiene ' + unitTotal() + ' espacios. A ese tamaño el precio lo armamos contigo, no con una calculadora.'];
+  if (unitTotal() > 6) return ['call','Vamos a hablar','Tu proyecto tiene {n} espacios. A ese tamaño el precio lo armamos contigo, no con una calculadora.'];
   if (a.finish === 'Lujo' && a.workType === 'Obra nueva') return ['call','Vamos a hablar','Nivel lujo en obra nueva. Eso lo conversamos antes de darte un número.'];
   if (a.health === 'Sí') return ['call','Vamos a hablar','Un proyecto que pasa por el departamento de salud tiene su propio calendario. Lo armamos contigo antes de hablar de precio.'];
   if (unsureCount() >= 4) return ['range','Te enviamos un rango','Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.'];
   return ['mail','Recibimos tu proyecto','Vamos a revisar lo que nos contaste y te escribimos para hablar del precio y el plazo. Nada de esto es automático: lo mira una persona del estudio.'];
+  })();
+  // Sólo se envía r[0]; los textos son para la pantalla final.
+  return [r[0], TR(r[1]), fill(TR(r[2]), { n: unitTotal() })];
 }
 // Devuelve la lista de campos pendientes, no un booleano: el botón necesita
 // poder señalar *qué* falta, no solo negarse a avanzar.
@@ -357,8 +366,8 @@ var MISSING = [];
 function canContinue() { return missing().length === 0; }
 function upsell() {
   var a = S.a;
-  if (a.finish === 'Lujo' && a.spaces.length <= 2) return 'Elegiste nivel lujo. A ese nivel de acabado tu contratista va a pedir planos y guía de materiales, y eso entra a partir de Premium.';
-  if (a.spaces.length > 4) return 'Tu proyecto tiene ' + a.spaces.length + ' espacios. Borsoga Edition está pensado para proyectos de este tamaño.';
+  if (a.finish === 'Lujo' && a.spaces.length <= 2) return TR('Elegiste nivel lujo. A ese nivel de acabado tu contratista va a pedir planos y guía de materiales, y eso entra a partir de Premium.');
+  if (a.spaces.length > 4) return fill(TR('Tu proyecto tiene {n} espacios. Borsoga Edition está pensado para proyectos de este tamaño.'), { n: a.spaces.length });
   return '';
 }
 
@@ -488,8 +497,8 @@ function step2() {
   h += group('¿Qué tan grande es tu proyecto?', 'Una idea general basta. Los detalles los tomamos en la visita.',
     '<div class="q-grid">' + SIZE_OPTIONS.map(function (o, i) {
       return '<button type="button" class="q-card" data-size="' + i + '" aria-pressed="' + (a.size === i) + '" style="flex-direction:column;align-items:flex-start;gap:8px">' +
-        '<span style="font-size:18px;font-weight:500">' + esc(o[0]) + '</span>' +
-        '<span style="font-size:14px;line-height:1.5;opacity:.72">' + esc(o[1]) + '</span>' +
+        '<span style="font-size:18px;font-weight:500">' + lbl(o[0]) + '</span>' +
+        '<span style="font-size:14px;line-height:1.5;opacity:.72">' + lbl(o[1]) + '</span>' +
         '<span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.6">' + esc(fill(t('qi_imgs_per_space'), { n: IMGS[i] })) + '</span></button>';
     }).join('') + '</div>' +
     '<div style="margin-top:16px;max-width:320px"><label style="display:block;font-size:14px;color:rgba(0,0,0,.6);margin-bottom:8px">' + esc(t('qi_sqft_q')) + ' <span style="opacity:.7">' + esc(t('qi_optional')) + '</span></label>' +
@@ -581,9 +590,9 @@ function step4() {
   var h = group('Estas son tres cocinas nuestras. Señala la que se parece a lo que quieres.', '',
     '<div class="q-grid">' + lv.map(function (o) {
       return '<button type="button" class="q-lvl" data-set="finish" data-val="' + esc(o[1]) + '" aria-pressed="' + (a.finish === o[1]) + '">' +
-        '<span class="q-slot">Proyecto real — ' + esc(o[1].toLowerCase()) + '</span>' +
-        '<span style="padding:16px 18px"><span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.45)">' + esc(o[0]) + '</span>' +
-        '<span style="display:block;font-size:19px;font-weight:600;margin-top:4px">' + esc(o[1]) + '</span></span></button>';
+        '<span class="q-slot">' + lbl('Proyecto real') + ' — ' + esc(TR(o[1]).toLowerCase()) + '</span>' +
+        '<span style="padding:16px 18px"><span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.45)">' + lbl(o[0]) + '</span>' +
+        '<span style="display:block;font-size:19px;font-weight:600;margin-top:4px">' + lbl(o[1]) + '</span></span></button>';
     }).join('') + '</div>', 'finish');
   if (a.finish) h += group('¿Qué tan claro tienes lo que quieres?', '', chips('clarity', CLARITY), 'clarity');
   return h;
@@ -599,11 +608,11 @@ function step5() {
   var h = group('Extras', 'Se cotizan aparte. Lo que no marques aquí queda fuera de tu proyecto.',
     '<div class="q-grid">' + ex.map(function (o) {
       return '<button type="button" class="q-card" data-check="extras" data-val="' + esc(o[0]) + '" data-excl="false" aria-pressed="' + (a.extras.indexOf(o[0]) > -1) + '" style="align-items:flex-start">' +
-        '<span class="q-box" style="margin-top:3px"></span><span><span style="display:block">' + esc(o[0]) + '</span>' +
-        '<span style="display:block;font-size:14px;line-height:1.5;color:rgba(0,0,0,.6);margin-top:4px">' + esc(o[1]) + '</span></span></button>';
+        '<span class="q-box" style="margin-top:3px"></span><span><span style="display:block">' + lbl(o[0]) + '</span>' +
+        '<span style="display:block;font-size:14px;line-height:1.5;color:rgba(0,0,0,.6);margin-top:4px">' + lbl(o[1]) + '</span></span></button>';
     }).join('') + '</div>');
   var up = upsell();
-  if (up) h += '<div class="q-note warn"><strong style="display:block;margin-bottom:6px">' + esc(t('qi_a_note')) + '</strong>' + esc(TR(up)) + '</div>';
+  if (up) h += '<div class="q-note warn"><strong style="display:block;margin-bottom:6px">' + esc(t('qi_a_note')) + '</strong>' + esc(up) + '</div>';
 
   // Venta cruzada: qué le ofrecemos depende de para qué es el proyecto.
   var b2 = branchOf(a);
@@ -653,57 +662,81 @@ function step6() {
 function summary() {
   var a = S.a, b = branchOf(a), r = [];
   var add = function (l, v) { if (v) r.push([l, v]); };
+  // Los valores se traducen uno a uno ANTES de unirlos: la frase ya unida no
+  // existe en el diccionario.
+  var L = function (xs, sep) { return xs.filter(Boolean).map(TR).join(sep || ' · '); };
   add('Plan recomendado', recommendPlan());
-  add('Proyecto', [a.projectType, a.dealType].filter(Boolean).join(' · '));
-  add('Propiedad', b.isCom ? (a.commercialType === 'Otro' ? a.commercialOther : a.commercialType) : a.propertyType);
-  add('Obra', [a.workType, b.isNew ? a.stage : a.year].filter(Boolean).join(' · '));
-  add('Espacios', spaceSummary());
-  if (b.asksMillwork) add('Muebles a la medida', a.millwork.join(' · '));
-  if (b.asksPlumbing) add('Agua y desagüe', a.plumbing);
-  if (b.asksAppliances) add('Electrodomésticos', a.appliances);
-  if (b.asksLaundry) add('Lavandería', [a.laundry, a.laundryLayout].filter(Boolean).join(' · '));
-  if (b.asksBar) add('Equipo de barra', a.barEquip);
+  add('Proyecto', L([a.projectType, a.dealType]));
+  add('Propiedad', TR(b.isCom ? (a.commercialType === 'Otro' ? a.commercialOther : a.commercialType) : a.propertyType));
+  add('Obra', L([a.workType, b.isNew ? a.stage : a.year]));
+  add('Espacios', spaceSummary(true));
+  if (b.asksMillwork) add('Muebles a la medida', L(a.millwork));
+  if (b.asksPlumbing) add('Agua y desagüe', TR(a.plumbing));
+  if (b.asksAppliances) add('Electrodomésticos', TR(a.appliances));
+  if (b.asksLaundry) add('Lavandería', L([a.laundry, a.laundryLayout]));
+  if (b.asksBar) add('Equipo de barra', TR(a.barEquip));
   add('Mobiliario que conserva', a.keepFurniture === KEEP_YES
-    ? KEEP_YES + ' · ' + a.keepSpaces.join(', ') : a.keepFurniture);
-  add('Piezas decididas', a.pieces + (a.piecesLink ? ' · ' + a.piecesLink : ''));
-  if (b.asksPool) add('Piscina', a.pool);
-  if (b.asksStructure) add('Paredes y fachada', a.structure.join(' · '));
-  if (structuralFlag()) add('Marcado', 'Obra estructural o de fachada. Lo revisamos antes de cotizar.');
-  if (b.asksHoa) add(b.isHouse ? 'HOA' : 'Asociación', a.hoa);
-  if (b.asksHealth) add('Departamento de salud', a.health);
-  add('Material', a.noMaterial ? 'Todavía sin material'
-    : [FILES.photos.length ? FILES.photos.length + ' fotos' : '', FILES.planFiles.length ? FILES.planFiles.length + ' planos' : ''].filter(Boolean).join(' · '));
-  add('Tamaño', a.size >= 0 ? SIZE_OPTIONS[a.size][0] + (a.sqft ? ' · ' + a.sqft + ' pies²' : '') : '');
-  add('Imágenes', imageTotal() + ' en total');
-  add('Nivel de acabado', a.finish);
-  add('Punto de partida', a.clarity);
-  add('Presupuesto declarado', a.budget);
-  add('Extras', a.extras.length ? a.extras.join(', ') : 'Ninguno');
+    ? TR(KEEP_YES) + ' · ' + L(a.keepSpaces, ', ') : TR(a.keepFurniture));
+  add('Piezas decididas', TR(a.pieces) + (a.piecesLink ? ' · ' + a.piecesLink : ''));
+  if (b.asksPool) add('Piscina', TR(a.pool));
+  if (b.asksStructure) add('Paredes y fachada', L(a.structure));
+  if (structuralFlag()) add('Marcado', TR('Obra estructural o de fachada. Lo revisamos antes de cotizar.'));
+  if (b.asksHoa) add(b.isHouse ? 'HOA' : 'Asociación', TR(a.hoa));
+  if (b.asksHealth) add('Departamento de salud', TR(a.health));
+  add('Material', a.noMaterial ? TR('Todavía sin material')
+    : [FILES.photos.length ? FILES.photos.length + ' ' + TR('fotos') : '', FILES.planFiles.length ? FILES.planFiles.length + ' ' + TR('planos') : ''].filter(Boolean).join(' · '));
+  add('Tamaño', a.size >= 0 ? TR(SIZE_OPTIONS[a.size][0]) + (a.sqft ? ' · ' + a.sqft + ' ' + TR('pies²') : '') : '');
+  add('Imágenes', imageTotal() + ' ' + TR('en total'));
+  add('Nivel de acabado', TR(a.finish));
+  add('Punto de partida', TR(a.clarity));
+  add('Presupuesto declarado', TR(a.budget));
+  add('Extras', a.extras.length ? L(a.extras, ', ') : TR('Ninguno'));
   add('Dirección', [a.street, a.city, a.state, a.zip].filter(Boolean).join(', '));
-  add('Cuándo', a.timing);
-  add('Fecha límite', a.deadline === DEADLINE_FIXED ? [a.deadlineDate, a.deadlineWhy].filter(Boolean).join(' · ') : a.deadline);
-  add('Quién decide', a.decider);
-  add('Portafolio', a.portfolio);
-  add('Más al terminar', a.showcase.filter(function (v) { return v !== SHOWCASE_NONE; }).join(', '));
+  add('Cuándo', TR(a.timing));
+  add('Fecha límite', a.deadline === DEADLINE_FIXED ? [a.deadlineDate, a.deadlineWhy].filter(Boolean).join(' · ') : TR(a.deadline));
+  add('Quién decide', TR(a.decider));
+  add('Portafolio', TR(a.portfolio));
+  add('Más al terminar', L(a.showcase.filter(function (v) { return v !== SHOWCASE_NONE; }), ', '));
   if (a.timing === TIMING_EXPLORING && a.exploring) add('Qué le haría decidirse', a.exploring);
-  if (a.pro === PRO_REFERRAL) add('Marcado', 'Pide que le recomendemos contratista.');
-  if (a.city && !isMiamiDade(a.city)) add('Marcado', 'Fuera de Miami-Dade.');
-  if (unsureCount() >= 4) add('Marcado', 'Varias respuestas sin definir. Va a rango y a llamada.');
+  if (a.pro === PRO_REFERRAL) add('Marcado', TR('Pide que le recomendemos contratista.'));
+  if (a.city && !isMiamiDade(a.city)) add('Marcado', TR('Fuera de Miami-Dade.'));
+  if (unsureCount() >= 4) add('Marcado', TR('Varias respuestas sin definir. Va a rango y a llamada.'));
   return r;
 }
 
+// El servidor decide el tipo de respuesta y devuelve sus textos en español. Si
+// coincide con el cálculo local se usan los textos locales, que ya vienen en
+// el idioma de la página; si no, los del servidor pasan por el diccionario.
+function finalRoute() {
+  var loc = route(), srv = S.result;
+  return srv && srv[0] !== loc[0] ? [srv[0], srvText(srv[1]), srvText(srv[2])] : loc;
+}
+// «Tu proyecto tiene 7 escenas…» llega con el número dentro: se busca la
+// plantilla con {n} y se rellena.
+function srvText(s) {
+  var tr = TR(s), m = /\d+/.exec(s || '');
+  if (tr !== s || !m) return tr;
+  var tpl = s.replace(m[0], '{n}'), t2 = TR(tpl);
+  return t2 !== tpl ? fill(t2, { n: m[0] }) : s;
+}
+// Los errores del servidor también llegan en español.
+function srvError(e) {
+  var m = /^Falta un dato obligatorio \((.+)\)\.$/.exec(e || '');
+  return m ? fill(TR('Falta un dato obligatorio ({campo}).'), { campo: m[1] }) : TR(e);
+}
+
 function doneScreen() {
-  var rt = S.result || route();
+  var rt = finalRoute();
   var h = '<div style="max-width:62ch">' +
-    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 18px">Listo</p>' +
+    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 18px">' + lbl('Listo') + '</p>' +
     '<h1 style="margin:0;font-size:clamp(32px,5vw,54px);font-weight:600;letter-spacing:-.03em;line-height:1.02">' + esc(rt[1]) + '</h1>';
-  if (rt[0] === 'mail') h += '<p style="display:flex;align-items:baseline;gap:14px;margin:26px 0 0"><strong style="font-size:34px;font-weight:600;letter-spacing:-.03em">48</strong><span style="font-size:16px;color:rgba(0,0,0,.7)">Te escribimos en persona en menos de 48 horas</span></p>';
+  if (rt[0] === 'mail') h += '<p style="display:flex;align-items:baseline;gap:14px;margin:26px 0 0"><strong style="font-size:34px;font-weight:600;letter-spacing:-.03em">48</strong><span style="font-size:16px;color:rgba(0,0,0,.7)">' + lbl('Te escribimos en persona en menos de 48 horas') + '</span></p>';
   h += '<p style="margin:22px 0 0;font-size:17px;line-height:1.6;color:rgba(0,0,0,.72)">' + esc(rt[2]) + '</p>';
   h += '<div class="q-note" style="margin-top:26px"><strong style="display:block;margin-bottom:6px">' + esc(t('qi_your_plan')) + '</strong>' +
     (PICKED ? fill(t('qi_plan_picked'), { plan: esc(PICKED) })
             : fill(t('qi_plan_reco'), { plan: esc(recommendPlan()) })) + '</div>';
   h += '</div><dl class="q-sum">' + summary().map(function (p) {
-    return '<div><dt>' + lbl(p[0]) + '</dt><dd>' + lbl(p[1]) + '</dd></div>';
+    return '<div><dt>' + lbl(p[0]) + '</dt><dd>' + esc(p[1]) + '</dd></div>';
   }).join('') + '</dl>' +
   '<p class="q-hint" style="margin-top:28px">' + esc(t('qi_confirm_visit')) + '</p>';
   return h;
@@ -728,7 +761,7 @@ function render() {
     (S.touched || PICKED ? '#000' : 'rgba(0,0,0,.45)') + ';border-radius:50%;flex:none;display:block' +
     ((S.touched || PICKED) && idx > 1 ? ';box-shadow:inset 0 0 0 1.5px #fff, inset 0 0 0 3px #000' : '') +
     ((S.touched || PICKED) && idx > 2 ? ', inset 0 0 0 4.5px #fff, inset 0 0 0 6px #000' : '');
-  document.getElementById('q-saved').textContent = S.touched && !S.done ? 'Guardado' : '';
+  document.getElementById('q-saved').textContent = S.touched && !S.done ? TR('Guardado') : '';
 
   if (S.done) {
     nav.hidden = true;
@@ -740,8 +773,8 @@ function render() {
   MISSING = missing();
   var fn = [step1, step2, step3, step4, step5, step6][S.step - 1];
   main.innerHTML = '<div style="margin-bottom:clamp(28px,4vw,44px)">' +
-    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 12px">' + STEPS[S.step-1][0] + '</p>' +
-    '<h1 style="margin:0;font-size:clamp(28px,4.4vw,44px);font-weight:600;letter-spacing:-.03em;line-height:1.05">' + STEPS[S.step-1][1] + '</h1></div>' + fn();
+    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 12px">' + lbl(STEPS[S.step-1][0]) + '</p>' +
+    '<h1 style="margin:0;font-size:clamp(28px,4.4vw,44px);font-weight:600;letter-spacing:-.03em;line-height:1.05">' + lbl(STEPS[S.step-1][1]) + '</h1></div>' + fn();
 
   document.getElementById('q-back').disabled = S.step === 1;
   document.getElementById('q-count').textContent = fill(t('step_counter'), { n: S.step });
@@ -841,18 +874,18 @@ document.getElementById('q-next').addEventListener('click', function () {
 });
 document.getElementById('q-save').addEventListener('click', function () {
   persist();
-  alert('Tus respuestas quedan guardadas en este navegador. Vuelve cuando quieras desde el mismo dispositivo.');
+  alert(TR('Tus respuestas quedan guardadas en este navegador. Vuelve cuando quieras desde el mismo dispositivo.'));
 });
 
 // ---------------------------------------------------------------- envío
 function submit() {
   var a = S.a;
-  if (a.bot) { S.notice = 'No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'; return render(); }
-  if (isDisposable(a.email)) { S.notice = 'Necesitamos un correo donde podamos enviarte la propuesta.'; return render(); }
+  if (a.bot) { S.notice = TR('No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'); return render(); }
+  if (isDisposable(a.email)) { S.notice = TR('Necesitamos un correo donde podamos enviarte la propuesta.'); return render(); }
   var sent = {};
   try { sent = JSON.parse(localStorage.getItem(SUBMIT_KEY) || '{}'); } catch (e) {}
   var k = String(a.email).trim().toLowerCase();
-  if ((sent[k] || 0) >= MAX_SUBMITS) { S.notice = 'Ya recibimos tu proyecto. Si necesitas cambiar algo, escríbenos.'; return render(); }
+  if ((sent[k] || 0) >= MAX_SUBMITS) { S.notice = TR('Ya recibimos tu proyecto. Si necesitas cambiar algo, escríbenos.'); return render(); }
 
   S.sending = true; S.notice = ''; render();
 
@@ -875,7 +908,7 @@ function submit() {
           var safe = item.file.name.replace(/[^\w.\-]+/g, '_').slice(-80);
           return window.borsogaUpload(item.file, 'leads/' + lote + '/' + item.kind + '/' + safe,
             function (pct) {
-              S.notice = 'Subiendo ' + (hechos + 1) + ' de ' + pending.length + ' · ' + pct + '%';
+              S.notice = fill(t('q_uploading'), { n: hechos + 1, total: pending.length, pct: pct });
               var n = document.getElementById('q-next');
               if (n) {
                 n.querySelector('.q-btn-label').textContent = S.notice;
@@ -907,7 +940,7 @@ function submit() {
     .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
     .then(function (jr) {
       S.sending = false; S.notice = '';
-      if (!jr || !jr.ok) { S.notice = (jr && jr.error) || 'No pudimos enviarlo. Inténtalo otra vez o escríbenos.'; return render(); }
+      if (!jr || !jr.ok) { S.notice = (jr && jr.error) ? srvError(jr.error) : TR('No pudimos enviarlo. Inténtalo otra vez o escríbenos.'); return render(); }
       sent[k] = (sent[k] || 0) + 1;
       try { localStorage.setItem(SUBMIT_KEY, JSON.stringify(sent)); localStorage.removeItem(KEY); } catch (e) {}
       S.result = jr.route || route();
@@ -916,8 +949,8 @@ function submit() {
     })
     .catch(function (err) {
       S.sending = false;
-      S.notice = (err && err.message ? 'No pudimos subir tus archivos: ' + err.message
-                                     : 'No pudimos enviarlo. Revisa tu conexión e inténtalo otra vez.');
+      S.notice = (err && err.message ? TR('No pudimos subir tus archivos:') + ' ' + err.message
+                                     : TR('No pudimos enviarlo. Revisa tu conexión e inténtalo otra vez.'));
       render();
     });
 }
