@@ -138,12 +138,16 @@ flex:none;margin-top:6px}
 .qb-in{width:min(100%,1080px);margin:0 auto;padding:14px clamp(20px,4vw,40px);
 display:flex;align-items:center;gap:18px}
 /* El envoltorio de los botones solo existe para el móvil: en escritorio se
-   deshace y el orden visual lo fija `order`. */
+   deshace y el orden visual lo fija `order`.
+   #q-back y #q-next van SIEMPRE bajo .qb-nav: la ruta única de /plans mete esta
+   hoja en todas las páginas del embudo, y los configuradores usan esos mismos
+   ids en su barra. Sueltos, les invertían Guardar/Atrás y el relleno de 28 px
+   aplastaba la flecha de "Continuar" hasta dejar un botón negro vacío. */
 .qb-botones{display:contents}
-#q-back{order:1}
+.qb-nav #q-back{order:1}
 .qb-save{order:2}
 .qb-estado{order:3}
-#q-next{order:4}
+.qb-nav #q-next{order:4}
 .qb-txt{background:transparent;border:none;font-family:inherit;font-size:11px;font-weight:600;
 letter-spacing:.12em;text-transform:uppercase;color:#000;padding:14px 0;min-height:44px;
 border-bottom:1px solid #000;cursor:pointer}
@@ -200,9 +204,9 @@ cursor:default}
   .qb-meta{font-size:10px}
   .qb-botones{grid-row:2;grid-column:1/-1;display:flex;align-items:stretch;
     justify-content:center;gap:10px;padding-top:6px}
-  #q-back{font-size:10px}
+  .qb-nav #q-back{font-size:10px}
   #qb-count{display:inline}
-  #q-next{padding:18px 28px}
+  .qb-nav #q-next{padding:18px 28px}
   /* Los dos extremos del eje y sus cinco puntos no caben en una línea: el
      rótulo de la derecha se salía de la pantalla. Pasan a dos filas. */
   .q-ax{display:grid;grid-template-columns:1fr auto;gap:10px;padding:16px 0}
