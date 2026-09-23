@@ -11,7 +11,8 @@
 //           it carries the Plans link, so the funnel and the site link both
 //           ways through one component. The funnel adds its language switcher
 //           into the navbar's nav-extra slot, because the bar it used to live
-//           in is gone.
+//           in is gone — and, on phones, into the menu (menu-extra), because
+//           beside the logo it collides with the centered CTA.
 //   chrome  the funnel's own <main> + footer. Off for pages that bring their
 //           own (the home page's curtain footer, the questionnaires' shells).
 //
@@ -99,6 +100,13 @@ const xDefault = route(routeKey, "en");
     nav && (
       <Fragment slot="nav-extra">
         <LangSwitcher routeKey={routeKey} lang={lang} color="currentColor" id="nav-lang" />
+      </Fragment>
+    )
+  }
+  {
+    nav && (
+      <Fragment slot="menu-extra">
+        <LangSwitcher routeKey={routeKey} lang={lang} color="#fff" id="menu-lang" />
       </Fragment>
     )
   }

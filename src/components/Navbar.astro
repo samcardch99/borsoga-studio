@@ -168,6 +168,11 @@ const {
                 </a>
             </li>
         </ul>
+        <!-- The funnel's language switcher on phones. Beside the logo it runs
+             under the centered CTA, so below md it lives here instead. -->
+        <div class="navm__extra">
+            <slot name="menu-extra" />
+        </div>
     </nav>
 </div>
 
@@ -219,6 +224,13 @@ const {
     }
     #main-nav[data-theme="dark"] :global(#nav-lang) {
         color: #000;
+    }
+    /* Phones center the CTA, which lands right on top of it: the menu's copy
+       (#menu-lang) takes over below md, where the CTA moves to the right. */
+    @media (max-width: 767px) {
+        #main-nav :global(#nav-lang) {
+            display: none;
+        }
     }
     #main-nav[data-theme="dark"] .nav-logo {
         filter: invert(1);
@@ -421,6 +433,37 @@ const {
         flex: none;
         width: clamp(2.6rem, 9vw, 3.8rem);
         height: clamp(2.6rem, 9vw, 3.8rem);
+    }
+    /* Language switcher (funnel only) — enters after the last item. The bar
+       keeps its own from md up, so this one would be a duplicate there. */
+    .navm__extra {
+        opacity: 0;
+        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    :global(html.menu-open) .navm__extra {
+        opacity: 1;
+        transition-delay: 0.5s;
+    }
+    /* The margin sits on the switcher, not the wrapper: on the rest of the
+       site the wrapper is empty and must not nudge the centered list. */
+    .navm__extra :global(.plans-langs) {
+        margin-top: 2.4rem;
+        gap: 14px;
+    }
+    .navm__extra :global(.plans-lang),
+    .navm__extra :global(.plans-lang-sep) {
+        font-size: 14px;
+    }
+    /* Taller tap target without changing how the row reads. */
+    .navm__extra :global(.plans-lang) {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+    @media (min-width: 768px) {
+        .navm__extra {
+            display: none;
+        }
     }
 
     /* While open: nav + CTA layer rise above the overlay, always light-on-black */
