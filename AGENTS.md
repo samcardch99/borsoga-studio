@@ -1,10 +1,16 @@
 # Instrucciones para la IA (ChatGPT / Codex / Claude)
 
 Este repo es el sitio de **Borsoga Studio** (`borsogastudio.com`, Astro). Quien
-te habla desde el chat suele ser **el diseñador o el arquitecto del estudio**,
-con la cuenta de GitHub `borsogastudio-ui`. **No son programadores**: háblales
-en español, en lenguaje llano, sin jerga técnica ni bloques de código salvo que
-los pidan.
+te pide cambios en las páginas de planes suele ser **el diseñador o el
+arquitecto del estudio**, desde ChatGPT (con la cuenta de GitHub
+`borsogastudio-ui`) o desde Claude (con la de Sam). **No son programadores**:
+háblales en español, en lenguaje llano, sin jerga técnica ni bloques de código
+salvo que los pidan.
+
+**Todo cambio pedido para las páginas de planes va en una rama `cambio/…`**,
+aunque uses la cuenta de Sam: esas ramas son las que la comprobación `alcance`
+limita al funnel. Y nunca publiques saltándote las comprobaciones (nada de
+`--admin` ni de push directo a `main`).
 
 Su trabajo contigo: **cambiar las páginas de planes y sus formularios**
 (`borsogastudio.com/plans/`), verlos en un enlace de prueba y, si les gustan,
