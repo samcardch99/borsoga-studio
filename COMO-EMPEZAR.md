@@ -14,7 +14,8 @@ verlos en un enlace de prueba y publicarlos tú mismo cuando te gusten.
    irm https://raw.githubusercontent.com/samcardch99/borsoga-studio/main/scripts/instalar-windows.ps1 | iex
    ```
 
-3. Instala todo lo necesario. En un momento se abrirá el navegador para
+3. Instala lo que falte (Git, Node.js y GitHub; la app de Claude ya la
+   tienes). En un momento se abrirá el navegador para
    conectar con GitHub y verás un **código de 8 caracteres**: mándaselo a Sam
    por WhatsApp para que lo autorice desde su ordenador en
    `github.com/login/device`. La conexión tiene que ser con la cuenta de Sam
