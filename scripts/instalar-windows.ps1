@@ -28,20 +28,16 @@ if (-not (Tiene "winget")) {
 }
 
 # 1. Programas --------------------------------------------------------------
-Paso "Instalando programas (Git, Node.js, GitHub CLI, Claude)"
+Paso "Instalando programas (Git, Node.js, GitHub CLI)"
 $programas = @(
   @{ Id = "Git.Git";           Cmd = "git"    },
   @{ Id = "OpenJS.NodeJS.LTS"; Cmd = "node"   },
-  @{ Id = "GitHub.cli";        Cmd = "gh"     },
-  @{ Id = "Anthropic.Claude";  Cmd = $null    }
+  @{ Id = "GitHub.cli";        Cmd = "gh"     }
 )
 foreach ($p in $programas) {
-  if ($p.Cmd -and (Tiene $p.Cmd)) { Write-Host "  $($p.Id): ya instalado"; continue }
+  if (Tiene $p.Cmd) { Write-Host "  $($p.Id): ya instalado"; continue }
   Write-Host "  Instalando $($p.Id)..."
   winget install --id $p.Id -e --silent --accept-source-agreements --accept-package-agreements | Out-Null
-  if ($LASTEXITCODE -ne 0 -and $p.Id -eq "Anthropic.Claude") {
-    Write-Host "  No se pudo instalar Claude solo: descargalo de https://claude.ai/download" -ForegroundColor Yellow
-  }
 }
 RefrescarPath
 foreach ($c in "git", "node", "gh") {
@@ -95,6 +91,7 @@ try { npm ci } finally { Pop-Location }
 if ($LASTEXITCODE -ne 0) { Write-Host "Fallo la instalacion de dependencias. Vuelve a ejecutar el comando." -ForegroundColor Red; return }
 
 Write-Host "`nListo." -ForegroundColor Green
-Write-Host "Abre Claude, entra en la pestana 'Code', elige la carpeta:"
+Write-Host "Abre la app de Claude (si no la tienes: https://claude.ai/download),"
+Write-Host "entra en la pestana 'Code' y elige la carpeta:"
 Write-Host "  $Carpeta"
 Write-Host "y pide el cambio que quieras en las paginas de planes."

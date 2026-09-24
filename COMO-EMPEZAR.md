@@ -1,31 +1,42 @@
 # Cambiar las páginas de planes con Claude
 
-Guía para el equipo del estudio (Windows). Con esto puedes cambiar las páginas
+Guía para el equipo del estudio (Windows y Mac). Con esto puedes cambiar las páginas
 de planes de `borsogastudio.com/plans/` y sus formularios hablando con Claude,
 verlos en un enlace de prueba y publicarlos tú mismo cuando te gusten.
 
 ## Una sola vez: preparar el ordenador
 
-1. Abre **PowerShell**: menú Inicio, escribe `PowerShell` y ábrelo. No hace
-   falta "como administrador".
-2. Copia esta línea, pégala en PowerShell (clic derecho pega) y pulsa Enter:
+**En Windows:** abre **PowerShell** (menú Inicio, escribe `PowerShell`; no hace
+falta "como administrador"), pega esta línea (clic derecho pega) y pulsa Enter:
 
-   ```
-   irm https://raw.githubusercontent.com/samcardch99/borsoga-studio/main/scripts/instalar-windows.ps1 | iex
-   ```
+```
+irm https://raw.githubusercontent.com/samcardch99/borsoga-studio/main/scripts/instalar-windows.ps1 | iex
+```
 
-3. Instala todo lo necesario. En un momento se abrirá el navegador para
-   conectar con GitHub y verás un **código de 8 caracteres**: mándaselo a Sam
-   por WhatsApp para que lo autorice desde su ordenador en
-   `github.com/login/device`. La conexión tiene que ser con la cuenta de Sam
-   (`samcardch99`).
-4. Cuando ponga **"Listo."** ya está. Si algo falla, cierra PowerShell, ábrelo
-   otra vez y repite el paso 2: lo que ya estaba hecho se salta.
+**En Mac:** abre **Terminal** (Cmd+Espacio, escribe `Terminal`), pega esta línea
+(Cmd+V) y pulsa Enter. Si te pide la contraseña del Mac, escríbela aunque no
+se vea nada al teclear, y pulsa Enter:
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/samcardch99/borsoga-studio/main/scripts/instalar-mac.sh)"
+```
+
+Después, en los dos casos:
+
+1. Instala lo que falte (Git, Node.js y GitHub; la app de Claude ya la tienes).
+2. En un momento se abrirá el navegador para conectar con GitHub y verás un
+   **código de 8 caracteres**: mándaselo a Sam por WhatsApp para que lo
+   autorice desde su ordenador en `github.com/login/device`. La conexión tiene
+   que ser con la cuenta de Sam (`samcardch99`).
+3. La primera vez descarga el sitio, que pesa bastante: puede tardar unos
+   minutos.
+4. Cuando ponga **"Listo."** ya está. Si algo falla, cierra la ventana, abre
+   otra y vuelve a pegar la línea: lo que ya estaba hecho se salta.
 
 ## Cada vez que quieras cambiar algo
 
 1. Abre la app de **Claude** y entra en la pestaña **Code**.
-2. Elige la carpeta `Documentos\borsoga-studio`.
+2. Elige la carpeta `borsoga-studio` dentro de **Documentos**.
 3. Pide el cambio con tus palabras. Por ejemplo:
 
    > En el cuestionario de diseño web, quita Squarespace de las opciones de
@@ -38,7 +49,7 @@ verlos en un enlace de prueba y publicarlos tú mismo cuando te gusten.
    ahí puedes rellenar y enviar los formularios, no se guarda nada.
 6. ¿Algo no te convence? Díselo y lo ajusta: el mismo enlace se actualiza.
 7. ¿Te gusta? Dile **"publícalo"**. En unos 3 minutos estará en
-   `borsogastudio.com/plans/`. Si no lo ves, recarga con **Ctrl+F5**.
+   `borsogastudio.com/plans/`. Si no lo ves, recarga con **Ctrl+F5** (Windows) o **Cmd+Shift+R** (Mac).
 
 ## Lo que no se puede hacer solo
 
