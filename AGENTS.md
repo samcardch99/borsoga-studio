@@ -9,7 +9,8 @@ salvo que los pidan.
 
 **Todo cambio pedido para las páginas de planes va en una rama `cambio/…`**,
 aunque uses la cuenta de Sam: esas ramas son las que la comprobación `alcance`
-limita al funnel. Y nunca publiques saltándote las comprobaciones (nada de
+limita al funnel. Si trabajas en Claude Code en la web y la sesión te impone
+su propia rama (`claude/…`), úsala: también está limitada. Y nunca publiques saltándote las comprobaciones (nada de
 `--admin` ni de push directo a `main`).
 
 Su trabajo contigo: **cambiar las páginas de planes y sus formularios**
@@ -81,6 +82,13 @@ Todo el funnel existe en inglés (`/plans/…`) y en español (`/plans/es/…`).
 
    Por ejemplo, `cambio/titulo-web` →
    `https://borsoga-studio-git-cambio-titulo-web-samcard1999s-projects.vercel.app/plans/`
+
+   Si la rama tiene más de 20 caracteres (p. ej. una `claude/…` impuesta por
+   la sesión), el enlace se acorta con un código y no se puede adivinar.
+   Búscalo en el comentario que Vercel deja en el PR. El repo es público, así
+   que se puede leer sin credenciales:
+   `curl -s https://api.github.com/repos/samcardch99/borsoga-studio/issues/<n>/comments`
+   (el enlace es el `https://borsoga-studio-git-…vercel.app` que aparece ahí).
 
    Dale **el enlace directo a la página que cambió**, en los dos idiomas (ver
    tabla abajo). Avisa de que tarda uno o dos minutos en estar listo y de que

@@ -9,7 +9,9 @@ name: Alcance
 #
 # So the author alone cannot tell them apart. AGENTS.md makes the AI put every
 # requested change on a `cambio/…` branch, and that branch prefix is fenced
-# whoever opens it. Only Sam's PRs from other branches are unrestricted.
+# whoever opens it — as is `claude/…`, the branch Claude Code on the web
+# (claude.ai/code) may create on its own. Only Sam's PRs from other branches
+# are unrestricted.
 #
 # `pull_request_target` runs this file as it is on `main`, not as the PR has
 # it, so a PR cannot switch the check off by editing it. It never checks out
@@ -36,7 +38,7 @@ jobs:
     steps:
       - name: Solo archivos del funnel
         run: |
-          if [ "$AUTHOR" = "samcardch99" ] && [[ "$BRANCH" != cambio/* ]]; then
+          if [ "$AUTHOR" = "samcardch99" ] && [[ "$BRANCH" != cambio/* ]] && [[ "$BRANCH" != claude/* ]]; then
             echo "PR de Sam fuera de una rama cambio/: sin límite de alcance."
             exit 0
           fi
