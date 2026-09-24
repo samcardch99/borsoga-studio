@@ -5,6 +5,9 @@
 // Strings are Spanish because Spanish is the translation index — they go
 // through T() at render time (see plans/i18n). In the comparison tables a cell
 // is `true` (a dot: included), `false` (a dash: not included), or a string.
+//
+// The studio edits this file through an AI and publishes it without review —
+// see AGENTS.md for what that AI may and may not change.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const BRAND_APLICACIONES = [
