@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-  # Started by aprobar.yml after an approved PR is merged (its merge, made with
-  # GITHUB_TOKEN, does not fire `push`). Also handy to redeploy by hand.
+  # Redeploy by hand (Actions → Build → Run workflow), e.g. to roll back after
+  # reverting a commit.
   workflow_dispatch:
 
 # One production deploy at a time; a newer one waits instead of racing.
