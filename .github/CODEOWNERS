@@ -11,12 +11,11 @@
 # Everything: Sam only.
 *                              @samcardch99
 
-# The /plans funnel — its pages, forms, texts and styles. The designer and the
-# architect can publish these on their own.
-# TODO: add their GitHub usernames to the three lines below.
-/src/plans/                    @samcardch99
-/src/components/plans/         @samcardch99
-/src/styles/plans*.css         @samcardch99
+# The /plans funnel — its pages, forms, texts and styles. The studio account
+# (borsogastudio-ui) can publish these on its own.
+/src/plans/                    @samcardch99 @borsogastudio-ui
+/src/components/plans/         @samcardch99 @borsogastudio-ui
+/src/styles/plans*.css         @samcardch99 @borsogastudio-ui
 
 # Never theirs, even inside the funnel: the API origin and the routes.
 /src/plans/config.ts           @samcardch99
