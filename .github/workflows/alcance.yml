@@ -1,10 +1,15 @@
 name: Alcance
 
-# Required check on `main`. The studio account (borsogastudio-ui) publishes
-# its own changes to the /plans funnel with no human review — it writes them
-# through ChatGPT or Claude and merges them itself. This check is what keeps
-# that inside the funnel: a PR by anyone but Sam that touches a file outside
-# the list below cannot be merged.
+# Required check on `main`. The designer and the architect publish their own
+# changes to the /plans funnel with no human review, and this check is what
+# keeps those changes inside the funnel. They come two ways:
+#
+#   · ChatGPT/Codex, as the studio account `borsogastudio-ui`;
+#   · Claude Code — Sam's own, so the PR is authored by samcardch99.
+#
+# So the author alone cannot tell them apart. AGENTS.md makes the AI put every
+# requested change on a `cambio/…` branch, and that branch prefix is fenced
+# whoever opens it. Only Sam's PRs from other branches are unrestricted.
 #
 # `pull_request_target` runs this file as it is on `main`, not as the PR has
 # it, so a PR cannot switch the check off by editing it. It never checks out
@@ -27,11 +32,12 @@ jobs:
       GH_REPO: ${{ github.repository }}
       PR: ${{ github.event.pull_request.number }}
       AUTHOR: ${{ github.event.pull_request.user.login }}
+      BRANCH: ${{ github.event.pull_request.head.ref }}
     steps:
       - name: Solo archivos del funnel
         run: |
-          if [ "$AUTHOR" = "samcardch99" ]; then
-            echo "PR de Sam: sin límite de alcance."
+          if [ "$AUTHOR" = "samcardch99" ] && [[ "$BRANCH" != cambio/* ]]; then
+            echo "PR de Sam fuera de una rama cambio/: sin límite de alcance."
             exit 0
           fi
 
@@ -46,7 +52,7 @@ jobs:
           if [ -n "$fuera" ]; then
             echo "Archivos fuera del funnel:"; echo "$fuera"
             lista=$(echo "$fuera" | sed 's/^/- `/; s/$/`/')
-            gh pr comment "$PR" --body "🚫 **Este cambio no se puede publicar solo**: toca archivos fuera de los formularios y páginas de planes, que necesitan revisión de Sam.
+            gh pr comment "$PR" --body "🚫 **Este cambio no se puede publicar solo**: toca archivos fuera de los formularios y páginas de planes, y eso tiene que hacerlo Sam.
 
           $lista"
             exit 1
