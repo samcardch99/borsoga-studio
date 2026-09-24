@@ -1,0 +1,54 @@
+name: Alcance
+
+# Required check on `main`. The studio account (borsogastudio-ui) publishes
+# its own changes to the /plans funnel with no human review — it writes them
+# through ChatGPT or Claude and merges them itself. This check is what keeps
+# that inside the funnel: a PR by anyone but Sam that touches a file outside
+# the list below cannot be merged.
+#
+# `pull_request_target` runs this file as it is on `main`, not as the PR has
+# it, so a PR cannot switch the check off by editing it. It never checks out
+# the PR's code — it only reads the list of changed files — so running with
+# the base branch's token is safe.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  alcance:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      AUTHOR: ${{ github.event.pull_request.user.login }}
+    steps:
+      - name: Solo archivos del funnel
+        run: |
+          if [ "$AUTHOR" = "samcardch99" ]; then
+            echo "PR de Sam: sin límite de alcance."
+            exit 0
+          fi
+
+          # The funnel: pages, forms, texts, styles and images. config.ts holds
+          # the API origin and the routes, so it stays Sam's.
+          PERMITIDO='^(src/plans/|src/components/plans/|public/plans/|src/styles/plans[^/]*\.css$)'
+          PROHIBIDO='^src/plans/config\.ts$'
+
+          todos=$(gh api --paginate "repos/$GH_REPO/pulls/$PR/files" --jq '.[] | .filename, (.previous_filename // empty)' | sort -u)
+          fuera=$( { echo "$todos" | grep -Ev "$PERMITIDO"; echo "$todos" | grep -E "$PROHIBIDO"; } | sort -u | sed '/^$/d')
+
+          if [ -n "$fuera" ]; then
+            echo "Archivos fuera del funnel:"; echo "$fuera"
+            lista=$(echo "$fuera" | sed 's/^/- `/; s/$/`/')
+            gh pr comment "$PR" --body "🚫 **Este cambio no se puede publicar solo**: toca archivos fuera de los formularios y páginas de planes, que necesitan revisión de Sam.
+
+          $lista"
+            exit 1
+          fi
+          echo "Todo dentro del funnel."
