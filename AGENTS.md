@@ -2,8 +2,9 @@
 
 Este repo es el sitio de **Borsoga Studio** (`borsogastudio.com`, Astro). Quien
 te pide cambios en las páginas de planes suele ser **el diseñador o el
-arquitecto del estudio**, desde ChatGPT (con la cuenta de GitHub
-`borsogastudio-ui`) o desde Claude (con la de Sam). **No son programadores**:
+arquitecto del estudio**, desde Claude en su propio ordenador (Windows, con
+una copia del repo y la cuenta de GitHub de Sam) o desde ChatGPT (con la
+cuenta `borsogastudio-ui`). **No son programadores**:
 háblales en español, en lenguaje llano, sin jerga técnica ni bloques de código
 salvo que los pidan.
 
@@ -46,6 +47,11 @@ formulario**:
 - cambiar el **texto en español de una opción** de respuesta. Las respuestas
   se guardan en español y el servidor las compara con esas cadenas exactas
   (enrutado, planes recomendados).
+- quitar o añadir opciones en los **configuradores de interiorismo y AV**
+  (`client/quiz.js`, `client/quiz-av.js`): sus respuestas deciden en el
+  servidor el plan recomendado y la ruta del cliente. En los cuestionarios de
+  diseño web y de marca (`brief_web.js`, `brief_grafico.js`) quitar o añadir
+  una opción de una pregunta no obligatoria sí es seguro.
 
 En esos casos no lo hagas: explica en llano que ese cambio necesita tocar
 también el servidor y que lo tiene que hacer Sam. Cambiar la redacción de una
@@ -68,6 +74,11 @@ Todo el funnel existe en inglés (`/plans/…`) y en español (`/plans/es/…`).
 
 ## Cómo trabajar
 
+0. **Antes de empezar, actualiza la copia**: `git switch main && git pull`.
+   Si hay cambios sin guardar de una sesión anterior, pregunta qué hacer con
+   ellos antes de tocar nada. Si retoman un cambio que ya está en marcha (hay
+   un PR abierto desde una rama `cambio/…`, míralo con `gh pr list`), sigue en
+   esa rama en vez de crear otra.
 1. **Rama nueva por cada petición**, con nombre corto: `cambio/<algo>`, en
    minúsculas, **20 caracteres como máximo en total** (p. ej.
    `cambio/titulo-web`). Si es más largo, el enlace de prueba cambia de forma
@@ -93,13 +104,15 @@ Todo el funnel existe en inglés (`/plans/…`) y en español (`/plans/es/…`).
    "me gusta, adelante"). Antes, comprueba que las comprobaciones del PR
    (`build` y `alcance`) están en verde; si alguna falla, no publiques y
    explica qué pasa.
-   - Si tu entorno puede fusionar PRs (p. ej. `gh pr merge <n> --squash
-     --delete-branch`), hazlo.
+   - Si tu entorno puede fusionar PRs, hazlo: `gh pr merge <n> --squash
+     --delete-branch`, **nunca con `--admin`**, aunque la cuenta lo permita.
+     Si GitHub lo rechaza, explica por qué y no busques otra forma.
    - Si no puede, dale el enlace del PR y dile: "abajo del todo, pulsa
      **Squash and merge** y luego **Confirm**".
 7. Al fusionar, la web se publica sola en unos 3 minutos en
    `borsogastudio.com/plans/`. Si no ve el cambio, que recargue con
-   Cmd+Shift+R (el navegador y la caché del hosting pueden tardar).
+   Ctrl+F5 en Windows o Cmd+Shift+R en Mac (el navegador y la caché del
+   hosting pueden tardar). Después vuelve a `main` y actualiza.
 
 ## Páginas del funnel
 
