@@ -14,6 +14,7 @@ import {
 	SOCIAL,
 	SERVICES,
 } from "../consts";
+import { IS_PREVIEW } from "../deploy-env";
 
 interface Props {
 	/** Page title. Composed as "{title} — Borsoga Studio"; omit on the home page. */
@@ -153,7 +154,9 @@ const jsonLd = {
 		<link rel="canonical" href={canonical} />
 		<meta
 			name="robots"
-			content={robots ?? (noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large")}
+			content={IS_PREVIEW
+				? "noindex, nofollow"
+				: robots ?? (noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large")}
 		/>
 		<meta name="theme-color" content="#0a0a0a" />
 	<!-- Suppress Chrome/Edge's automatic translate prompt -->
@@ -224,6 +227,13 @@ const jsonLd = {
 		)}
 		<slot />
 		{showFooter && <Footer />}
+		{IS_PREVIEW && (
+			<div class="preview-badge" role="status" transition:persist>
+				{lang === "es"
+					? "Entorno de pruebas · los envíos no se guardan"
+					: "Test environment · submissions are not saved"}
+			</div>
+		)}
 	</body>
 </html>
 
@@ -391,3 +401,25 @@ const jsonLd = {
 	}
 	document.addEventListener("astro:page-load", initHashScroll);
 </script>
+
+<style>
+	/* Test deployments only. Top-centre and click-through, so it covers nothing
+	   the reviewer needs to press — the funnel's fixed footer lives at the
+	   bottom. */
+	.preview-badge {
+		position: fixed;
+		top: 8px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 2147483647;
+		pointer-events: none;
+		padding: 4px 12px;
+		border-radius: 999px;
+		background: #f5c518;
+		color: #111;
+		font: 600 12px/1.4 system-ui, sans-serif;
+		letter-spacing: 0.02em;
+		white-space: nowrap;
+		box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+	}
+</style>

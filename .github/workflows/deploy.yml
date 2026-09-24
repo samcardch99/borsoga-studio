@@ -4,10 +4,21 @@ on:
   push:
     branches:
       - main
+  # Started by aprobar.yml after an approved PR is merged (its merge, made with
+  # GITHUB_TOKEN, does not fire `push`). Also handy to redeploy by hand.
+  workflow_dispatch:
+
+# One production deploy at a time; a newer one waits instead of racing.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://borsogastudio.com
 
     steps:
       - uses: actions/checkout@v4

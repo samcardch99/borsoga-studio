@@ -18,6 +18,17 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // Where this build will be served. Production is Hostinger, built by
+    // GitHub Actions; Vercel only ever builds the per-PR test deployments. So
+    // any Vercel build (VERCEL=1) is a test one — not just VERCEL_ENV=preview:
+    // Vercel labels a new project's first deployment "production".
+    // Read it through src/deploy-env.ts, never from process.env directly: the
+    // client islands (Form.jsx) need it too, and only `define` reaches them.
+    define: {
+      "import.meta.env.PUBLIC_DEPLOY_ENV": JSON.stringify(
+        process.env.VERCEL ? "preview" : "production",
+      ),
+    },
     optimizeDeps: {
       exclude: ["gsap/SplitText", "gsap/ScrollTrigger", "gsap/ScrollToPlugin"],
     },

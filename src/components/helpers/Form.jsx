@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import emailjs from "@emailjs/browser";
+import { IS_PREVIEW } from "../../deploy-env";
 import { Toaster, toast } from "sonner";
 
 export default function Form() {
@@ -77,6 +78,14 @@ export default function Form() {
 
   const onSubmit = async (data) => {
     if (!formRef.current) return;
+
+    // Test deployment: the form must work end to end for the reviewer, but no
+    // lead may reach the CRM or the studio's inbox.
+    if (IS_PREVIEW) {
+      toast.success("Test environment", { description: "The form works — nothing was sent." });
+      reset();
+      return;
+    }
 
     // Register the lead in the CRM in parallel (best-effort, non-blocking).
     sendLeadToCRM(data);
