@@ -18,6 +18,15 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    // Where this build will be served. Vercel sets VERCEL_ENV=preview on the
+    // per-PR test deployments; production is Hostinger, which sets nothing.
+    // Read it through src/deploy-env.ts, never from process.env directly: the
+    // client islands (Form.jsx) need it too, and only `define` reaches them.
+    define: {
+      "import.meta.env.PUBLIC_DEPLOY_ENV": JSON.stringify(
+        process.env.VERCEL_ENV === "preview" ? "preview" : "production",
+      ),
+    },
     optimizeDeps: {
       exclude: ["gsap/SplitText", "gsap/ScrollTrigger", "gsap/ScrollToPlugin"],
     },

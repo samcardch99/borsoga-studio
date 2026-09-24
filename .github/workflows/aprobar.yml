@@ -1,0 +1,66 @@
+name: Aprobar y publicar
+
+# The designer or the architect opens the PR's test URL, likes it, and presses
+# "Approve" in GitHub. That approval is the whole go-live step: this workflow
+# waits for the checks, merges, and starts the production deploy.
+#
+# Who may approve what is NOT decided here. Branch protection on `main`
+# requires an approval from a code owner of every file the PR touches
+# (.github/CODEOWNERS), so an approval that does not cover the whole PR simply
+# fails to merge and the workflow says so on the PR.
+#
+# The merge is done with GITHUB_TOKEN, and pushes made with it do not trigger
+# other workflows — hence the explicit `gh workflow run deploy.yml` afterwards
+# (workflow_dispatch is the documented exception to that rule).
+on:
+  pull_request_review:
+    types: [submitted]
+
+concurrency:
+  group: aprobar-${{ github.event.pull_request.number }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+  checks: read
+
+jobs:
+  publicar:
+    if: >-
+      github.event.review.state == 'approved' &&
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      PR: ${{ github.event.pull_request.number }}
+      REVIEWER: ${{ github.event.review.user.login }}
+    steps:
+      - name: Esperar a que pasen las comprobaciones
+        run: |
+          # A moment for the approval to register before asking about it.
+          sleep 10
+          if ! gh pr checks "$PR" --required --watch --fail-fast --interval 20; then
+            gh pr comment "$PR" --body "⚠️ @$REVIEWER aprobó el cambio, pero las comprobaciones automáticas fallaron, así que **no se ha publicado**. Hay que corregirlo antes de volver a aprobar."
+            exit 1
+          fi
+
+      - name: Fusionar
+        run: |
+          if ! out=$(gh pr merge "$PR" --squash --delete-branch 2>&1); then
+            echo "$out"
+            gh pr comment "$PR" --body "⚠️ La aprobación de @$REVIEWER no basta para publicar este cambio: toca archivos que necesitan otra aprobación (ver CODEOWNERS). **No se ha publicado.**
+
+          \`\`\`
+          $out
+          \`\`\`"
+            exit 1
+          fi
+
+      - name: Publicar en producción
+        run: |
+          gh workflow run deploy.yml --ref main
+          gh pr comment "$PR" --body "✅ Aprobado por @$REVIEWER. Publicando en producción; tarda unos minutos. Sigue el progreso en [Actions](https://github.com/$GH_REPO/actions/workflows/deploy.yml)."

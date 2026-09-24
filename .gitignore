@@ -34,3 +34,7 @@ public/frames/
 public/frames-jpg/
 public/frames-webp/
 public/categories/animated-architecture/
+
+# Vercel project link (test deployments only; production is Hostinger)
+.vercel
+.env*
