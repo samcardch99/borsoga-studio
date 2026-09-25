@@ -2,11 +2,11 @@
 // The scripts of a long questionnaire: the engine (brief.js), the schema
 // compiler (forms/esquema.js), a fallback copy of the published schema and the
 // starter that joins them — and asks the API for the live version first. See
-// src/plans/forms/index.ts and client/brief-arranque.js.
+// src/plans/forms/index.ts and client/arranque.js.
 import { cargarEsquema, type Servicio } from "../../plans/forms";
 import briefScript from "../../plans/client/brief.js?raw";
 import esquemaScript from "../../plans/forms/esquema.js?raw";
-import arranqueScript from "../../plans/client/brief-arranque.js?raw";
+import arranqueScript from "../../plans/client/arranque.js?raw";
 
 interface Props {
   servicio: Servicio;

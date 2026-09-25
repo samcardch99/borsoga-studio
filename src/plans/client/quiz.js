@@ -1,79 +1,77 @@
-// Ported verbatim from the retired generator (borsoga-funnel/src/quiz.js).
-// ONE change: the API calls are absolute. borsogastudio.com is static on
-// Hostinger; the serverless functions stayed on Vercel, so these are
-// cross-origin and the functions answer with the CORS headers.
+// Interior design configurator. Ported from the retired generator
+// (borsoga-funnel/src/quiz.js); the API calls are absolute because the
+// serverless functions stayed on Vercel.
 //
-// Reads window.BORSOGA_I18N / BORSOGA_LANG / BORSOGA_API, set by
-// components/plans/I18nBundle.astro, which must run before this.
+// Its content is DATA, edited in the admin panel (admin.borsogastudio.com):
+// option lists, texts in both languages, the rules that recommend a plan and
+// route the lead, and the coverage cities. See src/plans/forms/interior.json
+// for the shape. The code keeps the widgets (space steppers, image counter,
+// uploads) and the branching; it finds the options it branches on by their
+// ROLE (`rol`), GROUP (`grupo`) or MARKS (`marcas`), never by their text, so
+// renaming an option in the panel doesn't break anything.
+//
+// Starts when client/arranque-config.js calls window.BORSOGA_QUIZ(config).
+// Reads window.BORSOGA_I18N / BORSOGA_LANG / BORSOGA_API (I18nBundle.astro)
+// and window.BORSOGA_REGLAS (forms/reglas.js).
 
 (function () {
 'use strict';
 
+function arranca(C) {
+var LS = C.listas;
+var vals = function (id) { return LS[id].ops.map(function (o) { return o.es; }); };
+var conRol = function (id, rol) { return LS[id].ops.filter(function (o) { return o.rol === rol; }).map(function (o) { return o.es; }); };
+var rol1 = function (id, rol) { return conRol(id, rol)[0] || null; };
+var rolDe = function (id, v) { var o = LS[id].ops.filter(function (x) { return x.es === v; })[0]; return o ? o.rol : undefined; };
+var grupo = function (id, g) { return LS[id].ops.filter(function (o) { return o.grupo === g; }).map(function (o) { return o.es; }); };
+var marca = function (id, m) { return LS[id].ops.filter(function (o) { return o.marcas && o.marcas[m]; }).map(function (o) { return o.es; }); };
+
 // ---------------------------------------------------------------- constantes
-// Copiadas del artboard sin traducir, para poder compararlas línea a línea.
-var KEY = 'borsoga.cuestionario.interior.v4';
+var KEY = C.clave;
 var SUBMIT_KEY = 'borsoga.cuestionario.envios';
 var MAX_SUBMITS = 2;
 var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-var PURPOSE_LIVE = 'Para vivir yo';
-var PURPOSE_INVEST = 'Para vender o rentar';
-var PURPOSE_COM = 'Es un espacio comercial';
-var RES = ['Cocina','Baño','Dormitorio','Sala','Comedor','Home office','Clóset','Lavandería','Entrada'];
-var HOUSE_EXTRA = ['Patio o jardín','Garaje','Área de piscina'];
-var CONDO_EXTRA = ['Balcón o terraza'];
-var COM = ['Recepción o lobby','Área de trabajo','Sala de juntas','Área de clientes','Comedor o cocina de staff','Baños','Salón o comedor','Barra','Vitrina y fachada interior'];
-var WET = ['Cocina','Baño','Lavandería','Baños','Comedor o cocina de staff','Barra'];
-var KITCHENS = ['Cocina','Lavandería','Comedor o cocina de staff'];
-var OUTDOOR = ['Patio o jardín','Balcón o terraza'];
-var STRUCT_WALLS = 'Se mueven o se quitan paredes';
-var STRUCT_FACADE = 'Cambios en la fachada del edificio o la casa';
-var STRUCT_NONE = 'Ninguno de los dos';
-var STRUCT_UNSURE = 'No lo sé todavía';
-var STRUCT = [STRUCT_WALLS, STRUCT_FACADE, STRUCT_NONE, STRUCT_UNSURE];
-var MW_NONE = 'En ninguno, compramos todo hecho';
-var MW_UNSURE = 'Todavía no lo sé';
-var APPL_DECIDED = 'Sí, ya sé cuáles van';
-var APPL_HELP = 'Quiero que ustedes me ayuden a elegirlos';
-var BUDGETS = ['Menos de $25,000','$25,000 a $75,000','$75,000 a $150,000','$150,000 a $400,000','Más de $400,000','Todavía no lo tengo definido'];
-var CLARITY = ['Ya tengo referencias y decisiones tomadas','Tengo una idea general','Cuento con ustedes para definirlo'];
-var OWNER_REP = 'No, soy el representante autorizado';
-var DEADLINE_FIXED = 'Sí, y es fija';
-var PORTFOLIO = ['Sí, sin problema','Sí, pero sin decir dónde está','Prefiero que no'];
-var DECIDERS = ['Yo solo','Mi pareja y yo','Un grupo o un comité'];
+var PURPOSE_INVEST = rol1('projectType', 'invertir');
+var PURPOSE_COM = rol1('projectType', 'comercial');
+var RES = grupo('espacios', 'residencial');
+var HOUSE_EXTRA = grupo('espacios', 'casa');
+var CONDO_EXTRA = grupo('espacios', 'condo');
+var COM = grupo('espacios', 'comercial');
+var WET = marca('espacios', 'humedo');
+var KITCHENS = marca('espacios', 'cocina');
+var OUTDOOR = marca('espacios', 'exterior');
+var POOL_SPACES = marca('espacios', 'piscina');
+var STRUCT_BAD = conRol('structure', 'estructural');
+var STRUCT = vals('structure');
+var MW_EXTRA = vals('millwork');
+var APPL_DECIDED = rol1('appliances', 'decidido');
+var OWNER_REP = rol1('isOwner', 'representante');
+var DEADLINE_FIXED = rol1('deadline', 'fija');
+var COMPANY = rol1('signer', 'empresa');
 var UNSURE_RE = /^(no s[eé]|no lo s[eé]|no lo s[eé] todav[ií]a|todav[ií]a no lo s[eé])$/i;
-var LAUNDRY = ['Lavandería'];
-var BAR = ['Barra'];
-var LAUNDRY_LAYOUT = ['Apiladas','Lado a lado','No lo sé'];
-var KEEP_YES = 'Sí, en algunos espacios';
-var KEEP = [KEEP_YES,'No, empezamos de cero','Todavía no lo sé'];
-var PIECES_DECIDED = 'Sí, tengo piezas decididas';
-var PIECES_REFS = 'Tengo referencias, pero nada decidido';
-var PIECES_PROPOSE = 'Quiero que ustedes las propongan';
-var PIECES = [PIECES_DECIDED, PIECES_REFS, 'No, todavía no', PIECES_PROPOSE];
-var PRO_REFERRAL = 'Me gustaría que me recomienden uno';
-var TIMING_EXPLORING = 'Estoy explorando';
-var SHOWCASE_NONE = 'No, por ahora no';
-var SHOWCASE_SELL = ['Imágenes para el listing','Tour 360 para tus compradores','Brochure o material impreso','Una página del proyecto'];
-var SHOWCASE_COM  = ['Imágenes para redes y publicidad','Tour 360 del local','Identidad o rótulos del negocio','Una página del negocio'];
-var SHOWCASE_LIVE = ['Fotos profesionales del terminado','Video del proyecto'];
-// Miami-Dade define la cobertura real: fuera del condado el proyecto va a
-// llamada aunque siga estando en Florida.
-var MIAMI_DADE = ['miami','miami beach','miami gardens','miami lakes','miami shores','miami springs',
- 'north miami','north miami beach','south miami','west miami','coral gables','hialeah','hialeah gardens',
- 'doral','aventura','key biscayne','homestead','florida city','kendall','pinecrest','palmetto bay',
- 'cutler bay','sunny isles beach','bal harbour','bay harbor islands','surfside','coconut grove','brickell',
- 'opa-locka','opa locka','sweetwater','virginia gardens','medley','golden beach','indian creek','el portal',
- 'biscayne park','north bay village'];
+// Además de la expresión, cuentan como "sin definir" las opciones marcadas
+// `duda` en el panel.
+var DUDAS = {};
+Object.keys(LS).forEach(function (id) { LS[id].ops.forEach(function (o) { if (o.duda) DUDAS[o.es] = 1; }); });
+var LAUNDRY = marca('espacios', 'lavanderia');
+var BAR = marca('espacios', 'barra');
+var KEEP_YES = rol1('keepFurniture', 'elige_espacios');
+var PIECES_LINK = conRol('pieces', 'enlace');
+var PRO_REFERRAL = rol1('pro', 'recomendar');
+var TIMING_EXPLORING = rol1('timing', 'explorando');
+var SHOWCASE_NONE = rol1('showcase', 'ninguno');
+var SHOWCASE_SELL = grupo('showcase', 'invertir');
+var SHOWCASE_COM = grupo('showcase', 'comercial');
+var SHOWCASE_LIVE = grupo('showcase', 'vivir');
+// La cobertura real: fuera de estas ciudades el proyecto va a llamada aunque
+// siga estando en Florida. Se edita en el panel (Ajustes).
+var MIAMI_DADE = (C.ajustes && C.ajustes.ciudades) || [];
 var plainCity = function (s) {
   return String(s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 };
 var isMiamiDade = function (c) { return MIAMI_DADE.indexOf(plainCity(c)) > -1; };
-var IMGS = [3, 5, 8];
-var SIZE_OPTIONS = [
-  ['Compacto','Espacios chicos, sin grandes cambios de distribución'],
-  ['Estándar','El tamaño típico de un apartamento o una casa'],
-  ['Amplio','Espacios grandes, áreas abiertas o dobles alturas']
-];
+var IMGS = LS.tamano.ops.map(function (o) { return o.n; });
+var SIZE_OPTIONS = LS.tamano.ops.map(function (o) { return [o.es, o.desc ? o.desc.es : '']; });
 var STEPS = [
   ['Paso 01 de 06','Tu proyecto'],
   ['Paso 02 de 06','Tus espacios y su tamaño'],
@@ -82,15 +80,8 @@ var STEPS = [
   ['Paso 05 de 06','Extras'],
   ['Paso 06 de 06','Tus datos']
 ];
-var PLURAL = {
-  'Cocina':'cocinas','Baño':'baños','Dormitorio':'dormitorios','Sala':'salas','Comedor':'comedores',
-  'Home office':'home offices','Clóset':'clósets','Lavandería':'lavanderías','Entrada':'entradas',
-  'Patio o jardín':'patios o jardines','Garaje':'garajes','Área de piscina':'áreas de piscina',
-  'Balcón o terraza':'balcones o terrazas','Recepción o lobby':'recepciones o lobbies',
-  'Área de trabajo':'áreas de trabajo','Sala de juntas':'salas de juntas','Área de clientes':'áreas de clientes',
-  'Comedor o cocina de staff':'comedores o cocinas de staff','Baños':'baños',
-  'Salón o comedor':'salones o comedores','Barra':'barras','Vitrina y fachada interior':'vitrinas y fachadas interiores'
-};
+var PLURAL = {}, PLURAL_EN = {};
+LS.espacios.ops.forEach(function (o) { if (o.plural) { PLURAL[o.es] = o.plural.es; PLURAL_EN[o.es] = o.plural.en; } });
 var DOMAIN_TYPOS = {
   'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gmail.con':'gmail.com','gmil.com':'gmail.com','gnail.com':'gmail.com',
   'hotmial.com':'hotmail.com','hotmai.com':'hotmail.com','hotmail.co':'hotmail.com','hotmil.com':'hotmail.com',
@@ -114,13 +105,32 @@ var low = function (s) { return s.charAt(0).toLowerCase() + s.slice(1); };
 var LANG = window.BORSOGA_LANG || 'es';
 var PRIV_URL = window.BORSOGA_PRIVACY ||
   (LANG === 'es' ? '/plans/es/politica-de-privacidad/' : '/plans/privacy-policy/');
+// Lo editado en el panel manda: primero las opciones y los textos de la
+// configuración (por la cadena española o por la clave), después el diccionario.
+var TX = C.textos || {}, OPS = {};
+var registra = function (p) { if (p && p.es && !(p.es in OPS)) OPS[p.es] = p; };
+Object.keys(LS).sort().forEach(function (id) { LS[id].ops.forEach(function (o) { registra(o); registra(o.desc); registra(o.etiqueta); }); });
+var par = function (x) { return x[LANG] || x.es; };
+// La etiqueta de una opción, con la traducción de SU lista (dos listas pueden
+// tener el mismo texto en español y traducirlo distinto).
+var CAMPO_LISTA = { spaces: 'espacios' };
+var OPS_LISTA = {};
+Object.keys(LS).forEach(function (id) { OPS_LISTA[id] = {}; LS[id].ops.forEach(function (o) { OPS_LISTA[id][o.es] = o; }); });
+function lblF(field, v) {
+  var m = OPS_LISTA[CAMPO_LISTA[field] || field], o = m && m[v];
+  return o ? esc(par(o)) : lbl(v);
+}
 function t(key, fallback) {
+  if (TX[key]) return par(TX[key]);
   var d = (window.BORSOGA_I18N || {})[LANG] || {};
   var v = (d.ui && d.ui[key]) || (d.msg && d.msg[key]) || (d.opt && d.opt[key]);
   return v || fallback || key;
 }
 function TR(s) {
-  if (LANG === 'es' || !s) return s;
+  if (!s) return s;
+  var x = OPS[s] || TX[s];
+  if (x) return par(x);
+  if (LANG === 'es') return s;
   var d = (window.BORSOGA_I18N || {})[LANG] || {};
   return (d.opt && d.opt[s]) || s;
 }
@@ -144,7 +154,7 @@ function blank() {
     plumbing:'', appliances:'', laundry:'', laundryLayout:'', barEquip:'', pool:'',
     hoa:'', facade:'', health:'',
     noMaterial:false, size:-1, sqft:'', budget:'', finish:'', clarity:'', extras:[], showcase:[],
-    name:'', email:'', phone:'', signer:'A título personal',
+    name:'', email:'', phone:'', signer: rol1('signer', 'personal') || '',
     entName:'', entState:'', entSigner:'', entRole:'',
     isOwner:'', ownerName:'', ownerEmail:'', decider:'',
     street:'', city:'', state:'Florida', zip:'',
@@ -169,11 +179,11 @@ var FILES = { photos: [], planFiles: [], applianceFiles: [] };
 function branchOf(a) {
   var isCom = a.projectType === PURPOSE_COM;
   var isInvest = a.projectType === PURPOSE_INVEST;
-  var inPurchase = isInvest && a.ownership === 'Estoy en proceso de compra';
-  var noAccess = inPurchase || (isCom && a.occupancy === 'Todavía no lo tengo');
-  var isCondo = a.propertyType === 'Condominio' || a.propertyType === 'Penthouse';
-  var isHouse = a.propertyType === 'Casa';
-  var isNew = a.workType === 'Obra nueva';
+  var inPurchase = isInvest && rolDe('ownership', a.ownership) === 'en_compra';
+  var noAccess = inPurchase || (isCom && rolDe('occupancy', a.occupancy) === 'sin_local');
+  var isCondo = rolDe('propertyType', a.propertyType) === 'condo';
+  var isHouse = rolDe('propertyType', a.propertyType) === 'casa';
+  var isNew = rolDe('workType', a.workType) === 'nueva';
   var isRemodel = !!a.workType && !isNew;
   var spaces = a.spaces || [];
   var has = function (list) { return list.some(function (v) { return spaces.indexOf(v) > -1; }); };
@@ -183,12 +193,12 @@ function branchOf(a) {
     asksProperty: !!a.projectType && !isCom,
     asksHoa: isCondo || isHouse,
     asksStructure: isRemodel,
-    asksHealth: isCom && a.commercialType === 'Restaurante o bar',
+    asksHealth: isCom && rolDe('commercialType', a.commercialType) === 'salud',
     asksPlumbing: has(WET),
     asksAppliances: has(KITCHENS),
     asksLaundry: has(LAUNDRY),
     asksBar: has(BAR),
-    asksPool: has(OUTDOOR) && spaces.indexOf('Área de piscina') === -1,
+    asksPool: has(OUTDOOR) && !has(POOL_SPACES),
     asksMillwork: spaces.length > 0,
     needsPlans: isNew || noAccess
   };
@@ -210,12 +220,12 @@ function prune(input) {
   a.spaces.forEach(function (s) { counts[s] = Math.min(10, Math.max(1, (a.counts || {})[s] || 1)); });
   a.counts = counts;
   var b = branchOf(a);
-  var mwAllowed = a.spaces.concat([MW_NONE, MW_UNSURE]);
+  var mwAllowed = a.spaces.concat(MW_EXTRA);
   a.millwork = (a.millwork || []).filter(function (v) { return mwAllowed.indexOf(v) > -1; });
   var drop = {
     dealType: b.isInvest, ownership: b.isInvest,
     commercialType: b.isCom, occupancy: b.isCom,
-    commercialOther: b.isCom && a.commercialType === 'Otro',
+    commercialOther: b.isCom && rolDe('commercialType', a.commercialType) === 'otro',
     propertyType: b.asksProperty, stage: b.isNew, year: b.isRemodel,
     plumbing: b.asksPlumbing, appliances: b.asksAppliances, pool: b.asksPool,
     hoa: b.asksHoa, health: b.asksHealth
@@ -227,7 +237,7 @@ function prune(input) {
   if (!b.asksBar) a.barEquip = '';
   if (a.keepFurniture !== KEEP_YES) a.keepSpaces = [];
   else a.keepSpaces = (a.keepSpaces || []).filter(function (v) { return a.spaces.indexOf(v) > -1; });
-  if (a.pieces !== PIECES_DECIDED && a.pieces !== PIECES_REFS) a.piecesLink = '';
+  if (PIECES_LINK.indexOf(a.pieces) < 0) a.piecesLink = '';
   if (a.timing !== TIMING_EXPLORING) a.exploring = '';
   if (a.isOwner !== OWNER_REP) { a.ownerName = ''; a.ownerEmail = ''; }
   if (a.deadline !== DEADLINE_FIXED) { a.deadlineDate = ''; a.deadlineWhy = ''; }
@@ -252,14 +262,14 @@ function spaceSummary(shown) {
   var en = shown && LANG !== 'es';
   return S.a.spaces.map(function (s) {
     var n = S.a.counts[s] || 1, one = en ? low(TR(s)) : low(s);
-    var many = en ? ((d.plural && d.plural[s]) || one + 's') : (PLURAL[s] || one + 's');
+    var many = en ? (PLURAL_EN[s] || (d.plural && d.plural[s]) || one + 's') : (PLURAL[s] || one + 's');
     return n + ' ' + (n > 1 ? many : one);
   }).join(' · ');
 }
 function structuralFlag() {
   var a = S.a;
   return branchOf(a).asksStructure &&
-    (a.structure.indexOf(STRUCT_WALLS) > -1 || a.structure.indexOf(STRUCT_FACADE) > -1);
+    a.structure.some(function (v) { return STRUCT_BAD.indexOf(v) > -1; });
 }
 // Cuenta las respuestas sin definir. Cuatro o más y el proyecto va a rango.
 function unsureCount() {
@@ -269,32 +279,34 @@ function unsureCount() {
     if (typeof v === 'string') vals.push(v);
     else if (Array.isArray(v)) v.forEach(function (x) { if (typeof x === 'string') vals.push(x); });
   });
-  return vals.filter(function (v) { return UNSURE_RE.test(v.trim()); }).length;
+  return vals.filter(function (v) { return UNSURE_RE.test(v.trim()) || DUDAS[v]; }).length;
 }
-// Solo para quien llega sin plan. Es recomendación, no asignación.
-function recommendPlan() {
+// Lo que las reglas del panel pueden mirar. El servidor calcula lo mismo
+// (borsoga-funnel/api/_configurador.ts).
+function senales() {
   var a = S.a, b = branchOf(a);
-  if (a.city && !isMiamiDade(a.city)) return 'Borsoga Edition';
-  if (a.finish === 'Lujo' || (b.isHouse && a.spaces.length > 4) || a.extras.length >= 2) return 'Borsoga Edition';
-  if (b.needsPlans || b.isNew || structuralFlag() || a.plumbing === 'Sí') return 'Premium';
-  return 'Essential';
+  return {
+    plan_elegido: PICKED,
+    fuera_florida: !!a.state && !isFlorida(a.state),
+    fuera_zona: !!a.city && !isMiamiDade(a.city),
+    estructural: structuralFlag(),
+    necesita_planos: b.needsPlans,
+    obra_nueva: b.isNew,
+    es_casa: b.isHouse,
+    es_condo: b.isCondo,
+    comercial: b.isCom,
+    invertir: b.isInvest,
+    unidades: unitTotal(),
+    espacios: a.spaces.length,
+    extras: a.extras.length,
+    sin_definir: unsureCount()
+  };
 }
-function route() {
-  var a = S.a;
-  var r = (function () {
-  if (PICKED === 'Borsoga Edition') return ['call','Vamos a hablar','Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.'];
-  if (a.state && !isFlorida(a.state)) return ['call','Vamos a hablar','La dirección del proyecto está fuera de Florida. Eso lo revisamos contigo antes de hablar de precio.'];
-  if (a.city && !isMiamiDade(a.city)) return ['call','Vamos a hablar','Tu proyecto está fuera de Miami-Dade. Podemos hacerlo, pero el alcance y el desplazamiento los cerramos hablando.'];
-  if (structuralFlag()) return ['call','Vamos a hablar','Tu proyecto mueve paredes o toca la fachada. Eso necesita un arquitecto o ingeniero con licencia, así que lo armamos contigo antes de dar un número.'];
-  if (unitTotal() > 6) return ['call','Vamos a hablar','Tu proyecto tiene {n} espacios. A ese tamaño el precio lo armamos contigo, no con una calculadora.'];
-  if (a.finish === 'Lujo' && a.workType === 'Obra nueva') return ['call','Vamos a hablar','Nivel lujo en obra nueva. Eso lo conversamos antes de darte un número.'];
-  if (a.health === 'Sí') return ['call','Vamos a hablar','Un proyecto que pasa por el departamento de salud tiene su propio calendario. Lo armamos contigo antes de hablar de precio.'];
-  if (unsureCount() >= 4) return ['range','Te enviamos un rango','Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.'];
-  return ['mail','Recibimos tu proyecto','Vamos a revisar lo que nos contaste y te escribimos para hablar del precio y el plazo. Nada de esto es automático: lo mira una persona del estudio.'];
-  })();
-  // Sólo se envía r[0]; los textos son para la pantalla final.
-  return [r[0], TR(r[1]), fill(TR(r[2]), { n: unitTotal() })];
-}
+var REGLAS = window.BORSOGA_REGLAS;
+// Solo para quien llega sin plan. Es recomendación, no asignación.
+function recommendPlan() { return REGLAS.plan(C.reglas, senales(), S.a); }
+// [tipo, título, texto]. Sólo se envía el tipo; los textos son para la pantalla final.
+function route() { return REGLAS.ruta(C.reglas, senales(), S.a, LANG); }
 // Devuelve la lista de campos pendientes, no un booleano: el botón necesita
 // poder señalar *qué* falta, no solo negarse a avanzar.
 function missing() {
@@ -306,7 +318,7 @@ function missing() {
       if (b.isInvest) { need(!a.dealType, 'dealType'); need(!a.ownership, 'ownership'); }
       if (b.isCom) {
         need(!a.commercialType, 'commercialType');
-        need(a.commercialType === 'Otro' && !a.commercialOther, 'commercialOther');
+        need(rolDe('commercialType', a.commercialType) === 'otro' && !a.commercialOther, 'commercialOther');
         need(!a.occupancy, 'occupancy');
       }
       need(b.asksProperty && !a.propertyType, 'propertyType');
@@ -347,7 +359,7 @@ function missing() {
         need(!a.ownerName, 'ownerName');
         need(!EMAIL_RE.test(a.ownerEmail || ''), 'ownerEmail');
       }
-      if (a.signer === 'Como empresa') {
+      if (a.signer === COMPANY) {
         need(!a.entName, 'entName'); need(!a.entState, 'entState');
         need(!a.entSigner, 'entSigner'); need(!a.entRole, 'entRole');
       }
@@ -364,12 +376,7 @@ function missing() {
 }
 var MISSING = [];
 function canContinue() { return missing().length === 0; }
-function upsell() {
-  var a = S.a;
-  if (a.finish === 'Lujo' && a.spaces.length <= 2) return TR('Elegiste nivel lujo. A ese nivel de acabado tu contratista va a pedir planos y guía de materiales, y eso entra a partir de Premium.');
-  if (a.spaces.length > 4) return fill(TR('Tu proyecto tiene {n} espacios. Borsoga Edition está pensado para proyectos de este tamaño.'), { n: a.spaces.length });
-  return '';
-}
+function upsell() { return REGLAS.aviso(C.reglas, senales(), S.a, LANG); }
 
 // ---------------------------------------------------------------- persistencia
 function persist() {
@@ -390,7 +397,7 @@ function toggleIn(field, value, exclusive) {
   }
   var o = {}; o[field] = next; setA(o);
 }
-var EXCL = { structure: [STRUCT_NONE, STRUCT_UNSURE], millwork: [MW_NONE, MW_UNSURE] };
+var EXCL = { structure: conRol('structure', 'exclusiva'), millwork: conRol('millwork', 'exclusiva') };
 
 // ---------------------------------------------------------------- render helpers
 function group(title, hint, body, fields) {
@@ -405,13 +412,13 @@ function group(title, hint, body, fields) {
 function chips(field, values) {
   return '<div class="q-opts">' + values.map(function (v) {
     return '<button type="button" class="q-chip" data-set="' + esc(field) + '" data-val="' + esc(v) +
-      '" aria-pressed="' + (S.a[field] === v) + '">' + lbl(v) + '</button>';
+      '" aria-pressed="' + (S.a[field] === v) + '">' + lblF(field, v) + '</button>';
   }).join('') + '</div>';
 }
 function cards(field, values) {
   return '<div class="q-grid">' + values.map(function (v) {
     return '<button type="button" class="q-card" data-set="' + esc(field) + '" data-val="' + esc(v) +
-      '" aria-pressed="' + (S.a[field] === v) + '"><span class="q-radio"></span><span>' + lbl(v) + '</span></button>';
+      '" aria-pressed="' + (S.a[field] === v) + '"><span class="q-radio"></span><span>' + lblF(field, v) + '</span></button>';
   }).join('') + '</div>';
 }
 function checks(field, values, exclusives) {
@@ -419,7 +426,7 @@ function checks(field, values, exclusives) {
   return '<div class="q-grid">' + values.map(function (v) {
     return '<button type="button" class="q-card" data-check="' + esc(field) + '" data-val="' + esc(v) +
       '" data-excl="' + ((exclusives || []).indexOf(v) > -1) + '" aria-pressed="' + (cur.indexOf(v) > -1) +
-      '"><span class="q-box"></span><span>' + lbl(v) + '</span></button>';
+      '"><span class="q-box"></span><span>' + lblF(field, v) + '</span></button>';
   }).join('') + '</div>';
 }
 function field(name, ph, type) {
@@ -431,26 +438,26 @@ function field(name, ph, type) {
 // ---------------------------------------------------------------- pasos
 function step1() {
   var a = S.a, b = branchOf(a), h = '';
-  h += group('¿Para qué es este proyecto?', '', cards('projectType', [PURPOSE_LIVE, PURPOSE_INVEST, PURPOSE_COM]), 'projectType');
+  h += group('¿Para qué es este proyecto?', '', cards('projectType', vals('projectType')), 'projectType');
 
   if (b.isInvest) {
-    h += group('¿Es para vender o para rentar?', '', chips('dealType', ['Para vender', 'Para rentar']), 'dealType');
-    h += group('¿Ya es tuya?', '', chips('ownership', ['Sí, ya es mía', 'Estoy en proceso de compra']), 'ownership');
+    h += group('¿Es para vender o para rentar?', '', chips('dealType', vals('dealType')), 'dealType');
+    h += group('¿Ya es tuya?', '', chips('ownership', vals('ownership')), 'ownership');
   }
   if (b.isCom) {
     h += group('¿Qué tipo de espacio comercial?', '',
-      chips('commercialType', ['Oficina','Retail','Showroom','Restaurante o bar','Hospitalidad','Amenidades de edificio','Modelo de ventas','Otro']) +
-      (a.commercialType === 'Otro' ? '<div style="margin-top:12px;max-width:420px">' + field('commercialOther', '¿Qué tipo de espacio es?') + '</div>' : ''),
+      chips('commercialType', vals('commercialType')) +
+      (rolDe('commercialType', a.commercialType) === 'otro' ? '<div style="margin-top:12px;max-width:420px">' + field('commercialOther', '¿Qué tipo de espacio es?') + '</div>' : ''),
       ['commercialType','commercialOther']);
-    h += group('¿El local está vacío o en operación?', '', chips('occupancy', ['Vacío o en obra','En operación','Todavía no lo tengo']), 'occupancy');
+    h += group('¿El local está vacío o en operación?', '', chips('occupancy', vals('occupancy')), 'occupancy');
   }
-  if (b.asksProperty) h += group('¿Qué tipo de propiedad es?', '', cards('propertyType', ['Condominio','Casa','Penthouse']), 'propertyType');
-  if (a.projectType) h += group('¿Obra nueva o remodelación?', '', chips('workType', ['Obra nueva','Remodelación']), 'workType');
-  if (b.isNew) h += group('¿En qué etapa está la obra?', '', chips('stage', ['Todavía en planos','En construcción','Terminada sin entregar']), 'stage');
+  if (b.asksProperty) h += group('¿Qué tipo de propiedad es?', '', cards('propertyType', vals('propertyType')), 'propertyType');
+  if (a.projectType) h += group('¿Obra nueva o remodelación?', '', chips('workType', vals('workType')), 'workType');
+  if (b.isNew) h += group('¿En qué etapa está la obra?', '', chips('stage', vals('stage')), 'stage');
   if (b.isRemodel) {
-    h += group('¿De qué año es aproximadamente la propiedad?', '', chips('year', ['Antes de 1990','1990 a 2010','Después de 2010','No sé']), 'year');
+    h += group('¿De qué año es aproximadamente la propiedad?', '', chips('year', vals('year')), 'year');
     h += group('¿El proyecto incluye alguno de estos?', 'Marca todo lo que aplique.',
-      checks('structure', STRUCT, [STRUCT_NONE, STRUCT_UNSURE]) +
+      checks('structure', STRUCT, EXCL.structure) +
       (structuralFlag() ? '<div class="q-note warn">' + esc(t('qi_structural')) + '</div>' : ''), 'structure');
   }
   if (a.workType) {
@@ -472,7 +479,7 @@ function step2() {
     '<div class="q-grid">' + spaceListOf(a).map(function (t) {
       var on = a.spaces.indexOf(t) > -1, n = a.counts[t] || 1;
       return '<div class="q-space" data-space="' + esc(t) + '" aria-pressed="' + on + '">' +
-        '<span style="display:flex;align-items:center;gap:12px"><span class="q-radio"></span><span>' + lbl(t) + '</span></span>' +
+        '<span style="display:flex;align-items:center;gap:12px"><span class="q-radio"></span><span>' + lblF('spaces', t) + '</span></span>' +
         (on ? '<span style="display:flex;align-items:center;gap:10px" data-stop="1">' +
           '<button type="button" class="q-step" data-count="' + esc(t) + '" data-d="-1"' + (n <= 1 ? ' disabled' : '') + '>−</button>' +
           '<span style="font-size:15px;min-width:14px;text-align:center">' + n + '</span>' +
@@ -482,13 +489,13 @@ function step2() {
 
   if (a.spaces.length) {
     h += group('¿Vas a conservar muebles que ya tienes?', '',
-      chips('keepFurniture', KEEP) +
+      chips('keepFurniture', vals('keepFurniture')) +
       (a.keepFurniture === KEEP_YES
         ? '<div style="margin-top:14px">' + checks('keepSpaces', a.spaces) + '</div>' : ''),
       'keepFurniture');
     h += group('¿Ya tienes piezas de mobiliario decididas?', '',
-      chips('pieces', PIECES) +
-      ((a.pieces === PIECES_DECIDED || a.pieces === PIECES_REFS)
+      chips('pieces', vals('pieces')) +
+      (PIECES_LINK.indexOf(a.pieces) > -1
         ? '<div style="margin-top:14px;max-width:520px">' +
           field('piecesLink', 'Enlace a tu lista o tablero (opcional)') + '</div>' : ''),
       'pieces');
@@ -507,7 +514,7 @@ function step2() {
 
   h += group('¿Cuánto piensas invertir en obra y mobiliario?',
     'Es opcional, pero si nos lo compartes ajustamos el estimado a tu realidad en vez de darte un rango amplio.',
-    chips('budget', BUDGETS));
+    chips('budget', vals('budget')));
   return h;
 }
 
@@ -533,30 +540,30 @@ function step3() {
   // paso 2 y lo dejaban interminable. Ahora tienen paso propio.
   if (b.asksMillwork) h += group('¿En cuáles se van a hacer muebles a la medida?',
     'Gabinetes de cocina, clósets, muebles de baño, paneles de pared, libreros. Lo contrario es comprar todo ya hecho.',
-    checks('millwork', a.spaces.concat([MW_NONE, MW_UNSURE]), [MW_NONE, MW_UNSURE]), 'millwork');
+    checks('millwork', a.spaces.concat(MW_EXTRA), EXCL.millwork), 'millwork');
   if (b.asksPlumbing) h += group('¿Se van a mover los puntos de agua o desagüe?', '',
-    chips('plumbing', ['Sí','No','No sé']), 'plumbing');
+    chips('plumbing', vals('plumbing')), 'plumbing');
   if (b.asksAppliances) h += group('¿Ya elegiste los electrodomésticos?',
     'Las medidas de los electrodomésticos definen toda la gabinetería, así que conviene tenerlos decididos antes de empezar.',
-    chips('appliances', [APPL_DECIDED, 'Todavía no', APPL_HELP]) +
+    chips('appliances', vals('appliances')) +
     (a.appliances === APPL_DECIDED ? filedrop('applianceFiles', 'Súbenos la lista o las fichas técnicas', 'Opcional. Imágenes o PDF.', 'image/*,application/pdf') : '') +
-    (a.appliances === APPL_HELP ? '<div class="q-note">' + esc(t('qi_appl_note')) + '</div>' : ''),
+    (rolDe('appliances', a.appliances) === 'ayuda' ? '<div class="q-note">' + esc(t('qi_appl_note')) + '</div>' : ''),
     'appliances');
   if (b.asksLaundry) {
     h += group('¿Ya elegiste la lavadora y la secadora?', '',
-      chips('laundry', [APPL_DECIDED, 'Todavía no', APPL_HELP]), 'laundry');
+      chips('laundry', vals('laundry')), 'laundry');
     h += group('¿Cómo van a ir?', 'Apiladas ocupan menos; lado a lado piden más frente de pared.',
-      chips('laundryLayout', LAUNDRY_LAYOUT), 'laundryLayout');
+      chips('laundryLayout', vals('laundryLayout')), 'laundryLayout');
   }
   if (b.asksBar) h += group('¿Ya elegiste el equipo de la barra?',
     'Fregadero, hielera, enfriador de bebidas, cafetera.',
-    chips('barEquip', [APPL_DECIDED, 'Todavía no', APPL_HELP]), 'barEquip');
+    chips('barEquip', vals('barEquip')), 'barEquip');
   if (b.asksPool) h += group('¿El proyecto incluye la piscina o su área?', '',
-    chips('pool', ['Sí','No','No hay piscina']), 'pool');
+    chips('pool', vals('pool')), 'pool');
   if (b.asksHoa) h += group(b.isHouse ? '¿Tu comunidad tiene HOA con reglas de diseño?' : '¿El edificio pide aprobación de la asociación o del condominio?',
-    '', chips('hoa', ['Sí','No','No sé']), 'hoa');
+    '', chips('hoa', vals('hoa')), 'hoa');
   if (b.asksHealth) h += group('¿El proyecto necesita aprobación del departamento de salud?', '',
-    chips('health', ['Sí','No','No sé']), 'health');
+    chips('health', vals('health')), 'health');
 
   // Material del espacio
   var lead = b.inPurchase ? 'Todavía no es tuya, así que no hay nada que fotografiar. Súbenos lo que tengas del listado o del desarrollo. Nada aquí es obligatorio.'
@@ -586,7 +593,7 @@ function step3() {
 
 function step4() {
   var a = S.a;
-  var lv = [['Nivel 01','Estándar'],['Nivel 02','Alta gama'],['Nivel 03','Lujo']];
+  var lv = LS.finish.ops.map(function (o) { return [o.etiqueta ? o.etiqueta.es : '', o.es]; });
   var h = group('Estas son tres cocinas nuestras. Señala la que se parece a lo que quieres.', '',
     '<div class="q-grid">' + lv.map(function (o) {
       return '<button type="button" class="q-lvl" data-set="finish" data-val="' + esc(o[1]) + '" aria-pressed="' + (a.finish === o[1]) + '">' +
@@ -594,17 +601,13 @@ function step4() {
         '<span style="padding:16px 18px"><span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.45)">' + lbl(o[0]) + '</span>' +
         '<span style="display:block;font-size:19px;font-weight:600;margin-top:4px">' + lbl(o[1]) + '</span></span></button>';
     }).join('') + '</div>', 'finish');
-  if (a.finish) h += group('¿Qué tan claro tienes lo que quieres?', '', chips('clarity', CLARITY), 'clarity');
+  if (a.finish) h += group('¿Qué tan claro tienes lo que quieres?', '', chips('clarity', vals('clarity')), 'clarity');
   return h;
 }
 
 function step5() {
   var a = S.a;
-  var ex = [
-    ['Borsoga Immersive','Caminas tu espacio con lentes de realidad virtual. Vamos a donde estés.'],
-    ['Tour 360','Un recorrido navegable de tu proyecto. Se abre en cualquier navegador.'],
-    ['Imágenes adicionales','Más vistas de tu proyecto, además de las que ya trae tu plan.']
-  ];
+  var ex = LS.extras.ops.map(function (o) { return [o.es, o.desc ? o.desc.es : '']; });
   var h = group('Extras', 'Se cotizan aparte. Lo que no marques aquí queda fuera de tu proyecto.',
     '<div class="q-grid">' + ex.map(function (o) {
       return '<button type="button" class="q-card" data-check="extras" data-val="' + esc(o[0]) + '" data-excl="false" aria-pressed="' + (a.extras.indexOf(o[0]) > -1) + '" style="align-items:flex-start">' +
@@ -626,31 +629,31 @@ function step6() {
   var a = S.a, h = '';
   h += group('Tus datos', '', '<div class="q-fields">' + field('name', 'Nombre legal completo') +
     field('email', 'Correo', 'email') + field('phone', 'Teléfono', 'tel') + '</div>', ['name','email','phone']);
-  h += group('¿Firmas a título personal o como empresa?', '', chips('signer', ['A título personal','Como empresa']) +
-    (a.signer === 'Como empresa' ? '<div class="q-fields" style="margin-top:12px">' + field('entName','Nombre legal de la empresa') +
+  h += group('¿Firmas a título personal o como empresa?', '', chips('signer', vals('signer')) +
+    (a.signer === COMPANY ? '<div class="q-fields" style="margin-top:12px">' + field('entName','Nombre legal de la empresa') +
       field('entState','Estado de registro') + field('entSigner','Quién firma') + field('entRole','Su cargo') + '</div>' : ''));
-  h += group('¿Eres el dueño de la propiedad?', '', chips('isOwner', ['Sí', OWNER_REP]) +
+  h += group('¿Eres el dueño de la propiedad?', '', chips('isOwner', vals('isOwner')) +
     (a.isOwner === OWNER_REP ? '<div class="q-fields" style="margin-top:12px">' + field('ownerName','Nombre del dueño') +
       field('ownerEmail','Correo del dueño','email') + '</div>' : ''), ['isOwner','ownerName','ownerEmail']);
-  h += group('¿Quién decide en este proyecto?', '', chips('decider', DECIDERS), 'decider');
+  h += group('¿Quién decide en este proyecto?', '', chips('decider', vals('decider')), 'decider');
   h += group('Dirección del proyecto', '', '<div class="q-fields">' + field('street','Calle y número') +
     field('city','Ciudad') + field('state','Estado') + field('zip','Código postal') + '</div>' +
     (a.state && !isFlorida(a.state) ? '<div class="q-note">' + esc(t('qi_outside_fl')) + '</div>' : ''), ['street','city','state','zip']);
   h += group('¿Cuándo quieres empezar?', '',
-    chips('timing', ['Lo antes posible','En 1 a 3 meses', TIMING_EXPLORING]) +
+    chips('timing', vals('timing')) +
     (a.timing === TIMING_EXPLORING
       ? '<div style="margin-top:14px;max-width:520px">' +
         field('exploring', '¿Qué te haría decidirte? (opcional)') + '</div>' : ''),
     'timing');
-  h += group('¿Tienes una fecha límite?', '', chips('deadline', ['No, sin fecha fija','Sí, pero es flexible', DEADLINE_FIXED]) +
+  h += group('¿Tienes una fecha límite?', '', chips('deadline', vals('deadline')) +
     (a.deadline === DEADLINE_FIXED ? '<div class="q-fields" style="margin-top:12px">' + field('deadlineDate','','date') +
       field('deadlineWhy','Motivo: mudanza, cierre de compra, apertura, otro') + '</div>' : ''), ['deadline','deadlineDate','deadlineWhy']);
   h += group('¿Ya trabajas con un contratista o un arquitecto?', '',
-    chips('pro', ['Sí','No', PRO_REFERRAL, 'No lo he decidido']) +
+    chips('pro', vals('pro')) +
     (a.pro === PRO_REFERRAL
       ? '<div class="q-note">' + esc(t('qi_referral_note')) + '</div>' : ''),
     'pro');
-  h += group('¿Podemos publicar tu proyecto terminado?', 'Nos ayuda a mostrar nuestro trabajo. Lo confirmamos en el contrato.', chips('portfolio', PORTFOLIO), 'portfolio');
+  h += group('¿Podemos publicar tu proyecto terminado?', 'Nos ayuda a mostrar nuestro trabajo. Lo confirmamos en el contrato.', chips('portfolio', vals('portfolio')), 'portfolio');
   h += '<div class="q-group"><button type="button" class="q-card" data-privacy="1" aria-pressed="' + a.privacy + '">' +
     '<span class="q-box"></span><span>' + fill(t('qi_privacy_accept'), { link: '<a href="' + PRIV_URL + '" target="_blank" style="border-bottom:1px solid">' + esc(t('qi_privacy_link')) + '</a>' }) + '</span></button>' +
     '<input type="text" data-field="bot" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" value="' + esc(a.bot) + '">' +
@@ -667,7 +670,7 @@ function summary() {
   var L = function (xs, sep) { return xs.filter(Boolean).map(TR).join(sep || ' · '); };
   add('Plan recomendado', recommendPlan());
   add('Proyecto', L([a.projectType, a.dealType]));
-  add('Propiedad', TR(b.isCom ? (a.commercialType === 'Otro' ? a.commercialOther : a.commercialType) : a.propertyType));
+  add('Propiedad', TR(b.isCom ? (rolDe('commercialType', a.commercialType) === 'otro' ? a.commercialOther : a.commercialType) : a.propertyType));
   add('Obra', L([a.workType, b.isNew ? a.stage : a.year]));
   add('Espacios', spaceSummary(true));
   if (b.asksMillwork) add('Muebles a la medida', L(a.millwork));
@@ -880,6 +883,8 @@ document.getElementById('q-save').addEventListener('click', function () {
 // ---------------------------------------------------------------- envío
 function submit() {
   var a = S.a;
+  // Vista previa del panel: se llega a la pantalla final sin enviar nada.
+  if (C.vistaPrevia) { S.result = null; S.done = true; return render(); }
   if (a.bot) { S.notice = TR('No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'); return render(); }
   if (isDisposable(a.email)) { S.notice = TR('Necesitamos un correo donde podamos enviarte la propuesta.'); return render(); }
   var sent = {};
@@ -927,6 +932,8 @@ function submit() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
+          service: 'interior',
+          version: C.version || null,
           answers: a,
           derived: {
             unitTotal: unitTotal(), imageTotal: imageTotal(), spaceSummary: spaceSummary(),
@@ -984,4 +991,7 @@ try {
   }
 } catch (e) {}
 render();
+}
+
+window.BORSOGA_QUIZ = arranca;
 })();
