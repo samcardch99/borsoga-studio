@@ -1,16 +1,14 @@
 ---
 // Brand identity questionnaire — 10 steps — ported from the generator's `brief.page()`.
 //
-// Only ui and msg of the shared dictionary are shipped: this questionnaire's
-// option vocabulary comes entirely from its own table (`gd`), and the other
-// services' vocabulary has no business here.
+// The questions come from the admin panel (see src/plans/forms/index.ts);
+// only ui and msg of the shared dictionary are shipped.
 import PlansLayout from "../../../layouts/PlansLayout.astro";
 import BriefShell from "../BriefShell.astro";
 import I18nBundle from "../I18nBundle.astro";
 import { route, type Lang } from "../../../plans/config";
 import { createI18n } from "../../../plans/i18n";
-import briefScript from "../../../plans/client/brief.js?raw";
-import specScript from "../../../plans/client/brief_grafico.js?raw";
+import BriefForm from "../BriefForm.astro";
 
 interface Props {
   lang: Lang;
@@ -31,15 +29,7 @@ const i18n = createI18n(lang);
   chrome={false}
   noindex
 >
-  <I18nBundle lang={lang} extra="gd" />
+  <I18nBundle lang={lang} />
   <BriefShell lang={lang} backHref={route("graphicDesign", lang)} />
-  {/* Bundled, not inlined: this one imports @vercel/blob/client, so it has to
-      go through Vite. It only has to define window.borsogaUpload before the
-      user submits, so a deferred module script is in time. */}
-  <script>
-    import "../../../plans/client/upload-client.js";
-  </script>
-  {/* brief.js publishes window.BORSOGA_BRIEF; the spec calls it. Order matters. */}
-  <script is:inline set:html={briefScript} />
-  <script is:inline set:html={specScript} />
+  <BriefForm servicio="grafico" />
 </PlansLayout>

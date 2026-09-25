@@ -16,8 +16,6 @@
 
 import esDict from "./es.js";
 import enDict from "./en.js";
-import dwDict from "./dw.js";
-import gdDict from "./gd.js";
 import { SOURCE_LANG, type Lang } from "../config";
 
 type Branch = Record<string, string>;
@@ -30,28 +28,10 @@ interface Dict {
   plural: Branch;
 }
 
-/** The two long questionnaires ship their own tables, kept out of the main
- *  bundle so pages that don't use them don't pay for them. */
-export const EXTRA = { dw: dwDict, gd: gdDict } as const;
-export type ExtraName = keyof typeof EXTRA;
-
 const DICTS: Record<Lang, Dict> = {
   es: (esDict as Record<string, Dict>).es,
   en: (enDict as Record<string, Dict>).en,
 };
-
-function merge(lang: Lang, extra?: ExtraName): Dict {
-  const base = DICTS[lang];
-  if (!extra) return base;
-  const add = EXTRA[extra][lang] as Partial<Dict> | undefined;
-  if (!add) return base;
-  return {
-    ...base,
-    ui: { ...base.ui, ...(add.ui ?? {}) },
-    msg: { ...base.msg, ...(add.msg ?? {}) },
-    opt: { ...base.opt, ...(add.opt ?? {}) },
-  };
-}
 
 export interface I18n {
   lang: Lang;
@@ -72,9 +52,9 @@ export interface I18n {
 // the English pages (I18N_MISS_T by text, I18N_MISS_t by key). Build time only.
 const AUDIT = typeof process !== "undefined" && !!process.env?.I18N_AUDIT;
 
-export function createI18n(lang: Lang, extra?: ExtraName): I18n {
-  const dict = merge(lang, extra);
-  const source = merge(SOURCE_LANG, extra);
+export function createI18n(lang: Lang): I18n {
+  const dict = DICTS[lang];
+  const source = DICTS[SOURCE_LANG];
   const missing = new Set<string>();
 
   const find = (d: Dict, key: string): string | undefined =>

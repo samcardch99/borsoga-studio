@@ -14,7 +14,8 @@
  * paso tiene widgets propios (steppers de espacios, contador de imágenes)—,
  * estos dos son la misma pieza con otras preguntas: diez pasos cada uno, de
  * opciones, texto libre, ejes y subidas de archivos. Así que las preguntas son
- * datos (`brief_web.js`, `brief_grafico.js`) y esto las pinta. Duplicar
+ * datos —el esquema que se edita en el panel, compilado por `forms/esquema.js`—
+ * y esto las pinta. Duplicar
  * novecientas líneas casi idénticas habría significado que se desincronizaran a
  * la primera corrección.
  *
@@ -65,6 +66,8 @@ var lbl = function (s) { return esc(TR(s)); };
 var fill = function (s, v) { return String(s == null ? '' : s).replace(/\{(\w+)\}/g, function (m, k) {
   return v && v[k] != null ? v[k] : ''; }); };
 var lista = function (vs) { return (vs || []).map(TR).join(' · '); };
+// An option's label: its own translation in the schema, else the shared table.
+var lop = function (p, v) { return esc((p.tr && p.tr[v]) || TR(v)); };
 
 // ---------------------------------------------------------------- motor
 function arranca(spec) {
@@ -144,17 +147,17 @@ function arranca(spec) {
         // lista no se mueve bajo el dedo justo cuando se está eligiendo.
         if (!on && cur.length >= cap) extra = ' q-off" disabled="disabled';
         return '<button type="button" class="q-chip' + extra + '" data-cap="' + esc(p.f) +
-          '" data-val="' + esc(v) + '" aria-pressed="' + on + '">' + lbl(v) + '</button>';
+          '" data-val="' + esc(v) + '" aria-pressed="' + on + '">' + lop(p, v) + '</button>';
       }
       if (p.tipo === 'chipchecks') {
         on = cur.indexOf(v) > -1;
         return '<button type="button" class="q-chip q-chip-box" data-check="' + esc(p.f) +
           '" data-val="' + esc(v) + '" data-solo="' + esc(p.solo || '') + '" aria-pressed="' + on +
-          '"><span class="q-box"></span><span>' + lbl(v) + '</span></button>';
+          '"><span class="q-box"></span><span>' + lop(p, v) + '</span></button>';
       }
       on = a[p.f] === v;
       return '<button type="button" class="q-chip" data-set="' + esc(p.f) + '" data-val="' + esc(v) +
-        '" aria-pressed="' + on + '">' + lbl(v) + '</button>';
+        '" aria-pressed="' + on + '">' + lop(p, v) + '</button>';
     }).join('') + '</div>';
   }
   function tarjetas(p) {
@@ -165,16 +168,16 @@ function arranca(spec) {
       if (p.tipo === 'checks') {
         return '<button type="button" class="q-card" data-check="' + esc(p.f) + '" data-val="' + esc(v) +
           '" data-solo="' + esc(p.solo || '') + '" aria-pressed="' + (cur.indexOf(v) > -1) +
-          '"><span class="q-box"></span><span>' + lbl(v) + '</span></button>';
+          '"><span class="q-box"></span><span>' + lop(p, v) + '</span></button>';
       }
       return '<button type="button" class="q-card" data-set="' + esc(p.f) + '" data-val="' + esc(v) +
-        '" aria-pressed="' + (a[p.f] === v) + '"><span class="q-radio"></span><span>' + lbl(v) + '</span></button>';
+        '" aria-pressed="' + (a[p.f] === v) + '"><span class="q-radio"></span><span>' + lop(p, v) + '</span></button>';
     }).join('') + '</div>';
   }
   function campo(p) {
     var tipo = p.tipo === 'fecha' ? 'date' : 'text';
     return '<input class="q-in q-in-corto" type="' + tipo + '" data-field="' + esc(p.f) + '" value="' +
-      esc(S.a[p.f]) + '"' + (p.ph ? ' placeholder="' + lbl(p.ph) + '"' : '') +
+      esc(S.a[p.f]) + '"' + (p.ph ? ' placeholder="' + esc(p.ph) + '"' : '') +
       ' aria-label="' + lbl(t(p.q)) + '">';
   }
   function area(p) {
@@ -295,12 +298,12 @@ function arranca(spec) {
     MISSING = pendientes();
     var n = S.step;
     main.innerHTML = '<div class="q-paso">' +
-      '<p class="q-paso-n">' + esc(fill(t(spec.contador), { n: n < 10 ? '0' + n : n })) + '</p>' +
+      '<p class="q-paso-n">' + esc(fill(t(spec.contador), { n: n < 10 ? '0' + n : n, total: ULTIMO })) + '</p>' +
       '<h1 class="q-paso-t">' + esc(t(PASOS[n - 1].titulo)) + '</h1></div>' +
       visibles(n).map(pregunta).join('');
 
     document.getElementById('q-back').disabled = n === 1;
-    document.getElementById('qb-count').textContent = fill(t(spec.contador), { n: n });
+    document.getElementById('qb-count').textContent = fill(t(spec.contador), { n: n, total: ULTIMO });
     var next = document.getElementById('q-next');
     next.disabled = S.sending;
     var etiqueta = S.sending ? (S.notice || t('sending'))
@@ -414,6 +417,8 @@ function arranca(spec) {
   // ------------------------------------------------------------ envío
   function enviar() {
     var a = S.a, c = spec.contactoCampos;
+    // Vista previa del panel: se llega al final y al resumen, sin enviar nada.
+    if (spec.vistaPrevia) { S.done = true; return render(); }
     if (a.bot) { S.notice = t('no_pudimos_enviar_tu_proyecto_desde'); return render(); }
     var sent = {};
     try { sent = JSON.parse(localStorage.getItem(SUBMIT_KEY) || '{}'); } catch (e) {}
@@ -461,7 +466,7 @@ function arranca(spec) {
         return fetch((window.BORSOGA_API || '') + '/api/submit/', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ service: spec.servicio, answers: Object.assign({}, a, { plan: PLAN }),
+          body: JSON.stringify({ service: spec.servicio, version: spec.version, answers: Object.assign({}, a, { plan: PLAN }),
                                  derived: { picked: PLAN }, files: subidos })
         });
       })

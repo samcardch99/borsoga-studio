@@ -1,0 +1,1397 @@
+{
+  "formato": 1,
+  "servicio": "grafico",
+  "planes": [
+    "Brand-Essentials",
+    "Brand-Premium",
+    "Brand-Edition",
+    "Social-Essential",
+    "Social-Premium",
+    "Social-Edition"
+  ],
+  "clave": "borsoga.cuestionario.gd.v2",
+  "textos": {
+    "contador": {
+      "es": "Paso {n} de {total}",
+      "en": "Step {n} of {total}"
+    },
+    "tope": {
+      "es": "{n} de {max}",
+      "en": "{n} of {max}"
+    },
+    "subir": {
+      "es": "Arrastra los archivos o pulsa para elegirlos",
+      "en": "Drag the files here or tap to choose them"
+    },
+    "enlace": {
+      "es": "O comparte un enlace",
+      "en": "Or share a link"
+    },
+    "guardado": {
+      "es": "Tu avance se guarda en este navegador. Puedes cerrar y volver más tarde desde el mismo dispositivo.",
+      "en": "Your progress is saved in this browser. You can close it and come back later from the same device."
+    },
+    "finalTitulo": {
+      "es": "THANK YOU.",
+      "en": "THANK YOU."
+    },
+    "finalP1": {
+      "es": "Gracias por compartir toda esta información con nosotros.",
+      "en": "Thank you for sharing all of this with us."
+    },
+    "finalP2": {
+      "es": "La utilizaremos como punto de partida para investigar, definir la dirección creativa y construir una identidad que no solo represente cómo se ve tu empresa hoy, sino hacia dónde quiere ir.",
+      "en": "We'll use it as the starting point to research, define the creative direction and build an identity that represents not only how your company looks today, but where it wants to go."
+    },
+    "finalFirma": {
+      "es": "Borsoga Studio",
+      "en": "Borsoga Studio"
+    },
+    "resumen": {
+      "es": "Lo que nos contaste",
+      "en": "What you told us"
+    }
+  },
+  "pasos": [
+    {
+      "id": "p1",
+      "titulo": {
+        "es": "Tu proyecto",
+        "en": "Your project"
+      },
+      "preguntas": [
+        {
+          "f": "company",
+          "tipo": "texto",
+          "q": {
+            "es": "¿Cuál es el nombre de la empresa o marca?",
+            "en": "What's the name of the company or brand?"
+          },
+          "req": true,
+          "resumen": {
+            "es": "Marca",
+            "en": "Brand"
+          }
+        },
+        {
+          "f": "webSocial",
+          "tipo": "texto",
+          "q": {
+            "es": "¿La marca tiene actualmente sitio web o redes sociales?",
+            "en": "Does the brand currently have a website or social media?"
+          },
+          "h": {
+            "es": "Puedes compartir el sitio web, Instagram, LinkedIn u otro canal que nos ayude a conocerla.",
+            "en": "You can share the website, Instagram, LinkedIn or any other channel that helps us get to know it."
+          },
+          "ph": {
+            "es": "borsoga.studio",
+            "en": "borsoga.studio"
+          }
+        },
+        {
+          "f": "projectType",
+          "tipo": "cards",
+          "q": {
+            "es": "¿Qué tipo de proyecto vamos a desarrollar?",
+            "en": "What kind of project are we going to develop?"
+          },
+          "req": true,
+          "col": true,
+          "ops": [
+            {
+              "es": "Crear una identidad visual desde cero",
+              "en": "Create a visual identity from scratch",
+              "fija": true
+            },
+            {
+              "es": "Rediseñar completamente una identidad existente",
+              "en": "Completely redesign an existing identity",
+              "fija": true
+            },
+            {
+              "es": "Actualizar/refrescar una identidad existente",
+              "en": "Update or refresh an existing identity",
+              "fija": true
+            },
+            {
+              "es": "Ampliar un sistema de identidad que ya existe",
+              "en": "Extend an identity system that already exists",
+              "fija": true
+            }
+          ],
+          "resumen": {
+            "es": "Tipo de proyecto",
+            "en": "Kind of project"
+          }
+        },
+        {
+          "f": "nameDefined",
+          "tipo": "chips",
+          "q": {
+            "es": "¿El nombre de la marca ya está definido?",
+            "en": "Is the brand name already defined?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "projectType",
+              "op": "eq",
+              "v": "Crear una identidad visual desde cero"
+            }
+          ],
+          "ops": [
+            {
+              "es": "Sí",
+              "en": "Yes",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            },
+            {
+              "es": "Tenemos varias opciones",
+              "en": "We have several options"
+            }
+          ]
+        },
+        {
+          "f": "needsNaming",
+          "tipo": "chips",
+          "q": {
+            "es": "¿Necesitas que Borsoga también participe en el proceso de naming?",
+            "en": "Do you need Borsoga to take part in the naming process too?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "projectType",
+              "op": "eq",
+              "v": "Crear una identidad visual desde cero"
+            },
+            {
+              "f": "nameDefined",
+              "op": "filled"
+            },
+            {
+              "f": "nameDefined",
+              "op": "ne",
+              "v": "Sí"
+            }
+          ],
+          "ops": [
+            {
+              "es": "Sí",
+              "en": "Yes",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            },
+            {
+              "es": "No estoy seguro",
+              "en": "I'm not sure"
+            }
+          ],
+          "resumen": {
+            "es": "Naming",
+            "en": "Naming"
+          }
+        },
+        {
+          "f": "identityAge",
+          "tipo": "chips",
+          "q": {
+            "es": "¿Hace cuánto tiempo se creó la identidad actual?",
+            "en": "How long ago was the current identity created?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "projectType",
+              "op": "in",
+              "v": [
+                "Rediseñar completamente una identidad existente",
+                "Actualizar/refrescar una identidad existente",
+                "Ampliar un sistema de identidad que ya existe"
+              ]
+            }
+          ],
+          "ops": [
+            {
+              "es": "Menos de 1 año",
+              "en": "Less than 1 year"
+            },
+            {
+              "es": "1–3 años",
+              "en": "1–3 years"
+            },
+            {
+              "es": "3–5 años",
+              "en": "3–5 years"
+            },
+            {
+              "es": "Más de 5 años",
+              "en": "More than 5 years"
+            },
+            {
+              "es": "No lo sé",
+              "en": "I don't know"
+            }
+          ],
+          "resumen": {
+            "es": "Identidad actual",
+            "en": "Current identity"
+          }
+        },
+        {
+          "f": "changeReason",
+          "tipo": "checks",
+          "q": {
+            "es": "¿Cuál es la principal razón para cambiarla?",
+            "en": "What is the main reason for changing it?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "projectType",
+              "op": "in",
+              "v": [
+                "Rediseñar completamente una identidad existente",
+                "Actualizar/refrescar una identidad existente",
+                "Ampliar un sistema de identidad que ya existe"
+              ]
+            }
+          ],
+          "ops": [
+            {
+              "es": "La empresa evolucionó",
+              "en": "The company has evolved"
+            },
+            {
+              "es": "Se siente anticuada",
+              "en": "It feels dated"
+            },
+            {
+              "es": "No representa correctamente nuestro posicionamiento",
+              "en": "It doesn't represent our positioning properly"
+            },
+            {
+              "es": "No funciona bien digitalmente",
+              "en": "It doesn't work well digitally"
+            },
+            {
+              "es": "No tiene suficiente consistencia",
+              "en": "It isn't consistent enough"
+            },
+            {
+              "es": "Queremos llegar a un nuevo público",
+              "en": "We want to reach a new audience"
+            },
+            {
+              "es": "Estamos entrando en nuevos mercados",
+              "en": "We're entering new markets"
+            },
+            {
+              "es": "Estamos cambiando de nombre",
+              "en": "We're changing our name"
+            },
+            {
+              "es": "Estamos lanzando nuevos productos/servicios",
+              "en": "We're launching new products or services"
+            },
+            {
+              "es": "Otro",
+              "en": "Other"
+            }
+          ],
+          "resumen": {
+            "es": "Razón del cambio",
+            "en": "Reason for the change"
+          }
+        },
+        {
+          "f": "keepWhat",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué funciona bien en la identidad actual y te gustaría conservar?",
+            "en": "What works well in the current identity and you would like to keep?"
+          },
+          "si": [
+            {
+              "f": "projectType",
+              "op": "in",
+              "v": [
+                "Rediseñar completamente una identidad existente",
+                "Actualizar/refrescar una identidad existente",
+                "Ampliar un sistema de identidad que ya existe"
+              ]
+            }
+          ]
+        },
+        {
+          "f": "changeWhat",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué definitivamente debería cambiar?",
+            "en": "What should definitely change?"
+          },
+          "si": [
+            {
+              "f": "projectType",
+              "op": "in",
+              "v": [
+                "Rediseñar completamente una identidad existente",
+                "Actualizar/refrescar una identidad existente",
+                "Ampliar un sistema de identidad que ya existe"
+              ]
+            }
+          ]
+        },
+        {
+          "f": "currentFiles",
+          "tipo": "subida",
+          "q": {
+            "es": "Comparte la identidad actual.",
+            "en": "Share the current identity."
+          },
+          "h": {
+            "es": "Logo, manual de marca, sitio web, presentaciones u otros materiales.",
+            "en": "Logo, brand manual, website, presentations or other materials."
+          },
+          "enlace": "currentLink",
+          "si": [
+            {
+              "f": "projectType",
+              "op": "in",
+              "v": [
+                "Rediseñar completamente una identidad existente",
+                "Actualizar/refrescar una identidad existente",
+                "Ampliar un sistema de identidad que ya existe"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "titulo": {
+        "es": "Sobre la marca",
+        "en": "About the brand"
+      },
+      "preguntas": [
+        {
+          "f": "whatDoes",
+          "tipo": "area",
+          "q": {
+            "es": "Describe brevemente qué hace la empresa.",
+            "en": "Briefly describe what the company does."
+          },
+          "h": {
+            "es": "Imagina que tienes que explicárselo a alguien que nunca ha oído hablar de ella.",
+            "en": "Imagine you have to explain it to someone who has never heard of it."
+          },
+          "req": true,
+          "resumen": {
+            "es": "Qué hace",
+            "en": "What it does"
+          }
+        },
+        {
+          "f": "products",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué productos o servicios ofrece?",
+            "en": "What products or services does it offer?"
+          }
+        },
+        {
+          "f": "mainProduct",
+          "tipo": "texto",
+          "q": {
+            "es": "¿Cuál es actualmente su producto o servicio principal?",
+            "en": "What is currently its main product or service?"
+          }
+        },
+        {
+          "f": "category",
+          "tipo": "chips",
+          "q": {
+            "es": "¿En qué categoría se encuentra principalmente la empresa?",
+            "en": "Which category is the company mainly in?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Servicios profesionales",
+              "en": "Professional services"
+            },
+            {
+              "es": "Tecnología",
+              "en": "Technology"
+            },
+            {
+              "es": "Salud",
+              "en": "Health"
+            },
+            {
+              "es": "Real Estate / Desarrollo inmobiliario",
+              "en": "Real estate / Development"
+            },
+            {
+              "es": "Arquitectura / Construcción",
+              "en": "Architecture / Construction"
+            },
+            {
+              "es": "Hospitality",
+              "en": "Hospitality"
+            },
+            {
+              "es": "Retail",
+              "en": "Retail"
+            },
+            {
+              "es": "Alimentos y bebidas",
+              "en": "Food and beverage"
+            },
+            {
+              "es": "Moda / Lifestyle",
+              "en": "Fashion / Lifestyle"
+            },
+            {
+              "es": "Producto de consumo",
+              "en": "Consumer product"
+            },
+            {
+              "es": "E-commerce",
+              "en": "E-commerce"
+            },
+            {
+              "es": "Marca personal",
+              "en": "Personal brand"
+            },
+            {
+              "es": "Nonprofit",
+              "en": "Nonprofit"
+            },
+            {
+              "es": "Otro",
+              "en": "Other"
+            }
+          ],
+          "resumen": {
+            "es": "Categoría",
+            "en": "Category"
+          }
+        },
+        {
+          "f": "stage",
+          "tipo": "cards",
+          "q": {
+            "es": "¿En qué etapa se encuentra actualmente?",
+            "en": "What stage is it in right now?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Próxima a lanzarse",
+              "en": "About to launch"
+            },
+            {
+              "es": "Recién lanzada",
+              "en": "Just launched"
+            },
+            {
+              "es": "En crecimiento",
+              "en": "Growing"
+            },
+            {
+              "es": "Empresa establecida",
+              "en": "Established company"
+            },
+            {
+              "es": "En expansión hacia nuevos mercados",
+              "en": "Expanding into new markets"
+            },
+            {
+              "es": "En proceso de transformación/rebranding",
+              "en": "Going through a transformation or rebrand"
+            }
+          ],
+          "resumen": {
+            "es": "Etapa",
+            "en": "Stage"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "titulo": {
+        "es": "Posicionamiento",
+        "en": "Positioning"
+      },
+      "preguntas": [
+        {
+          "f": "problem",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué problema resuelve la empresa para sus clientes?",
+            "en": "What problem does the company solve for its clients?"
+          },
+          "req": true
+        },
+        {
+          "f": "diff",
+          "tipo": "area",
+          "q": {
+            "es": "¿Cuál consideras que es su principal diferenciador?",
+            "en": "What do you consider its main differentiator?"
+          },
+          "h": {
+            "es": "Completa la idea: «A diferencia de otras empresas, nosotros…»",
+            "en": "Complete the idea: \"Unlike other companies, we…\""
+          },
+          "req": true,
+          "resumen": {
+            "es": "Diferenciador",
+            "en": "Differentiator"
+          }
+        },
+        {
+          "f": "vsComp",
+          "tipo": "checks",
+          "q": {
+            "es": "Frente a tu competencia, ¿qué debería hacer diferente tu marca?",
+            "en": "Compared to your competition, what should your brand do differently?"
+          },
+          "ops": [
+            {
+              "es": "Verse más premium",
+              "en": "Look more premium"
+            },
+            {
+              "es": "Verse más moderna",
+              "en": "Look more modern"
+            },
+            {
+              "es": "Verse más confiable",
+              "en": "Look more trustworthy"
+            },
+            {
+              "es": "Verse más accesible/cercana",
+              "en": "Look more approachable"
+            },
+            {
+              "es": "Verse más innovadora",
+              "en": "Look more innovative"
+            },
+            {
+              "es": "Verse más especializada",
+              "en": "Look more specialized"
+            },
+            {
+              "es": "Verse más sólida/corporativa",
+              "en": "Look more solid and corporate"
+            },
+            {
+              "es": "Diferenciarse completamente",
+              "en": "Stand completely apart"
+            },
+            {
+              "es": "Otro",
+              "en": "Other"
+            }
+          ],
+          "resumen": {
+            "es": "Frente a la competencia",
+            "en": "Against the competition"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "titulo": {
+        "es": "Tu público",
+        "en": "Your audience"
+      },
+      "preguntas": [
+        {
+          "f": "sellsTo",
+          "tipo": "chips",
+          "q": {
+            "es": "¿A quién vende principalmente la empresa?",
+            "en": "Who does the company mainly sell to?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Consumidores — B2C",
+              "en": "Consumers — B2C"
+            },
+            {
+              "es": "Empresas — B2B",
+              "en": "Businesses — B2B",
+              "fija": true
+            },
+            {
+              "es": "Ambos",
+              "en": "Both",
+              "fija": true
+            },
+            {
+              "es": "Otro",
+              "en": "Other"
+            }
+          ],
+          "resumen": {
+            "es": "Vende a",
+            "en": "Sells to"
+          }
+        },
+        {
+          "f": "idealCompanies",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué tipo de empresas son tus clientes ideales?",
+            "en": "What kind of companies are your ideal clients?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "sellsTo",
+              "op": "in",
+              "v": [
+                "Empresas — B2B",
+                "Ambos"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "titulo": {
+        "es": "Personalidad de marca",
+        "en": "Brand personality"
+      },
+      "preguntas": [
+        {
+          "f": "personality",
+          "tipo": "tope",
+          "q": {
+            "es": "Si tu marca fuera una persona, ¿cómo debería ser?",
+            "en": "If your brand were a person, what should they be like?"
+          },
+          "h": {
+            "es": "Selecciona máximo 5.",
+            "en": "Pick a maximum of 5."
+          },
+          "req": true,
+          "tope": 5,
+          "ops": [
+            {
+              "es": "Elegante",
+              "en": "Elegant"
+            },
+            {
+              "es": "Moderna",
+              "en": "Modern"
+            },
+            {
+              "es": "Sofisticada",
+              "en": "Sophisticated"
+            },
+            {
+              "es": "Premium",
+              "en": "Premium"
+            },
+            {
+              "es": "Cercana",
+              "en": "Approachable"
+            },
+            {
+              "es": "Humana",
+              "en": "Human"
+            },
+            {
+              "es": "Profesional",
+              "en": "Professional"
+            },
+            {
+              "es": "Confiable",
+              "en": "Trustworthy"
+            },
+            {
+              "es": "Innovadora",
+              "en": "Innovative"
+            },
+            {
+              "es": "Audaz",
+              "en": "Bold"
+            },
+            {
+              "es": "Minimalista",
+              "en": "Minimal"
+            },
+            {
+              "es": "Técnica",
+              "en": "Technical"
+            },
+            {
+              "es": "Exclusiva",
+              "en": "Exclusive"
+            },
+            {
+              "es": "Artesanal",
+              "en": "Crafted"
+            },
+            {
+              "es": "Dinámica",
+              "en": "Dynamic"
+            },
+            {
+              "es": "Juvenil",
+              "en": "Youthful"
+            },
+            {
+              "es": "Atemporal",
+              "en": "Timeless"
+            },
+            {
+              "es": "Disruptiva",
+              "en": "Disruptive"
+            },
+            {
+              "es": "Seria",
+              "en": "Serious"
+            },
+            {
+              "es": "Cálida",
+              "en": "Warm"
+            }
+          ],
+          "resumen": {
+            "es": "Personalidad",
+            "en": "Personality"
+          }
+        },
+        {
+          "f": "axes",
+          "tipo": "ejes",
+          "q": {
+            "es": "¿Dónde debería situarse la marca?",
+            "en": "Where should the brand sit?"
+          },
+          "req": true,
+          "ejes": [
+            {
+              "a": {
+                "es": "Minimalista",
+                "en": "Minimal"
+              },
+              "b": {
+                "es": "Expresiva",
+                "en": "Expressive"
+              }
+            },
+            {
+              "a": {
+                "es": "Clásica",
+                "en": "Classic"
+              },
+              "b": {
+                "es": "Contemporánea",
+                "en": "Contemporary"
+              }
+            },
+            {
+              "a": {
+                "es": "Cercana",
+                "en": "Approachable"
+              },
+              "b": {
+                "es": "Exclusiva",
+                "en": "Exclusive"
+              }
+            },
+            {
+              "a": {
+                "es": "Seria",
+                "en": "Serious"
+              },
+              "b": {
+                "es": "Divertida",
+                "en": "Playful"
+              }
+            },
+            {
+              "a": {
+                "es": "Sutil",
+                "en": "Subtle"
+              },
+              "b": {
+                "es": "Audaz",
+                "en": "Bold"
+              }
+            },
+            {
+              "a": {
+                "es": "Racional",
+                "en": "Rational"
+              },
+              "b": {
+                "es": "Emocional",
+                "en": "Emotional"
+              }
+            }
+          ],
+          "a11y": {
+            "es": "{a} a {b}, posición {n} de 5",
+            "en": "{a} to {b}, position {n} of 5"
+          },
+          "resumen": {
+            "es": "Posición",
+            "en": "Position"
+          }
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "titulo": {
+        "es": "Dirección visual",
+        "en": "Visual direction"
+      },
+      "preguntas": [
+        {
+          "f": "meaning",
+          "tipo": "chips",
+          "q": {
+            "es": "¿Existen elementos visuales que tengan un significado especial para la marca?",
+            "en": "Are there visual elements that carry special meaning for the brand?"
+          },
+          "h": {
+            "es": "Por ejemplo: historia, ubicación, arquitectura, símbolos, naturaleza, iniciales, objetos o conceptos asociados al negocio.",
+            "en": "For example: history, location, architecture, symbols, nature, initials, objects or concepts tied to the business."
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Sí",
+              "en": "Yes",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            },
+            {
+              "es": "No estoy seguro",
+              "en": "I'm not sure"
+            }
+          ]
+        },
+        {
+          "f": "meaningWhich",
+          "tipo": "area",
+          "q": {
+            "es": "Cuéntanos cuáles y por qué son importantes.",
+            "en": "Tell us which ones and why they matter."
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "meaning",
+              "op": "eq",
+              "v": "Sí"
+            }
+          ],
+          "resumen": {
+            "es": "Elementos con significado",
+            "en": "Meaningful elements"
+          }
+        },
+        {
+          "f": "avoidElements",
+          "tipo": "area",
+          "q": {
+            "es": "¿Hay algún elemento, símbolo o concepto que definitivamente NO quieras utilizar?",
+            "en": "Is there any element, symbol or concept you definitely do NOT want to use?"
+          }
+        },
+        {
+          "f": "brandColors",
+          "tipo": "cards",
+          "q": {
+            "es": "¿Existen colores que actualmente sean importantes para la marca?",
+            "en": "Are there colors that are currently important to the brand?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Sí, debemos conservarlos",
+              "en": "Yes, we must keep them",
+              "fija": true
+            },
+            {
+              "es": "Sí, pero estamos abiertos a cambiarlos",
+              "en": "Yes, but we're open to changing them",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            },
+            {
+              "es": "No estoy seguro",
+              "en": "I'm not sure"
+            }
+          ],
+          "resumen": {
+            "es": "Color",
+            "en": "Color"
+          },
+          "junto": [
+            "whichColors"
+          ]
+        },
+        {
+          "f": "whichColors",
+          "tipo": "texto",
+          "q": {
+            "es": "¿Cuáles son y por qué son importantes?",
+            "en": "Which ones are they and why do they matter?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "brandColors",
+              "op": "in",
+              "v": [
+                "Sí, debemos conservarlos",
+                "Sí, pero estamos abiertos a cambiarlos"
+              ]
+            }
+          ]
+        },
+        {
+          "f": "avoidColors",
+          "tipo": "chips",
+          "q": {
+            "es": "¿Existen colores que prefieres evitar?",
+            "en": "Are there colors you would rather avoid?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Sí",
+              "en": "Yes",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            }
+          ]
+        },
+        {
+          "f": "whichAvoidColors",
+          "tipo": "texto",
+          "q": {
+            "es": "¿Cuáles y por qué?",
+            "en": "Which ones and why?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "avoidColors",
+              "op": "eq",
+              "v": "Sí"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "titulo": {
+        "es": "Referencias visuales",
+        "en": "Visual references"
+      },
+      "preguntas": [
+        {
+          "f": "refBrands",
+          "tipo": "area",
+          "q": {
+            "es": "Nombra 2 o 3 marcas de referencia que te gusten.",
+            "en": "Name 2 or 3 reference brands you like."
+          },
+          "h": {
+            "es": "No tienen que ser de tu industria. Nos sirven para entender el estilo que buscas para tu marca.",
+            "en": "They don't have to be from your industry. They help us understand the style you're after for your brand."
+          },
+          "req": true,
+          "resumen": {
+            "es": "Marcas de referencia",
+            "en": "Reference brands"
+          }
+        },
+        {
+          "f": "hasRefs",
+          "tipo": "chips",
+          "q": {
+            "es": "¿Hay marcas cuya identidad visual te parezca especialmente buena?",
+            "en": "Are there brands whose visual identity you find particularly good?"
+          },
+          "h": {
+            "es": "No tienen que pertenecer a tu industria.",
+            "en": "They don't have to be from your industry."
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Sí",
+              "en": "Yes",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            }
+          ]
+        },
+        {
+          "f": "refFiles",
+          "tipo": "subida",
+          "q": {
+            "es": "Comparte entre 2 y 5 referencias.",
+            "en": "Share between 2 and 5 references."
+          },
+          "h": {
+            "es": "Puedes colocar nombres, enlaces o subir imágenes.",
+            "en": "You can write names, paste links or upload images."
+          },
+          "req": true,
+          "area": "refsText",
+          "si": [
+            {
+              "f": "hasRefs",
+              "op": "eq",
+              "v": "Sí"
+            }
+          ],
+          "resumen": {
+            "es": "Referencias",
+            "en": "References"
+          }
+        },
+        {
+          "f": "refsWhy",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué te gusta específicamente de esas referencias?",
+            "en": "What specifically do you like about those references?"
+          },
+          "h": {
+            "es": "Evita simplemente decir «me gusta el logo». Piensa en aspectos como: simplicidad, tipografía, color, composición, fotografía, sensación premium, personalidad, consistencia.",
+            "en": "Avoid simply saying \"I like the logo\". Think about things like: simplicity, typography, color, composition, photography, a premium feel, personality, consistency."
+          },
+          "si": [
+            {
+              "f": "hasRefs",
+              "op": "eq",
+              "v": "Sí"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "titulo": {
+        "es": "Dónde vivirá la marca",
+        "en": "Where the brand will live"
+      },
+      "preguntas": [
+        {
+          "f": "touchpoints",
+          "tipo": "checks",
+          "q": {
+            "es": "¿Dónde se utilizará principalmente la identidad?",
+            "en": "Where will the identity mainly be used?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Sitio web",
+              "en": "Website",
+              "fija": true
+            },
+            {
+              "es": "Redes sociales",
+              "en": "Social media"
+            },
+            {
+              "es": "Aplicaciones / plataformas digitales",
+              "en": "Apps / digital platforms"
+            },
+            {
+              "es": "Presentaciones",
+              "en": "Presentations"
+            },
+            {
+              "es": "Papelería",
+              "en": "Stationery"
+            },
+            {
+              "es": "Señalización",
+              "en": "Signage",
+              "fija": true
+            },
+            {
+              "es": "Local comercial / oficinas",
+              "en": "Store / offices",
+              "fija": true
+            },
+            {
+              "es": "Uniformes",
+              "en": "Uniforms"
+            },
+            {
+              "es": "Vehículos",
+              "en": "Vehicles"
+            },
+            {
+              "es": "Packaging",
+              "en": "Packaging",
+              "fija": true
+            },
+            {
+              "es": "Productos físicos",
+              "en": "Physical products"
+            },
+            {
+              "es": "Material publicitario",
+              "en": "Advertising material"
+            },
+            {
+              "es": "Impresos",
+              "en": "Print"
+            },
+            {
+              "es": "Merchandising",
+              "en": "Merchandising"
+            },
+            {
+              "es": "Otro",
+              "en": "Other"
+            }
+          ],
+          "resumen": {
+            "es": "Puntos de contacto",
+            "en": "Touchpoints"
+          }
+        },
+        {
+          "f": "packagingType",
+          "tipo": "area",
+          "q": {
+            "es": "¿Qué tipo de packaging utiliza o utilizará la marca?",
+            "en": "What kind of packaging does the brand use, or will it use?"
+          },
+          "si": [
+            {
+              "f": "touchpoints",
+              "op": "has",
+              "v": [
+                "Packaging"
+              ]
+            }
+          ]
+        },
+        {
+          "f": "packagingScope",
+          "tipo": "chips",
+          "q": {
+            "es": "¿El diseño de packaging forma parte de este proyecto?",
+            "en": "Is packaging design part of this project?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "touchpoints",
+              "op": "has",
+              "v": [
+                "Packaging"
+              ]
+            }
+          ],
+          "ops": [
+            {
+              "es": "Sí",
+              "en": "Yes",
+              "fija": true
+            },
+            {
+              "es": "No",
+              "en": "No"
+            },
+            {
+              "es": "Todavía no está definido",
+              "en": "Not defined yet"
+            }
+          ]
+        },
+        {
+          "f": "spaces",
+          "tipo": "chips",
+          "q": {
+            "es": "¿La identidad deberá aplicarse físicamente a uno o varios espacios?",
+            "en": "Will the identity need to be applied physically to one space or several?"
+          },
+          "req": true,
+          "si": [
+            {
+              "f": "touchpoints",
+              "op": "has",
+              "v": [
+                "Local comercial / oficinas",
+                "Señalización"
+              ]
+            }
+          ],
+          "ops": [
+            {
+              "es": "Uno",
+              "en": "One"
+            },
+            {
+              "es": "Varios",
+              "en": "Several"
+            },
+            {
+              "es": "Todavía no está definido",
+              "en": "Not defined yet"
+            }
+          ]
+        },
+        {
+          "f": "spaceFiles",
+          "tipo": "subida",
+          "q": {
+            "es": "Si ya existen, comparte fotografías, renders o planos.",
+            "en": "If they already exist, share photographs, renders or plans."
+          },
+          "si": [
+            {
+              "f": "touchpoints",
+              "op": "has",
+              "v": [
+                "Local comercial / oficinas",
+                "Señalización"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "titulo": {
+        "es": "Necesidades especiales",
+        "en": "Special needs"
+      },
+      "preguntas": [
+        {
+          "f": "languages",
+          "tipo": "chipchecks",
+          "q": {
+            "es": "¿En qué idiomas deberá funcionar la identidad?",
+            "en": "Which languages does the identity need to work in?"
+          },
+          "req": true,
+          "ops": [
+            {
+              "es": "Inglés",
+              "en": "English"
+            },
+            {
+              "es": "Español",
+              "en": "Spanish"
+            },
+            {
+              "es": "Inglés + Español",
+              "en": "English + Spanish"
+            },
+            {
+              "es": "Otro",
+              "en": "Other"
+            }
+          ],
+          "resumen": {
+            "es": "Idiomas",
+            "en": "Languages"
+          }
+        },
+        {
+          "f": "restrictions",
+          "tipo": "area",
+          "q": {
+            "es": "¿Existe alguna restricción que debamos conocer?",
+            "en": "Is there any restriction we should know about?"
+          },
+          "h": {
+            "es": "Por ejemplo: requisitos legales, trademarks, nombre que debe escribirse de una manera específica, colores corporativos obligatorios, relación con una empresa matriz, elementos que deben mantenerse.",
+            "en": "For example: legal requirements, trademarks, a name that must be written a specific way, mandatory corporate colors, a relationship with a parent company, elements that must be kept."
+          }
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "titulo": {
+        "es": "Para terminar",
+        "en": "To finish"
+      },
+      "preguntas": [
+        {
+          "f": "anythingElse",
+          "tipo": "area",
+          "q": {
+            "es": "¿Hay algo importante sobre tu empresa, tu historia o este proyecto que no te hayamos preguntado?",
+            "en": "Is there anything important about your company, your history or this project that we haven't asked you?"
+          }
+        },
+        {
+          "f": "contacto",
+          "tipo": "contacto",
+          "q": {
+            "es": "Tus datos",
+            "en": "Your details"
+          },
+          "req": true,
+          "campos": {
+            "nombre": {
+              "es": "Nombre",
+              "en": "Name"
+            },
+            "correo": {
+              "es": "Correo",
+              "en": "Email"
+            },
+            "telefono": {
+              "es": "Teléfono",
+              "en": "Phone"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
