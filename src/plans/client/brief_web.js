@@ -23,7 +23,7 @@ var YES_NO_UNSURE = [YES, NO, UNSURE];
 
 var SCRATCH = 'Crear un sitio web desde cero';
 var PROJECT_TYPES = [SCRATCH, 'Rediseñar completamente el sitio actual', 'Mejorar u optimizar el sitio actual', 'Añadir secciones o funcionalidades al sitio actual'];
-var PLATFORMS = ['WordPress', 'Wix', 'Squarespace', 'Shopify', 'Webflow', 'Desarrollo a medida', 'No lo sé', 'Otro'];
+var PLATFORMS = ['WordPress', 'No lo sé'];
 var ACCESS = [YES, NO, 'No lo sé'];
 
 var ID_FULL = 'Sí, completa';
