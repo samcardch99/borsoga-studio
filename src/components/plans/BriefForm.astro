@@ -1,0 +1,30 @@
+---
+// The scripts of a long questionnaire: the engine (brief.js), the schema
+// compiler (forms/esquema.js), the published schema itself and the starter that
+// joins them. The schema is read at build time from the admin panel — see
+// src/plans/forms/index.ts.
+import { cargarEsquema, type Servicio } from "../../plans/forms";
+import briefScript from "../../plans/client/brief.js?raw";
+import esquemaScript from "../../plans/forms/esquema.js?raw";
+import arranqueScript from "../../plans/client/brief-arranque.js?raw";
+
+interface Props {
+  servicio: Servicio;
+}
+
+const esquema = await cargarEsquema(Astro.props.servicio);
+// </script> inside a string would close the tag early.
+const datos = JSON.stringify(esquema).replace(/</g, "\\u003c");
+---
+
+{/* Bundled, not inlined: this one imports @vercel/blob/client, so it has to
+    go through Vite. It only has to define window.borsogaUpload before the
+    user submits, so a deferred module script is in time. */}
+<script>
+  import "../../plans/client/upload-client.js";
+</script>
+{/* Order matters: brief.js publishes window.BORSOGA_BRIEF, the starter calls it. */}
+<script is:inline set:html={briefScript} />
+<script is:inline set:html={esquemaScript} />
+<script is:inline set:html={`window.BORSOGA_FORM=${datos};`} />
+<script is:inline set:html={arranqueScript} />
