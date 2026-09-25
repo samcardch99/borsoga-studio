@@ -1,6 +1,12 @@
-// Starts a questionnaire from its schema: compiles it (forms/esquema.js) for the
-// page language, adds the strings it names to the i18n bundle, and hands the
-// spec to brief.js. Load order: I18nBundle, brief.js, esquema.js, this.
+// Starts a form edited in the admin panel from its published version:
+//
+//  · a questionnaire (formato 1): compiles it with forms/esquema.js, adds the
+//    strings it names to the i18n bundle and hands the spec to brief.js;
+//  · a configurator (formato 2): hands the config to quiz.js / quiz-av.js
+//    (window.BORSOGA_QUIZ), which read it directly.
+//
+// Load order: I18nBundle, the engine (and esquema.js / reglas.js), the
+// fallback window.BORSOGA_FORM, this.
 //
 // The schema is asked for live, to the API, every time the page opens: what is
 // published in the admin panel shows up here at once, with no rebuild of the
@@ -19,6 +25,13 @@
 var PANEL = ['https://admin.borsogastudio.com', 'http://localhost:3000'];
 
 function inicia(schema, vista) {
+  if (schema.formato === 2) {
+    if (vista) {
+      schema = Object.assign({}, schema, { vistaPrevia: true, clave: schema.clave + '.vista' });
+      try { localStorage.removeItem(schema.clave); } catch (e) {}
+    }
+    return window.BORSOGA_QUIZ(schema);
+  }
   var lang = window.BORSOGA_LANG || 'es';
   var c = window.BORSOGA_ESQUEMA.compilar(schema, lang);
   var d = (window.BORSOGA_I18N = window.BORSOGA_I18N || {})[lang] = window.BORSOGA_I18N[lang] || {};
@@ -44,7 +57,7 @@ function publicado() {
   fetch((window.BORSOGA_API || '') + '/api/forms/' + reserva.servicio + '/', { headers: { accept: 'application/json' } })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (j) {
-      if (!j || !j.schema || !j.schema.pasos || !j.version) throw new Error('respuesta sin esquema');
+      if (!j || !j.schema || !(j.schema.pasos || j.schema.listas) || !j.version) throw new Error('respuesta sin esquema');
       clearTimeout(t);
       una(Object.assign({}, j.schema, { version: j.version }));
     })
