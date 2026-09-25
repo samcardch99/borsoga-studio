@@ -1,0 +1,1018 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-sckkx6r4> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v6.3.1"><!-- ── Primary meta ── --><title>Configurator — Borsoga Studio</title><meta name="description" content="Answer six questions about your space and we'll send you an estimate within 24 hours."><link rel="canonical" href="https://borsogastudio.com/plans/configurator/"><meta name="robots" content="noindex,follow"><meta name="theme-color" content="#0a0a0a"><!-- Suppress Chrome/Edge's automatic translate prompt --><meta name="google" content="notranslate"><script>
+		// In-app browsers (e.g. the Google app on iOS) render pages in a
+		// WKWebView that is physically resized as the app's top/bottom bars
+		// show & hide, so even the "static" svh unit behaves like dvh there
+		// and full-screen sections jump while scrolling. (Safari/Chrome
+		// implement their bars as UA chrome, so svh is stable in them.)
+		// Freeze the viewport height into --app-height at load; sections use
+		// it via `var(--app-height, 100svh)`. On touch devices only a WIDTH
+		// change (rotation, real window resize) re-measures — height-only
+		// resizes are exactly the bar-collapse noise we want to ignore.
+		(function () {
+			var lastW = window.innerWidth;
+			var finePointer = window.matchMedia("(pointer: fine)").matches;
+			function set() {
+				document.documentElement.style.setProperty(
+					"--app-height",
+					window.innerHeight + "px",
+				);
+			}
+			set();
+			window.addEventListener("resize", function () {
+				if (!finePointer && window.innerWidth === lastW) return;
+				lastW = window.innerWidth;
+				set();
+			});
+		})();
+	</script><!-- ── Open Graph ── --><meta property="og:type" content="website"><meta property="og:site_name" content="Borsoga Studio"><meta property="og:title" content="Configurator — Borsoga Studio"><meta property="og:description" content="Answer six questions about your space and we'll send you an estimate within 24 hours."><meta property="og:url" content="https://borsogastudio.com/plans/configurator/"><meta property="og:image" content="https://borsogastudio.com/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg"><meta property="og:locale" content="en_US"><!-- ── Twitter / X ── --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Configurator — Borsoga Studio"><meta name="twitter:description" content="Answer six questions about your space and we'll send you an estimate within 24 hours."><meta name="twitter:image" content="https://borsogastudio.com/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg"><!-- ── Structured data (Organization + WebSite) ── --><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":["Organization","ProfessionalService"],"@id":"https://borsogastudio.com/#organization","name":"Borsoga Studio","alternateName":"Borsoga","url":"https://borsogastudio.com/","logo":"https://borsogastudio.com/favicon.svg","image":"https://borsogastudio.com/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg","description":"Miami-based architectural visualization studio: photoreal 3D renders, CGI, immersive 360° tours, sales websites and branding for developers and architects.","slogan":"Digital spaces for the unbuilt imagination.","foundingDate":"2026","email":"info@borsogastudio.com","telephone":"+1-786-852-4847","address":{"@type":"PostalAddress","addressLocality":"Miami","addressRegion":"FL","addressCountry":"US"},"areaServed":"Worldwide","knowsAbout":["Architectural Visualization & 3D Rendering","CGI & Photorealistic Renders","Immersive 360° Tours & Virtual Environments","Architectural & Interior Photography","Custom Sales Websites & Web Platforms","Brand Identity & Visual Systems"],"keywords":"architectural visualization, 3D rendering, CGI, photorealistic renders, real estate visualization, immersive 360 tours, cinematic architectural video, sales websites, brand identity, Miami","sameAs":["https://instagram.com/borsogastudio","https://linkedin.com/company/borsogastudio","https://www.facebook.com/profile.php?id=61581895641990"],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Services","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Architectural Visualization & 3D Rendering","serviceType":"Architectural Visualization & 3D Rendering","provider":{"@id":"https://borsogastudio.com/#organization"},"areaServed":"Worldwide"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"CGI & Photorealistic Renders","serviceType":"CGI & Photorealistic Renders","provider":{"@id":"https://borsogastudio.com/#organization"},"areaServed":"Worldwide"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Immersive 360° Tours & Virtual Environments","serviceType":"Immersive 360° Tours & Virtual Environments","provider":{"@id":"https://borsogastudio.com/#organization"},"areaServed":"Worldwide"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Architectural & Interior Photography","serviceType":"Architectural & Interior Photography","provider":{"@id":"https://borsogastudio.com/#organization"},"areaServed":"Worldwide"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Custom Sales Websites & Web Platforms","serviceType":"Custom Sales Websites & Web Platforms","provider":{"@id":"https://borsogastudio.com/#organization"},"areaServed":"Worldwide"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Brand Identity & Visual Systems","serviceType":"Brand Identity & Visual Systems","provider":{"@id":"https://borsogastudio.com/#organization"},"areaServed":"Worldwide"}}]},"contactPoint":{"@type":"ContactPoint","contactType":"sales","email":"info@borsogastudio.com","telephone":"+1-786-852-4847","availableLanguage":["en","es"]}},{"@type":"WebSite","@id":"https://borsogastudio.com/#website","url":"https://borsogastudio.com/","name":"Borsoga Studio","description":"Miami-based architectural visualization studio: photoreal 3D renders, CGI, immersive 360° tours, sales websites and branding for developers and architects.","inLanguage":"en","publisher":{"@id":"https://borsogastudio.com/#organization"}}]}</script><!-- Page-specific structured data (BreadcrumbList, CreativeWork, …) --><link rel="alternate" hreflang="en" href="https://borsogastudio.com/plans/configurator/"><link rel="alternate" hreflang="es" href="https://borsogastudio.com/plans/es/configurador/"><link rel="alternate" hreflang="x-default" href="https://borsogastudio.com/plans/configurator/"> <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,600;0,700&display=swap" rel="stylesheet"><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DxgyYRxx.js"></script><link rel="stylesheet" href="/_astro/_..DBkkh1X8.css">
+<link rel="stylesheet" href="/_astro/Layout.KjomfYA1.css"><script type="module" src="/_astro/page.q0sV0A_C.js"></script></head> <body data-astro-cid-sckkx6r4>    <div class="plans"> <a href="#main" class="skip">Skip to content</a>  <script>window.BORSOGA_LANG="en";
+window.BORSOGA_API="https://plans.borsogastudio.com";
+window.BORSOGA_PRIVACY="/plans/privacy-policy/";
+window.BORSOGA_I18N=Object.assign(window.BORSOGA_I18N||{},{"en":{"name":"en","locale":"en-US","ui":{"q_resume":"You have a project half-finished — you left it at step {n}. Continue where you left off?","qi_structural":"Façade changes or structural walls need a licensed architect or engineer, and that is not included in any plan. We can coordinate with yours, or help you find one.","qi_imgs_per_space":"{n} images per space","qi_sqft_q":"Do you know the square footage?","qi_optional":"Optional","qi_images_total":"images in total with what you picked","qi_appl_note":"Noted: appliance selection comes as part of your proposal.","qi_photos_what":"What we need to see","qi_photos_list":"One general shot from the entrance · One of each main wall · One of the windows · If something bothers you today, photograph it","qi_nomaterial":"I don't have material yet","qi_nomaterial_note":"Without photos or drawings we can still go on, but your estimate will be a range, not a number. We settle it on the visit to your space.","qi_photos_privacy":"Your photos are stored securely, only the Borsoga Studio team sees them and they are not shared with anyone else.","qi_a_note":"One note","qi_outside_fl":"Outside Florida we review it with you before talking price.","qi_referral_note":"Noted: we'll introduce you to contractors we've already worked with.","qi_privacy_accept":"I have read and accept the {link}","qi_privacy_link":"privacy policy","qi_not_contract":"This is not a contract or a quote. It's the information we use to prepare your proposal.","qi_your_plan":"Your plan","qi_plan_picked":"You chose <strong>{plan}</strong>. We prepare the estimate on that basis.","qi_plan_reco":"From what you told us, the plan that fits is <strong>{plan}</strong>. We'll send the estimate on that basis and adjust it if you prefer another.","qi_confirm_visit":"The estimate is confirmed on the site visit.","qi_didyoumean":"Did you mean <strong>{email}</strong>?","q_scene_def":"A scene is one framing of the project.","q_views_hint":"Each scene comes with {n} views{plan}. Adjust the ones that need more.","q_views_plan":" on the {plan} plan","q_images_total":"images in total · {n} scenes","q_plan_none":"No plan yet","q_plan_sug":"Suggested","q_files_1":"file","q_files_n":"files","err_send":"We couldn't send it. Try again or write to us.","err_net":"We couldn't send it. Check your connection and try again.","err_upload":"We couldn't upload your files. Try again or write to us at borsogastudio@gmail.com.","f_name":"name","f_email":"email","f_phone":"phone","f_project":"project","err_missing":"Missing","sending":"Sending…","q_missing":"This one still needs an answer","q_back":"Back","q_save":"Save and exit","q_nojs_1":"The configurator needs JavaScript. If you prefer, write to us at","q_nojs_2":"and we'll do it by email.","q_missing_one":"1 answer to go","q_missing_many":"{n} answers to go","q_uploading":"Uploading {n} of {total} · {pct}%","q_rmfile":"Remove file","back_to_plans":"See the plans","meta_t_brief_web":"Web design questionnaire — Borsoga Studio","meta_t_brief_gd":"Brand identity questionnaire — Borsoga Studio","mas_elegido":"Most chosen","ideal_para":"Ideal for","cmp_si":"included","cmp_no":"not included","meta_t_servicios":"Services — Borsoga Studio","meta_t_av":"Architectural visualization plans — Borsoga Studio","meta_t_web":"Web design plans — Borsoga Studio","meta_t_grafico":"Graphic design plans — Borsoga Studio","meta_t_interior":"Interior design plans — Borsoga Studio","meta_t_privacidad":"Privacy policy — Borsoga Studio","meta_t_quiz":"Configurator — Borsoga Studio","meta_t_quiz_av":"Configurator — Architectural Visualization — Borsoga Studio","chrome_lang":"Language","chrome_skip":"Skip to content","chrome_nav_services":"The four services","chrome_privacy":"Privacy policy","chrome_home":"Borsoga Studio — home","borsoga_llc_miami_florida":"Borsoga LLC · Miami, Florida","empezar":"Start","responde_seis_preguntas_sobre_tu_espacio":"Answer six questions about your space and we'll send you an estimate within 24 hours.","no_sabes_cual_te_toca":"Not sure which one is yours?","estas_aqui":"You are here","visualizacion":"Visualization","servicio_04":"Service 04","brand_social_marketing":"Brand · Social · Marketing","diseno_grafico":"Graphic design","servicio_03":"Service 03","planes_por_definir":"Plans to be defined","desarrollo_de_apps":"App development","servicio_02":"Service 02","essential_premium_edition":"Essential · Premium · Edition","diseno_web":"Web design","servicio_01":"Service 01","los_cuatro_servicios":"The four services","el_estudio":"The studio","ningun_plan_incluye_la_compra_o":"No plan includes buying or moving materials and furniture, construction supervision, or engineering and permits.","lo_que_no_esta_en_tu":"What isn't in your plan","detalles_por_confirmar":"Details to be confirmed.","un_contrato_digital_que_firmas_en":"A digital contract you sign online before we start.","que_firmas":"What you sign","el_resto_por_confirmar":"The rest, to be confirmed.","pagas_el_50_para_arrancar":"You pay 50% to get started.","como_se_paga":"How you pay","por_confirmar":"To be confirmed","cuanto_tarda":"How long it takes","todo_llega_en_formatos_que_puedes":"Everything arrives in formats you can open and share: images as JPG or PNG, drawings and documents as PDF, video as MP4.","los_archivos":"The files","depende_del_tamano_de_cada_espacio":"It depends on the size of each space, not on the plan: 3 images for a small space, 5 for a medium one, 8 for a large one.","cuantas_imagenes":"How many images","desde_una_habitacion_hasta_la_casa":"From a single room to the whole house. There's no minimum: you can hire us for one space.","cuantos_espacios":"How many spaces","essential_y_premium_en_miami_dade":"Essential and Premium in Miami-Dade. Borsoga Edition across Florida, with no travel charge.","donde_trabajamos":"Where we work","lo_que_aplica_a_los_tres":"What applies to all three plans","condiciones":"Terms","solo_edition":"Edition only","la_idea_del_proyecto_y_los":"The project concept and the videos","premium_y_edition":"Premium and Edition","los_planos_y_la_guia_de":"The drawings and the materials guide","en_los_tres_planes":"In all three plans","materiales_acabados_e_iluminacion":"Materials, finishes and lighting","como_se_organiza_el_espacio_distribucion":"How the space is organised: layout and circulation","cada_revision_tiene_su_momento_y":"Each review has its own moment and its own subject.","como_funcionan_las_revisiones":"How reviews work","revisiones":"Reviews","borsoga_edition":"Borsoga Edition","premium":"Premium","essential":"Essential","que_incluye_cada_plan":"What each plan includes","comparacion":"Comparison","pedir_cotizacion":"Request a quote","un_link_que_abres_en_el":"A link you open in your browser.","como_se_entrega":"How it's delivered","tu_proyecto_navegable_desde_cualquier_pantalla":"Your project, walkable from any screen. Opens in any browser, shared with a link.","tour_360":"Tour 360","extra_02":"Extra 02","sesion_presencial_donde_estes_los_lentes":"An in-person session wherever you are. We bring the headset.","camina_tu_espacio_antes_de_que":"Walk your space before it exists. We bring your project into a virtual reality headset and we come to you. You stand in your kitchen, look up, step closer to a cabinet. At real scale.","borsoga_immersive":"Borsoga Immersive","extra_01":"Extra 01","se_cotizan_aparte_y_funcionan_con":"Quoted separately. They work with any of the three plans.","dos_formas_de_ver_tu_proyecto":"Two ways to see your project before it exists","extras":"Extras","la_compra_y_el_traslado_del":"Buying and moving the furniture · Installation and final styling · Construction supervision · Engineering and permits","lo_que_este_plan_no_incluye":"What this plan doesn't include","la_lista_de_materiales_y_las":"The materials list and furniture options, with where to get them (PDF)","el_video_que_explica_el_proyecto":"The video that explains the project (MP4)","el_video_hecho_como_pelicula_mp4":"The video made like a film (MP4)","la_presentacion_para_tus_clientes_pdf":"The presentation for your clients (PDF)","tus_planos_con_mas_detalle_pdf":"Your drawings in more detail (PDF)","la_idea_del_proyecto_escrita_pdf":"The project concept, written out (PDF)","todo_lo_del_plan_premium":"Everything in the Premium plan","que_recibes":"What you get","revision_4_la_idea_y_los":"Review 4 — the concept and the videos","2_de_las_revisiones_se_presentan":"2 of the reviews are presented in person","opciones_de_mobiliario_elegidas_para_tu":"Furniture options chosen for your space","vamos_juntos_a_ver_los_materiales":"We go see the materials together, with suppliers here and abroad","un_video_que_explica_el_proyecto":"A video that explains the project","un_video_de_tu_proyecto_hecho":"A video of your project, made like a film","presentacion_para_tus_clientes":"Presentation for your clients","planos_con_mas_detalle":"Drawings in more detail","la_idea_que_sostiene_el_proyecto":"The idea holding the project together: why this material, why this light, why the space feels the way it does","trabajamos_en_toda_florida_sin_cobrarte":"We work across Florida, with no travel charge","y_ademas":"Plus","revisiones_1_2_y_3":"Reviews 1, 2 and 3","presentacion_del_proyecto":"Project presentation","guia_de_materiales":"Materials guide","donde_va_cada_piso_y_cada":"Where every floor and every finish goes","donde_va_cada_luz":"Where every light goes","una_vista_frontal_de_cada_pared":"A front elevation of every wall that matters","un_plano_de_tu_espacio_con":"A drawing of your space with dimensions","imagenes_de_como_se_va_a":"Images of how your project will look","levantamos_tu_espacio_en_3d":"We build your space in 3D","vamos_a_tu_espacio_y_lo":"We come to your space and measure it","visita_y_medidas_tu_espacio_en":"Visit and measurements · Your space in 3D · High-resolution images · Dimensioned drawing · Front elevation of every wall · Lighting · Floors and finishes · Materials guide · Project presentation · Reviews 1 to 3","ver_un_proyecto_real":"See a real project","solicita_tu_borsoga_edition":"Request your Borsoga Edition","presenciales":"in person","revisiones_2":"reviews","el_proyecto_completo_con_una_idea":"The complete project, with an idea behind it. Available across Florida.","edition":"Edition","borsoga":"Borsoga","plan_03":"Plan 03","proveedores_la_compra_del_material_o":"Suppliers · Buying materials or furniture · Permit drawings · Construction supervision","la_presentacion_del_proyecto_pdf":"The project presentation (PDF)","la_guia_de_materiales_pdf":"The materials guide (PDF)","tus_planos_el_espacio_con_medidas":"Your drawings: the space with dimensions, the front elevation of every wall, ceilings and lighting, floors and finishes (PDF)","las_imagenes_en_alta_resolucion_jpg":"The high-resolution images (JPG / PNG)","revision_3_los_planos_y_los":"Review 3 — the drawings and the materials","guia_de_materiales_que_material_va":"Materials guide: which material goes where, without naming the supplier","revision_2_materiales_acabados_e_iluminacion":"Review 2 — materials, finishes and lighting","revision_1_como_se_organiza_el":"Review 1 — how the space is organised","visita_y_medidas_tu_espacio_en_2":"Visit and measurements · Your space in 3D · High-resolution images of your project · Review 1 and Review 2","todo_lo_del_plan_essential":"Everything in the Essential plan","comienza_tu_experiencia":"Start your experience","para_que_se_construya_como_lo":"So it gets built the way you designed it. Your contractor and your carpenter don't have to guess.","plan_02":"Plan 02","presentacion_planos_de_ningun_tipo_guia":"Presentation · Drawings of any kind · Materials guide · Suppliers · Furniture · Lighting plan","las_imagenes_de_tu_proyecto_en":"The high-resolution images of your project (JPG / PNG)","vamos_a_tu_espacio_y_lo_2":"We come to your space and measure it (Miami-Dade)","incluye":"Includes","comienza_tu_proyecto":"Start your project","ve_tu_espacio_antes_de_construirlo":"See your space before you build it.","plan_01":"Plan 01","plan_03_2":"PLAN 03","plan_02_2":"PLAN 02","plan_01_2":"PLAN 01","tres_planes_tu_eliges_cuantos_espacios":"Three plans. You choose how many spaces to design, from one room to the whole house. The plan decides how far we take each one.","elige_hasta_donde_llega_tu_proyecto":"Choose how far your project goes","interior_design":"Interior design","que_tipo_de_espacio_es":"Tell us what kind","tu_correo_com":"you@email.com","opcional":"Optional","proyecto_real_nivel_estandar":"Real project — Standard","proyecto_real_nivel_alta_gama":"Real project — High-end","proyecto_real_nivel_lujo":"Real project — Luxury","nombre_legal_completo":"Full legal name","correo":"Email","telefono":"Phone","nombre_del_dueno":"Owner's name","correo_del_dueno":"Owner's email","nombre_legal_de_la_empresa":"Legal name of the company","estado_de_registro":"State of registration","quien_firma":"Name of the person signing","su_cargo":"Their title","calle_y_numero":"Street","ciudad":"City","estado":"State","codigo_postal":"ZIP","no_hace_falta_que_este_claro":"It doesn't have to be clear. Whatever's on your mind is enough.","motivo_mudanza_cierre_de_compra_apertura":"What's driving it? (move-in, closing, opening…)","guardar_y_salir":"Save and exit","atras":"Back","esto_no_es_un_contrato_ni":"This is not a contract or a quote. It's the information we use to prepare your proposal.","el_estimado_se_confirma_en_la":"The range is confirmed at the visit to your space.","agendar_mi_llamada":"Schedule the call","tu_plan":"Your plan","te_enviamos_tu_estimado_en_menos":"We'll send your investment range within 24 hours","listo":"Done","politica_de_privacidad":"privacy policy","he_leido_y_acepto_la":"I have read and accept the","nos_ayuda_a_mostrar_nuestro_trabajo":"It helps us show our work. We confirm it in the agreement.","podemos_publicar_tu_proyecto_terminado":"Can we publish your finished project?","te_ponemos_en_contacto_con_contratistas":"We'll put you in touch with contractors we've worked with. You hire them directly, and construction supervision isn't included in any plan.","ya_trabajas_con_un_contratista_o":"Do you already work with a contractor or an architect?","tienes_una_fecha_limite":"Do you have a deadline?","cuentanos_que_tienes_en_mente":"Tell us what you have in mind","cuando_quieres_empezar":"When do you want to start?","quien_decide_en_este_proyecto":"Who makes the decisions on this project?","direccion_del_proyecto":"Project address","firmas_a_titulo_personal_o_como":"Are you signing personally or as a company?","eres_el_dueno_de_la_propiedad":"Are you the owner of the property?","tus_datos":"Your details","ver_que_cambia":"See Borsoga Edition","una_nota":"A note","se_cotizan_aparte_lo_que_no":"Quoted separately. Anything you don't check here is written down as outside your plan.","que_tan_claro_tienes_lo_que":"How clear are you on what you want?","lujo":"Luxury","nivel_03":"Level 03","alta_gama":"High-end","nivel_02":"Level 02","estandar":"Standard","nivel_01":"Level 01","estas_son_tres_cocinas_nuestras_senala":"How far do you want to take the materials? These are three of our kitchens.","tus_fotos_se_guardan_de_forma":"Your photos are stored securely, only the Borsoga Studio team sees them, and they're not shared with anyone.","sin_fotos_ni_planos_podemos_seguir":"We can move forward without photos or drawings, but the range we give you will be much wider. With material, it gets close to real.","todavia_no_tengo_material":"I don't have material yet","opcional_2":"Optional","fotos_del_lugar_si_ya_se":"Photos of the place, if you can get in","opcional_imagenes_o_pdf":"Optional. Images or PDF.","tus_planos_si_los_tienes":"Drawings, if you have them","de_3_a_6_fotos_con":"3 to 6 photos. Your phone is enough.","toma_o_elige_tus_fotos":"Upload your photos","si_hay_algo_que_hoy_te":"If something bothers you today, photograph it","una_de_las_ventanas":"One of the windows","una_de_cada_pared_principal":"One of each main wall","una_general_desde_la_entrada":"One general shot from the entrance","que_necesitamos_ver":"What we need to see","es_opcional_pero_si_nos_lo":"It's optional, but if you share it we'll tune the range to your reality instead of giving you a wide one.","cuanto_piensas_invertir_en_obra_y":"How much are you planning to invest in construction and furnishings?","imagenes":"images","con_lo_que_elegiste_vas_a":"With what you've picked, you'll get","ajusta_el_estimado":"It sharpens the range.","sabes_cuantos_pies_cuadrados_tiene":"Do you know the square footage?","una_idea_general_basta_los_detalles":"A general idea is enough. We take the details at the visit.","que_tan_grande_es_tu_proyecto":"How big is your project?","el_proyecto_necesita_aprobacion_del_departamento":"Does it need health department approval?","en_miami_esto_define_el_plazo":"In Miami this sets the real timeline.","el_edificio_tiene_restricciones_de_horario":"Any restrictions on work hours or elevator use?","el_proyecto_incluye_la_piscina_o":"Does the project include the pool or the pool area?","lo_anotamos_la_seleccion_de_electrodomesticos":"We'll include appliance guidance in your proposal.","subenos_la_lista_o_las_fichas":"Upload whatever you have","fotos_capturas_de_la_tienda_o":"Photos, screenshots from the store, or spec sheets. A screenshot is enough.","las_medidas_de_los_electrodomesticos_definen":"Their sizes shape all the cabinetry, so it's worth having them decided before we start.","ya_elegiste_la_lavadora_y_la":"Have you chosen your washer and dryer?","sus_medidas_cambian_todo_el_mueble":"Their sizes change the whole cabinet, and stacked is very different from side by side.","van_apiladas_o_lado_a_lado":"Stacked or side by side?","ya_elegiste_los_equipos_de_la":"Have you chosen the bar equipment?","refrigeracion_maquina_de_hielo_lavavajillas":"Refrigeration, ice machine, dishwasher. Their sizes define the millwork.","ya_elegiste_los_electrodomesticos":"Have you chosen your appliances?","gabinetes_de_cocina_closets_muebles_de":"Kitchen cabinets, closets, bathroom vanities, wall panels, bookcases. The opposite is buying everything ready-made.","en_cuales_se_van_a_hacer":"Which spaces get custom-built furniture?","se_van_a_mover_los_puntos":"Can the water and drain lines be moved?","moverlos_cuesta_mas_en_obra":"Moving them costs more in construction, but sometimes it's what makes the space actually work.","elige_todos_los_que_quieras_no":"Pick as many as you want. There's no minimum: you can hire just one. If you have more than one, set the count.","que_espacios_quieres_disenar":"Which spaces do you want designed?","ya_te_mandamos_ahi_el_link":"We just sent the link to pick up where you left off there. If it doesn't arrive in a few minutes, the address is wrong.","si_corregir":"Yes, fix it","escribelo_completo_con_arroba_y_dominio":"That doesn't look like an email address.","asi_puedes_salir_y_volver_donde":"So you can leave and come back where you left off. We won't email you anything else.","a_donde_te_guardamos_el_avance":"Where should we save your progress?","los_cambios_de_fachada_o_de":"We design it, but we don't sign sealed documents — that's done by a licensed architect or engineer. If your project needs one, we bring one in or we work with yours. It's quoted separately.","vas_a_necesitar_material_para_mostrar":"Will you need material to show your project?","podemos_incluirlo_en_el_mismo_proyecto":"We can include it in the same project, so you don't have to go looking for it elsewhere.","hay_muebles_que_ya_tienes_y":"Is there furniture you already have and want to keep?","piezas_que_se_quedan_si_o":"Pieces that are staying no matter what. We work them in from day one so the design fits around them.","en_cuales_espacios":"Which ones?","y_una_foto_de_las_piezas":"And a photo of the pieces you want to keep.","ya_tienes_en_mente_muebles_lamparas":"Do you already have furniture, lighting or other pieces in mind?","si_ya_sabes_que_quieres_disenamos":"If you already know what you want, we design toward it from the start.","compartenos_el_link_a_tu_pinterest":"Share a link to your Pinterest, your reference folder, or the pieces you have in mind. Optional.","fecha_limite":"Deadline","av_eyebrow":"Architectural Visualization","av_title":"Your project, seen before it exists","av_lead":"Three plans. You define how many scenes you need. The plan decides how far we take each one.","av_renders":"renders","av_p1_line":"The right image.","av_p1_i1":"3D modeling from your drawings","av_p1_i2":"2 views per scene","av_p1_i3":"One lighting condition","av_p1_i4":"Basic set dressing","av_p1_i5":"High-resolution stills for web and presentation","av_p1_i6":"Review 1 — framing and composition","av_p1_i7":"Review 2 — materials, light and set dressing","av_p1_g1":"Your images in high resolution (JPG / PNG)","av_p1_not":"Motion, a second lighting condition, large-format print resolution, and art direction.","av_p2_line":"The image that sells.","av_p2_inherit":"3D modeling from your drawings, 2 views per scene, one lighting condition, basic set dressing, and reviews 1 and 2.","av_p2_a1":"4 views per scene","av_p2_a2":"Two lighting conditions per scene","av_p2_a3":"Full set dressing: furniture, planting, people, context","av_p2_a4":"Detail and close-up shots of materials","av_p2_a5":"A short walkthrough video","av_p2_a6":"Large-format print resolution","av_p2_a7":"Review 3 — set dressing and post-production","av_p2_g1":"Your images in high resolution and print resolution (JPG / TIFF)","av_p2_g2":"The walkthrough video (MP4)","av_p2_not":"Art direction for the project, a cinematic video, and pieces for social.","av_p3_line":"The authored piece.","av_p3_inherit":"Modeling, 4 views per scene, two lighting conditions, full set dressing, material details, walkthrough video, print resolution, and reviews 1, 2 and 3.","av_p3_a1":"Art direction for the project: the idea that holds the images together","av_p3_a2":"A cinematic video, scripted and edited","av_p3_a3":"10K renders","av_p3_a4":"Advanced post-production","av_p3_a5":"An additional night scene","av_p3_a6":"A set of vertical pieces for social and pre-sale","av_p3_a7":"Review 4 — the narrative and the audiovisual pieces","av_p3_g1":"Everything in the Premium plan","av_p3_g2":"Your images in 10K","av_p3_g3":"The cinematic video (MP4)","av_p3_g4":"The set of vertical pieces for social (MP4 / JPG)","av_p3_g5":"The art direction document (PDF)","av_p3_not":"Virtual reality experience, navigable walkthrough, and campaign management.","av_proof_eyebrow":"The same project across the three plans","av_proof_title":"See it with your own eyes","av_proof_lead":"The same scene taken as far as each plan goes. That is where the jump shows.","av_proof_d1":"Two views, one lighting condition, basic set dressing.","av_proof_d2":"Four views, two lighting conditions, full set dressing.","av_proof_d3":"Art direction, 10K, a night scene, and video pieces.","av_slot1":"Real scene · Essential","av_slot2":"Real scene · Premium","av_slot3":"Real scene · Borsoga Edition","av_def_view_t":"View","av_def_view_d":"One more camera inside a scene that is already built. It comes cheap.","av_def_scene_t":"Scene","av_def_scene_d":"A new space: it has to be modeled, lit and dressed. It is new work.","av_extras_title":"Four ways to take it further","av_extras_lead":"They are quoted separately and work with any of the three plans.","av_x1_d":"Let your buyer walk the project before the walls exist.","av_x1_h":"We bring the model into a virtual reality headset and come wherever you need it: your sales gallery, your office, a trade show.","av_x2_d":"The project, walkable from any screen.","av_x2_h":"A walkthrough that opens in a browser and shares with a link: for your pre-sale site, for your brokers, or for a buyer in another country.","av_x3_t":"Additional views","av_x3_d":"More cameras inside a scene we already built.","av_x3_h":"They come with the same finish and in the same format as the ones in your plan.","av_x4_t":"Additional scenes","av_x4_d":"A new space, with its own modeling, lighting and set dressing.","av_x4_h":"The plan you hired applies to each new scene the same way.","av_extra_03":"Extra 03","av_extra_04":"Extra 04","av_r1":"Framing and composition","av_r2":"Materials, light and set dressing","av_r3":"Set dressing and post-production","av_r4":"The narrative and the audiovisual pieces","av_rev_lead":"Each review has its own moment and its own subject.","av_c_need":"What we need from you","av_c_scenes":"How many scenes","av_c1":"Global, in English and Spanish. There is no site visit.","av_c2":"Drawings in PDF or CAD, elevations and sections, and your material and style references.","av_c3":"The plan applies to each scene you hire.","av_c4":"You get the final pieces. The 3D model and the working files stay with the studio.","av_c5":"The timeline depends on the plan and how many scenes. If you have a launch date, we work against it.","av_c6":"50% to start, 50% on delivery.","av_c7":"A services contract plus the detail of your project.","av_c8":"It is quoted separately and you approve it first.","av_dev_q":"Is it for a full development?","av_dev_link":"This is how we work with developers.","av_close_title":"How many scenes do you need?","av_close_lead":"Tell us about the project and we send back a proposal with the plan and the number of scenes.","av_close_cta":"Ask for a proposal","av_form_essential":"Architectural Visualization · Essential","av_form_premium":"Architectural Visualization · Premium","av_form_edition":"Architectural Visualization · Borsoga Edition","av_form_immersive":"Borsoga Immersive · Visualization","av_form_tour":"Tour 360 · Visualization","av_form_views":"Additional views","av_form_scenes":"Additional scenes","av_form_proposal":"Visualization proposal","av_here":"You are here","avq_s1_type":"What kind of project is it?","avq_s1_stage":"What stage is it at?","avq_s1_role":"Who are you writing as?","avq_s2_def1":"A scene is a built space: modelled, lit and dressed.","avq_s2_def2":"A view is a camera inside that scene.","avq_views_each":"{n} views each","avq_a11y_more":"Add scene","avq_a11y_less":"Remove scene","avq_a11y_vmore":"Add view","avq_a11y_vless":"Remove view","avq_views_adjust":"adjust","avq_views_note":"The final number of views depends on the plan you choose.","avq_break":"With what you've picked: {scenes} · {images}","avq_n_scene":"{n} scene","avq_n_scenes":"{n} scenes","avq_n_image":"{n} image","avq_n_images":"{n} images","avq_s2_q":"Which scenes do you need?","avq_s2_help":"Pick all you need and adjust the quantity.","avq_s2_context":"Do you need the surrounding urban context?","avq_s2_typos":"How many different typologies?","avq_s2_amen":"Which ones?","avq_s3_q":"What project material do you have?","avq_s3_model_t":"Upload the model or paste the download link","avq_s3_model_h":"Formats we work with: SKP, RVT, 3DM, FBX, OBJ, MAX. A file or a link, either one is enough.","avq_s3_cad_t":"Upload plans, elevations and sections","avq_s3_cad_h":"CAD or PDF. A file or a link, either one is enough.","avq_s3_sketch_t":"Upload whatever you have","avq_s3_sketch_h":"Sketches, drafts, photos of your notebook. A file or a link, either one is enough.","avq_s3_link_ph":"Download link (Drive, WeTransfer, Dropbox)","avq_s3_none":"Without material we can't give you a range. This moves to a kick-off call, where we define what's needed to start.","avq_s3_spec":"Have you defined materials and finishes?","avq_s3_refs":"Share your style references","avq_s3_refs_h":"Pinterest, a folder, or projects you like. Optional.","avq_s4_use":"What will you use the images for?","avq_s4_use_h":"This sets resolution, format and which pieces we deliver. Tick everything that applies.","avq_s4_tone":"What tone are you after?","avq_s4_tone_h":"Three of our projects. Point to the one closest to what you want.","avq_tone_toggle":"What this tone means","avq_tone_note":"It's a reference, not a closed list. We fine-tune it together.","avq_l_light":"Light","avq_l_dress":"Dressing","avq_l_post":"Post-production","avq_l_use":"What it's for","avq_t1_light":"Clear, diffuse light, neutral sky.","avq_t1_dress":"Just enough for the space to read.","avq_t1_post":"Colour correction and little else.","avq_t1_use":"Design approval, permits and catalogue.","avq_t2_light":"Golden or blue hour, long shadows.","avq_t2_dress":"Planting, people and objects with life.","avq_t2_post":"Colour and atmosphere work.","avq_t2_use":"Pre-sales, sales and social.","avq_t3_light":"Built light, designed shot by shot.","avq_t3_dress":"Every object chosen and placed.","avq_t3_post":"Fine retouching, grain and magazine treatment.","avq_t3_use":"Competitions, press and brand pieces.","avq_slot_t1":"Real project · neutral tone","avq_slot_t2":"Real project · atmospheric tone","avq_slot_t3":"Real project · editorial tone","avq_s5_cross":"Will you need anything else around the project?","avq_s5_extras":"These are quoted separately. Leave out whatever you don't need.","avq_s6_company":"Company","avq_s6_loc":"Project location","avq_s6_loc_h":"City and country. We use it for time zones and context, not for coverage.","avq_country":"Country","avq_s6_launch":"Do you have a launch or delivery date?","avq_s6_portfolio":"May we publish the project?","avq_cta_call":"Book the call","avq_step2":"The scenes","avq_step3":"What you send us","avq_step4":"What they're for and in what tone","avq_step6":"You and your project","avq_s2_exterior_note":"Entrance, street, pedestrian surroundings.","avq_s2_interior_q":"Is the interior already designed?","avq_s2_int_notice":"Resolving the interior is design work, not visualization. We can do it and it's quoted separately, or we work with the design you hand us.","avq_s2_piece_q":"Does the piece already exist, or does it need modelling from scratch?","avq_s2_rooms_q":"Which interior spaces?","avq_s2_rooms_h":"Each space is a scene. The Interior count works itself out.","avq_g_res":"Residential","avq_g_com":"Commercial","avq_g_hosp":"Hospitality","marca_todo_lo_que_aplique":"Check everything that applies.","el_proyecto_incluye_alguno_de_estos":"Does the project include any of these?","de_que_ano_es_aproximadamente_la":"Roughly what year is the property?","en_que_etapa_esta_la_obra":"What stage is the construction at?","obra_nueva_o_remodelacion":"New construction or a remodel?","que_tipo_de_propiedad_es":"What kind of property is it?","el_local_esta_vacio_o_en":"Is the space empty or operating?","que_tipo_de_espacio_comercial":"What kind of commercial space?","ya_es_tuya":"Is it already yours?","es_para_vender_o_para_rentar":"Is it to sell or to rent?","para_que_es_este_proyecto":"What is this project for?","no_pudimos_enviar_tu_proyecto_desde":"We already have a submission from this address. Write to us and we'll sort it out.","cerrar":"Close","te_mandamos_un_link_a_tu":"Your progress is saved in this browser. Come back on this same device and you'll pick up where you left off. We don't send emails yet.","empezar_de_nuevo":"Start over","continuar_donde_quede":"Continue","tienes_un_proyecto_a_medias":"Pick up where you left off","srv_meta_place":"Miami, Florida","srv_eyebrow":"Borsoga Studio","srv_title":"Blending technology and human intelligence to shape meaningful spaces, brands, and digital experiences.","srv_authorship":"Four services, one studio. We do all of it ourselves — no subcontracting, no handing your project from one vendor to the next.","srv_sequence":"The order follows the life of a project: the space is designed, then shown, then named, then sold.","srv_n1":"01","srv_n2":"02","srv_n3":"03","srv_n4":"04","srv_name1":"Interior Design","srv_name2":"Architectural Visualization","srv_name3":"Branding","srv_name4":"Web and App","srv_line1":"A space you want to see resolved before it's built.","srv_line2":"A project that doesn't exist yet and has to look real.","srv_line3":"A development that needs a name, an identity, and something to present with.","srv_line4":"A platform where your project is shown and sold.","srv_what1":"We measure the space, test layouts and settle materials, finishes and lighting. You get drawings, images and a materials guide.","srv_what2":"We model from your drawings and deliver renders, video and a 360 walkthrough with real light and materials.","srv_what3":"Name, logo, palette, type and the sales and social pieces, in one manual anyone can follow.","srv_what4":"Structure, design and build of the site or app, wired to its forms and contact tracking.","srv_cta_plans":"See the plans","srv_cta_contact":"Tell us about your project","srv_proof_eyebrow":"The proof","srv_proof_title":"One development, all four services","srv_proof_lead":"We do all of it. This is what it looks like when all four run through a single development.","srv_proof_credit":"Project to be confirmed · Miami","srv_proof_l1":"Interior design","srv_proof_l2":"Architectural visualization","srv_proof_l3":"Branding","srv_proof_l4":"Web and App","srv_proof_d1":"The space resolved before it was built","srv_proof_d2":"The project seen before it existed","srv_proof_d3":"The name and identity of the development","srv_proof_d4":"The platform where it sells","srv_slot_ph1":"Interior design — photo of the finished project","srv_slot_ph2":"Visualization — render of the same project","srv_slot_ph3":"Branding — identity of the development","srv_slot_ph4":"Web and App — screen from the platform","srv_form_eyebrow":"For more than one service","srv_form_title":"Tell us about your project","srv_form_lead":"If you need more than one, write once and we'll put the whole thing together.","srv_form_service":"Coming in through","srv_ph_name":"Name","srv_ph_email":"Email","srv_ph_phone":"Phone","srv_ph_project":"What do you need? A few lines is enough.","srv_form_send":"Send","srv_form_note":"We'll write to you within 24 hours to understand your project.","srv_email_bad":"That doesn't look like an email address.","srv_fix":"Yes, fix it","srv_footer":"Borsoga LLC · Miami, Florida","srv_dev_title":"A development doesn't come in through one door","srv_dev_cta":"Let's talk about your development","srv_service_developer":"Development · more than one service","srv_lost_q":"Not sure where to start?","srv_lost_cta":"Write to us and we'll figure it out together","srv_close":"Close","srv_meet_title":"Book a meeting with our creative director","srv_meet_sub":"Twenty minutes, whenever works for you. No commitment.","srv_meet_cta":"See available times","srv_meet_subject":"Meeting with the creative director"},"msg":{"route_call_title":"Let's talk","route_range_title":"We'll send you a range","route_mail_title":"We got your project","route_edition":"A project like yours is better handled in a conversation than in an automatic number. We'll reach out to set up a call, and we'll have everything you told us in front of us.","route_outside_dade":"Essential and Premium are available in Miami-Dade. Your project is outside it, so we look at it through Borsoga Edition, which covers all of Florida, or we talk it through on a call.","route_outside_fl":"The project address is outside Florida. We look at that with you before talking about price.","route_unsure":"There were a few things you weren't sure about yet, so what we send will be a range rather than a number. We close it at the visit.","route_structural":"Your project moves walls or touches the facade. That needs a licensed architect or engineer, so we put it together with you before giving a number.","route_many_spaces":"Your project has {n} spaces. At that size we build the price with you, not with a calculator.","route_luxury_new":"Luxury materials in new construction. We talk that through before giving you a number.","route_health":"A project that goes through the health department has its own calendar. We put it together with you before talking about price.","route_mail_body":"And we'll set up the visit to your space. We lock the final price there, with everything in front of us.","upsell_luxury":"With Luxury materials, Borsoga Edition is probably the better fit.","upsell_many":"With {n} spaces, Borsoga Edition is probably the better fit.","upsell_edition":"You've picked enough that Borsoga Edition would likely cost you less than adding it all separately.","email_disposable":"We need an email where we can send you the proposal.","email_domain_unknown":"We couldn't find that email domain. Mind checking it?","mat_lead_a":"We need to see it to give you a real range. Your phone is enough.","mat_lead_b":"Your space doesn't exist yet, so what we need are the drawings and whatever the developer gave you.","mat_lead_c":"It's under construction, so the drawings work and so do any photos of the site.","mat_lead_d":"You don't have access to the space yet, so what's in the listing or whatever the broker sent you works.","mat_title_any":"Show us what you have","mat_drop_dev":"Drawings or material from the development","mat_drop_any":"Photos from the listing, drawings, or whatever you have","mat_drop_site":"Photos of the site","mat_exit_dev":"I don't have anything from the developer yet","mat_exit_any":"I don't have anything yet","fin_l_cab":"Cabinets","fin_l_top":"Countertops","fin_l_floor":"Floors","fin_l_fix":"Fixtures and hardware","fin_l_light":"Lighting","fin_l_time":"Timing","fin_std_cab":"Off the shelf, standard sizes, good laminates.","fin_std_top":"Stock quartz or granite.","fin_std_floor":"Porcelain tile in common formats.","fin_std_fix":"Well-known mid-range brands, in chrome.","fin_std_light":"Recessed lights and catalog fixtures.","fin_std_time":"Everything is available locally and arrives fast.","fin_alta_cab":"Custom built, in wood veneer or lacquer.","fin_alta_top":"Large-format quartz or porcelain, with worked edges.","fin_alta_floor":"Large-format porcelain or engineered wood.","fin_alta_fix":"Special finishes: matte black, bronze, nickel.","fin_alta_light":"A lighting plan with decorative pieces.","fin_alta_time":"Some pieces have to be ordered ahead.","fin_lujo_cab":"Signature millwork, hardwoods, imported hardware.","fin_lujo_top":"Natural stone with selected veining: marble, quartzite.","fin_lujo_floor":"Natural stone or solid wood.","fin_lujo_fix":"Designer pieces, some limited edition.","fin_lujo_light":"Signature pieces, sometimes made to order.","fin_lujo_time":"Much of it is imported, and that stretches the schedule.","fin_toggle":"What this level means","fin_note":"It's a reference, not a closed list. We fine-tune it together.","files_not_kept":"We got your answers back, but not your files: photos and drawings aren't kept when the browser closes. Please upload them again.","already_sent":"We already have this project. If something changed, reply to the email we sent you and we'll update it.","privacy_provisional":"Provisional text. We keep your answers and files only to prepare your estimate. The Borsoga Studio team sees them and no one else. You can ask us to delete them at any time. The full policy goes up before launch.","finish_lead_kitchen":"These are three kitchens of ours. Point to the one closest to what you want.","finish_lead_space":"These are three spaces of ours. Point to the one closest to what you want.","finish_lead_com":"These are three commercial spaces of ours. Point to the one closest to what you want.","missing_hint":"Still missing: {what}","missing_generic":"Something on this step is still unanswered.","did_you_mean":"Did you mean {email}?","avq_route_scenes":"Your project has {n} scenes. At that volume we build the price with you, not with a calculator.","avq_route_nomat":"There's no project material yet. We start with a kick-off call, and there we define what we need to begin.","avq_route_rush":"Your date is less than four weeks away. We confirm that on a call before committing to anything.","avq_route_mixed":"Mixed use: several typologies inside one project, and the scope is better defined by talking.","avq_mail_body":"And we'll book a call to go over the scenes and the schedule: the price is settled there.","avq_link_added":"Link added","avq_final_24":"We'll send your investment range within 24 hours.","avq_sum_type":"Project type","avq_sum_stage":"Stage","avq_sum_role":"Who's writing","avq_sum_scenes":"Scenes","avq_sum_context":"Urban context","avq_sum_typos":"Different typologies","avq_sum_amen":"Amenities","avq_sum_material":"Material provided","avq_sum_spec":"Materials and finishes","avq_sum_refs":"References","avq_sum_use":"Image use","avq_sum_tone":"Tone","avq_sum_cross":"Around the project","avq_sum_launch":"Date","avq_sum_location":"Location","avq_sum_images":"Estimated images","avq_sum_interior":"Interior design","avq_sum_piece":"The piece","avq_sum_flag":"Internal flag","avq_flag_interior":"Interior design opportunity: the interior isn't resolved.","avq_sum_rooms":"Interior spaces","material_title_plans":"Show us the project","material_title_photos":"Show us your space","lead_purchase":"It isn't yours yet, so there's nothing to photograph. Send us whatever you have from the listing or the developer. Nothing here is required.","lead_no_access":"You don't have the space yet, so send us whatever you've been given. Nothing here is required.","lead_new_build":"New construction has nothing to photograph yet. We need the drawings or the material from the developer.","lead_photos":"We need to see it to give you a real range. Your phone is enough.","plan_drop_title_purchase":"Upload whatever you have on the property","plan_drop_title_dev":"Upload the drawings or the developer's material","plan_drop_note_purchase":"Listing photos, drawings, measurements. Images or PDF.","plan_drop_note_dev":"Images or PDF. Whatever the developer gave you works.","hoa_house":"Does your community have an HOA with design rules?","hoa_condo":"Does the building require association approval?","status_optional":"Optional","status_required":"Required","count_photos":"{n} photos","count_photos_of_3":"{n} of 3","count_file_one":"{n} file","count_file_many":"{n} files","plan_badge":"Plan 0{n} · {plan}","no_plan_yet":"No plan yet","plan_recommended":"Recommended · {plan}","recommendation":"Based on what you told us, the plan that fits is {plan}. We’ll send the range on that basis, and we can change it if you’d rather another one.","saved":"Saved","resume_line":"You were on step 0{n}.","step_counter":"Step {n} of 6","next":"Continue","submit":"Send my project","checking_email":"Checking your email","none":"None","no_material_yet":"No material yet","photos_n":"{n} photos","plans_n":"{n} drawings","sqft_suffix":"{n} sq ft","images_total":"{n} in total","flag_structural":"Structural work — review before quoting","flag_appliance_help":"We'll include appliance guidance in your proposal.","flag_cold_lead":"Cold lead — just exploring","flag_referral":"Wants a contractor recommendation","flag_unsure":"Several answers still undefined. Range and call.","owner_rep":"Authorized representative · owner: {who}","owner_self":"Owner of the property","sum_plan":"Plan","sum_project":"Project","sum_property":"Property","sum_work":"Construction","sum_spaces":"Spaces","sum_millwork":"Custom-built furniture","imgs_per_space":"{n} images per space","sum_plumbing":"Water and drain lines","sum_appliances":"Appliances","sum_laundry":"Washer and dryer","sum_laundry_layout":"Laundry layout","sum_bar":"Bar equipment","sum_consulting":"Appliance guidance","sum_pool":"Pool","sum_structure":"Walls and facade","sum_flagged":"Flagged","sum_hoa":"HOA","sum_association":"Association","sum_building":"Building restrictions","sum_health":"Health department","sum_material":"Material","sum_size":"Size","sum_images":"Images","sum_finish":"Finish level","sum_clarity":"Starting point","sum_budget":"Budget","sum_extras":"Extras","sum_keep":"Furniture being kept","sum_pieces":"Pieces in mind","flag_declared_pieces":"Declared pieces: the design is developed around them. Changing them later means an additional revision.","pieces_notice_add":"Furniture selection is included in Borsoga Edition. On your plan we can add it separately — we'll include it in your proposal.","pieces_notice_included":"Perfect, that's already included in your plan.","sum_showcase":"Material to show it","sum_address":"Address","sum_when":"Timing","sum_deadline":"Deadline","sum_signer":"Signing as","sum_decider":"Who decides","sum_pro":"Contractor or architect","sum_portfolio":"Portfolio","sum_language":"Language","sum_exploring":"What they have in mind","srv_did_you_mean":"Did you mean {email}?","srv_form_sent":"Got it. We'll answer within 24 hours at {email}.","srv_sent_title":"Got it","srv_sent_sub":"We'll answer within 24 hours at {email}."},"opt":{" con el plan ":" with the "," espacios. A ese tamaño el precio lo armamos contigo, no con una calculadora.":" spaces. At that size we build the price with you, not with a calculator."," espacios. Borsoga Edition está pensado para proyectos de este tamaño.":" spaces. Borsoga Edition is made for projects this size.",". ¿Continuar donde quedaste?":". Continue where you left off?","Agua y desagüe":"Water and drainage","Apiladas ocupan menos; lado a lado piden más frente de pared.":"Stacked takes less room; side by side needs more wall width.","Aprobación de diseño interno":"Internal design approval","Arquitecto o diseñador":"Architect or designer","Asociación":"Association","Atmosférico":"Atmospheric","Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.":"Borsoga Edition is quoted on a call. We have everything you told us, so the conversation starts where you left it.","Calle y número":"Street and number","Catálogo de producto":"Product catalogue","Circulación":"Circulation","Circulación o común":"Circulation or common area","Ciudad y país. Nos sirve para husos horarios y contexto, no para cobertura.":"City and country. We use it for time zones and context, not for coverage.","Clóset o vestidor":"Closet or dressing room","Concurso o licitación":"Competition or tender","Correo del dueño":"Owner's email","Cuándo":"When","Código postal":"ZIP code","De 3 a 6 fotos. Con el celular basta.":"3 to 6 photos. Your phone is enough.","Define resolución, formato y qué piezas entregamos. Marca todo lo que aplique.":"This sets resolution, format and which pieces we deliver. Tick everything that applies.","Dirección":"Address","Dirección del proyecto":"Project address","Diseño desarrollado":"Developed design","Diseño interior":"Interior design","Electrodomésticos":"Appliances","Elegiste nivel lujo. A ese nivel de acabado tu contratista va a pedir planos y guía de materiales, y eso entra a partir de Premium.":"You chose the luxury level. At that finish level your contractor will ask for drawings and a materials guide, and that starts at Premium.","Elige todos los que quieras. No hay mínimo: puedes contratar uno solo. Si tienes más de uno, ajusta la cantidad.":"Pick as many as you want. There's no minimum: you can hire just one. If you have more than one, adjust the quantity.","En obra nueva no hay fotos. Necesitamos los planos o el material del desarrollo.":"In new construction there are no photos. We need the drawings or the development's material.","Enlace a tu lista o tablero (opcional)":"Link to your list or board (optional)","Enlace añadido":"Link added","Es opcional, pero si nos lo compartes ajustamos el estimado a tu realidad en vez de darte un rango amplio.":"It's optional, but if you share it we tune the estimate to your situation instead of giving you a wide range.","Es un diseño nuevo":"It's a new design","Escríbelo completo, con arroba y dominio: nombre@correo.com":"Write it in full, with the @ and the domain: name@email.com","Especificación":"Specification","Estado o país de registro":"State or country of registration","Estas son tres cocinas nuestras. Señala la que se parece a lo que quieres.":"These are three of our kitchens. Point to the one closest to what you want.","Existe pero solo tengo planos o fotos":"It exists but I only have drawings or photos","Existe y tengo el modelo":"It exists and I have the model","Fecha límite":"Deadline","Fotos del listado, planos, medidas. Imágenes o PDF.":"Listing photos, drawings, dimensions. Images or PDF.","Fotos del lugar, si ya se puede entrar":"Photos of the place, if you can get in yet","Gabinetes de cocina, clósets, muebles de baño, paneles de pared, libreros. Lo contrario es comprar todo ya hecho.":"Kitchen cabinets, closets, bathroom vanities, wall panels, bookcases. The alternative is buying everything ready-made.","Habitación tipo":"Typical room","Identidad o nombre del desarrollo":"Identity or name of the development","Imágenes":"Images","Imágenes estimadas":"Estimated images","Imágenes o PDF. Lo que te haya dado el desarrollador sirve.":"Images or PDF. Whatever the developer gave you works.","La dirección del proyecto está fuera de Florida. Eso lo revisamos contigo antes de hablar de precio.":"The project address is outside Florida. We go over that with you before talking price.","Las medidas de los electrodomésticos definen toda la gabinetería, así que conviene tenerlos decididos antes de empezar.":"Appliance dimensions define all the cabinetry, so it's worth deciding on them before we start.","Lo guardamos en este navegador para que puedas volver donde quedaste. Te lo pedimos también para poder contactarte.":"We save it in this browser so you can come back where you left off. We also ask for it so we can contact you.","Los modelos 3D suelen ser grandes: si no cabe, pega un enlace de descarga.":"3D models tend to be big: if it doesn't fit, paste a download link.","Marca todo lo que aplique.":"Tick everything that applies.","Muéstranos el proyecto":"Show us the project","Más al terminar":"More on completion","Necesitamos un correo donde podamos enviarte la propuesta.":"We need an email where we can send you the proposal.","Necesitamos verlo para darte un estimado real. Con el celular basta.":"We need to see it to give you a real estimate. Your phone is enough.","Nivel lujo en obra nueva. Eso lo conversamos antes de darte un número.":"Luxury level in new construction. We talk that through before giving you a number.","No lo sé todavía":"I don't know yet","No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.":"We couldn't send your project from this email. Write to us and we'll sort it out with you.","No pudimos enviarlo. Inténtalo otra vez o escríbenos.":"We couldn't send it. Try again or write to us.","No pudimos enviarlo. Revisa tu conexión e inténtalo otra vez.":"We couldn't send it. Check your connection and try again.","No pudimos subir tus archivos: ":"We couldn't upload your files: ","No, está bajo confidencialidad":"No, it's under confidentiality","No, habría que resolverlo":"No, it would need resolving","Nombre del dueño":"Owner's name","Nombre legal de la empresa":"Company's legal name","Nos ayuda a mostrar nuestro trabajo. Lo confirmamos en el contrato.":"It helps us show our work. We confirm it in the contract.","Obra estructural o de fachada. Lo revisamos antes de cotizar.":"Structural or façade work. We review it before quoting.","Opcional. Imágenes o PDF.":"Optional. Images or PDF.","Oportunidad de interior design: el interior no está resuelto.":"Interior design opportunity: the interior isn't resolved.","País":"Country","Presentación a inversionistas o banca":"Presentation to investors or banks","Presentación oficial o permisos":"Official presentation or permits","Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.":"Several things are still undefined, so instead of a number we'll send you a range and close it with you on a call.","Quién decide":"Who decides","Quién escribe":"Who's writing","Quién firma":"Who signs","Qué le haría decidirse":"What would make them decide","Resolver el interior es trabajo de diseño, no de visualización. Podemos hacerlo nosotros y se cotiza aparte, o trabajamos con el diseño que nos entregues.":"Resolving the interior is design work, not visualization. We can do it and it's quoted separately, or we work with the design you hand us.","Salón de eventos":"Event hall","Salón social":"Social lounge","Se cotizan aparte. Lo que no marques aquí queda fuera de tu proyecto.":"These are quoted separately. Whatever you don't tick here stays out of your project.","Se cotizan aparte. Lo que no marques aquí queda fuera del proyecto.":"These are quoted separately. Whatever you don't tick here stays out of the project.","Sin plan todavía":"No plan yet","Solo el edificio, sin contexto":"Just the building, no context","Sube lo que tengas de la propiedad":"Upload whatever you have on the property","Sube los planos o el material del desarrollo":"Upload the drawings or the development's material","Sí, el entorno real":"Yes, the real surroundings","Sí, pero solo después de su lanzamiento":"Yes, but only after its launch","Sí, tengo el diseño definido":"Yes, I have the design defined","Sí, tengo la especificación":"Yes, I have the specification","Sí, y es fija":"Yes, and it's fixed","Súbenos el modelo o pega el enlace de descarga":"Upload the model or paste the download link","Súbenos la lista o las fichas técnicas":"Upload the list or the spec sheets","Súbenos lo que tengas":"Upload whatever you have","Súbenos plantas, alzados y secciones":"Upload plans, elevations and sections","Tamaño":"Size","Te enviamos un rango":"We'll send you a range","Teléfono":"Phone","Tienes un proyecto a medias, lo dejaste en el paso 0":"You have a project half-finished, you left it at step 0","Todavía nada":"Nothing yet","Todavía no es tuya, así que no hay nada que fotografiar. Súbenos lo que tengas del listado o del desarrollo. Nada aquí es obligatorio.":"It isn't yours yet, so there's nothing to photograph. Upload whatever you have from the listing or the development. Nothing here is required.","Todavía no tienes el local. Súbenos los planos o el material que te hayan dado. Nada aquí es obligatorio.":"You don't have the space yet. Upload the drawings or the material you were given. Nothing here is required.","Todavía sin material":"No material yet","Toma o elige tus fotos":"Take or pick your photos","Tres proyectos nuestros. Señala el que se parece a lo que buscas.":"Three of our projects. Point to the one closest to what you want.","Tu proyecto está fuera de Miami-Dade. Podemos hacerlo, pero el alcance y el desplazamiento los cerramos hablando.":"Your project is outside Miami-Dade. We can do it, but we settle the scope and the travel by talking.","Tu proyecto mueve paredes o toca la fachada. Eso necesita un arquitecto o ingeniero con licencia, así que lo armamos contigo antes de dar un número.":"Your project moves walls or touches the façade. That needs a licensed architect or engineer, so we work it out with you before giving a number.","Tus planos, si los tienes":"Your drawings, if you have them","Tus respuestas quedan guardadas en este navegador. Vuelve cuando quieras desde el mismo dispositivo.":"Your answers are saved in this browser. Come back whenever you like from the same device.","Ubicación":"Location","Ubicación del proyecto":"Project location","Un proyecto que pasa por el departamento de salud tiene su propio calendario. Lo armamos contigo antes de hablar de precio.":"A project that goes through the health department has its own timeline. We work it out with you before talking price.","Un sitio de preventa":"A pre-sales site","Una escena es un encuadre del proyecto. ":"A scene is one framing of the project. ","Una idea general basta. Los detalles los tomamos en la visita.":"A general idea is enough. We take the details on the visit.","Una vista es una cámara dentro de esa escena.":"A view is a camera inside that scene.","Uso de las imágenes":"Image use","Vamos a revisar lo que nos contaste y te escribimos para hablar del precio y el plazo. Nada de esto es automático: lo mira una persona del estudio.":"We'll go over what you told us and write to you about price and timeline. None of this is automatic: a person at the studio looks at it.","Varias respuestas sin definir. Va a rango y a llamada.":"Several answers undefined. Goes to range and a call.","Vista aérea":"Aerial view","Ya recibimos tu proyecto. Si necesitas cambiar algo, escríbenos.":"We already received your project. If you need to change anything, write to us.","baños":"bathrooms","clósets":"closets","comedores o cocinas de staff":"staff dining rooms or kitchens","el subidor no cargó":"the uploader didn't load","lavanderías":"laundry rooms","no se pudo cargar el subidor":"the uploader couldn't be loaded","¿A dónde te guardamos el avance?":"Where should we save your progress?","¿Cuándo quieres empezar?":"When do you want to start?","¿Cuánto piensas invertir en obra y mobiliario?":"How much are you thinking of investing in works and furniture?","¿Cómo van a ir?":"How will they go?","¿De qué año es aproximadamente la propiedad?":"Roughly what year is the property from?","¿El edificio pide aprobación de la asociación o del condominio?":"Does the building require association or condo approval?","¿El local está vacío o en operación?":"Is the space empty or in operation?","¿El proyecto incluye alguno de estos?":"Does the project include any of these?","¿El proyecto incluye la piscina o su área?":"Does the project include the pool or its area?","¿El proyecto necesita aprobación del departamento de salud?":"Does the project need health department approval?","¿En cuáles se van a hacer muebles a la medida?":"Which ones will have custom furniture made?","¿En qué etapa está la obra?":"What stage is the work at?","¿Eres el dueño de la propiedad?":"Are you the owner of the property?","¿Es para vender o para rentar?":"Is it to sell or to rent?","¿Firmas a título personal o como empresa?":"Are you signing personally or as a company?","¿Obra nueva o remodelación?":"New build or remodel?","¿Para qué es este proyecto?":"What is this project for?","¿Podemos publicar tu proyecto terminado?":"May we publish your finished project?","¿Quién decide en este proyecto?":"Who decides on this project?","¿Qué espacios quieres diseñar?":"Which spaces do you want to design?","¿Qué tan claro tienes lo que quieres?":"How clear are you on what you want?","¿Qué tan grande es tu proyecto?":"How big is your project?","¿Qué te haría decidirte? (opcional)":"What would make you decide? (optional)","¿Qué tipo de espacio comercial?":"What kind of commercial space?","¿Qué tipo de espacio es?":"What kind of space is it?","¿Qué tipo de propiedad es?":"What kind of property is it?","¿Se van a mover los puntos de agua o desagüe?":"Will the water or drainage points be moved?","¿Tienes una fecha límite?":"Do you have a deadline?","¿Tu comunidad tiene HOA con reglas de diseño?":"Does your community have an HOA with design rules?","¿Vas a conservar muebles que ya tienes?":"Will you keep furniture you already have?","¿Vas a necesitar algo más alrededor del proyecto?":"Will you need anything else around the project?","¿Vas a necesitar algo más cuando esté terminado?":"Will you need anything else once it's finished?","¿Ya elegiste el equipo de la barra?":"Have you chosen the bar equipment?","¿Ya elegiste la lavadora y la secadora?":"Have you chosen the washer and dryer?","¿Ya elegiste los electrodomésticos?":"Have you chosen the appliances?","¿Ya es tuya?":"Is it yours yet?","¿Ya tienes piezas de mobiliario decididas?":"Have you decided on any furniture pieces?","¿Ya trabajas con un contratista o un arquitecto?":"Are you already working with a contractor or an architect?","áreas de clientes":"client areas","áreas de piscina":"pool areas","áreas de trabajo":"work areas","27 de agosto de 2026":"August 27, 2026","<strong>No usamos tus datos para publicidad ni te inscribimos en newsletters.</strong> Si en algún momento queremos escribirte por algo distinto de tu proyecto, te lo pediremos aparte.":"<strong>We don't use your data for advertising and we don't add you to newsletters.</strong> If at some point we want to write to you about something other than your project, we'll ask you separately.","Acceder a la información que tenemos sobre ti.":"Access the information we hold about you.","Borsoga LLC, con domicilio en Miami, Florida (Estados Unidos), es responsable de la información que recoges y envías a través de este sitio. En este documento nos referimos a nosotros como «Borsoga Studio» o «el estudio».":"Borsoga LLC, based in Miami, Florida (United States), is responsible for the information you enter and send through this site. In this document we refer to ourselves as “Borsoga Studio” or “the studio”.","Cambios en esta política":"Changes to this policy","Con quién la compartimos":"Who we share it with","Contactarte para resolver dudas o agendar una llamada o una visita.":"Contact you to answer questions or book a call or a visit.","Contacto":"Contact","Cookies y almacenamiento local":"Cookies and local storage","Cuánto tiempo la guardamos":"How long we keep it","Cómo la protegemos":"How we protect it","Datos de contacto e identificación":"Contact and identification details","Datos del proyecto":"Project details","Datos técnicos":"Technical data","El rango de inversión que nos indiques, si decides compartirlo. Es opcional.":"The investment range you tell us, if you choose to share it. It's optional.","El sitio se sirve por conexión cifrada (HTTPS). Los archivos que subes se guardan en un área privada con acceso restringido y las cuentas del estudio están protegidas con contraseñas propias. Ningún sistema es infalible: si llegara a producirse una brecha que afecte a tu información, te lo comunicaríamos.":"The site is served over an encrypted connection (HTTPS). The files you upload are stored in a private area with restricted access, and the studio's accounts are protected with their own passwords. No system is infallible: if a breach were to affect your information, we would tell you.","Eliminar tu información.":"Delete your information.","En esta página":"On this page","Enviarte un enlace para retomar el cuestionario si lo dejas a medias.":"Send you a link to pick the questionnaire back up if you leave it halfway.","Escríbenos a":"Write to us at","Escríbenos y te atendemos, vengas de donde vengas. Puedes pedirnos:":"Write to us and we'll help, wherever you're writing from. You can ask us to:","Este documento explica qué información nos das al usar este sitio y nuestro cuestionario, qué hacemos con ella y qué puedes pedirnos en cualquier momento. Está escrito para que se entienda, no para protegernos a nosotros.":"This document explains what information you give us when you use this site and our questionnaire, what we do with it, and what you can ask of us at any time. It's written to be understood, not to protect us.","Este sitio está dirigido a personas adultas. No recogemos deliberadamente información de menores de 18 años. Si detectamos que hemos recibido datos de un menor, los eliminamos.":"This site is intended for adults. We don't knowingly collect information from anyone under 18. If we find we've received a minor's data, we delete it.","Este sitio no usa cookies de publicidad ni de seguimiento de terceros. El cuestionario usa el almacenamiento local de tu navegador para guardar tus respuestas a medida que avanzas, de modo que no las pierdas si cierras la página. Esa información se queda en tu dispositivo y puedes borrarla vaciando los datos del sitio en tu navegador.":"This site uses no advertising cookies and no third-party tracking. The questionnaire uses your browser's local storage to save your answers as you go, so you don't lose them if you close the page. That information stays on your device and you can remove it by clearing the site's data in your browser.","Evitar envíos automatizados, spam y usos abusivos del formulario.":"Prevent automated submissions, spam and abuse of the form.","Fotografías del interior del inmueble.":"Photographs of the interior of the property.","Guardamos tus respuestas en el almacenamiento local de tu navegador para que puedas salir del cuestionario y retomarlo donde lo dejaste.":"We save your answers in your browser's local storage so you can leave the questionnaire and pick it up where you left off.","La dirección del inmueble donde se haría el proyecto.":"The address of the property where the project would take place.","Las fotos de tu espacio":"The photos of your space","Las ve únicamente el equipo de Borsoga Studio que trabaja en tu proyecto.":"Only the Borsoga Studio team working on your project sees them.","Legal":"Legal","Menores":"Minors","No las compartimos con terceros, no las vendemos y no las usamos para entrenar sistemas de inteligencia artificial.":"We don't share them with third parties, we don't sell them, and we don't use them to train artificial intelligence systems.","No las publicamos en nuestro portafolio ni en redes sociales salvo que nos des permiso expreso. En el cuestionario te preguntamos por ello y lo confirmamos por escrito en el contrato. Puedes decir que no y no cambia nada del servicio.":"We don't publish them in our portfolio or on social media unless you give us express permission. We ask about it in the questionnaire and confirm it in writing in the contract. You can say no and nothing about the service changes.","No vendemos tu información. La compartimos únicamente con proveedores que necesitamos para operar, y solo con lo imprescindible:":"We don't sell your information. We share it only with the providers we need in order to operate, and only what's strictly necessary:","Nuestro procesador de pagos, si contratas, para cobrar el anticipo. El estudio no guarda los números de tu tarjeta ni de tu cuenta.":"Our payment processor, if you hire us, to collect the deposit. The studio does not store your card or account numbers.","Nuestro proveedor de alojamiento web y de correo, para almacenar la información y enviarte mensajes.":"Our web hosting and email provider, to store the information and send you messages.","Nuestro proveedor de firma electrónica, si contratas, para que firmes el contrato.":"Our electronic signature provider, if you hire us, so you can sign the contract.","Nuestro servidor registra datos de conexión habituales, como la dirección IP y el navegador, por seguridad y para detectar envíos automatizados.":"Our server logs the usual connection data, such as IP address and browser, for security and to detect automated submissions.","Para cualquier asunto relacionado con tus datos puedes escribirnos a <a href=\"mailto:borsogastudio@gmail.com\" style=\"border-bottom:1px solid rgba(0,0,0,.3)\">borsogastudio@gmail.com</a>.":"For anything to do with your data you can write to us at <a href=\"mailto:borsogastudio@gmail.com\" style=\"border-bottom:1px solid rgba(0,0,0,.3)\">borsogastudio@gmail.com</a>.","Para qué usamos tu información":"What we use your information for","Planos, fichas técnicas de electrodomésticos y otros documentos que nos envíes.":"Drawings, appliance spec sheets and other documents you send us.","Preparar el estimado y la propuesta de tu proyecto.":"Prepare the estimate and the proposal for your project.","Puedes pedirnos que borremos tus datos antes de esos plazos, salvo que tengamos una obligación legal de conservarlos.":"You can ask us to delete your data before those periods are up, unless we have a legal obligation to keep it.","Quién trata tus datos":"Who handles your data","Qué información recoge Borsoga Studio, para qué la usa, con quién la comparte y qué derechos tienes sobre ella.":"What information Borsoga Studio collects, what it uses it for, who it shares it with, and what rights you have over it.","Qué información recogemos":"What information we collect","Redactar el contrato y gestionar el pago si decides contratarnos.":"Draw up the contract and handle payment if you decide to hire us.","Respondemos en un plazo máximo de 30 días. No cobramos por ello y no te penalizamos por ejercer estos derechos.":"We respond within 30 days at most. We don't charge for it and we don't penalise you for exercising these rights.","Retirar tu consentimiento en cualquier momento, incluido el permiso para publicar tu proyecto.":"Withdraw your consent at any time, including permission to publish your project.","Sabemos que son fotos del interior de tu casa o de tu local, así que las tratamos con el mismo cuidado que los datos de contacto.":"We know these are photos of the inside of your home or your premises, so we treat them with the same care as contact details.","Se guardan en almacenamiento privado, no en una carpeta pública ni indexable.":"They're kept in private storage, not in a public or indexable folder.","Si cambiamos algo, actualizamos la fecha del encabezado. Cuando el cambio sea significativo y afecte a proyectos en curso, lo avisamos por correo.":"If we change anything, we update the date in the header. When a change is significant and affects ongoing projects, we tell you by email.","Si contratas, conservamos el expediente del proyecto mientras dure la relación y después el tiempo que exijan las obligaciones contables y fiscales aplicables en Florida.":"If you hire us, we keep the project file for as long as the relationship lasts, and afterwards for as long as the accounting and tax obligations applicable in Florida require.","Si firmas como empresa: el nombre legal de la entidad, su estado de registro, quién firma y su cargo.":"If you sign as a company: the entity's legal name, its state of registration, who signs and their role.","Si no eres el dueño de la propiedad: el nombre y el correo del dueño, porque es quien tiene que firmar el contrato.":"If you're not the owner of the property: the owner's name and email, since they're the one who has to sign the contract.","Si nos escribes y no llegamos a trabajar juntos, conservamos tu consulta hasta <strong>24 meses</strong> y después la eliminamos.":"If you write to us and we never end up working together, we keep your enquiry for up to <strong>24 months</strong> and then delete it.","Si ya trabajas con un contratista o un arquitecto.":"Whether you're already working with a contractor or an architect.","Solo pedimos lo que necesitamos para preparar tu propuesta y, si contratas, para redactar el contrato. No compramos bases de datos ni recogemos información por tu cuenta.":"We only ask for what we need to prepare your proposal and, if you hire us, to draw up the contract. We don't buy databases and we don't collect information about you on our own.","También podríamos tener que entregar información si nos lo exige una autoridad o una orden judicial.":"We may also have to hand over information if required by an authority or a court order.","Tu nombre legal completo, correo electrónico y teléfono.":"Your full legal name, email address and phone number.","Tus derechos":"Your rights","Tus respuestas sobre el tipo de proyecto, los espacios, el tamaño, el nivel de acabado, los plazos y quién toma la decisión.":"Your answers about the type of project, the spaces, the size, the finish level, the timeline and who makes the decision.","Un contratista, arquitecto o ingeniero, solo cuando tu proyecto lo requiera y únicamente si nos lo autorizas.":"A contractor, architect or engineer, only when your project requires it and only if you authorise us to.","Una copia de tus datos en un formato que puedas reutilizar.":"A copy of your data in a format you can reuse.","Volver al inicio":"Back to home","y te respondemos. Borsoga LLC · Miami, Florida.":"and we'll get back to you. Borsoga LLC · Miami, Florida.","¿Alguna duda sobre tus datos?":"Any questions about your data?","Índice de la política":"Policy contents","Última actualización":"Last updated","Business cards y papelería":"Business cards and stationery","Community management · Pauta publicitaria · Grabación presencial · Fotografía · Copywriting estratégico · Gestión de influencers. Se cotizan como servicios adicionales.":"Community management · Paid media · On-site filming · Photography · Strategic copywriting · Influencer management. Quoted as additional services.","Contenido de múltiples slides organizado como una narrativa visual coherente, con jerarquía y continuidad entre láminas.":"Multi-slide content organised as a coherent visual narrative, with hierarchy and continuity from slide to slide.","Criterio de alcance":"How scope is set","Cuando varias piezas forman parte de una misma campaña, se recomienda cotizarlas como sistema y no como diseños aislados.":"When several pieces belong to the same campaign, we recommend quoting them as a system rather than as isolated designs.","Edición y diseño de video vertical: ritmo, textos, gráficos, transiciones y recursos visuales.":"Vertical video editing and design: pacing, text, graphics, transitions and visual assets.","El alcance se define por número de páginas, formatos, adaptaciones, complejidad y nivel de dirección de arte.":"Scope is set by page count, formats, adaptations, complexity and level of art direction.","Firmas de correo y documentos corporativos":"Email signatures and corporate documents","Línea 01":"Line 01","Pieza gráfica animada o motion graphic sin necesidad de partir de una grabación de video.":"An animated graphic or motion graphic, with no need to start from video footage.","Pieza gráfica individual para una publicación. Composición, tipografía, imagen y adaptación a la identidad de marca.":"A single graphic piece for one post. Composition, typography, image and adaptation to the brand identity.","Pieza vertical para Stories. Puede ser independiente o adaptación de una campaña o publicación principal.":"A vertical piece for Stories. It can stand alone or adapt a campaign or a main post.","Presentación institucional o sales deck base":"Corporate presentation or base sales deck","Puede contratarse como pieza individual o como conjunto de entregables para una campaña.":"Can be hired as a single piece or as a set of deliverables for a campaign.","Señalización, packaging o piezas físicas según el proyecto":"Signage, packaging or physical pieces depending on the project","Sistema reutilizable de plantillas para que la marca mantenga consistencia visual en publicaciones futuras.":"A reusable template system so the brand stays visually consistent in future posts.","Un post estático, un carrusel y un reel no se contabilizan como la misma unidad de trabajo. Cada formato tiene un nivel distinto de diseño, estructura, edición y producción; por eso puede cotizarse de forma independiente o combinarse dentro de planes mensuales.":"A static post, a carousel and a reel don't count as the same unit of work. Each format carries a different level of design, structure, editing and production; that's why each can be quoted on its own or combined into monthly plans.","Camina tu espacio antes de que exista. Llevamos tu proyecto a unos lentes de realidad virtual, con la última tecnología de Meta, y vamos a donde estés. Te paras en tu cocina, miras hacia arriba, te acercas a un gabinete. A escala real.":"Walk your space before it exists. We bring your project into a virtual reality headset and we come to you. You stand in your kitchen, look up, step closer to a cabinet. At real scale.","Cuántas imágenes":"How many images","Cuánto tarda":"How long it takes","Cuántos espacios":"How many spaces","Cómo se comercializa":"How it's sold","Cómo se organiza el espacio: distribución y circulación":"How the space is organised: layout and circulation","Cómo se paga":"How you pay","Depende del tamaño de cada espacio, no del plan: 3 imágenes para un espacio pequeño, 5 para uno mediano, 8 para uno grande.":"It depends on the size of each space, not on the plan: 3 images for a small space, 5 for a medium one, 8 for a large one.","Desde una habitación hasta la casa completa. No hay mínimo: puedes contratar un solo espacio.":"From a single room to the whole house. There's no minimum: you can hire us for one space.","Diseño gráfico":"Graphic design","Diseño web":"Web design","Elige hasta dónde llega tu proyecto":"Choose how far your project goes","Essential y Premium en Miami-Dade. Borsoga Edition en toda Florida, sin cobrarte el viaje.":"Essential and Premium in Miami-Dade. Borsoga Edition across Florida, with no travel charge.","La idea del proyecto y los videos":"The project concept and the videos","Lo que no está en tu plan":"What isn't in your plan","Los planos y la guía de materiales":"The drawings and the materials guide","Los tres planes comparten el mismo estándar de autoría y calidad. Lo que cambia no es el esfuerzo, sino el alcance del sistema. Eso hace que Essential no se lea como una versión recortada, sino como una pieza completa a menor escala.":"All three plans share the same standard of authorship and quality. What changes isn't the effort, it's how far the system reaches. That's why Essential doesn't read as a cut-down version, but as a complete piece at a smaller scale.","Materiales, acabados e iluminación":"Materials, finishes and lighting","Ningún plan incluye la compra o el traslado del material y el mobiliario, la supervisión de obra, ni la ingeniería y los permisos.":"No plan includes buying or moving materials and furniture, construction supervision, or engineering and permits.","No incluido por defecto":"Not included by default","Pagas el 50% para arrancar. <span style=\"color:rgba(0,0,0,.45)\">El resto, por confirmar.</span>":"You pay 50% to get started. <span style=\"color:rgba(0,0,0,.45)\">The rest, to be confirmed.</span>","Qué firmas":"What you sign","Sesión presencial donde estés. Los lentes los ponemos nosotros.":"An in-person session wherever you are. We bring the headset.","Todo llega en formatos que puedes abrir y compartir: imágenes en JPG o PNG, planos y documentos en PDF, videos en MP4.":"Everything arrives in formats you can open and share: images as JPG or PNG, drawings and documents as PDF, video as MP4.","Todos los productos comparten el mismo estándar de autoría, criterio y calidad. Lo que cambia no es el cuidado del diseño, sino el alcance del sistema. Así, el nivel Essential no se entiende como una versión recortada, sino como una solución completa a menor escala.":"Every product shares the same standard of authorship, judgement and quality. What changes isn't the care put into the design, it's how far the system reaches. So the Essential level isn't a cut-down version, but a complete solution at a smaller scale.","Tres planes. Tú eliges cuántos espacios quieres diseñar, desde una habitación hasta la casa completa. El plan decide qué tan lejos llevamos cada uno.":"Three plans. You choose how many spaces to design, from one room to the whole house. The plan decides how far we take each one.","Tu proyecto, navegable desde cualquier pantalla. Un recorrido que se mueve, hecho con fotos 360 de tu proyecto. Se abre en cualquier navegador y lo compartes por link.":"Your project, walkable from any screen. Opens in any browser, shared with a link.","Un contrato digital que firmas en línea antes de empezar. <span style=\"color:rgba(0,0,0,.45)\">Detalles por confirmar.</span>":"A digital contract you sign online before we start. <span style=\"color:rgba(0,0,0,.45)\">Details to be confirmed.</span>","Un link que abres en el navegador.":"A link you open in your browser.","Un sitio hecho a medida, no ensamblado":"A site made to measure, not assembled","Una sola dirección creativa":"One creative direction","1 ronda de revisiones por pieza":"1 round of revisions per piece","2 de las revisiones se presentan en persona":"2 of the reviews are presented in person","2 rondas de revisiones por pieza":"2 rounds of revisions per piece","30 días":"30 days","30 días de soporte post-lanzamiento":"30 days of post-launch support","6 meses de soporte y evolución incluidos":"6 months of support and evolution included","Acompañamiento":"Support","Actualizaciones y parches de seguridad":"Updates and security patches","Adaptaciones de tamaño para formatos equivalentes":"Size adaptations for equivalent formats","Advanced Graphic System — recursos modulares y reglas de composición":"Advanced Graphic System — modular assets and composition rules","Advertising Graphics y piezas de campaña":"Advertising Graphics and campaign pieces","Animaciones y microinteracciones (scroll, transiciones, motion de marca)":"Animation and microinteractions (scroll, transitions, brand motion)","Aplicación web personalizada":"Custom web application","Aplicación web personalizada (áreas privadas, portales de cliente, configuradores, calculadoras de presupuesto)":"Custom web application (private areas, client portals, configurators, budget calculators)","Archivos finales organizados para uso digital e impresión":"Final files organised for digital and print use","Art Direction para campañas, lanzamientos y contenido especial":"Art Direction for campaigns, launches and special content","Art Direction — lenguaje visual para campañas, fotografía, video y aplicaciones":"Art Direction — visual language for campaigns, photography, video and applications","Automatización e integraciones":"Automation and integrations","Backups automáticos":"Automatic backups","Basic Brand Guidelines — guía compacta de aplicación":"Basic Brand Guidelines — compact usage guide","Basic Graphic Language — criterios básicos de composición y uso visual":"Basic Graphic Language — core composition and visual usage criteria","Basic Motion Graphics cuando el contenido lo requiera":"Basic Motion Graphics when the content calls for it","Biblioteca organizada de recursos visuales y templates":"An organised library of visual assets and templates","Blog o sección de proyectos autoeditable (CMS ligero)":"Self-editable blog or projects section (lightweight CMS)","Borsoga funciona como una extensión del equipo creativo de la marca. El objetivo no es aumentar únicamente la cantidad de publicaciones, sino dirigir cómo la marca se ve, se mueve y comunica visualmente a lo largo del tiempo.":"Borsoga works as an extension of the brand's creative team. The goal isn't just to publish more, but to direct how the brand looks, moves and communicates visually over time.","Brand Applications — aplicaciones seleccionadas según el tipo de negocio":"Brand Applications — applications selected for the type of business","Brand Concept — concepto visual y dirección de la identidad":"Brand Concept — visual concept and direction of the identity","Básico":"Basic","CMS a medida — construido en torno a cómo trabaja el cliente, no al revés":"Bespoke CMS — built around how the client works, not the other way round","Cada revisión tiene su momento y su tema.":"Each review has its own moment and its own subject.","Campaign Concepts — concepto visual de campañas seleccionadas":"Campaign Concepts — visual concept for selected campaigns","Color Palette — paleta principal y combinaciones de uso":"Color Palette — primary palette and usage combinations","Combinación de Static Posts y Stories":"A mix of Static Posts and Stories","Comparación":"Comparison","Complete Brand Identity — sistema de identidad completo y documentado":"Complete Brand Identity — a full, documented identity system","Conexión con CRM (HubSpot, Twenty, Airtable u otro)":"CRM connection (HubSpot, Twenty, Airtable or another)","Contacto directo con el estudio, sin intermediarios":"Direct contact with the studio, no middlemen","Contenido diseñado como un sistema visual, no como publicaciones aisladas. Cada formato se considera un producto diferente porque cambia la cantidad de diseño, narrativa, adaptación y edición necesaria. La identidad de la marca se mantiene como base común en todos los formatos.":"Content designed as a visual system, not as isolated posts. Each format counts as a different product because the amount of design, narrative, adaptation and editing changes. The brand identity stays as the common base across every format.","Contratables por mes o por año, de forma independiente al proyecto.":"Available monthly or yearly, independently of the project.","Precio mensual":"Monthly price","Precio anual · 2 meses gratis":"Annual price · 2 months free","$100 / mes":"$100 / month","$200 / mes":"$200 / month","$1,000 / año":"$1,000 / year","$2,000 / año":"$2,000 / year","Contratos y firma digital + cobro de anticipos en línea":"Digital contracts and signing + online deposit collection","Coordinación de piezas sociales con campañas, web y materiales comerciales":"Social pieces coordinated with campaigns, web and sales materials","Creative Direction mensual para la presencia digital":"Monthly Creative Direction for the digital presence","Creative Direction — dirección creativa transversal para la marca":"Creative Direction — creative direction across the whole brand","Custom Templates — plantillas diseñadas específicamente para la marca":"Custom Templates — templates designed specifically for the brand","Cuéntanos el tipo de proyecto, el alcance y el plazo. Te mandamos una propuesta con el plan que te sirve.":"Tell us the type of project, the scope and the timeline. We'll send a proposal with the plan that fits.","Cuéntanos el tipo de proyecto, el alcance y el plazo. Te mandamos una propuesta.":"Tell us the type of project, the scope and the timeline. We'll send you a proposal.","Código propio y rápido":"Our own code, and fast","Código propio, ligero y rápido (Lighthouse 90+ en performance)":"Our own code, light and fast (Lighthouse 90+ on performance)","Cómo funcionan las revisiones":"How reviews work","Dashboard básico de métricas (visitas, origen de tráfico, conversiones)":"Basic metrics dashboard (visits, traffic sources, conversions)","Dashboard de analítica a medida: embudo, conversión, valor de cliente, fuentes de venta":"Bespoke analytics dashboard: funnel, conversion, customer value, sales sources","Dashboard de métricas":"Metrics dashboard","De una identidad visual a un sistema de marca.":"From a visual identity to a brand system.","Desarrollo a medida: el sitio deja de ser una vitrina y pasa a ser infraestructura de negocio.":"Bespoke development: the site stops being a shop window and becomes business infrastructure.","Dirección creativa":"Creative direction","Dirección de arte: tipografía, color y jerarquía definidos por el estudio":"Art direction: typography, colour and hierarchy set by the studio","Diseño 100% original":"100% original design","Diseño 100% original · Código propio y rápido · Responsive real · SEO técnico base · Formulario de contacto · Dirección de arte · Dominio, hosting y SSL · Analytics y Search Console":"100% original design · Our own fast code · Real responsive · Base technical SEO · Contact form · Art direction · Domain, hosting and SSL · Analytics and Search Console","Diseño 100% original — sin templates ni themes comprados":"100% original design — no templates, no bought themes","Diseño aplicado a ventas, comunicación, campañas y materiales de marca. Esta categoría agrupa proyectos que no pertenecen necesariamente a la creación de una identidad ni a la producción mensual de redes sociales. Cada pieza se desarrolla alrededor del sistema visual de la marca y se cotiza según alcance, extensión y complejidad.":"Design applied to sales, communication, campaigns and brand materials. This category covers projects that don't necessarily belong to building an identity or to monthly social production. Each piece is developed around the brand's visual system and quoted by scope, length and complexity.","Diseño y marca":"Design and brand","Dos formas de ver tu proyecto antes de que exista":"Two ways to see your project before it exists","Dónde va cada luz":"Where every light goes","Dónde va cada piso y cada acabado":"Where every floor and every finish goes","Ecommerce completo: catálogo, carrito, pagos (Stripe / PayPal), envíos, inventario, cupones":"Full ecommerce: catalogue, cart, payments (Stripe / PayPal), shipping, inventory, coupons","El mismo estándar de diseño. Lo que cambia es la profundidad del sistema.":"The same design standard. What changes is how deep the system goes.","El proyecto completo, con una idea detrás. Disponible en toda Florida.":"The complete project, with an idea behind it. Available across Florida.","El video hecho como película (MP4)":"The video made like a film (MP4)","El video que explica el proyecto (MP4)":"The video that explains the project (MP4)","Emprendimientos, profesionales y negocios que necesitan una identidad visual seria, coherente y lista para utilizarse.":"Startups, professionals and businesses that need a serious, coherent visual identity that's ready to use.","Empresas que necesitan materiales comerciales o de comunicación específicos, diseñados con el mismo criterio visual de su marca.":"Companies that need specific sales or communication materials, designed to the same visual standard as their brand.","Empresas que necesitan una identidad con profundidad, dirección creativa y un sistema visual capaz de sostener múltiples canales y campañas.":"Companies that need an identity with depth, creative direction and a visual system that can hold up across several channels and campaigns.","Entrega organizada del sistema completo y sus aplicaciones":"Organised delivery of the full system and its applications","Estrategia y dirección":"Strategy and direction","Extended Brand Guidelines — documento de uso más completo":"Extended Brand Guidelines — a fuller usage document","Extended Iconography, patterns y elementos de apoyo":"Extended Iconography, patterns and supporting elements","Extended Visual System — sistema gráfico ampliado y modular":"Extended Visual System — an expanded, modular graphic system","Feed Direction y evolución continua del lenguaje visual":"Feed Direction and continuous evolution of the visual language","Feed Direction — criterio visual para mantener coherencia entre publicaciones":"Feed Direction — visual criteria to keep posts coherent with each other","Formulario de contacto conectado a correo o WhatsApp":"Contact form connected to email or WhatsApp","Graphic Language — reglas de composición, formas, recursos y estilo visual":"Graphic Language — rules for composition, shapes, assets and visual style","Guía de materiales: qué material va en cada lugar, sin decir el proveedor":"Materials guide: which material goes where, without naming the supplier","Hasta 12 páginas / secciones + estructura escalable":"Up to 12 pages / sections + a scalable structure","Hasta 12 páginas y estructura escalable · Animaciones y microinteracciones · CMS ligero · Multiidioma · SEO avanzado · Integraciones · Landing de campaña · Dashboard de métricas":"Up to 12 pages and a scalable structure · Animation and microinteractions · Lightweight CMS · Multilingual · Advanced SEO · Integrations · Campaign landing page · Metrics dashboard","Hasta 12–16 piezas mensuales, según combinación de formatos":"Up to 12–16 pieces a month, depending on the mix of formats","Hasta 5 secciones / páginas (Home, Servicios, Proyectos, Sobre, Contacto)":"Up to 5 sections / pages (Home, Services, Projects, About, Contact)","Hasta 8 piezas de contenido visual al mes":"Up to 8 pieces of visual content a month","Iconography — lenguaje de iconos cuando el proyecto lo requiere":"Iconography — an icon language when the project calls for it","Identidad visual esencial para negocios que necesitan presentarse de forma profesional sin construir todavía un sistema de marca extenso.":"Essential visual identity for businesses that need to present themselves professionally without building a full brand system yet.","Implementación de la identidad visual existente":"Implementation of the existing visual identity","Imágenes de cómo se va a ver tu proyecto":"Images of how your project will look","Incluye todo lo de Brand Premium, pero el proyecto deja de centrarse únicamente en la identidad y pasa a construir un ecosistema visual completo, preparado para comunicación, campañas y crecimiento.":"Includes everything in Brand Premium, but the project stops being only about the identity and starts building a complete visual ecosystem, ready for communication, campaigns and growth.","Integraciones API con facturación, calendarios, logística o herramientas internas":"API integrations with billing, calendars, logistics or internal tools","Integración con Instagram, Google Business, Calendly o sistema de reservas":"Integration with Instagram, Google Business, Calendly or a booking system","Integración de marca":"Brand integration","La compra y el traslado del mobiliario · El montaje y la decoración final · Supervisión de obra · Ingeniería y permisos":"Buying and moving the furniture · Installation and final styling · Construction supervision · Engineering and permits","La guía de materiales (PDF)":"The materials guide (PDF)","La idea del proyecto, escrita (PDF)":"The project concept, written out (PDF)","La idea que sostiene el proyecto: por qué este material, por qué esta luz, por qué el espacio se siente así":"The idea holding the project together: why this material, why this light, why the space feels the way it does","La lista de materiales y las opciones de mobiliario, con dónde conseguirlos (PDF)":"The materials list and furniture options, with where to get them (PDF)","La presentación del proyecto (PDF)":"The project presentation (PDF)","La presentación para tus clientes (PDF)":"The presentation for your clients (PDF)","Las imágenes de tu proyecto en alta resolución (JPG / PNG)":"The high-resolution images of your project (JPG / PNG)","Las imágenes en alta resolución (JPG / PNG)":"The high-resolution images (JPG / PNG)","Lo que aplica a los tres planes":"What applies to all three plans","Logo Variations — versiones horizontales, verticales y reducidas según necesidad":"Logo Variations — horizontal, vertical and reduced versions as needed","Los tres planes se diseñan y desarrollan dentro del estudio. Una sola autoría, de la idea al código.":"All three plans are designed and built inside the studio. One authorship, from the idea to the code.","LÍNEA 01":"LINE 01","LÍNEA 02":"LINE 02","LÍNEA 03":"LINE 03","Línea 02":"Line 02","Línea 03":"Line 03","Mantenimiento Care+ incluido el primer año":"Care+ maintenance included for the first year","Marcas activas que necesitan verse consistentes en web, redes, materiales comerciales y aplicaciones físicas o digitales.":"Active brands that need to look consistent across web, social, sales materials and physical or digital applications.","Marcas activas que publican con frecuencia y necesitan diversidad de formatos sin perder una dirección visual reconocible.":"Active brands that publish often and need a variety of formats without losing a recognisable visual direction.","Marcas activas que publican contenido, hacen campañas y necesitan que el sitio evolucione.":"Active brands that publish content, run campaigns and need the site to keep evolving.","Marcas que necesitan un equipo creativo externo capaz de sostener y dirigir su presencia visual de manera continua.":"Brands that need an outside creative team able to sustain and direct their visual presence continuously.","Misma dirección visual. Distinto nivel de producción y acompañamiento.":"The same visual direction. A different level of production and support.","Monthly Visual Direction — revisión de consistencia y evolución del sistema":"Monthly Visual Direction — consistency review and evolution of the system","Motion design y piezas 3D / visualización integradas al sitio":"Motion design and 3D / visualization pieces built into the site","Más formatos, más narrativa y una dirección visual mensual.":"More formats, more narrative and a monthly visual direction.","Negocios que venden, operan o gestionan clientes a través de internet.":"Businesses that sell, operate or manage clients through the internet.","Negocios que ya tienen una identidad definida y necesitan una presencia visual estable y profesional en redes.":"Businesses that already have a defined identity and need a steady, professional visual presence on social.","No más contenido. Más dirección creativa.":"Not more content. More creative direction.","No un logo. Una dirección creativa construida alrededor de la marca.":"Not a logo. A creative direction built around the brand.","No un sitio. Una plataforma diseñada alrededor de tu operación.":"Not a site. A platform designed around how you operate.","Opciones de mobiliario elegidas para tu espacio":"Furniture options chosen for your space","Optimización SEO continua":"Ongoing SEO optimisation","Organización mensual de entregables":"Monthly organisation of deliverables","Para que se construya como lo diseñaste. Tu contratista y tu carpintero no tienen que adivinar.":"So it gets built the way you designed it. Your contractor and your carpenter don't have to guess.","Photography / Image Direction — criterios para selección y tratamiento de imágenes":"Photography / Image Direction — criteria for selecting and treating images","Physical Applications — aplicaciones seleccionadas para entornos físicos":"Physical Applications — applications selected for physical environments","Plan mensual para negocios que necesitan mantener sus canales activos con una línea gráfica clara y consistente.":"A monthly plan for businesses that need to keep their channels active with a clear, consistent graphic line.","Presencia visual constante, sin perder coherencia de marca.":"A constant visual presence, without losing brand coherence.","Presentación · Planos de ningún tipo · Guía de materiales · Proveedores · Mobiliario · Plan de iluminación":"Presentation · Drawings of any kind · Materials guide · Suppliers · Furniture · Lighting plan","Presentation / Proposal System — base visual para documentos y presentaciones":"Presentation / Proposal System — a visual base for documents and presentations","Primary Logo — diseño de logotipo principal":"Primary Logo — design of the main logotype","Primer año":"First year","Producción visual":"Visual production","Profesionales, estudios y negocios que necesitan una presencia digital seria y bien construida.":"Professionals, studios and businesses that need a serious, well-built digital presence.","Profile / Favicon Assets — recursos para perfiles y usos digitales":"Profile / Favicon Assets — assets for profiles and digital uses","Proveedores · La compra del material o el mobiliario · Planos para sacar permisos · Supervisión de obra":"Suppliers · Buying materials or furniture · Permit drawings · Construction supervision","Página de captura / landing adicional para campañas":"An extra capture / landing page for campaigns","Páginas / secciones":"Pages / sections","Qué incluye cada plan":"What each plan includes","Qué recibes":"What you get","Reporte de rendimiento y tráfico":"Performance and traffic report","Reportes automáticos periódicos por correo":"Automatic periodic reports by email","Responde seis preguntas sobre tu espacio y te enviamos un estimado en menos de 24 horas.":"Answer six questions about your space and we'll send you an estimate within 24 hours.","Responsive real: diseñado para móvil, tablet y desktop, no solo adaptado":"Real responsive: designed for mobile, tablet and desktop, not just adapted","Revisión 1 — cómo se organiza el espacio":"Review 1 — how the space is organised","Revisión 2 — materiales, acabados e iluminación":"Review 2 — materials, finishes and lighting","Revisión 3 — los planos y los materiales":"Review 3 — the drawings and the materials","Revisión 4 — la idea y los videos":"Review 4 — the concept and the videos","Revisión continua de consistencia con la identidad visual":"Continuous review of consistency with the visual identity","SEO avanzado: investigación de keywords, copy optimizado, velocidad afinada":"Advanced SEO: keyword research, optimised copy, tuned speed","SEO técnico base":"Base technical SEO","SEO técnico base: metadatos, Open Graph, sitemap, schema, indexación":"Base technical SEO: metadata, Open Graph, sitemap, schema, indexing","Se cotizan aparte y funcionan con cualquiera de los tres planes.":"Quoted separately. They work with any of the three plans.","Sesión estratégica inicial":"Initial strategy session","Sesión estratégica inicial y mapa de la arquitectura antes de diseñar":"Initial strategy session and an architecture map before designing","Sesión estratégica inicial y mapa de necesidades visuales antes de diseñar":"Initial strategy session and a map of visual needs before designing","Sistema básico de composición para mantener consistencia":"A basic composition system to keep things consistent","Sistema de diseño propio (design system) documentado y reutilizable":"Your own documented, reusable design system","Sistema de usuarios, roles y permisos":"Users, roles and permissions system","Sitio de presencia profesional, hecho a medida desde cero. Sin plantillas, sin constructores genéricos.":"A professional presence site, made to measure from scratch. No templates, no generic builders.","Social Media Starter Kit — base visual para perfiles y contenido social":"Social Media Starter Kit — a visual base for profiles and social content","Social Media Template System — sistema de templates coherente con la identidad":"Social Media Template System — a template system coherent with the identity","Static Posts y Stories · Adaptaciones de tamaño · Implementación de la identidad visual · Sistema básico de composición · Organización mensual de entregables":"Static Posts and Stories · Size adaptations · Implementation of the visual identity · Basic composition system · Monthly organisation of deliverables","Todo lo de Brand Essentials":"Everything in Brand Essentials","Todo lo de Brand Essentials, con mayor profundidad conceptual, flexibilidad gráfica y aplicaciones que permiten que la marca funcione de forma consistente en distintos puntos de contacto.":"Everything in Brand Essentials, with more conceptual depth, graphic flexibility and applications that let the brand work consistently across different touchpoints.","Todo lo de Brand Premium":"Everything in Brand Premium","Todo lo de Essential, más profundidad de contenido, movimiento y capacidad de gestión.":"Everything in Essential, plus content depth, motion and the ability to manage it.","Todo lo de Social Essential":"Everything in Social Essential","Todo lo de Social Essential, con una mezcla más completa de formatos y un mayor nivel de dirección visual.":"Everything in Social Essential, with a fuller mix of formats and a higher level of visual direction.","Todo lo del plan Essential":"Everything in the Essential plan","Todo lo del plan Premium":"Everything in the Premium plan","Todo lo del plan Web Essential":"Everything in the Web Essential plan","Todo lo del plan Web Premium":"Everything in the Web Premium plan","Trabajamos en toda Florida, sin cobrarte el viaje":"We work across Florida, with no travel charge","Tracking de eventos y atribución de campañas":"Event tracking and campaign attribution","Tres niveles de producción y acompañamiento":"Three levels of production and support","Tus planos con más detalle (PDF)":"Your drawings in more detail (PDF)","Tus planos: el espacio con medidas, la vista frontal de cada pared, techos e iluminación, pisos y acabados (PDF)":"Your drawings: the space with dimensions, the front elevation of every wall, ceilings and lighting, floors and finishes (PDF)","Typography System — tipografías y jerarquías básicas":"Typography System — typefaces and basic hierarchies","Un plano de tu espacio con medidas":"A drawing of your space with dimensions","Un sitio que trabaja, crece y se mantiene.":"A site that works, grows and is maintained.","Un video de tu proyecto, hecho como una película":"A video of your project, made like a film","Un video que explica el proyecto":"A video that explains the project","Una base visual completa. Clara, coherente y lista para crecer.":"A complete visual base. Clear, coherent and ready to grow.","Una pieza completa. Diseñada, no ensamblada.":"A complete piece. Designed, not assembled.","Una sola dirección creativa, desde la identidad hasta cada punto de contacto.":"One creative direction, from the identity through to every touchpoint.","Una vista frontal de cada pared que importa":"A front elevation of every wall that matters","Vamos a tu espacio y lo medimos (Miami-Dade)":"We come to your space and measure it (Miami-Dade)","Vamos juntos a ver los materiales, con proveedores de aquí y de fuera":"We go see the materials together, with suppliers here and abroad","Ve tu espacio antes de construirlo.":"See your space before you build it.","Visita y medidas · Tu espacio en 3D · Imágenes de tu proyecto en alta resolución · Revisión 1 y Revisión 2":"Visit and measurements · Your space in 3D · High-resolution images of your project · Review 1 and Review 2","Visita y medidas · Tu espacio en 3D · Imágenes en alta resolución · Plano con medidas · Vista frontal de cada pared · Iluminación · Pisos y acabados · Guía de materiales · Presentación del proyecto · Revisiones 1 a 3":"Visit and measurements · Your space in 3D · High-resolution images · Dimensioned drawing · Front elevation of every wall · Lighting · Floors and finishes · Materials guide · Project presentation · Reviews 1 to 3","Visual Strategy — definición de territorios visuales y criterios de posicionamiento":"Visual Strategy — defining visual territories and positioning criteria","Y además":"Plus","páginas":"pages","¿No sabes cuál te toca?":"Not sure which one is yours?","Todavía no lo sé":"I don't know yet","Para vivir yo":"To live in myself","Para vender o rentar":"To sell or rent","Es un espacio comercial":"It's a commercial space","Se mueven o se quitan paredes":"Walls being moved or removed","Cambios en la fachada del edificio o la casa":"Changes to the facade","Ninguno de los dos":"Neither of those","En ninguno, compramos todo hecho":"None, we're buying everything ready-made","No, soy el representante autorizado":"No, I'm the authorized representative","Me gustaría que me recomienden uno":"I'd like you to recommend one","Estoy explorando":"I'm just exploring","Sí, ya sé cuáles van":"Yes, I know which ones","Quiero que ustedes me ayuden a elegirlos":"I'd like you to help me choose","Cocina":"Kitchen","Baño":"Bathroom","Dormitorio":"Bedroom","Sala":"Living room","Comedor":"Dining room","Home office":"Home office","Clóset":"Closet","Lavandería":"Laundry","Entrada":"Entry","Patio o jardín":"Patio or yard","Garaje":"Garage","Área de piscina":"Pool area","Balcón o terraza":"Balcony or terrace","Recepción o lobby":"Reception or lobby","Área de trabajo":"Work area","Sala de juntas":"Meeting room","Área de clientes":"Customer area","Comedor o cocina de staff":"Staff kitchen or dining","Baños":"Restrooms","Salón o comedor":"Dining room","Barra":"Bar","Vitrina y fachada interior":"Window and interior facade","Menos de $25,000":"Under $25,000","$25,000 a $75,000":"$25,000 to $75,000","$75,000 a $150,000":"$75,000 to $150,000","$150,000 a $400,000":"$150,000 to $400,000","Más de $400,000":"Over $400,000","Todavía no lo tengo definido":"I haven't decided yet","Ya tengo referencias y decisiones tomadas":"I have references and decisions made","Tengo una idea general":"I have a general idea","Cuento con ustedes para definirlo":"I'm counting on you to define it","Sí, sin problema":"Yes, no problem","Sí, pero sin decir dónde está":"Yes, but don't say where it is","Prefiero que no":"I'd rather not","Yo solo":"Just me","Mi pareja y yo":"My partner and I","Un grupo o un comité":"A group or a committee","Compacto":"Compact","Espacios chicos, sin grandes cambios de distribución":"Small spaces, no major layout changes","Estándar":"Standard","El tamaño típico de un apartamento o una casa":"The typical size of an apartment or a house","Amplio":"Spacious","Espacios grandes, áreas abiertas o dobles alturas":"Large spaces, open areas or double heights","Paso 01 de 06":"Step 01 of 06","Tu proyecto":"Your project","Paso 02 de 06":"Step 02 of 06","Tus espacios y su tamaño":"Your spaces","Paso 03 de 06":"Step 03 of 06","Muéstranos tu espacio":"Show us your space","Paso 04 de 06":"Step 04 of 06","Nivel de acabado":"Finish level","Paso 05 de 06":"Step 05 of 06","Extras":"Extras","Paso 06 de 06":"Step 06 of 06","Tus datos":"Your details","Para vender":"To sell","Para rentar":"To rent","Sí, ya es mía":"Yes, it's mine","Estoy en proceso de compra":"I'm in the process of buying","Imágenes para el listing":"Images for the listing","Tour 360 para tus compradores":"A 360 tour for your buyers","Brochure o material impreso":"A brochure or printed material","Una página del proyecto":"A page for the project","Imágenes para redes y publicidad":"Images for social and advertising","Tour 360 del local":"A 360 tour of the space","Identidad o rótulos del negocio":"Branding or signage for the business","Una página del negocio":"A page for the business","Fotos profesionales del terminado":"Professional photos when it's done","Video del proyecto":"A video of the project","No, por ahora no":"Not for now","Modelado 3D":"3D modeling","Vistas por escena":"Views per scene","Condiciones de luz":"Lighting conditions","Ambientación":"Set dressing","Básica":"Basic","Completa":"Full","Detalles de materiales":"Material details","Video de recorrido":"Walkthrough video","Resolución":"Resolution","Alta":"High","Impresión":"Print","Dirección de arte":"Art direction","Video cinemático":"Cinematic video","Post-producción avanzada":"Advanced post-production","Escena nocturna":"Night scene","Piezas verticales para redes":"Vertical pieces for social","Residencial multifamiliar":"Multifamily residential","Residencial unifamiliar":"Single-family residential","Comercial":"Commercial","Hospitalidad":"Hospitality","Uso mixto":"Mixed use","Producto o mobiliario":"Product or furniture","Concepto":"Concept","En permisos":"In permitting","En construcción":"Under construction","Ya construido":"Already built","Developer":"Developer","Fabricante":"Manufacturer","Corredor o agencia":"Broker or agency","Fachada":"Façade","Lobby o acceso":"Lobby or entrance","Amenidad":"Amenity","Tipología interior":"Interior unit type","Terraza o exterior":"Terrace or outdoor area","Detalle o producto":"Detail or product","Solo el edificio":"Just the building","Lobby":"Lobby","Gimnasio":"Gym","Piscina o deck":"Pool or deck","Coworking":"Coworking","Spa":"Spa","Otra":"Other","Modelo 3D listo":"3D model ready","Planos en CAD":"CAD drawings","Planos en PDF":"PDF drawings","Solo bocetos o croquis":"Only sketches","Preventa y ventas":"Pre-sales and sales","Redes sociales y marketing":"Social media and marketing","Neutro":"Neutral","Editorial":"Editorial","Material para corredores":"Material for brokers","fachadas":"façades","vistas aéreas":"aerial views","lobbies o accesos":"lobbies or entrances","amenidades":"amenities","tipologías interiores":"interior unit types","terrazas o exteriores":"terraces or outdoor areas","detalles o productos":"details or products","Exterior a nivel":"Street-level exterior","Interior":"Interior","Parcialmente":"Partially","exteriores a nivel":"street-level exteriors","interiores":"interiors","Piso de venta":"Sales floor","Restaurante o comedor":"Restaurant or dining room","Suite":"Suite","Restaurante":"Restaurant","Bar":"Bar","Spa o gimnasio":"Spa or gym","cocinas":"kitchens","salas":"living rooms","comedores":"dining rooms","dormitorios":"bedrooms","home offices":"home offices","clósets o vestidores":"closets or dressing rooms","circulaciones o comunes":"circulation or common areas","recepciones o lobbies":"receptions or lobbies","salas de juntas":"meeting rooms","pisos de venta":"sales floors","restaurantes o comedores":"restaurants or dining rooms","barras":"bars","circulaciones":"circulation areas","lobbies":"lobbies","habitaciones tipo":"standard rooms","suites":"suites","restaurantes":"restaurants","bares":"bars","spas o gimnasios":"spas or gyms","salones de eventos":"event rooms","piscinas o decks":"pools or decks","gimnasios":"gyms","coworkings":"coworkings","salones sociales":"social rooms","otras":"others","Prefiero no decirlo":"I'd rather not say","Estaría dispuesto si mejora el diseño":"I'd be open to it if it improves the design","No, tienen que quedarse donde están":"No, they have to stay where they are","Apiladas":"Stacked","Lado a lado":"Side by side","No lo sé":"I don't know","Sí, en algunos espacios":"Yes, in some spaces","No, empezamos de cero":"No, we're starting fresh","Sí, tengo piezas decididas":"Yes, I have pieces decided","Tengo referencias, pero nada decidido":"I have references, but nothing decided","No, todavía no":"Not yet","Quiero que ustedes las propongan":"I'd like you to propose them","Imágenes adicionales":"Additional images","Oficina":"Office","Retail":"Retail","Showroom":"Showroom","Restaurante o bar":"Restaurant or bar","Amenidades de edificio":"Building amenities","Modelo de ventas":"Sales gallery","Otro":"Other","Vacío o en obra":"Empty or under construction","En operación":"Operating","Todavía no lo tengo":"I don't have it yet","Condominio":"Condo","Casa":"House","Penthouse":"Penthouse","Obra nueva":"New construction","Remodelación":"Remodel","Todavía en planos":"Still in drawings","Terminada sin entregar":"Finished, not handed over","Antes de 1990":"Before 1990","1990 a 2010":"1990 to 2010","Después de 2010":"After 2010","No sé":"I don't know","Sí":"Yes","No":"No","Todavía no":"Not yet","No hay piscina":"There's no pool","No, sin fecha fija":"No fixed date","Sí, pero es flexible":"Yes, but it's flexible","A título personal":"Personally","Como empresa":"As a company","Lo antes posible":"As soon as possible","En 1 a 3 meses":"In 1 to 3 months","No lo he decidido":"I haven't decided","Caminas tu espacio con lentes de realidad virtual. Vamos a donde estés.":"Walk your space before it exists. We come to you with the headset.","Un recorrido navegable de tu proyecto. Se abre en cualquier navegador.":"Your project, walkable from any screen. Opens in any browser.","Más vistas de tu proyecto, además de las que ya trae tu plan.":"More views than the ones your project includes.","Visita y medidas":"Visit and measurements","Tu espacio en 3D":"Your space in 3D","Imágenes de tu proyecto":"Images of your project","Plano con medidas":"Floor plan with measurements","Vista frontal de cada pared":"Elevation of each wall","Techos e iluminación":"Ceilings and lighting","Pisos y acabados":"Floors and finishes","Guía de materiales":"Material guide","Presentación del proyecto":"Project presentation","La idea del proyecto":"The idea behind the project","Planos con más detalle":"Drawings in more detail","Presentación para tus clientes":"Presentation for your clients","Video hecho como película":"Film-style video","Video que explica el proyecto":"Video that explains the project","Acompañamiento a ver materiales":"Coming with you to see materials","Opciones de mobiliario":"Furniture options","Dónde trabajamos":"Where we work","Miami-Dade":"Miami-Dade","Florida":"Florida","Revisiones presentadas en persona":"Reviews presented in person","Revisiones":"Reviews","Elegir":"Choose","Quitar":"Remove","Elegir archivos":"Choose files","Escenas adicionales":"Additional scenes","Modelos, planos, PDF o imágenes.":"Models, drawings, PDF or images.","Sugerido":"Suggested","Vistas adicionales":"Additional views","Ciudad":"City","Estado":"State","Opcional":"Optional","Alrededor del proyecto":"Around the project","Alta gama":"High-end","Comienza tu experiencia":"Start your experience","Comienza tu proyecto":"Start your project","Condiciones":"Terms","Contexto urbano":"Urban context","Continuar":"Continue","Correo":"Email","Departamento de salud":"Health department","El estudio":"The studio","Empezar":"Start","Empresa":"Company","En los tres planes":"In all three plans","Enviando…":"Sending…","Enviar mi proyecto":"Send my project","Escenas":"Scenes","Espacios":"Spaces","Estado de registro":"State of registration","Etapa":"Stage","Guardado":"Saved","Incluye":"Includes","La pieza":"The piece","Levantamos tu espacio en 3D":"We build your space in 3D","Los archivos":"The files","Lujo":"Luxury","Marcado":"Flagged","Motivo: mudanza, cierre de compra, apertura, otro":"What's driving it? (move-in, closing, opening…)","Muebles a la medida":"Custom-built furniture","Ninguno":"None","Nivel 01":"Level 01","Nivel 02":"Level 02","Nivel 03":"Level 03","Nombre legal completo":"Full legal name","Obra":"Construction","Opcional.":"Optional","Paredes y fachada":"Walls and facade","Piscina":"Pool","Por confirmar":"To be confirmed","Portafolio":"Portfolio","Premium y Edition":"Premium and Edition","Presupuesto declarado":"Budget","Propiedad":"Property","Proyecto":"Project","Punto de partida":"Starting point","Recibimos tu proyecto":"We got your project","Servicio 01":"Service 01","Servicio 02":"Service 02","Servicio 03":"Service 03","Servicio 04":"Service 04","Solicita tu Borsoga Edition":"Request your Borsoga Edition","Solo Edition":"Edition only","Su cargo":"Their title","Tipo de proyecto":"Project type","Tono":"Tone","Vamos a hablar":"Let's talk","Ver un proyecto real":"See a real project","Web y App":"Web and App","presenciales":"in person","revisiones":"reviews","tu@correo.com":"you@email.com","Todavía no hay material del proyecto. Empezamos por una llamada de arranque y ahí definimos qué necesitamos para arrancar.":"There's no project material yet. We start with a kick-off call, and there we define what we need to begin.","Tu proyecto tiene {n} escenas. A ese volumen el precio lo armamos contigo, no con una calculadora.":"Your project has {n} scenes. At that volume we build the price with you, not with a calculator.","Tu fecha está a menos de cuatro semanas. Eso lo confirmamos en una llamada antes de comprometer nada.":"Your date is less than four weeks away. We confirm that on a call before committing to anything.","Uso mixto: son varias tipologías dentro de un mismo proyecto, y el alcance se define mejor hablando.":"Mixed use: several typologies inside one project, and the scope is better defined by talking.","Y agendamos una llamada para revisar las escenas y el calendario: el precio se cierra ahí.":"And we'll book a call to go over the scenes and the schedule: the price is settled there.","Tu espacio en detalle":"Your space in detail","Listo":"Done","Te escribimos en persona en menos de 48 horas":"A person from the studio writes to you within 48 hours","Proyecto real":"Real project","Plan recomendado":"Recommended plan","Recomendado":"Recommended","Equipo de barra":"Bar equipment","Mobiliario que conserva":"Furniture being kept","Piezas decididas":"Pieces decided","Pide que le recomendemos contratista.":"Asks us to recommend a contractor.","Fuera de Miami-Dade.":"Outside Miami-Dade.","Fregadero, hielera, enfriador de bebidas, cafetera.":"Sink, ice bin, beverage cooler, coffee machine.","fotos":"photos","planos":"drawings","pies²":"sq ft","en total":"in total","enlace":"link","escena":"scene","escenas":"scenes","Lanzamiento":"Launch","Nombre completo":"Full name","Menos de cuatro semanas: lo confirmamos en una llamada.":"Less than four weeks away: we'll confirm it on a call.","Tu proyecto tiene {n} espacios. A ese tamaño el precio lo armamos contigo, no con una calculadora.":"Your project has {n} spaces. At that size we build the price with you, not with a calculator.","Tu proyecto tiene {n} espacios. Borsoga Edition está pensado para proyectos de este tamaño.":"Your project has {n} spaces. Borsoga Edition is made for projects this size.","No pudimos subir tus archivos:":"We couldn't upload your files:","Falta un dato obligatorio ({campo}).":"A required field is missing ({campo}).","Datos mal formados.":"Malformed data.","Método no permitido.":"Method not allowed.","El correo no es válido.":"That email isn't valid.","Falta aceptar la política de privacidad.":"You still need to accept the privacy policy.","Falta el correo del dueño de la propiedad.":"The property owner's email is missing.","Falta el equipo de la barra.":"The bar equipment is missing.","Falta indicar qué material tienes.":"Tell us what material you have.","Falta la fecha de lanzamiento.":"The launch date is missing.","Falta la fecha límite.":"The deadline is missing.","Faltan los datos de la empresa.":"The company details are missing.","Faltan los datos de la lavandería.":"The laundry details are missing.","Elegiste escenas de interior pero no hay espacios.":"You chose interior scenes but no spaces.","Hay espacios que no corresponden a la tipología del proyecto.":"Some spaces don't match the project type.","No hay escenas seleccionadas.":"No scenes selected.","No hay espacios seleccionados.":"No spaces selected.","No pudimos registrar tu proyecto. Escríbenos a borsogastudio@gmail.com y lo resolvemos.":"We couldn't register your project. Write to us at borsogastudio@gmail.com and we'll sort it out.","Solicitar propuesta":"Ask for a proposal","Suma a Essential":"Adds to Essential","Suma a Essentials":"Adds to Essentials","Aplicaciones posibles":"Possible applications","Planes mensuales":"Monthly plans","Planes de mantenimiento opcionales":"Optional maintenance plans","Mantenimiento":"Maintenance","Plataforma y producto":"Platform and product","Datos e inteligencia":"Data and intelligence","ronda de revisiones":"round of revisions","rondas de revisiones":"rounds of revisions","rondas":"rounds","secciones":"sections","meses de soporte":"months of support","piezas al mes":"pieces a month","1 ronda de revisiones":"1 round of revisions","2 rondas de revisiones":"2 rounds of revisions","3 rondas de revisiones":"3 rounds of revisions","Rondas de revisiones":"Rounds of revisions","Dominio, hosting y certificado SSL configurados y entregados funcionando":"Domain, hosting and SSL certificate set up and handed over working","Flujos de email automatizados (bienvenida, carrito abandonado, post-venta)":"Automated email flows (welcome, abandoned cart, post-sale)","A/B testing sobre secciones clave":"A/B testing on key sections","Automatizaciones de WhatsApp Business: confirmaciones, seguimiento, recordatorios, notificaciones internas":"WhatsApp Business automations: confirmations, follow-ups, reminders, internal notifications","Mantenimiento Care+ incluido":"Care+ maintenance included","Hasta 5":"Up to 5","Hasta 12":"Up to 12","A medida":"Bespoke","Responsive real":"Real responsive","Google Analytics + Search Console instalados":"Google Analytics + Search Console installed","Dominio, hosting y SSL":"Domain, hosting and SSL","Animaciones y microinteracciones":"Animation and microinteractions","Blog o proyectos autoeditable (CMS)":"Self-editable blog or projects (CMS)","Multiidioma (ES / EN)":"Multilingual (ES / EN)","SEO avanzado":"Advanced SEO","Integraciones externas":"External integrations","Ecommerce completo":"Full ecommerce","CMS a medida":"Bespoke CMS","Usuarios, roles y permisos":"Users, roles and permissions","Contratos, firma digital y cobros":"Contracts, digital signing and payments","CRM y automatizaciones":"CRM and automations","Design system documentado":"Documented design system","Motion y piezas 3D integradas":"Built-in motion and 3D pieces","Soporte post-lanzamiento":"Post-launch support","Soporte prioritario":"Priority support","6 meses":"6 months","Horas de cambios de contenido":"Hours of content changes","1 h / mes":"1 h / month","4 h / mes":"4 h / month","Monitoreo de uptime":"Uptime monitoring","Diario":"Daily","Semanal":"Weekly","Mensual":"Monthly","Trimestral":"Quarterly","Primary Logo · Logo Variations · Color Palette · Typography System · Profile / Favicon Assets · Basic Graphic Language · Basic Brand Guidelines · Archivos finales organizados":"Primary Logo · Logo Variations · Color Palette · Typography System · Profile / Favicon Assets · Basic Graphic Language · Basic Brand Guidelines · Organised final files","Patterns & Supporting Graphics — patrones y elementos secundarios":"Patterns & Supporting Graphics — patterns and secondary elements","Digital Applications — piezas clave para canales digitales":"Digital Applications — key pieces for digital channels","Sistema visual avanzado":"Advanced visual system","Social media covers, avatars y templates iniciales":"Social media covers, avatars and starter templates","Static Posts, Carousels y Stories":"Static Posts, Carousels and Stories","Static Content, Carousels y Stories":"Static Content, Carousels and Stories","Reels / Short-Form Video dentro del mix mensual":"Reels / Short-Form Video within the monthly mix","Cross-platform Adaptations para canales seleccionados":"Cross-platform Adaptations for selected channels","Producto 01":"Product 01","Producto 02":"Product 02","Producto 03":"Product 03","Producto 04":"Product 04","Producto 05":"Product 05","Producto 06":"Product 06","Tres planes de diseño web hechos a medida desde cero: Essential, Premium y Borsoga Edition. Sin plantillas ni constructores genéricos.":"Three web design plans, made to measure from scratch: Essential, Premium and Borsoga Edition. No templates, no generic builders.","Tres planes de visualización de interiores en Florida: Essential, Premium y Borsoga Edition. Desde una habitación hasta la casa completa.":"Three interior visualization plans in Florida: Essential, Premium and Borsoga Edition. From a single room to the whole house.","Brand Identity, Social Media Design y Marketing & Graphic Design. Una sola dirección creativa, desde la identidad hasta cada punto de contacto.":"Brand Identity, Social Media Design and Marketing & Graphic Design. One creative direction, from the identity to every touchpoint.","Cuéntanos el proyecto, el público y las funcionalidades que necesita tu sitio. Diez pasos y una propuesta escrita por una persona del estudio.":"Tell us about the project, the audience and the features your site needs. Ten steps, and a proposal written by a person at the studio.","Cuéntanos la marca, su público y su personalidad. Diez pasos para que la identidad se diseñe sobre lo que la empresa es, no sobre suposiciones.":"Tell us about the brand, its audience and its personality. Ten steps, so the identity is designed around what the company is, not around assumptions.","Cuéntanos las escenas que necesitas y te enviamos tu rango de inversión.":"Tell us the scenes you need and we'll send you your investment range.","Archivos que subes":"Files you upload","Corregir cualquier dato incorrecto.":"Correct any inaccurate data.","Volver a los planes":"Back to the plans"},"plural":{"Cocina":"kitchens","Baño":"bathrooms","Dormitorio":"bedrooms","Sala":"living rooms","Comedor":"dining rooms","Home office":"home offices","Clóset":"closets","Lavandería":"laundries","Entrada":"entries","Patio o jardín":"patios","Garaje":"garages","Área de piscina":"pool areas","Balcón o terraza":"balconies","Recepción o lobby":"lobbies","Área de trabajo":"work areas","Sala de juntas":"meeting rooms","Área de clientes":"customer areas","Comedor o cocina de staff":"staff kitchens","Baños":"bathrooms","Salón o comedor":"dining rooms","Barra":"bars","Vitrina y fachada interior":"windows"}}});</script> <div class="q-wrap"> <header class="q-head"> <div class="q-head-in"> <a href="/plans/interior-design/" aria-label="Back to the plans"> <img src="/plans/assets/logo-negro.png" alt="Borsoga" width="1629" height="333" class="q-logo"> </a> <div class="q-head-right"> <div class="q-plan-box"> <span id="q-ring" aria-hidden="true"></span> <span id="q-plan"></span> </div> <span id="q-saved"></span> </div> </div> <div class="q-seg" id="q-seg" aria-hidden="true"></div> </header> <main class="q-main" id="q-main"> <noscript> <p class="q-nojs"> The configurator needs JavaScript. If you prefer, write to us at <a href="mailto:borsogastudio@gmail.com" class="q-nojs-mail">borsogastudio@gmail.com</a> and we&#39;ll do it by email. </p> </noscript> </main>  <div class="q-nav" id="q-nav" hidden> <div class="q-nav-in"> <div class="q-nav-group"> <button class="q-back" id="q-back" type="button" aria-label="Back"> <svg class="q-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg> <span class="q-btn-label">Back</span> </button> <button class="q-back q-save" id="q-save" type="button" aria-label="Save and exit"> <svg class="q-nav-icon" viewBox="0 0 24 24" aria-hidden="true"> <path d="M6 4h10l2 2v14H6z"></path><path d="M9 4v6h6V4M9 20v-6h6v6"></path> </svg> <span class="q-btn-label">Save and exit</span> </button> </div> <div class="q-nav-group q-nav-status"> <span id="q-aviso" hidden></span> <span id="q-count"></span> <button class="q-next" id="q-next" type="button" aria-label="Continue"> <svg class="q-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg> <span class="q-btn-label">Continue</span> </button> </div> </div> </div> </div> <script type="module" src="/_astro/Configurator.astro_astro_type_script_index_0_lang.CVUYge2k.js"></script> <script>// Ported verbatim from the retired generator (borsoga-funnel/src/quiz.js).
+// ONE change: the API calls are absolute. borsogastudio.com is static on
+// Hostinger; the serverless functions stayed on Vercel, so these are
+// cross-origin and the functions answer with the CORS headers.
+//
+// Reads window.BORSOGA_I18N / BORSOGA_LANG / BORSOGA_API, set by
+// components/plans/I18nBundle.astro, which must run before this.
+
+(function () {
+'use strict';
+
+// ---------------------------------------------------------------- constantes
+// Copiadas del artboard sin traducir, para poder compararlas línea a línea.
+var KEY = 'borsoga.cuestionario.interior.v4';
+var SUBMIT_KEY = 'borsoga.cuestionario.envios';
+var MAX_SUBMITS = 2;
+var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+var PURPOSE_LIVE = 'Para vivir yo';
+var PURPOSE_INVEST = 'Para vender o rentar';
+var PURPOSE_COM = 'Es un espacio comercial';
+var RES = ['Cocina','Baño','Dormitorio','Sala','Comedor','Home office','Clóset','Lavandería','Entrada'];
+var HOUSE_EXTRA = ['Patio o jardín','Garaje','Área de piscina'];
+var CONDO_EXTRA = ['Balcón o terraza'];
+var COM = ['Recepción o lobby','Área de trabajo','Sala de juntas','Área de clientes','Comedor o cocina de staff','Baños','Salón o comedor','Barra','Vitrina y fachada interior'];
+var WET = ['Cocina','Baño','Lavandería','Baños','Comedor o cocina de staff','Barra'];
+var KITCHENS = ['Cocina','Lavandería','Comedor o cocina de staff'];
+var OUTDOOR = ['Patio o jardín','Balcón o terraza'];
+var STRUCT_WALLS = 'Se mueven o se quitan paredes';
+var STRUCT_FACADE = 'Cambios en la fachada del edificio o la casa';
+var STRUCT_NONE = 'Ninguno de los dos';
+var STRUCT_UNSURE = 'No lo sé todavía';
+var STRUCT = [STRUCT_WALLS, STRUCT_FACADE, STRUCT_NONE, STRUCT_UNSURE];
+var MW_NONE = 'En ninguno, compramos todo hecho';
+var MW_UNSURE = 'Todavía no lo sé';
+var APPL_DECIDED = 'Sí, ya sé cuáles van';
+var APPL_HELP = 'Quiero que ustedes me ayuden a elegirlos';
+var BUDGETS = ['Menos de $25,000','$25,000 a $75,000','$75,000 a $150,000','$150,000 a $400,000','Más de $400,000','Todavía no lo tengo definido'];
+var CLARITY = ['Ya tengo referencias y decisiones tomadas','Tengo una idea general','Cuento con ustedes para definirlo'];
+var OWNER_REP = 'No, soy el representante autorizado';
+var DEADLINE_FIXED = 'Sí, y es fija';
+var PORTFOLIO = ['Sí, sin problema','Sí, pero sin decir dónde está','Prefiero que no'];
+var DECIDERS = ['Yo solo','Mi pareja y yo','Un grupo o un comité'];
+var UNSURE_RE = /^(no s[eé]|no lo s[eé]|no lo s[eé] todav[ií]a|todav[ií]a no lo s[eé])$/i;
+var LAUNDRY = ['Lavandería'];
+var BAR = ['Barra'];
+var LAUNDRY_LAYOUT = ['Apiladas','Lado a lado','No lo sé'];
+var KEEP_YES = 'Sí, en algunos espacios';
+var KEEP = [KEEP_YES,'No, empezamos de cero','Todavía no lo sé'];
+var PIECES_DECIDED = 'Sí, tengo piezas decididas';
+var PIECES_REFS = 'Tengo referencias, pero nada decidido';
+var PIECES_PROPOSE = 'Quiero que ustedes las propongan';
+var PIECES = [PIECES_DECIDED, PIECES_REFS, 'No, todavía no', PIECES_PROPOSE];
+var PRO_REFERRAL = 'Me gustaría que me recomienden uno';
+var TIMING_EXPLORING = 'Estoy explorando';
+var SHOWCASE_NONE = 'No, por ahora no';
+var SHOWCASE_SELL = ['Imágenes para el listing','Tour 360 para tus compradores','Brochure o material impreso','Una página del proyecto'];
+var SHOWCASE_COM  = ['Imágenes para redes y publicidad','Tour 360 del local','Identidad o rótulos del negocio','Una página del negocio'];
+var SHOWCASE_LIVE = ['Fotos profesionales del terminado','Video del proyecto'];
+// Miami-Dade define la cobertura real: fuera del condado el proyecto va a
+// llamada aunque siga estando en Florida.
+var MIAMI_DADE = ['miami','miami beach','miami gardens','miami lakes','miami shores','miami springs',
+ 'north miami','north miami beach','south miami','west miami','coral gables','hialeah','hialeah gardens',
+ 'doral','aventura','key biscayne','homestead','florida city','kendall','pinecrest','palmetto bay',
+ 'cutler bay','sunny isles beach','bal harbour','bay harbor islands','surfside','coconut grove','brickell',
+ 'opa-locka','opa locka','sweetwater','virginia gardens','medley','golden beach','indian creek','el portal',
+ 'biscayne park','north bay village'];
+var plainCity = function (s) {
+  return String(s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+var isMiamiDade = function (c) { return MIAMI_DADE.indexOf(plainCity(c)) > -1; };
+var IMGS = [3, 5, 8];
+var SIZE_OPTIONS = [
+  ['Compacto','Espacios chicos, sin grandes cambios de distribución'],
+  ['Estándar','El tamaño típico de un apartamento o una casa'],
+  ['Amplio','Espacios grandes, áreas abiertas o dobles alturas']
+];
+var STEPS = [
+  ['Paso 01 de 06','Tu proyecto'],
+  ['Paso 02 de 06','Tus espacios y su tamaño'],
+  ['Paso 03 de 06','Tu espacio en detalle'],
+  ['Paso 04 de 06','Nivel de acabado'],
+  ['Paso 05 de 06','Extras'],
+  ['Paso 06 de 06','Tus datos']
+];
+var PLURAL = {
+  'Cocina':'cocinas','Baño':'baños','Dormitorio':'dormitorios','Sala':'salas','Comedor':'comedores',
+  'Home office':'home offices','Clóset':'clósets','Lavandería':'lavanderías','Entrada':'entradas',
+  'Patio o jardín':'patios o jardines','Garaje':'garajes','Área de piscina':'áreas de piscina',
+  'Balcón o terraza':'balcones o terrazas','Recepción o lobby':'recepciones o lobbies',
+  'Área de trabajo':'áreas de trabajo','Sala de juntas':'salas de juntas','Área de clientes':'áreas de clientes',
+  'Comedor o cocina de staff':'comedores o cocinas de staff','Baños':'baños',
+  'Salón o comedor':'salones o comedores','Barra':'barras','Vitrina y fachada interior':'vitrinas y fachadas interiores'
+};
+var DOMAIN_TYPOS = {
+  'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'gmail.com','gmail.con':'gmail.com','gmil.com':'gmail.com','gnail.com':'gmail.com',
+  'hotmial.com':'hotmail.com','hotmai.com':'hotmail.com','hotmail.co':'hotmail.com','hotmil.com':'hotmail.com',
+  'yahooo.com':'yahoo.com','yaho.com':'yahoo.com','yahoo.co':'yahoo.com','yahho.com':'yahoo.com',
+  'outlok.com':'outlook.com','outlook.co':'outlook.com','outloo.com':'outlook.com',
+  'icoud.com':'icloud.com','iclod.com':'icloud.com','icloud.co':'icloud.com'
+};
+var DISPOSABLE = ['mailinator.com','guerrillamail.com','guerrillamail.net','sharklasers.com','10minutemail.com','10minutemail.net','temp-mail.org','tempmail.com','tempmail.net','throwawaymail.com','yopmail.com','trashmail.com','getnada.com','dispostable.com','maildrop.cc','fakeinbox.com','mailnesia.com','tempr.email','moakt.com','mohmal.com','discard.email'];
+
+var emailDomain = function (e) { var p = String(e || '').split('@'); return p.length > 1 ? p[1].trim().toLowerCase() : ''; };
+var suggestEmail = function (e) { var f = DOMAIN_TYPOS[emailDomain(e)]; return f ? String(e).split('@')[0] + '@' + f : ''; };
+var isDisposable = function (e) { return DISPOSABLE.indexOf(emailDomain(e)) > -1; };
+var isFlorida = function (s) { return ['florida','fl','fl.'].indexOf(String(s || '').trim().toLowerCase()) > -1; };
+var low = function (s) { return s.charAt(0).toLowerCase() + s.slice(1); };
+// ---------------------------------------------------------------- i18n
+// El idioma lo fija la página al embeber su bundle. La rama `opt` está indexada
+// por la cadena española, así que **el valor que viaja al servidor sigue siendo
+// el español canónico** y sólo cambia lo que se lee: `esc()` para atributos y
+// data-val, `lbl()` para todo lo visible. Mezclar las dos rompería las reglas
+// de api/submit.ts, que comparan contra los valores en español.
+var LANG = window.BORSOGA_LANG || 'es';
+var PRIV_URL = window.BORSOGA_PRIVACY ||
+  (LANG === 'es' ? '/plans/es/politica-de-privacidad/' : '/plans/privacy-policy/');
+function t(key, fallback) {
+  var d = (window.BORSOGA_I18N || {})[LANG] || {};
+  var v = (d.ui && d.ui[key]) || (d.msg && d.msg[key]) || (d.opt && d.opt[key]);
+  return v || fallback || key;
+}
+function TR(s) {
+  if (LANG === 'es' || !s) return s;
+  var d = (window.BORSOGA_I18N || {})[LANG] || {};
+  return (d.opt && d.opt[s]) || s;
+}
+// Sustituye {n}, {plan}, {email}… en las cadenas con hueco. Faltaba: ocho
+// llamadas la usaban y no estaba declarada en ningún sitio, así que el paso 2
+// reventaba con "fill is not defined" y no llegaba a pintarse.
+function fill(s, vars) {
+  return String(s).replace(/\{(\w+)\}/g, function (_, k) { return vars[k] != null ? vars[k] : ''; });
+}
+
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+  return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); };
+var lbl = function (s) { return esc(TR(s)); };   // sólo para texto que se ve
+
+// ---------------------------------------------------------------- estado
+function blank() {
+  return {
+    projectType:'', dealType:'', ownership:'', commercialType:'', commercialOther:'', occupancy:'',
+    propertyType:'', workType:'', stage:'', year:'', structure:[],
+    spaces:[], counts:{}, millwork:[], keepFurniture:'', keepSpaces:[], pieces:'', piecesLink:'',
+    plumbing:'', appliances:'', laundry:'', laundryLayout:'', barEquip:'', pool:'',
+    hoa:'', facade:'', health:'',
+    noMaterial:false, size:-1, sqft:'', budget:'', finish:'', clarity:'', extras:[], showcase:[],
+    name:'', email:'', phone:'', signer:'A título personal',
+    entName:'', entState:'', entSigner:'', entRole:'',
+    isOwner:'', ownerName:'', ownerEmail:'', decider:'',
+    street:'', city:'', state:'Florida', zip:'',
+    timing:'', exploring:'', deadline:'', deadlineDate:'', deadlineWhy:'', pro:'',
+    portfolio:'', privacy:false, bot:'', lang: LANG
+  };
+}
+var PLANS = ['Essential', 'Premium', 'Borsoga Edition'];
+// El plan llega en la URL desde la tarjeta que se pulsó en /interior-design/.
+// Equivale al prop `plan` del artboard: contexto, no asignación.
+var PICKED = (function () {
+  var p = new URLSearchParams(location.search).get('plan') || '';
+  return PLANS.indexOf(p) > -1 ? p : '';
+})();
+var S = { step: 1, done: false, a: blank(), touched: false, sending: false, notice: '', result: null, showErrors: false };
+// Los archivos no van en localStorage: se guardan aparte y se suben al enviar.
+var FILES = { photos: [], planFiles: [], applianceFiles: [] };
+
+// ---------------------------------------------------------------- ramas
+// Pura: se calcula igual desde el render y desde prune(), para que nunca
+// queden respuestas huérfanas afectando al resumen.
+function branchOf(a) {
+  var isCom = a.projectType === PURPOSE_COM;
+  var isInvest = a.projectType === PURPOSE_INVEST;
+  var inPurchase = isInvest && a.ownership === 'Estoy en proceso de compra';
+  var noAccess = inPurchase || (isCom && a.occupancy === 'Todavía no lo tengo');
+  var isCondo = a.propertyType === 'Condominio' || a.propertyType === 'Penthouse';
+  var isHouse = a.propertyType === 'Casa';
+  var isNew = a.workType === 'Obra nueva';
+  var isRemodel = !!a.workType && !isNew;
+  var spaces = a.spaces || [];
+  var has = function (list) { return list.some(function (v) { return spaces.indexOf(v) > -1; }); };
+  return {
+    isCom: isCom, isInvest: isInvest, inPurchase: inPurchase, noAccess: noAccess,
+    isCondo: isCondo, isHouse: isHouse, isNew: isNew, isRemodel: isRemodel,
+    asksProperty: !!a.projectType && !isCom,
+    asksHoa: isCondo || isHouse,
+    asksStructure: isRemodel,
+    asksHealth: isCom && a.commercialType === 'Restaurante o bar',
+    asksPlumbing: has(WET),
+    asksAppliances: has(KITCHENS),
+    asksLaundry: has(LAUNDRY),
+    asksBar: has(BAR),
+    asksPool: has(OUTDOOR) && spaces.indexOf('Área de piscina') === -1,
+    asksMillwork: spaces.length > 0,
+    needsPlans: isNew || noAccess
+  };
+}
+function spaceListOf(a) {
+  var b = branchOf(a);
+  if (b.isCom) return COM;
+  if (b.isHouse) return RES.concat(HOUSE_EXTRA);
+  if (b.isCondo) return RES.concat(CONDO_EXTRA);
+  return RES;
+}
+// Una respuesta que ya no aplica no existe: se borra para que no siga
+// afectando el conteo de imágenes, el resumen ni el enrutamiento.
+function prune(input) {
+  var a = Object.assign({}, input);
+  var allowed = spaceListOf(a);
+  a.spaces = (a.spaces || []).filter(function (v) { return allowed.indexOf(v) > -1; });
+  var counts = {};
+  a.spaces.forEach(function (s) { counts[s] = Math.min(10, Math.max(1, (a.counts || {})[s] || 1)); });
+  a.counts = counts;
+  var b = branchOf(a);
+  var mwAllowed = a.spaces.concat([MW_NONE, MW_UNSURE]);
+  a.millwork = (a.millwork || []).filter(function (v) { return mwAllowed.indexOf(v) > -1; });
+  var drop = {
+    dealType: b.isInvest, ownership: b.isInvest,
+    commercialType: b.isCom, occupancy: b.isCom,
+    commercialOther: b.isCom && a.commercialType === 'Otro',
+    propertyType: b.asksProperty, stage: b.isNew, year: b.isRemodel,
+    plumbing: b.asksPlumbing, appliances: b.asksAppliances, pool: b.asksPool,
+    hoa: b.asksHoa, health: b.asksHealth
+  };
+  Object.keys(drop).forEach(function (k) { if (!drop[k]) a[k] = ''; });
+  if (!b.asksStructure) a.structure = [];
+  if (a.appliances !== APPL_DECIDED) FILES.applianceFiles = [];
+  if (!b.asksLaundry) { a.laundry = ''; a.laundryLayout = ''; }
+  if (!b.asksBar) a.barEquip = '';
+  if (a.keepFurniture !== KEEP_YES) a.keepSpaces = [];
+  else a.keepSpaces = (a.keepSpaces || []).filter(function (v) { return a.spaces.indexOf(v) > -1; });
+  if (a.pieces !== PIECES_DECIDED && a.pieces !== PIECES_REFS) a.piecesLink = '';
+  if (a.timing !== TIMING_EXPLORING) a.exploring = '';
+  if (a.isOwner !== OWNER_REP) { a.ownerName = ''; a.ownerEmail = ''; }
+  if (a.deadline !== DEADLINE_FIXED) { a.deadlineDate = ''; a.deadlineWhy = ''; }
+  return a;
+}
+
+// ---------------------------------------------------------------- derivados
+function unitTotal() {
+  return S.a.spaces.reduce(function (t, s) { return t + (S.a.counts[s] || 1); }, 0);
+}
+// El primero de cada tipo lleva la cantidad completa; los repetidos, la mitad.
+function imageTotal() {
+  var a = S.a;
+  if (a.size < 0) return 0;
+  var full = IMGS[a.size], half = Math.ceil(full / 2);
+  return a.spaces.reduce(function (t, s) { return t + full + ((a.counts[s] || 1) - 1) * half; }, 0);
+}
+// `shown`: en el idioma de la página, para la pantalla final. Sin él, en
+// español: es lo que viaja al servidor en `derived.spaceSummary`.
+function spaceSummary(shown) {
+  var d = (window.BORSOGA_I18N || {})[LANG] || {};
+  var en = shown && LANG !== 'es';
+  return S.a.spaces.map(function (s) {
+    var n = S.a.counts[s] || 1, one = en ? low(TR(s)) : low(s);
+    var many = en ? ((d.plural && d.plural[s]) || one + 's') : (PLURAL[s] || one + 's');
+    return n + ' ' + (n > 1 ? many : one);
+  }).join(' · ');
+}
+function structuralFlag() {
+  var a = S.a;
+  return branchOf(a).asksStructure &&
+    (a.structure.indexOf(STRUCT_WALLS) > -1 || a.structure.indexOf(STRUCT_FACADE) > -1);
+}
+// Cuenta las respuestas sin definir. Cuatro o más y el proyecto va a rango.
+function unsureCount() {
+  var vals = [];
+  Object.keys(S.a).forEach(function (k) {
+    var v = S.a[k];
+    if (typeof v === 'string') vals.push(v);
+    else if (Array.isArray(v)) v.forEach(function (x) { if (typeof x === 'string') vals.push(x); });
+  });
+  return vals.filter(function (v) { return UNSURE_RE.test(v.trim()); }).length;
+}
+// Solo para quien llega sin plan. Es recomendación, no asignación.
+function recommendPlan() {
+  var a = S.a, b = branchOf(a);
+  if (a.city && !isMiamiDade(a.city)) return 'Borsoga Edition';
+  if (a.finish === 'Lujo' || (b.isHouse && a.spaces.length > 4) || a.extras.length >= 2) return 'Borsoga Edition';
+  if (b.needsPlans || b.isNew || structuralFlag() || a.plumbing === 'Sí') return 'Premium';
+  return 'Essential';
+}
+function route() {
+  var a = S.a;
+  var r = (function () {
+  if (PICKED === 'Borsoga Edition') return ['call','Vamos a hablar','Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.'];
+  if (a.state && !isFlorida(a.state)) return ['call','Vamos a hablar','La dirección del proyecto está fuera de Florida. Eso lo revisamos contigo antes de hablar de precio.'];
+  if (a.city && !isMiamiDade(a.city)) return ['call','Vamos a hablar','Tu proyecto está fuera de Miami-Dade. Podemos hacerlo, pero el alcance y el desplazamiento los cerramos hablando.'];
+  if (structuralFlag()) return ['call','Vamos a hablar','Tu proyecto mueve paredes o toca la fachada. Eso necesita un arquitecto o ingeniero con licencia, así que lo armamos contigo antes de dar un número.'];
+  if (unitTotal() > 6) return ['call','Vamos a hablar','Tu proyecto tiene {n} espacios. A ese tamaño el precio lo armamos contigo, no con una calculadora.'];
+  if (a.finish === 'Lujo' && a.workType === 'Obra nueva') return ['call','Vamos a hablar','Nivel lujo en obra nueva. Eso lo conversamos antes de darte un número.'];
+  if (a.health === 'Sí') return ['call','Vamos a hablar','Un proyecto que pasa por el departamento de salud tiene su propio calendario. Lo armamos contigo antes de hablar de precio.'];
+  if (unsureCount() >= 4) return ['range','Te enviamos un rango','Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.'];
+  return ['mail','Recibimos tu proyecto','Vamos a revisar lo que nos contaste y te escribimos para hablar del precio y el plazo. Nada de esto es automático: lo mira una persona del estudio.'];
+  })();
+  // Sólo se envía r[0]; los textos son para la pantalla final.
+  return [r[0], TR(r[1]), fill(TR(r[2]), { n: unitTotal() })];
+}
+// Devuelve la lista de campos pendientes, no un booleano: el botón necesita
+// poder señalar *qué* falta, no solo negarse a avanzar.
+function missing() {
+  var a = S.a, b = branchOf(a), m = [];
+  var need = function (cond, field) { if (cond) m.push(field); };
+  switch (S.step) {
+    case 1:
+      need(!a.projectType, 'projectType');
+      if (b.isInvest) { need(!a.dealType, 'dealType'); need(!a.ownership, 'ownership'); }
+      if (b.isCom) {
+        need(!a.commercialType, 'commercialType');
+        need(a.commercialType === 'Otro' && !a.commercialOther, 'commercialOther');
+        need(!a.occupancy, 'occupancy');
+      }
+      need(b.asksProperty && !a.propertyType, 'propertyType');
+      need(!!a.projectType && !a.workType, 'workType');
+      need(b.isNew && !a.stage, 'stage');
+      if (b.isRemodel) { need(!a.year, 'year'); need(a.structure.length === 0, 'structure'); }
+      need(!!a.workType && !EMAIL_RE.test(a.email || ''), 'email');
+      break;
+    case 2:
+      need(a.spaces.length === 0, 'spaces');
+      need(a.spaces.length > 0 && !a.keepFurniture, 'keepFurniture');
+      need(a.spaces.length > 0 && !a.pieces, 'pieces');
+      need(a.size < 0, 'size');
+      break;
+    case 3:
+      need(b.asksMillwork && a.millwork.length === 0, 'millwork');
+      need(b.asksPlumbing && !a.plumbing, 'plumbing');
+      need(b.asksAppliances && !a.appliances, 'appliances');
+      need(b.asksLaundry && !a.laundry, 'laundry');
+      need(b.asksLaundry && !a.laundryLayout, 'laundryLayout');
+      need(b.asksBar && !a.barEquip, 'barEquip');
+      need(b.asksPool && !a.pool, 'pool');
+      need(b.asksHoa && !a.hoa, 'hoa');
+      need(b.asksHealth && !a.health, 'health');
+      if (!b.noAccess) {
+        need(!a.noMaterial && (b.needsPlans ? FILES.planFiles.length < 1 : FILES.photos.length < 3), 'material');
+      }
+      break;
+    case 4:
+      need(!a.finish, 'finish');
+      need(!!a.finish && !a.clarity, 'clarity');
+      break;
+    case 5: break;
+    case 6:
+      need(!a.name, 'name'); need(!EMAIL_RE.test(a.email || ''), 'email'); need(!a.phone, 'phone');
+      need(!a.isOwner, 'isOwner');
+      if (a.isOwner === OWNER_REP) {
+        need(!a.ownerName, 'ownerName');
+        need(!EMAIL_RE.test(a.ownerEmail || ''), 'ownerEmail');
+      }
+      if (a.signer === 'Como empresa') {
+        need(!a.entName, 'entName'); need(!a.entState, 'entState');
+        need(!a.entSigner, 'entSigner'); need(!a.entRole, 'entRole');
+      }
+      need(!a.decider, 'decider');
+      need(!a.street, 'street'); need(!a.city, 'city'); need(!a.state, 'state'); need(!a.zip, 'zip');
+      need(!a.timing, 'timing'); need(!a.deadline, 'deadline');
+      if (a.deadline === DEADLINE_FIXED) {
+        need(!a.deadlineDate, 'deadlineDate'); need(!a.deadlineWhy, 'deadlineWhy');
+      }
+      need(!a.pro, 'pro'); need(!a.portfolio, 'portfolio'); need(!a.privacy, 'privacy');
+      break;
+  }
+  return m;
+}
+var MISSING = [];
+function canContinue() { return missing().length === 0; }
+function upsell() {
+  var a = S.a;
+  if (a.finish === 'Lujo' && a.spaces.length <= 2) return TR('Elegiste nivel lujo. A ese nivel de acabado tu contratista va a pedir planos y guía de materiales, y eso entra a partir de Premium.');
+  if (a.spaces.length > 4) return fill(TR('Tu proyecto tiene {n} espacios. Borsoga Edition está pensado para proyectos de este tamaño.'), { n: a.spaces.length });
+  return '';
+}
+
+// ---------------------------------------------------------------- persistencia
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify({ step: S.step, a: S.a, at: Date.now() })); } catch (e) {}
+}
+function setA(patch) {
+  S.a = prune(Object.assign({}, S.a, patch));
+  S.touched = true;
+  persist();
+  render();
+}
+function toggleIn(field, value, exclusive) {
+  var cur = S.a[field] || [], on = cur.indexOf(value) > -1, next;
+  if (exclusive) next = on ? [] : [value];
+  else {
+    var kept = cur.filter(function (v) { return !EXCL[field] || EXCL[field].indexOf(v) < 0; });
+    next = on ? kept.filter(function (v) { return v !== value; }) : kept.concat([value]);
+  }
+  var o = {}; o[field] = next; setA(o);
+}
+var EXCL = { structure: [STRUCT_NONE, STRUCT_UNSURE], millwork: [MW_NONE, MW_UNSURE] };
+
+// ---------------------------------------------------------------- render helpers
+function group(title, hint, body, fields) {
+  var f = fields ? (Array.isArray(fields) ? fields : [fields]) : [];
+  var falta = S.showErrors && f.some(function (x) { return MISSING.indexOf(x) > -1; });
+  return '<div class="q-group' + (falta ? ' q-invalid' : '') + '"' +
+    (f.length ? ' data-fields="' + f.join(',') + '"' : '') + '>' +
+    '<p class="q-q">' + lbl(title) + '</p>' +
+    (hint ? '<p class="q-hint">' + TR(hint) + '</p>' : '') + body +
+    (falta ? '<p class="q-falta">' + t('q_missing') + '</p>' : '') + '</div>';
+}
+function chips(field, values) {
+  return '<div class="q-opts">' + values.map(function (v) {
+    return '<button type="button" class="q-chip" data-set="' + esc(field) + '" data-val="' + esc(v) +
+      '" aria-pressed="' + (S.a[field] === v) + '">' + lbl(v) + '</button>';
+  }).join('') + '</div>';
+}
+function cards(field, values) {
+  return '<div class="q-grid">' + values.map(function (v) {
+    return '<button type="button" class="q-card" data-set="' + esc(field) + '" data-val="' + esc(v) +
+      '" aria-pressed="' + (S.a[field] === v) + '"><span class="q-radio"></span><span>' + lbl(v) + '</span></button>';
+  }).join('') + '</div>';
+}
+function checks(field, values, exclusives) {
+  var cur = S.a[field] || [];
+  return '<div class="q-grid">' + values.map(function (v) {
+    return '<button type="button" class="q-card" data-check="' + esc(field) + '" data-val="' + esc(v) +
+      '" data-excl="' + ((exclusives || []).indexOf(v) > -1) + '" aria-pressed="' + (cur.indexOf(v) > -1) +
+      '"><span class="q-box"></span><span>' + lbl(v) + '</span></button>';
+  }).join('') + '</div>';
+}
+function field(name, ph, type) {
+  return '<input class="q-in" type="' + (type || 'text') + '" data-field="' + name + '" placeholder="' +
+    lbl(ph) + '" value="' + esc(S.a[name]) + '"' +
+    (type === 'email' ? ' autocomplete="email" inputmode="email" spellcheck="false"' : '') + '>';
+}
+
+// ---------------------------------------------------------------- pasos
+function step1() {
+  var a = S.a, b = branchOf(a), h = '';
+  h += group('¿Para qué es este proyecto?', '', cards('projectType', [PURPOSE_LIVE, PURPOSE_INVEST, PURPOSE_COM]), 'projectType');
+
+  if (b.isInvest) {
+    h += group('¿Es para vender o para rentar?', '', chips('dealType', ['Para vender', 'Para rentar']), 'dealType');
+    h += group('¿Ya es tuya?', '', chips('ownership', ['Sí, ya es mía', 'Estoy en proceso de compra']), 'ownership');
+  }
+  if (b.isCom) {
+    h += group('¿Qué tipo de espacio comercial?', '',
+      chips('commercialType', ['Oficina','Retail','Showroom','Restaurante o bar','Hospitalidad','Amenidades de edificio','Modelo de ventas','Otro']) +
+      (a.commercialType === 'Otro' ? '<div style="margin-top:12px;max-width:420px">' + field('commercialOther', '¿Qué tipo de espacio es?') + '</div>' : ''),
+      ['commercialType','commercialOther']);
+    h += group('¿El local está vacío o en operación?', '', chips('occupancy', ['Vacío o en obra','En operación','Todavía no lo tengo']), 'occupancy');
+  }
+  if (b.asksProperty) h += group('¿Qué tipo de propiedad es?', '', cards('propertyType', ['Condominio','Casa','Penthouse']), 'propertyType');
+  if (a.projectType) h += group('¿Obra nueva o remodelación?', '', chips('workType', ['Obra nueva','Remodelación']), 'workType');
+  if (b.isNew) h += group('¿En qué etapa está la obra?', '', chips('stage', ['Todavía en planos','En construcción','Terminada sin entregar']), 'stage');
+  if (b.isRemodel) {
+    h += group('¿De qué año es aproximadamente la propiedad?', '', chips('year', ['Antes de 1990','1990 a 2010','Después de 2010','No sé']), 'year');
+    h += group('¿El proyecto incluye alguno de estos?', 'Marca todo lo que aplique.',
+      checks('structure', STRUCT, [STRUCT_NONE, STRUCT_UNSURE]) +
+      (structuralFlag() ? '<div class="q-note warn">' + esc(t('qi_structural')) + '</div>' : ''), 'structure');
+  }
+  if (a.workType) {
+    var sug = suggestEmail(a.email);
+    h += group('¿A dónde te guardamos el avance?',
+      'Lo guardamos en este navegador para que puedas volver donde quedaste. Te lo pedimos también para poder contactarte.',
+      '<div style="max-width:420px">' + field('email', 'tu@correo.com', 'email') +
+      (a.email && !EMAIL_RE.test(a.email) ? '<p class="q-err">' + esc(t('srv_email_bad')) + '</p>' : '') +
+      (sug ? '<p class="q-err">' + fill(t('qi_didyoumean'), { email: esc(sug) }) + ' <button type="button" class="q-back" data-fix-email="1" style="margin-left:8px">' + esc(t('srv_fix')) + '</button></p>' : '') +
+      '</div>', 'email');
+  }
+  return h;
+}
+
+function step2() {
+  var a = S.a, b = branchOf(a), h = '';
+  h += group('¿Qué espacios quieres diseñar?',
+    'Elige todos los que quieras. No hay mínimo: puedes contratar uno solo. Si tienes más de uno, ajusta la cantidad.',
+    '<div class="q-grid">' + spaceListOf(a).map(function (t) {
+      var on = a.spaces.indexOf(t) > -1, n = a.counts[t] || 1;
+      return '<div class="q-space" data-space="' + esc(t) + '" aria-pressed="' + on + '">' +
+        '<span style="display:flex;align-items:center;gap:12px"><span class="q-radio"></span><span>' + lbl(t) + '</span></span>' +
+        (on ? '<span style="display:flex;align-items:center;gap:10px" data-stop="1">' +
+          '<button type="button" class="q-step" data-count="' + esc(t) + '" data-d="-1"' + (n <= 1 ? ' disabled' : '') + '>−</button>' +
+          '<span style="font-size:15px;min-width:14px;text-align:center">' + n + '</span>' +
+          '<button type="button" class="q-step" data-count="' + esc(t) + '" data-d="1"' + (n >= 10 ? ' disabled' : '') + '>+</button></span>' : '') +
+        '</div>';
+    }).join('') + '</div>', 'spaces');
+
+  if (a.spaces.length) {
+    h += group('¿Vas a conservar muebles que ya tienes?', '',
+      chips('keepFurniture', KEEP) +
+      (a.keepFurniture === KEEP_YES
+        ? '<div style="margin-top:14px">' + checks('keepSpaces', a.spaces) + '</div>' : ''),
+      'keepFurniture');
+    h += group('¿Ya tienes piezas de mobiliario decididas?', '',
+      chips('pieces', PIECES) +
+      ((a.pieces === PIECES_DECIDED || a.pieces === PIECES_REFS)
+        ? '<div style="margin-top:14px;max-width:520px">' +
+          field('piecesLink', 'Enlace a tu lista o tablero (opcional)') + '</div>' : ''),
+      'pieces');
+  }
+
+  h += group('¿Qué tan grande es tu proyecto?', 'Una idea general basta. Los detalles los tomamos en la visita.',
+    '<div class="q-grid">' + SIZE_OPTIONS.map(function (o, i) {
+      return '<button type="button" class="q-card" data-size="' + i + '" aria-pressed="' + (a.size === i) + '" style="flex-direction:column;align-items:flex-start;gap:8px">' +
+        '<span style="font-size:18px;font-weight:500">' + lbl(o[0]) + '</span>' +
+        '<span style="font-size:14px;line-height:1.5;opacity:.72">' + lbl(o[1]) + '</span>' +
+        '<span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.6">' + esc(fill(t('qi_imgs_per_space'), { n: IMGS[i] })) + '</span></button>';
+    }).join('') + '</div>' +
+    '<div style="margin-top:16px;max-width:320px"><label style="display:block;font-size:14px;color:rgba(0,0,0,.6);margin-bottom:8px">' + esc(t('qi_sqft_q')) + ' <span style="opacity:.7">' + esc(t('qi_optional')) + '</span></label>' +
+    field('sqft', 'Opcional') + '</div>' +
+    (imageTotal() > 0 ? '<div class="q-note" style="display:flex;align-items:baseline;gap:12px"><strong style="font-size:26px;font-weight:600">' + imageTotal() + '</strong><span>' + esc(t('qi_images_total')) + '</span></div>' : ''), 'size');
+
+  h += group('¿Cuánto piensas invertir en obra y mobiliario?',
+    'Es opcional, pero si nos lo compartes ajustamos el estimado a tu realidad en vez de darte un rango amplio.',
+    chips('budget', BUDGETS));
+  return h;
+}
+
+function filedrop(kind, title, note, accept) {
+  var n = FILES[kind].length;
+  return '<label class="q-drop' + (n ? ' has' : '') + '" style="margin-top:14px">' +
+    '<input type="file" multiple accept="' + accept + '" data-files="' + kind + '"' +
+    (kind === 'photos' ? ' capture="environment"' : '') + '>' +
+    '<span style="flex:1"><span style="display:block;font-size:16px;font-weight:500">' + lbl(title) + '</span>' +
+    '<span style="display:block;font-size:14px;color:rgba(0,0,0,.55);margin-top:4px">' + lbl(note) + '</span></span>' +
+    '<span style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(0,0,0,.5)">' +
+    (n ? n + ' ' + t(n === 1 ? 'q_files_1' : 'q_files_n') : lbl('Elegir')) + '</span></label>' +
+    FILES[kind].map(function (f, i) {
+      return '<span class="q-file"><span>' + esc(f.name) + '</span>' +
+        '<button type="button" class="q-back" data-rmfile="' + kind + '" data-i="' + i + '" style="font-size:10px">' + lbl('Quitar') + '</button></span>';
+    }).join('');
+}
+
+function step3() {
+  var a = S.a, b = branchOf(a), h = '';
+
+  // Las preguntas que dependen de qué espacios eligió: antes vivían en el
+  // paso 2 y lo dejaban interminable. Ahora tienen paso propio.
+  if (b.asksMillwork) h += group('¿En cuáles se van a hacer muebles a la medida?',
+    'Gabinetes de cocina, clósets, muebles de baño, paneles de pared, libreros. Lo contrario es comprar todo ya hecho.',
+    checks('millwork', a.spaces.concat([MW_NONE, MW_UNSURE]), [MW_NONE, MW_UNSURE]), 'millwork');
+  if (b.asksPlumbing) h += group('¿Se van a mover los puntos de agua o desagüe?', '',
+    chips('plumbing', ['Sí','No','No sé']), 'plumbing');
+  if (b.asksAppliances) h += group('¿Ya elegiste los electrodomésticos?',
+    'Las medidas de los electrodomésticos definen toda la gabinetería, así que conviene tenerlos decididos antes de empezar.',
+    chips('appliances', [APPL_DECIDED, 'Todavía no', APPL_HELP]) +
+    (a.appliances === APPL_DECIDED ? filedrop('applianceFiles', 'Súbenos la lista o las fichas técnicas', 'Opcional. Imágenes o PDF.', 'image/*,application/pdf') : '') +
+    (a.appliances === APPL_HELP ? '<div class="q-note">' + esc(t('qi_appl_note')) + '</div>' : ''),
+    'appliances');
+  if (b.asksLaundry) {
+    h += group('¿Ya elegiste la lavadora y la secadora?', '',
+      chips('laundry', [APPL_DECIDED, 'Todavía no', APPL_HELP]), 'laundry');
+    h += group('¿Cómo van a ir?', 'Apiladas ocupan menos; lado a lado piden más frente de pared.',
+      chips('laundryLayout', LAUNDRY_LAYOUT), 'laundryLayout');
+  }
+  if (b.asksBar) h += group('¿Ya elegiste el equipo de la barra?',
+    'Fregadero, hielera, enfriador de bebidas, cafetera.',
+    chips('barEquip', [APPL_DECIDED, 'Todavía no', APPL_HELP]), 'barEquip');
+  if (b.asksPool) h += group('¿El proyecto incluye la piscina o su área?', '',
+    chips('pool', ['Sí','No','No hay piscina']), 'pool');
+  if (b.asksHoa) h += group(b.isHouse ? '¿Tu comunidad tiene HOA con reglas de diseño?' : '¿El edificio pide aprobación de la asociación o del condominio?',
+    '', chips('hoa', ['Sí','No','No sé']), 'hoa');
+  if (b.asksHealth) h += group('¿El proyecto necesita aprobación del departamento de salud?', '',
+    chips('health', ['Sí','No','No sé']), 'health');
+
+  // Material del espacio
+  var lead = b.inPurchase ? 'Todavía no es tuya, así que no hay nada que fotografiar. Súbenos lo que tengas del listado o del desarrollo. Nada aquí es obligatorio.'
+    : b.noAccess ? 'Todavía no tienes el local. Súbenos los planos o el material que te hayan dado. Nada aquí es obligatorio.'
+    : b.isNew ? 'En obra nueva no hay fotos. Necesitamos los planos o el material del desarrollo.'
+    : 'Necesitamos verlo para darte un estimado real. Con el celular basta.';
+
+  if (!b.needsPlans) {
+    h += group('Muéstranos tu espacio', lead,
+      '<div class="q-note" style="margin-top:0;margin-bottom:16px"><strong style="display:block;margin-bottom:8px">' + esc(t('qi_photos_what')) + '</strong>' +
+      esc(t('qi_photos_list')) + '</div>' +
+      filedrop('photos', 'Toma o elige tus fotos', 'De 3 a 6 fotos. Con el celular basta.', 'image/*') +
+      filedrop('planFiles', 'Tus planos, si los tienes', 'Opcional. Imágenes o PDF.', 'image/*,application/pdf'), 'material');
+  } else {
+    h += group('Muéstranos el proyecto', lead,
+      filedrop('planFiles', b.inPurchase ? 'Sube lo que tengas de la propiedad' : 'Sube los planos o el material del desarrollo',
+        b.inPurchase ? 'Fotos del listado, planos, medidas. Imágenes o PDF.' : 'Imágenes o PDF. Lo que te haya dado el desarrollador sirve.',
+        'image/*,application/pdf') +
+      filedrop('photos', 'Fotos del lugar, si ya se puede entrar', 'Opcional.', 'image/*'), 'material');
+  }
+  h += '<div class="q-group"><button type="button" class="q-card" data-nomaterial="1" aria-pressed="' + a.noMaterial + '">' +
+    '<span class="q-box"></span><span>' + esc(t('qi_nomaterial')) + '</span></button>' +
+    (a.noMaterial ? '<div class="q-note">' + esc(t('qi_nomaterial_note')) + '</div>' : '') +
+    '<p class="q-hint" style="margin-top:16px">' + esc(t('qi_photos_privacy')) + '</p></div>';
+  return h;
+}
+
+function step4() {
+  var a = S.a;
+  var lv = [['Nivel 01','Estándar'],['Nivel 02','Alta gama'],['Nivel 03','Lujo']];
+  var h = group('Estas son tres cocinas nuestras. Señala la que se parece a lo que quieres.', '',
+    '<div class="q-grid">' + lv.map(function (o) {
+      return '<button type="button" class="q-lvl" data-set="finish" data-val="' + esc(o[1]) + '" aria-pressed="' + (a.finish === o[1]) + '">' +
+        '<span class="q-slot">' + lbl('Proyecto real') + ' — ' + esc(TR(o[1]).toLowerCase()) + '</span>' +
+        '<span style="padding:16px 18px"><span style="display:block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.45)">' + lbl(o[0]) + '</span>' +
+        '<span style="display:block;font-size:19px;font-weight:600;margin-top:4px">' + lbl(o[1]) + '</span></span></button>';
+    }).join('') + '</div>', 'finish');
+  if (a.finish) h += group('¿Qué tan claro tienes lo que quieres?', '', chips('clarity', CLARITY), 'clarity');
+  return h;
+}
+
+function step5() {
+  var a = S.a;
+  var ex = [
+    ['Borsoga Immersive','Caminas tu espacio con lentes de realidad virtual. Vamos a donde estés.'],
+    ['Tour 360','Un recorrido navegable de tu proyecto. Se abre en cualquier navegador.'],
+    ['Imágenes adicionales','Más vistas de tu proyecto, además de las que ya trae tu plan.']
+  ];
+  var h = group('Extras', 'Se cotizan aparte. Lo que no marques aquí queda fuera de tu proyecto.',
+    '<div class="q-grid">' + ex.map(function (o) {
+      return '<button type="button" class="q-card" data-check="extras" data-val="' + esc(o[0]) + '" data-excl="false" aria-pressed="' + (a.extras.indexOf(o[0]) > -1) + '" style="align-items:flex-start">' +
+        '<span class="q-box" style="margin-top:3px"></span><span><span style="display:block">' + lbl(o[0]) + '</span>' +
+        '<span style="display:block;font-size:14px;line-height:1.5;color:rgba(0,0,0,.6);margin-top:4px">' + lbl(o[1]) + '</span></span></button>';
+    }).join('') + '</div>');
+  var up = upsell();
+  if (up) h += '<div class="q-note warn"><strong style="display:block;margin-bottom:6px">' + esc(t('qi_a_note')) + '</strong>' + esc(up) + '</div>';
+
+  // Venta cruzada: qué le ofrecemos depende de para qué es el proyecto.
+  var b2 = branchOf(a);
+  var sc = b2.isInvest ? SHOWCASE_SELL : b2.isCom ? SHOWCASE_COM : SHOWCASE_LIVE;
+  h += group('¿Vas a necesitar algo más cuando esté terminado?', '',
+    checks('showcase', sc.concat([SHOWCASE_NONE]), [SHOWCASE_NONE]));
+  return h;
+}
+
+function step6() {
+  var a = S.a, h = '';
+  h += group('Tus datos', '', '<div class="q-fields">' + field('name', 'Nombre legal completo') +
+    field('email', 'Correo', 'email') + field('phone', 'Teléfono', 'tel') + '</div>', ['name','email','phone']);
+  h += group('¿Firmas a título personal o como empresa?', '', chips('signer', ['A título personal','Como empresa']) +
+    (a.signer === 'Como empresa' ? '<div class="q-fields" style="margin-top:12px">' + field('entName','Nombre legal de la empresa') +
+      field('entState','Estado de registro') + field('entSigner','Quién firma') + field('entRole','Su cargo') + '</div>' : ''));
+  h += group('¿Eres el dueño de la propiedad?', '', chips('isOwner', ['Sí', OWNER_REP]) +
+    (a.isOwner === OWNER_REP ? '<div class="q-fields" style="margin-top:12px">' + field('ownerName','Nombre del dueño') +
+      field('ownerEmail','Correo del dueño','email') + '</div>' : ''), ['isOwner','ownerName','ownerEmail']);
+  h += group('¿Quién decide en este proyecto?', '', chips('decider', DECIDERS), 'decider');
+  h += group('Dirección del proyecto', '', '<div class="q-fields">' + field('street','Calle y número') +
+    field('city','Ciudad') + field('state','Estado') + field('zip','Código postal') + '</div>' +
+    (a.state && !isFlorida(a.state) ? '<div class="q-note">' + esc(t('qi_outside_fl')) + '</div>' : ''), ['street','city','state','zip']);
+  h += group('¿Cuándo quieres empezar?', '',
+    chips('timing', ['Lo antes posible','En 1 a 3 meses', TIMING_EXPLORING]) +
+    (a.timing === TIMING_EXPLORING
+      ? '<div style="margin-top:14px;max-width:520px">' +
+        field('exploring', '¿Qué te haría decidirte? (opcional)') + '</div>' : ''),
+    'timing');
+  h += group('¿Tienes una fecha límite?', '', chips('deadline', ['No, sin fecha fija','Sí, pero es flexible', DEADLINE_FIXED]) +
+    (a.deadline === DEADLINE_FIXED ? '<div class="q-fields" style="margin-top:12px">' + field('deadlineDate','','date') +
+      field('deadlineWhy','Motivo: mudanza, cierre de compra, apertura, otro') + '</div>' : ''), ['deadline','deadlineDate','deadlineWhy']);
+  h += group('¿Ya trabajas con un contratista o un arquitecto?', '',
+    chips('pro', ['Sí','No', PRO_REFERRAL, 'No lo he decidido']) +
+    (a.pro === PRO_REFERRAL
+      ? '<div class="q-note">' + esc(t('qi_referral_note')) + '</div>' : ''),
+    'pro');
+  h += group('¿Podemos publicar tu proyecto terminado?', 'Nos ayuda a mostrar nuestro trabajo. Lo confirmamos en el contrato.', chips('portfolio', PORTFOLIO), 'portfolio');
+  h += '<div class="q-group"><button type="button" class="q-card" data-privacy="1" aria-pressed="' + a.privacy + '">' +
+    '<span class="q-box"></span><span>' + fill(t('qi_privacy_accept'), { link: '<a href="' + PRIV_URL + '" target="_blank" style="border-bottom:1px solid">' + esc(t('qi_privacy_link')) + '</a>' }) + '</span></button>' +
+    '<input type="text" data-field="bot" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px" value="' + esc(a.bot) + '">' +
+    (S.notice ? '<p class="q-err">' + esc(S.notice) + '</p>' : '') +
+    '<p class="q-hint" style="margin-top:16px">' + esc(t('qi_not_contract')) + '</p></div>';
+  return h;
+}
+
+function summary() {
+  var a = S.a, b = branchOf(a), r = [];
+  var add = function (l, v) { if (v) r.push([l, v]); };
+  // Los valores se traducen uno a uno ANTES de unirlos: la frase ya unida no
+  // existe en el diccionario.
+  var L = function (xs, sep) { return xs.filter(Boolean).map(TR).join(sep || ' · '); };
+  add('Plan recomendado', recommendPlan());
+  add('Proyecto', L([a.projectType, a.dealType]));
+  add('Propiedad', TR(b.isCom ? (a.commercialType === 'Otro' ? a.commercialOther : a.commercialType) : a.propertyType));
+  add('Obra', L([a.workType, b.isNew ? a.stage : a.year]));
+  add('Espacios', spaceSummary(true));
+  if (b.asksMillwork) add('Muebles a la medida', L(a.millwork));
+  if (b.asksPlumbing) add('Agua y desagüe', TR(a.plumbing));
+  if (b.asksAppliances) add('Electrodomésticos', TR(a.appliances));
+  if (b.asksLaundry) add('Lavandería', L([a.laundry, a.laundryLayout]));
+  if (b.asksBar) add('Equipo de barra', TR(a.barEquip));
+  add('Mobiliario que conserva', a.keepFurniture === KEEP_YES
+    ? TR(KEEP_YES) + ' · ' + L(a.keepSpaces, ', ') : TR(a.keepFurniture));
+  add('Piezas decididas', TR(a.pieces) + (a.piecesLink ? ' · ' + a.piecesLink : ''));
+  if (b.asksPool) add('Piscina', TR(a.pool));
+  if (b.asksStructure) add('Paredes y fachada', L(a.structure));
+  if (structuralFlag()) add('Marcado', TR('Obra estructural o de fachada. Lo revisamos antes de cotizar.'));
+  if (b.asksHoa) add(b.isHouse ? 'HOA' : 'Asociación', TR(a.hoa));
+  if (b.asksHealth) add('Departamento de salud', TR(a.health));
+  add('Material', a.noMaterial ? TR('Todavía sin material')
+    : [FILES.photos.length ? FILES.photos.length + ' ' + TR('fotos') : '', FILES.planFiles.length ? FILES.planFiles.length + ' ' + TR('planos') : ''].filter(Boolean).join(' · '));
+  add('Tamaño', a.size >= 0 ? TR(SIZE_OPTIONS[a.size][0]) + (a.sqft ? ' · ' + a.sqft + ' ' + TR('pies²') : '') : '');
+  add('Imágenes', imageTotal() + ' ' + TR('en total'));
+  add('Nivel de acabado', TR(a.finish));
+  add('Punto de partida', TR(a.clarity));
+  add('Presupuesto declarado', TR(a.budget));
+  add('Extras', a.extras.length ? L(a.extras, ', ') : TR('Ninguno'));
+  add('Dirección', [a.street, a.city, a.state, a.zip].filter(Boolean).join(', '));
+  add('Cuándo', TR(a.timing));
+  add('Fecha límite', a.deadline === DEADLINE_FIXED ? [a.deadlineDate, a.deadlineWhy].filter(Boolean).join(' · ') : TR(a.deadline));
+  add('Quién decide', TR(a.decider));
+  add('Portafolio', TR(a.portfolio));
+  add('Más al terminar', L(a.showcase.filter(function (v) { return v !== SHOWCASE_NONE; }), ', '));
+  if (a.timing === TIMING_EXPLORING && a.exploring) add('Qué le haría decidirse', a.exploring);
+  if (a.pro === PRO_REFERRAL) add('Marcado', TR('Pide que le recomendemos contratista.'));
+  if (a.city && !isMiamiDade(a.city)) add('Marcado', TR('Fuera de Miami-Dade.'));
+  if (unsureCount() >= 4) add('Marcado', TR('Varias respuestas sin definir. Va a rango y a llamada.'));
+  return r;
+}
+
+// El servidor decide el tipo de respuesta y devuelve sus textos en español. Si
+// coincide con el cálculo local se usan los textos locales, que ya vienen en
+// el idioma de la página; si no, los del servidor pasan por el diccionario.
+function finalRoute() {
+  var loc = route(), srv = S.result;
+  return srv && srv[0] !== loc[0] ? [srv[0], srvText(srv[1]), srvText(srv[2])] : loc;
+}
+// «Tu proyecto tiene 7 escenas…» llega con el número dentro: se busca la
+// plantilla con {n} y se rellena.
+function srvText(s) {
+  var tr = TR(s), m = /\d+/.exec(s || '');
+  if (tr !== s || !m) return tr;
+  var tpl = s.replace(m[0], '{n}'), t2 = TR(tpl);
+  return t2 !== tpl ? fill(t2, { n: m[0] }) : s;
+}
+// Los errores del servidor también llegan en español.
+function srvError(e) {
+  var m = /^Falta un dato obligatorio \((.+)\)\.$/.exec(e || '');
+  return m ? fill(TR('Falta un dato obligatorio ({campo}).'), { campo: m[1] }) : TR(e);
+}
+
+function doneScreen() {
+  var rt = finalRoute();
+  var h = '<div style="max-width:62ch">' +
+    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 18px">' + lbl('Listo') + '</p>' +
+    '<h1 style="margin:0;font-size:clamp(32px,5vw,54px);font-weight:600;letter-spacing:-.03em;line-height:1.02">' + esc(rt[1]) + '</h1>';
+  if (rt[0] === 'mail') h += '<p style="display:flex;align-items:baseline;gap:14px;margin:26px 0 0"><strong style="font-size:34px;font-weight:600;letter-spacing:-.03em">48</strong><span style="font-size:16px;color:rgba(0,0,0,.7)">' + lbl('Te escribimos en persona en menos de 48 horas') + '</span></p>';
+  h += '<p style="margin:22px 0 0;font-size:17px;line-height:1.6;color:rgba(0,0,0,.72)">' + esc(rt[2]) + '</p>';
+  h += '<div class="q-note" style="margin-top:26px"><strong style="display:block;margin-bottom:6px">' + esc(t('qi_your_plan')) + '</strong>' +
+    (PICKED ? fill(t('qi_plan_picked'), { plan: esc(PICKED) })
+            : fill(t('qi_plan_reco'), { plan: esc(recommendPlan()) })) + '</div>';
+  h += '</div><dl class="q-sum">' + summary().map(function (p) {
+    return '<div><dt>' + lbl(p[0]) + '</dt><dd>' + esc(p[1]) + '</dd></div>';
+  }).join('') + '</dl>' +
+  '<p class="q-hint" style="margin-top:28px">' + esc(t('qi_confirm_visit')) + '</p>';
+  return h;
+}
+
+// ---------------------------------------------------------------- render
+function render() {
+  var main = document.getElementById('q-main');
+  var nav = document.getElementById('q-nav');
+  var seg = document.getElementById('q-seg');
+
+  seg.innerHTML = [1,2,3,4,5,6].map(function (i) {
+    return '<i class="' + (S.done || i <= S.step ? 'on' : '') + '"></i>';
+  }).join('');
+
+  var plan = PICKED || recommendPlan();
+  var idx = plan === 'Essential' ? 1 : plan === 'Premium' ? 2 : 3;
+  document.getElementById('q-plan').textContent =
+    PICKED ? 'Plan 0' + idx + ' · ' + PICKED : (S.touched ? t('q_plan_sug') + ' · ' + plan : t('q_plan_none'));
+  document.getElementById('q-ring').style.cssText =
+    'width:15px;height:15px;border:1.5px ' + (S.touched || PICKED ? 'solid' : 'dashed') + ' ' +
+    (S.touched || PICKED ? '#000' : 'rgba(0,0,0,.45)') + ';border-radius:50%;flex:none;display:block' +
+    ((S.touched || PICKED) && idx > 1 ? ';box-shadow:inset 0 0 0 1.5px #fff, inset 0 0 0 3px #000' : '') +
+    ((S.touched || PICKED) && idx > 2 ? ', inset 0 0 0 4.5px #fff, inset 0 0 0 6px #000' : '');
+  document.getElementById('q-saved').textContent = S.touched && !S.done ? TR('Guardado') : '';
+
+  if (S.done) {
+    nav.hidden = true;
+    main.innerHTML = doneScreen();
+    window.scrollTo(0, 0);
+    return;
+  }
+  nav.hidden = false;
+  MISSING = missing();
+  var fn = [step1, step2, step3, step4, step5, step6][S.step - 1];
+  main.innerHTML = '<div style="margin-bottom:clamp(28px,4vw,44px)">' +
+    '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 12px">' + lbl(STEPS[S.step-1][0]) + '</p>' +
+    '<h1 style="margin:0;font-size:clamp(28px,4.4vw,44px);font-weight:600;letter-spacing:-.03em;line-height:1.05">' + lbl(STEPS[S.step-1][1]) + '</h1></div>' + fn();
+
+  document.getElementById('q-back').disabled = S.step === 1;
+  document.getElementById('q-count').textContent = fill(t('step_counter'), { n: S.step });
+  var next = document.getElementById('q-next');
+  // Nunca deshabilitado por campos pendientes: pulsarlo es lo que revela qué
+  // falta. Un botón gris no explica nada; solo deja al usuario atascado.
+  next.disabled = S.sending;
+  var nextLabel = S.sending ? (S.notice || TR('Enviando…'))
+      : TR(S.step === 6 ? 'Enviar mi proyecto' : 'Continuar');
+  next.querySelector('.q-btn-label').textContent = nextLabel;
+  next.setAttribute('aria-label', nextLabel);
+  var aviso = document.getElementById('q-aviso');
+  if (S.showErrors && MISSING.length) {
+    aviso.textContent = fill(t(MISSING.length === 1 ? 'q_missing_one' : 'q_missing_many'), { n: MISSING.length });
+    aviso.hidden = false;
+  } else { aviso.hidden = true; }
+}
+
+function go(n) { S.step = n; S.notice = ''; S.showErrors = false; persist(); render(); window.scrollTo(0, 0); }
+
+// ---------------------------------------------------------------- eventos
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('[data-set],[data-check],[data-space],[data-count],[data-size],[data-nomaterial],[data-privacy],[data-fix-email],[data-rmfile]');
+  if (!t) return;
+  if (t.dataset.count !== undefined) {
+    e.stopPropagation();
+    var n = Math.min(10, Math.max(1, (S.a.counts[t.dataset.count] || 1) + parseInt(t.dataset.d, 10)));
+    var c = Object.assign({}, S.a.counts); c[t.dataset.count] = n;
+    return setA({ counts: c });
+  }
+  if (t.dataset.set !== undefined) return setA(govObj(t.dataset.set, t.dataset.val));
+  if (t.dataset.check !== undefined) return toggleIn(t.dataset.check, t.dataset.val, t.dataset.excl === 'true');
+  if (t.dataset.space !== undefined) {
+    var s = t.dataset.space, on = S.a.spaces.indexOf(s) > -1;
+    var counts = Object.assign({}, S.a.counts);
+    if (on) delete counts[s]; else counts[s] = counts[s] || 1;
+    return setA({ spaces: on ? S.a.spaces.filter(function (v) { return v !== s; }) : S.a.spaces.concat([s]), counts: counts });
+  }
+  if (t.dataset.size !== undefined) return setA({ size: parseInt(t.dataset.size, 10) });
+  if (t.dataset.nomaterial !== undefined) return setA({ noMaterial: !S.a.noMaterial });
+  if (t.dataset.privacy !== undefined) return setA({ privacy: !S.a.privacy });
+  if (t.dataset.fixEmail !== undefined) return setA({ email: suggestEmail(S.a.email) });
+  if (t.dataset.rmfile !== undefined) {
+    FILES[t.dataset.rmfile].splice(parseInt(t.dataset.i, 10), 1);
+    return render();
+  }
+});
+function govObj(k, v) { var o = {}; o[k] = v; return o; }
+
+document.addEventListener('change', function (e) {
+  if (e.target.dataset && e.target.dataset.files !== undefined) {
+    var kind = e.target.dataset.files;
+    FILES[kind] = FILES[kind].concat(Array.prototype.slice.call(e.target.files || []));
+    S.touched = true;
+    render();
+  }
+});
+document.addEventListener('input', function (e) {
+  var f = e.target.dataset && e.target.dataset.field;
+  if (!f) return;
+  S.a[f] = e.target.value;
+  S.touched = true;
+  persist();
+  // No re-renderizamos en cada tecla: se perdería el foco y la posición del
+  // cursor. Solo refrescamos el contador de pendientes si ya se mostró.
+  if (S.showErrors) {
+    MISSING = missing();
+    var aviso = document.getElementById('q-aviso');
+    if (aviso) {
+      aviso.hidden = MISSING.length === 0;
+      aviso.textContent = fill(t(MISSING.length === 1 ? 'q_missing_one' : 'q_missing_many'), { n: MISSING.length });
+    }
+  }
+});
+document.addEventListener('blur', function (e) {
+  if (e.target.dataset && e.target.dataset.field) { S.a = prune(S.a); render(); }
+}, true);
+
+document.getElementById('q-back').addEventListener('click', function () { if (S.step > 1) go(S.step - 1); });
+document.getElementById('q-next').addEventListener('click', function () {
+  if (S.sending) return;
+  if (!canContinue()) {
+    S.showErrors = true;
+    render();
+    // Llevamos al primer pendiente: en pasos largos puede quedar fuera de vista.
+    var el = document.querySelector('.q-invalid');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      var foco = el.querySelector('input, button');
+      if (foco) setTimeout(function () { foco.focus({ preventScroll: true }); }, 350);
+    }
+    return;
+  }
+  S.showErrors = false;
+  if (S.step < 6) return go(S.step + 1);
+  submit();
+});
+document.getElementById('q-save').addEventListener('click', function () {
+  persist();
+  alert(TR('Tus respuestas quedan guardadas en este navegador. Vuelve cuando quieras desde el mismo dispositivo.'));
+});
+
+// ---------------------------------------------------------------- envío
+function submit() {
+  var a = S.a;
+  if (a.bot) { S.notice = TR('No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'); return render(); }
+  if (isDisposable(a.email)) { S.notice = TR('Necesitamos un correo donde podamos enviarte la propuesta.'); return render(); }
+  var sent = {};
+  try { sent = JSON.parse(localStorage.getItem(SUBMIT_KEY) || '{}'); } catch (e) {}
+  var k = String(a.email).trim().toLowerCase();
+  if ((sent[k] || 0) >= MAX_SUBMITS) { S.notice = TR('Ya recibimos tu proyecto. Si necesitas cambiar algo, escríbenos.'); return render(); }
+
+  S.sending = true; S.notice = ''; render();
+
+  // Los archivos van directos a Blob: las funciones de Vercel tienen un tope
+  // de ~4,5 MB de cuerpo y seis fotos de móvil lo superan. Aquí solo viajan
+  // las URLs resultantes.
+  var pending = [];
+  ['photos','planFiles','applianceFiles'].forEach(function (kind) {
+    FILES[kind].forEach(function (f) { pending.push({ kind: kind, file: f }); });
+  });
+
+  var lote = Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
+  var subidos = [];
+
+  loadUploader()
+    .then(function () {
+      var hechos = 0;
+      return pending.reduce(function (chain, item) {
+        return chain.then(function () {
+          var safe = item.file.name.replace(/[^\w.\-]+/g, '_').slice(-80);
+          return window.borsogaUpload(item.file, 'leads/' + lote + '/' + item.kind + '/' + safe,
+            function (pct) {
+              S.notice = fill(t('q_uploading'), { n: hechos + 1, total: pending.length, pct: pct });
+              var n = document.getElementById('q-next');
+              if (n) {
+                n.querySelector('.q-btn-label').textContent = S.notice;
+                n.setAttribute('aria-label', S.notice);
+              }
+            })
+            .then(function (b) {
+              hechos++;
+              subidos.push({ kind: item.kind, name: item.file.name, url: b.url, size: item.file.size });
+            });
+        });
+      }, Promise.resolve());
+    })
+    .then(function () {
+      return fetch((window.BORSOGA_API || '') + '/api/submit/', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          answers: a,
+          derived: {
+            unitTotal: unitTotal(), imageTotal: imageTotal(), spaceSummary: spaceSummary(),
+            picked: PICKED, recommend: recommendPlan(), route: route()[0],
+            unsure: unsureCount(), structural: structuralFlag()
+          },
+          files: subidos
+        })
+      });
+    })
+    .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+    .then(function (jr) {
+      S.sending = false; S.notice = '';
+      if (!jr || !jr.ok) { S.notice = (jr && jr.error) ? srvError(jr.error) : TR('No pudimos enviarlo. Inténtalo otra vez o escríbenos.'); return render(); }
+      sent[k] = (sent[k] || 0) + 1;
+      try { localStorage.setItem(SUBMIT_KEY, JSON.stringify(sent)); localStorage.removeItem(KEY); } catch (e) {}
+      S.result = jr.route || route();
+      S.done = true;
+      render();
+    })
+    .catch(function (err) {
+      S.sending = false;
+      S.notice = (err && err.message ? TR('No pudimos subir tus archivos:') + ' ' + err.message
+                                     : TR('No pudimos enviarlo. Revisa tu conexión e inténtalo otra vez.'));
+      render();
+    });
+}
+
+// El SDK de Blob pesa ~100 KB: solo se carga si hay archivos que subir.
+var uploaderPromise = null;
+function loadUploader() {
+  var hayArchivos = FILES.photos.length || FILES.planFiles.length || FILES.applianceFiles.length;
+  if (!hayArchivos) return Promise.resolve();
+  if (window.borsogaUpload) return Promise.resolve();
+  if (uploaderPromise) return uploaderPromise;
+  uploaderPromise = new Promise(function (resolve, reject) {
+    var s = document.createElement('script');
+    s.src = '/assets/upload.js';
+    s.onload = function () { window.borsogaUpload ? resolve() : reject(new Error('el subidor no cargó')); };
+    s.onerror = function () { reject(new Error('no se pudo cargar el subidor')); };
+    document.head.appendChild(s);
+  });
+  return uploaderPromise;
+}
+
+// ---------------------------------------------------------------- arranque
+try {
+  var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (saved && saved.a && saved.step > 1) {
+    if (confirm(fill(t('q_resume'), { n: '0' + saved.step }))) {
+      S.a = prune(Object.assign(blank(), saved.a));
+      S.step = Math.min(6, Math.max(1, saved.step));
+      S.touched = true;
+    } else { localStorage.removeItem(KEY); }
+  }
+} catch (e) {}
+render();
+})();
+</script>  </div>     <script type="module" src="/_astro/Layout.astro_astro_type_script_index_0_lang.B-jAGcHC.js"></script></body></html>
