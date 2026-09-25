@@ -8,9 +8,10 @@
 // published when the site was last built — is only the fallback for when the
 // API doesn't answer in time.
 //
-// ?vista=1 is the admin panel's preview. The page is then inside an iframe of
-// the panel and starts from the DRAFT the panel sends by postMessage, not from
-// the published schema baked into the page. It never sends anything (brief.js
+// ?vista=1 is the admin panel's preview. The panel opens the page in a new tab
+// (not an iframe: Hostinger's CDN sends X-Frame-Options: SAMEORIGIN) and the
+// page starts from the DRAFT the panel sends by postMessage to its opener, not
+// from the published schema. It never sends anything (brief.js
 // stops at the thank-you screen) and keeps its progress under its own key.
 (function () {
 'use strict';
@@ -54,7 +55,8 @@ function publicado() {
     });
 }
 
-if (!/[?&]vista=1(&|$)/.test(location.search) || window.parent === window) {
+var panel = window.opener || (window.parent !== window ? window.parent : null);
+if (!/[?&]vista=1(&|$)/.test(location.search) || !panel) {
   return publicado();
 }
 
@@ -68,6 +70,6 @@ window.addEventListener('message', function (e) {
   inicia(e.data.schema, true);
 });
 PANEL.forEach(function (o) {
-  try { window.parent.postMessage({ tipo: 'borsoga-lista' }, o); } catch (e) {}
+  try { panel.postMessage({ tipo: 'borsoga-lista' }, o); } catch (e) {}
 });
 })();
