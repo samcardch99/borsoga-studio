@@ -1,11 +1,11 @@
-// The questionnaires' content lives in the admin panel (admin.borsogastudio.com)
-// and is read here, at build time, from the published version. Publishing in the
-// panel starts a new build of this site; that's how a change reaches the page.
+// The questionnaires' content lives in the admin panel (admin.borsogastudio.com).
+// The page asks the API for the published version every time it opens
+// (client/brief-arranque.js), so publishing needs no rebuild. What is read here,
+// at build time, is only the copy baked into the page for when the API doesn't
+// answer.
 //
-// web.json / grafico.json are the schemas as they were when they left the code.
-// They are only a fallback for building locally without network — in CI a
-// failed fetch fails the build, so a stale schema can never be published over a
-// newer one.
+// web.json / grafico.json are the schemas as they were when they left the code:
+// the fallback of the fallback, for a build that can't reach the API.
 import { api } from "../config";
 import web from "./web.json";
 import grafico from "./grafico.json";
@@ -24,9 +24,6 @@ async function pedir(servicio: Servicio): Promise<Esquema> {
     if (!j?.schema?.pasos || !j.version) throw new Error("respuesta sin esquema");
     return { ...j.schema, version: j.version };
   } catch (e) {
-    if (process.env.CI) {
-      throw new Error(`No se pudo leer el cuestionario publicado (${servicio}): ${(e as Error).message}`);
-    }
     console.warn(`[forms] ${servicio}: sin conexión con el panel, uso la copia local (${(e as Error).message})`);
     return SEMILLA[servicio];
   }

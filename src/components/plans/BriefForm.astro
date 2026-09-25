@@ -1,8 +1,8 @@
 ---
 // The scripts of a long questionnaire: the engine (brief.js), the schema
-// compiler (forms/esquema.js), the published schema itself and the starter that
-// joins them. The schema is read at build time from the admin panel — see
-// src/plans/forms/index.ts.
+// compiler (forms/esquema.js), a fallback copy of the published schema and the
+// starter that joins them — and asks the API for the live version first. See
+// src/plans/forms/index.ts and client/brief-arranque.js.
 import { cargarEsquema, type Servicio } from "../../plans/forms";
 import briefScript from "../../plans/client/brief.js?raw";
 import esquemaScript from "../../plans/forms/esquema.js?raw";
