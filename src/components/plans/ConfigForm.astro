@@ -1,0 +1,31 @@
+---
+// The scripts of a configurator (interior or AV): the rules evaluator
+// (forms/reglas.js), the configurator itself, a fallback copy of its published
+// config and the starter, which asks the API for the live version first. The
+// config is edited in the admin panel — see src/plans/forms/index.ts.
+import { cargarEsquema } from "../../plans/forms";
+import reglasScript from "../../plans/forms/reglas.js?raw";
+import interiorScript from "../../plans/client/quiz.js?raw";
+import avScript from "../../plans/client/quiz-av.js?raw";
+import arranqueScript from "../../plans/client/arranque.js?raw";
+
+interface Props {
+  servicio: "interior" | "av";
+}
+
+const { servicio } = Astro.props;
+const config = await cargarEsquema(servicio);
+// </script> inside a string would close the tag early.
+const datos = JSON.stringify(config).replace(/</g, "\\u003c");
+---
+
+{/* Bundled, not inlined: this one imports @vercel/blob/client, so it has to
+    go through Vite. It only has to define window.borsogaUpload before the
+    user reaches a file field, so a deferred module script is in time. */}
+<script>
+  import "../../plans/client/upload-client.js";
+</script>
+<script is:inline set:html={reglasScript} />
+<script is:inline set:html={servicio === "av" ? avScript : interiorScript} />
+<script is:inline set:html={`window.BORSOGA_FORM=${datos};`} />
+<script is:inline set:html={arranqueScript} />

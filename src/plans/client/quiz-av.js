@@ -1,10 +1,15 @@
-// Ported verbatim from the retired generator (borsoga-funnel/src/quiz_av.js).
-// ONE change: the API calls are absolute. borsogastudio.com is static on
-// Hostinger; the serverless functions stayed on Vercel, so these are
-// cross-origin and the functions answer with the CORS headers.
+// Ported from the retired generator (borsoga-funnel/src/quiz_av.js); the API
+// calls are absolute because the serverless functions stayed on Vercel.
 //
-// Reads window.BORSOGA_I18N / BORSOGA_LANG / BORSOGA_API, set by
-// components/plans/I18nBundle.astro, which must run before this.
+// Its content is DATA, edited in the admin panel (admin.borsogastudio.com):
+// option lists, texts in both languages, the plan and routing rules and the
+// views per plan. See src/plans/forms/av.json. The code keeps the widgets and
+// the three-level nesting (scene → interior space → amenity) and finds the
+// options it branches on by ROLE, GROUP or MARKS, never by their text.
+//
+// Starts when client/arranque-config.js calls window.BORSOGA_QUIZ(config).
+// Reads window.BORSOGA_I18N / BORSOGA_LANG / BORSOGA_API (I18nBundle.astro)
+// and window.BORSOGA_REGLAS (forms/reglas.js).
 
 /**
  * Configurador de Architectural Visualization — 6 pasos.
@@ -28,6 +33,15 @@
 (function () {
 'use strict';
 
+function arranca(C) {
+var LS = C.listas;
+var vals = function (id) { return LS[id].ops.map(function (o) { return o.es; }); };
+var conRol = function (id, rol) { return LS[id].ops.filter(function (o) { return o.rol === rol; }).map(function (o) { return o.es; }); };
+var rol1 = function (id, rol) { return conRol(id, rol)[0] || null; };
+var rolDe = function (id, v) { var o = LS[id].ops.filter(function (x) { return x.es === v; })[0]; return o ? o.rol : undefined; };
+var grupo = function (id, g) { return LS[id].ops.filter(function (o) { return o.grupo === g; }).map(function (o) { return o.es; }); };
+var marca = function (id, m) { return LS[id].ops.filter(function (o) { return o.marcas && o.marcas[m]; }).map(function (o) { return o.es; }); };
+
 // Privacy-policy URL. The generator hardcoded '/politica-de-privacidad/' here —
 // and hardcoded the label in SPANISH too, so the English AV configurator showed
 // a Spanish consent line while the interior one translated it properly. Both
@@ -38,44 +52,49 @@ var PRIV_URL = window.BORSOGA_PRIVACY ||
     : '/plans/privacy-policy/');
 
 // ---------------------------------------------------------------- constantes
-var KEY = 'borsoga.cuestionario.av.v1';
+var KEY = C.clave;
 var SUBMIT_KEY = 'borsoga.cuestionario.envios';
 var MAX_SUBMITS = 2;
 var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 var UNSURE_RE = /^(no s[eé]|no lo s[eé]|no lo s[eé] todav[ií]a|todav[ií]a no lo s[eé]|todav[ií]a no|todav[ií]a nada)$/i;
+var DUDAS = {};
+Object.keys(LS).forEach(function (id) { LS[id].ops.forEach(function (o) { if (o.duda) DUDAS[o.es] = 1; }); });
 
-var TYPES = ['Residencial multifamiliar','Residencial unifamiliar','Comercial','Hospitalidad','Uso mixto','Producto o mobiliario'];
-var STAGES = ['Concepto','Diseño desarrollado','En permisos','En construcción','Ya construido'];
-var ROLES = ['Developer','Arquitecto o diseñador','Fabricante','Corredor o agencia','Otro'];
-var SCENES = ['Fachada','Vista aérea','Exterior a nivel','Interior','Detalle o producto'];
-var CONTEXT = ['Sí, el entorno real','Solo el edificio, sin contexto','No lo sé todavía'];
-var INTERIOR = ['Sí, tengo el diseño definido','Parcialmente','No, habría que resolverlo'];
-var INTERIOR_OPEN = ['Parcialmente','No, habría que resolverlo'];
-var PIECE = ['Existe y tengo el modelo','Existe pero solo tengo planos o fotos','Es un diseño nuevo'];
-var ROOMS_RES = ['Lobby o acceso','Cocina','Sala','Comedor','Dormitorio','Baño','Home office','Clóset o vestidor','Amenidad','Circulación o común'];
-var ROOMS_COM = ['Recepción o lobby','Área de trabajo','Sala de juntas','Piso de venta','Restaurante o comedor','Barra','Baños','Circulación'];
-var ROOMS_HOSP = ['Lobby','Habitación tipo','Suite','Restaurante','Bar','Spa o gimnasio','Salón de eventos','Piscina o deck'];
-var AMENITIES = ['Gimnasio','Piscina o deck','Coworking','Salón social','Spa','Otra'];
-var AMENITY_ROOM = 'Amenidad';
-var TYPE_PRODUCT = 'Producto o mobiliario';
-var TYPE_MIXED = 'Uso mixto';
-var TYPE_COM = 'Comercial';
-var TYPE_HOSP = 'Hospitalidad';
-var MATERIALS = ['Modelo 3D listo','Planos en CAD','Planos en PDF','Solo bocetos o croquis','Todavía nada'];
-var MAT_NONE = 'Todavía nada';
-var SPEC = ['Sí, tengo la especificación','Tengo una idea general','Todavía no'];
-var USES = ['Preventa y ventas','Presentación a inversionistas o banca','Concurso o licitación','Aprobación de diseño interno','Redes sociales y marketing','Catálogo de producto','Presentación oficial o permisos'];
-var TONES = [['Neutro','avq_slot_t1'],['Atmosférico','avq_slot_t2'],['Editorial','avq_slot_t3']];
-var EXTRAS = [['Borsoga Immersive','av_x1_d'],['Tour 360','av_x2_d'],['Vistas adicionales','av_x3_d'],['Escenas adicionales','av_x4_d']];
-var CROSS = ['Identidad o nombre del desarrollo','Un sitio de preventa','Material para corredores','No, por ahora no'];
-var CROSS_NONE = 'No, por ahora no';
-var LAUNCH = ['No, sin fecha fija','Sí, pero es flexible','Sí, y es fija'];
-var LAUNCH_FIXED = 'Sí, y es fija';
-var PORTFOLIO = ['Sí, sin problema','Sí, pero solo después de su lanzamiento','No, está bajo confidencialidad'];
+var TYPES = vals('projectType');
+var STAGES = vals('stage');
+var ROLES = vals('role');
+var SCENES = vals('scenes');
+var SCENE_INTERIOR = rol1('scenes', 'interior');
+var SCENES_CONTEXT = marca('scenes', 'contexto');
+var SCENES_PIECE = marca('scenes', 'pieza');
+var CONTEXT = vals('context');
+var INTERIOR = vals('interiorDesign');
+var INTERIOR_OPEN = marca('interiorDesign', 'abierto');
+var PIECE = vals('piece');
+var ROOMS_RES = grupo('rooms', 'residencial');
+var ROOMS_COM = grupo('rooms', 'comercial');
+var ROOMS_HOSP = grupo('rooms', 'hospitalidad');
+var AMENITIES = vals('amenities');
+var AMENITY_ROOM = rol1('rooms', 'amenidad');
+var TYPE_COM = rol1('projectType', 'comercial');
+var TYPE_HOSP = rol1('projectType', 'hospitalidad');
+var MATERIALS = vals('material');
+var MAT_NONE = rol1('material', 'ninguno');
+var SPEC = vals('spec');
+var USES = vals('uses');
+var TONES = LS.tone.ops;
+var EXTRAS = LS.extras.ops;
+var CROSS = vals('cross');
+var CROSS_NONE = rol1('cross', 'ninguno');
+var LAUNCH = vals('launch');
+var LAUNCH_FIXED = rol1('launch', 'fija');
+var COMPANY = rol1('signer', 'empresa');
+var PORTFOLIO = vals('portfolio');
 var PLANS = ['Essential','Premium','Borsoga Edition'];
-var VIEWS = { 'Essential': 2, 'Premium': 4, 'Borsoga Edition': 4 };
-var NO_PLAN_VIEWS = 2;
-var MAX_VIEWS = 12;
+var AJ = C.ajustes || {};
+var VIEWS = AJ.vistas || {};
+var NO_PLAN_VIEWS = AJ.vistasSinPlan || 2;
+var MAX_VIEWS = AJ.vistasMax || 12;
 var STEPS = [['Paso 01 de 06','Tu proyecto'],['Paso 02 de 06','avq_step2'],['Paso 03 de 06','avq_step3'],
              ['Paso 04 de 06','avq_step4'],['Paso 05 de 06','Extras'],['Paso 06 de 06','avq_step6']];
 var DISPOSABLE = ['mailinator.com','tempmail.com','guerrillamail.com','10minutemail.com','yopmail.com','trashmail.com'];
@@ -90,7 +109,23 @@ var DOMAIN_TYPOS = {'gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.co':'g
 // La rama `opt` está indexada por la cadena española: el valor que viaja al
 // servidor sigue siendo el español canónico y sólo cambia lo que se lee.
 var LANG = window.BORSOGA_LANG || 'es';
+// Lo editado en el panel manda: primero las opciones y los textos de la
+// configuración (por la cadena española o por la clave), después el diccionario.
+var TX = C.textos || {}, OPS = {};
+var registra = function (p) { if (p && p.es && !(p.es in OPS)) OPS[p.es] = p; };
+Object.keys(LS).sort().forEach(function (id) { LS[id].ops.forEach(function (o) { registra(o); }); });
+var par = function (x) { return x[LANG] || x.es; };
+// La etiqueta de una opción, con la traducción de SU lista (dos listas pueden
+// tener el mismo texto en español y traducirlo distinto).
+var CAMPO_LISTA = {  };
+var OPS_LISTA = {};
+Object.keys(LS).forEach(function (id) { OPS_LISTA[id] = {}; LS[id].ops.forEach(function (o) { OPS_LISTA[id][o.es] = o; }); });
+function lblF(field, v) {
+  var m = OPS_LISTA[CAMPO_LISTA[field] || field], o = m && m[v];
+  return o ? esc(par(o)) : lbl(v);
+}
 function t(key, fallback) {
+  if (TX[key]) return par(TX[key]);
   var d = (window.BORSOGA_I18N || {})[LANG] || {};
   var v = (d.ui && d.ui[key]) || (d.msg && d.msg[key]) || (d.opt && d.opt[key]);
   return v || fallback || key;
@@ -105,7 +140,10 @@ var isDisposable = function (e) { return DISPOSABLE.indexOf(emailDomain(e)) > -1
 var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
   return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); };
 function TR(s) {
-  if (LANG === 'es' || !s) return s;
+  if (!s) return s;
+  var x = OPS[s] || TX[s];
+  if (x) return par(x);
+  if (LANG === 'es') return s;
   var d = (window.BORSOGA_I18N || {})[LANG] || {};
   return (d.opt && d.opt[s]) || s;
 }
@@ -122,7 +160,7 @@ function blank() {
     context:'', interiorDesign:'', piece:'',
     material:'', link:'', spec:'', refs:'',
     uses:[], tone:'', extras:[], cross:[],
-    name:'', company:'', phone:'', signer:'A título personal',
+    name:'', company:'', phone:'', signer: rol1('signer', 'personal') || '',
     entName:'', entState:'', entSigner:'', entRole:'',
     city:'', country:'', launch:'', launchDate:'',
     portfolio:'', privacy:false, bot:''
@@ -140,12 +178,13 @@ var PICKED = (function () {
 // ---------------------------------------------------------------- ramas
 function branchOf(a) {
   var has = function (v) { return a.scenes.indexOf(v) > -1; };
+  var alguna = function (xs) { return xs.some(has); };
   return {
-    asksContext: has('Fachada') || has('Vista aérea'),
-    asksRooms: has('Interior'),
-    asksAmenities: has('Interior') && (a.rooms || []).indexOf(AMENITY_ROOM) > -1,
-    asksInterior: has('Interior') && (a.rooms || []).length > 0,
-    asksPiece: has('Detalle o producto'),
+    asksContext: alguna(SCENES_CONTEXT),
+    asksRooms: has(SCENE_INTERIOR),
+    asksAmenities: has(SCENE_INTERIOR) && (a.rooms || []).indexOf(AMENITY_ROOM) > -1,
+    asksInterior: has(SCENE_INTERIOR) && (a.rooms || []).length > 0,
+    asksPiece: alguna(SCENES_PIECE),
     hasMaterial: !!a.material && a.material !== MAT_NONE
   };
 }
@@ -181,7 +220,7 @@ function prune(input) {
   if (!b.asksPiece) a.piece = '';
   if (!b.hasMaterial) { FILES = []; a.link = ''; }
   if (a.launch !== LAUNCH_FIXED) a.launchDate = '';
-  if (a.signer !== 'Como empresa') { a.entName = a.entState = a.entSigner = a.entRole = ''; }
+  if (a.signer !== COMPANY) { a.entName = a.entState = a.entSigner = a.entRole = ''; }
   // Vistas huérfanas: si la unidad ya no existe, su contador tampoco.
   var claves = unitsOf(a).map(function (u) { return u.key; });
   var vc = {};
@@ -199,7 +238,7 @@ function prune(input) {
 function unitsOf(a) {
   var out = [];
   a.scenes.forEach(function (s) {
-    if (s !== 'Interior') {
+    if (s !== SCENE_INTERIOR) {
       out.push({ key: 'e:' + s, label: s, scenes: (a.counts || {})[s] || 1 });
       return;
     }
@@ -237,30 +276,34 @@ function unsureCount() {
     if (typeof v === 'string') vals.push(v);
     else if (Array.isArray(v)) v.forEach(function (x) { if (typeof x === 'string') vals.push(x); });
   });
-  return vals.filter(function (v) { return UNSURE_RE.test(v.trim()); }).length;
+  return vals.filter(function (v) { return UNSURE_RE.test(v.trim()) || DUDAS[v]; }).length;
 }
 function daysUntil(d) {
   if (!d) return null;
   var ms = new Date(d + 'T00:00:00').getTime() - Date.now();
   return isNaN(ms) ? null : Math.round(ms / 86400000);
 }
-function recommendPlan() {
-  var a = S.a;
-  if (a.tone === 'Editorial' || a.extras.length >= 2 || sceneTotal() > 6) return 'Borsoga Edition';
-  if (a.tone === 'Atmosférico' || a.uses.indexOf('Preventa y ventas') > -1 ||
-      a.uses.indexOf('Redes sociales y marketing') > -1) return 'Premium';
-  return 'Essential';
+// Lo que las reglas del panel pueden mirar. El servidor calcula lo mismo
+// (borsoga-funnel/api/_configurador.ts).
+var REGLAS = window.BORSOGA_REGLAS;
+function senalesBase() {
+  var a = S.a, days = daysUntil(a.launchDate);
+  return {
+    plan_elegido: PICKED,
+    sin_material: !!a.material && a.material === MAT_NONE,
+    escenas: sceneTotal(),
+    extras: a.extras.length,
+    dias_lanzamiento: a.launch === LAUNCH_FIXED ? days : null,
+    sin_definir: unsureCount()
+  };
 }
-function route() {
-  var a = S.a, plan = PICKED || recommendPlan(), days = daysUntil(a.launchDate);
-  if (plan === 'Borsoga Edition') return ['call',TR('Vamos a hablar'), t('route_edition','Borsoga Edition se cotiza en una llamada. Tenemos todo lo que nos contaste, así que la conversación empieza donde la dejaste.')];
-  if (a.material === MAT_NONE) return ['call',TR('Vamos a hablar'), t('avq_route_nomat')];
-  if (sceneTotal() > 6) return ['call',TR('Vamos a hablar'), fill(t('avq_route_scenes'), { n: sceneTotal() })];
-  if (a.launch === LAUNCH_FIXED && days !== null && days < 28) return ['call',TR('Vamos a hablar'), t('avq_route_rush')];
-  if (a.projectType === TYPE_MIXED) return ['call',TR('Vamos a hablar'), t('avq_route_mixed')];
-  if (unsureCount() >= 4) return ['range',TR('Te enviamos un rango'), t('route_unsure','Quedaron varias cosas por definir, así que en vez de un número te mandamos un rango y lo cerramos contigo en una llamada.')];
-  return ['mail',TR('Recibimos tu proyecto'), t('avq_mail_body')];
+function recommendPlan() { return REGLAS.plan(C.reglas, senalesBase(), S.a); }
+function senales() {
+  var sen = senalesBase();
+  sen.plan = PICKED || REGLAS.plan(C.reglas, sen, S.a);
+  return sen;
 }
+function route() { return REGLAS.ruta(C.reglas, senales(), S.a, LANG); }
 
 // ---------------------------------------------------------------- validación
 function missing() {
@@ -295,7 +338,7 @@ function missing() {
       need(!a.name, 'name');
       need(!EMAIL_RE.test(a.email || ''), 'email');
       need(!a.phone, 'phone');
-      if (a.signer === 'Como empresa') {
+      if (a.signer === COMPANY) {
         need(!a.entName, 'entName'); need(!a.entState, 'entState');
         need(!a.entSigner, 'entSigner'); need(!a.entRole, 'entRole');
       }
@@ -341,13 +384,13 @@ function group(title, hint, body, fields) {
 function chips(field, values) {
   return '<div class="q-opts">' + values.map(function (v) {
     return '<button type="button" class="q-chip" data-set="' + esc(field) + '" data-val="' + esc(v) +
-      '" aria-pressed="' + (S.a[field] === v) + '">' + lbl(v) + '</button>';
+      '" aria-pressed="' + (S.a[field] === v) + '">' + lblF(field, v) + '</button>';
   }).join('') + '</div>';
 }
 function cards(field, values) {
   return '<div class="q-grid">' + values.map(function (v) {
     return '<button type="button" class="q-card" data-set="' + esc(field) + '" data-val="' + esc(v) +
-      '" aria-pressed="' + (S.a[field] === v) + '"><span class="q-radio"></span><span>' + lbl(v) + '</span></button>';
+      '" aria-pressed="' + (S.a[field] === v) + '"><span class="q-radio"></span><span>' + lblF(field, v) + '</span></button>';
   }).join('') + '</div>';
 }
 function checks(field, values, exclusivos, notas) {
@@ -358,7 +401,7 @@ function checks(field, values, exclusivos, notas) {
     return '<button type="button" class="q-card" data-check="' + esc(field) + '" data-val="' + esc(v) +
       '" data-excl="' + ((exclusivos || []).indexOf(v) > -1) + '" aria-pressed="' + on +
       '" style="align-items:flex-start"><span class="q-box"' + (nota ? ' style="margin-top:3px"' : '') + '></span>' +
-      '<span><span style="display:block">' + lbl(v) + '</span>' +
+      '<span><span style="display:block">' + lblF(field, v) + '</span>' +
       (nota ? '<span style="display:block;font-size:14px;line-height:1.5;opacity:.72;margin-top:4px">' + lbl(nota) + '</span>' : '') +
       '</span></button>';
   }).join('') + '</div>';
@@ -370,7 +413,7 @@ function counted(field, countField, values) {
     var on = cur.indexOf(v) > -1, n = counts[v] || 1;
     return '<div class="q-space" data-count-toggle="' + esc(field) + '|' + esc(countField) + '" data-val="' + esc(v) +
       '" aria-pressed="' + on + '">' +
-      '<span style="display:flex;align-items:center;gap:12px"><span class="q-radio"></span><span>' + lbl(v) + '</span></span>' +
+      '<span style="display:flex;align-items:center;gap:12px"><span class="q-radio"></span><span>' + lblF(field, v) + '</span></span>' +
       (on ? '<span style="display:flex;align-items:center;gap:10px" data-stop="1">' +
         '<button type="button" class="q-step" data-n="' + esc(countField) + '|' + esc(v) + '" data-d="-1"' + (n <= 1 ? ' disabled' : '') + '>−</button>' +
         '<span style="font-size:15px;min-width:14px;text-align:center">' + n + '</span>' +
@@ -444,8 +487,8 @@ function step3() {
   if (a.material === MAT_NONE) {
     h += '<div class="q-note warn">' + esc(t('avq_s3_none')) + '</div>';
   } else if (b.hasMaterial) {
-    var titulo = a.material === 'Modelo 3D listo' ? t('avq_s3_model_t', 'Súbenos el modelo o pega el enlace de descarga')
-      : a.material === 'Solo bocetos o croquis' ? t('avq_s3_sketch_t', 'Súbenos lo que tengas')
+    var titulo = rolDe('material', a.material) === 'modelo' ? t('avq_s3_model_t', 'Súbenos el modelo o pega el enlace de descarga')
+      : rolDe('material', a.material) === 'bocetos' ? t('avq_s3_sketch_t', 'Súbenos lo que tengas')
       : t('avq_s3_cad_t', 'Súbenos plantas, alzados y secciones');
     h += group(titulo, 'Los modelos 3D suelen ser grandes: si no cabe, pega un enlace de descarga.',
       '<label class="q-drop' + (FILES.length ? ' has' : '') + '">' +
@@ -472,9 +515,9 @@ function step4() {
     checks('uses', USES), 'uses');
   h += group(t('avq_s4_tone'), t('avq_s4_tone_h', 'Tres proyectos nuestros. Señala el que se parece a lo que buscas.'),
     '<div class="q-grid">' + TONES.map(function (o) {
-      return '<button type="button" class="q-lvl" data-set="tone" data-val="' + esc(o[0]) + '" aria-pressed="' + (a.tone === o[0]) + '">' +
-        '<span class="q-slot">' + esc(t(o[1], 'Proyecto real · ' + o[0].toLowerCase())) + '</span>' +
-        '<span style="padding:16px 18px"><span style="display:block;font-size:19px;font-weight:600">' + lbl(o[0]) + '</span></span></button>';
+      return '<button type="button" class="q-lvl" data-set="tone" data-val="' + esc(o.es) + '" aria-pressed="' + (a.tone === o.es) + '">' +
+        '<span class="q-slot">' + esc(o.slot ? par(o.slot) : '') + '</span>' +
+        '<span style="padding:16px 18px"><span style="display:block;font-size:19px;font-weight:600">' + lbl(o.es) + '</span></span></button>';
     }).join('') + '</div>', 'tone');
   return h;
 }
@@ -482,8 +525,8 @@ function step4() {
 function step5() {
   var a = S.a, h = '';
   h += group('Extras', 'Se cotizan aparte. Lo que no marques aquí queda fuera del proyecto.',
-    checks('extras', EXTRAS.map(function (e) { return e[0]; }), [],
-      EXTRAS.reduce(function (o, e) { o[e[0]] = t(e[1], ''); return o; }, {})));
+    checks('extras', EXTRAS.map(function (e) { return e.es; }), [],
+      EXTRAS.reduce(function (o, e) { o[e.es] = e.desc ? par(e.desc) : ''; return o; }, {})));
   h += group(t('avq_s5_cross', '¿Vas a necesitar algo más alrededor del proyecto?'), '',
     checks('cross', CROSS, [CROSS_NONE]));
   return h;
@@ -494,8 +537,8 @@ function step6() {
   h += group('Tus datos', '', '<div class="q-fields">' + field('name', 'Nombre completo') +
     field('email', 'Correo', 'email') + field('phone', 'Teléfono', 'tel') +
     field('company', t('avq_s6_company', 'Empresa')) + '</div>', ['name', 'email', 'phone']);
-  h += group('¿Firmas a título personal o como empresa?', '', chips('signer', ['A título personal', 'Como empresa']) +
-    (a.signer === 'Como empresa' ? '<div class="q-fields" style="margin-top:12px">' + field('entName', 'Nombre legal de la empresa') +
+  h += group('¿Firmas a título personal o como empresa?', '', chips('signer', vals('signer')) +
+    (a.signer === COMPANY ? '<div class="q-fields" style="margin-top:12px">' + field('entName', 'Nombre legal de la empresa') +
       field('entState', 'Estado o país de registro') + field('entSigner', 'Quién firma') + field('entRole', 'Su cargo') + '</div>' : ''),
     ['entName', 'entState', 'entSigner', 'entRole']);
   h += group(t('avq_s6_loc', 'Ubicación del proyecto'), t('avq_s6_loc_h', 'Ciudad y país. Nos sirve para husos horarios y contexto, no para cobertura.'),
@@ -728,6 +771,8 @@ function loadUploader() {
 }
 function submit() {
   var a = S.a;
+  // Vista previa del panel: se llega a la pantalla final sin enviar nada.
+  if (C.vistaPrevia) { S.result = null; S.done = true; return render(); }
   if (a.bot) { S.notice = TR('No pudimos enviar tu proyecto desde este correo. Escríbenos y lo resolvemos contigo.'); return render(); }
   if (isDisposable(a.email)) { S.notice = TR('Necesitamos un correo donde podamos enviarte la propuesta.'); return render(); }
   var sent = {};
@@ -764,6 +809,7 @@ function submit() {
         method: 'POST', headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           service: 'av',
+          version: C.version || null,
           answers: a,
           derived: {
             sceneTotal: sceneTotal(), imageTotal: imageTotal(), sceneSummary: sceneSummary(),
@@ -803,4 +849,7 @@ try {
   }
 } catch (e) {}
 render();
+}
+
+window.BORSOGA_QUIZ = arranca;
 })();
