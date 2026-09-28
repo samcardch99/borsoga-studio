@@ -124,6 +124,83 @@ function lblF(field, v) {
   var m = OPS_LISTA[CAMPO_LISTA[field] || field], o = m && m[v];
   return o ? esc(par(o)) : lbl(v);
 }
+
+// ---------------------------------------------------------------- preguntas del panel
+// OCULTAS: preguntas fijas que el panel apaga. No se pintan, no se exigen y su
+// respuesta se borra. EXTRA: preguntas nuevas del panel, al principio o al
+// final de su paso, con las mismas piezas que las fijas. El servidor aplica lo
+// mismo (borsoga-funnel/api/_configurador.ts).
+var OCULTAS = {};
+(C.ocultas || []).forEach(function (f) { OCULTAS[f] = 1; });
+var oculta = function (f) { return !!OCULTAS[f]; };
+var EXTRA = C.extra || [];
+EXTRA.forEach(function (q) {
+  OPS_LISTA[q.f] = {};
+  (q.ops || []).forEach(function (o) { OPS_LISTA[q.f][o.es] = o; registra(o); });
+});
+function llenoX(v) {
+  if (Array.isArray(v)) return v.length > 0;
+  return !!String(v == null ? '' : v).trim();
+}
+function cumpleSi(conds, a) {
+  return (conds || []).every(function (c) {
+    var v = a[c.f];
+    switch (c.op) {
+      case 'filled': return llenoX(v);
+      case 'eq': return v === c.v;
+      case 'ne': return v !== c.v;
+      case 'in': return (c.v || []).indexOf(v) > -1;
+      case 'has': return Array.isArray(v) && (c.v || []).some(function (x) { return v.indexOf(x) > -1; });
+      default: return false;
+    }
+  });
+}
+var extraVisible = function (q, a) { return !q.si || cumpleSi(q.si, a); };
+var vacioExtra = function (q) { return q.tipo === 'checks' ? [] : ''; };
+function extrasVacios() {
+  var o = {};
+  EXTRA.forEach(function (q) { o[q.f] = vacioExtra(q); });
+  return o;
+}
+function extrasDe(paso, pos) {
+  var a = S.a;
+  return EXTRA.filter(function (q) { return q.paso === paso && (q.pos || 'final') === pos && extraVisible(q, a); }).map(function (q) {
+    var ops = (q.ops || []).map(function (o) { return o.es; });
+    var cuerpo = q.tipo === 'chips' ? chips(q.f, ops)
+      : q.tipo === 'cards' ? cards(q.f, ops)
+      : q.tipo === 'checks' ? checks(q.f, ops, q.solo ? [q.solo] : [])
+      : q.tipo === 'area' ? '<textarea class="q-in" rows="3" data-field="' + esc(q.f) + '" style="min-height:120px;border-radius:18px;padding-top:14px;resize:vertical">' + esc(a[q.f]) + '</textarea>'
+      : '<div style="max-width:' + (q.tipo === 'fecha' ? 260 : 520) + 'px">' + field(q.f, q.ph ? par(q.ph) : '', q.tipo === 'fecha' ? 'date' : 'text') + '</div>';
+    return group(par(q.q), q.h ? esc(par(q.h)) : '', cuerpo, q.f);
+  }).join('');
+}
+function faltanExtras(paso) {
+  var a = S.a;
+  return EXTRA.filter(function (q) { return q.paso === paso && q.req && extraVisible(q, a) && !llenoX(a[q.f]); })
+    .map(function (q) { return q.f; });
+}
+// Borra lo oculto y lo que ya no se ve. Varias vueltas: una pregunta que se
+// oculta puede ocultar a otra que dependía de ella.
+function podaPanel(a, vacio) {
+  Object.keys(OCULTAS).forEach(function (f) { if (f in vacio) a[f] = vacio[f]; });
+  for (var i = 0; i <= EXTRA.length; i++) {
+    var cambio = false;
+    EXTRA.forEach(function (q) {
+      if (!extraVisible(q, a) && JSON.stringify(a[q.f]) !== JSON.stringify(vacioExtra(q))) { a[q.f] = vacioExtra(q); cambio = true; }
+    });
+    if (!cambio) break;
+  }
+  return a;
+}
+function resumenExtras(r) {
+  var a = S.a;
+  EXTRA.forEach(function (q) {
+    var v = a[q.f];
+    if (!extraVisible(q, a) || !llenoX(v)) return;
+    var tr = function (x) { var o = OPS_LISTA[q.f][x]; return o ? par(o) : x; };
+    r.push([par(q.resumen || q.q), Array.isArray(v) ? v.map(tr).join(', ') : tr(String(v))]);
+  });
+}
 function t(key, fallback) {
   if (TX[key]) return par(TX[key]);
   var d = (window.BORSOGA_I18N || {})[LANG] || {};
@@ -151,7 +228,7 @@ var lbl = function (s) { return esc(TR(s)); };   // sólo para texto que se ve
 
 // ---------------------------------------------------------------- estado
 function blank() {
-  return {
+  return Object.assign(extrasVacios(), {
     projectType:'', stage:'', role:'', email:'',
     scenes:[], counts:{},                 // escena → cuántas de ese tipo
     rooms:[], roomCounts:{},              // espacios interiores → cuántos
@@ -164,7 +241,7 @@ function blank() {
     entName:'', entState:'', entSigner:'', entRole:'',
     city:'', country:'', launch:'', launchDate:'',
     portfolio:'', privacy:false, bot:''
-  };
+  });
 }
 var S = { step:1, done:false, a:blank(), touched:false, sending:false, notice:'', result:null, showErrors:false };
 var FILES = [];
@@ -226,7 +303,7 @@ function prune(input) {
   var vc = {};
   Object.keys(a.viewCounts || {}).forEach(function (k) { if (claves.indexOf(k) > -1) vc[k] = a.viewCounts[k]; });
   a.viewCounts = vc;
-  return a;
+  return podaPanel(a, blank());
 }
 
 // ---------------------------------------------------------------- unidades
@@ -349,7 +426,7 @@ function missing() {
       need(!a.privacy, 'privacy');
       break;
   }
-  return m;
+  return m.filter(function (f) { return !oculta(f); }).concat(faltanExtras(S.step));
 }
 function canContinue() { return missing().length === 0; }
 
@@ -374,6 +451,7 @@ function toggleIn(field, value, exclusivos) {
 // ---------------------------------------------------------------- helpers UI
 function group(title, hint, body, fields) {
   var f = fields ? (Array.isArray(fields) ? fields : [fields]) : [];
+  if (f.length && oculta(f[0])) return '';
   var falta = S.showErrors && f.some(function (x) { return MISSING.indexOf(x) > -1; });
   return '<div class="q-group' + (falta ? ' q-invalid' : '') + '"' +
     (f.length ? ' data-fields="' + f.join(',') + '"' : '') + '>' +
@@ -524,10 +602,10 @@ function step4() {
 
 function step5() {
   var a = S.a, h = '';
-  h += group('Extras', 'Se cotizan aparte. Lo que no marques aquí queda fuera del proyecto.',
+  if (!oculta('extras')) h += group('Extras', 'Se cotizan aparte. Lo que no marques aquí queda fuera del proyecto.',
     checks('extras', EXTRAS.map(function (e) { return e.es; }), [],
       EXTRAS.reduce(function (o, e) { o[e.es] = e.desc ? par(e.desc) : ''; return o; }, {})));
-  h += group(t('avq_s5_cross', '¿Vas a necesitar algo más alrededor del proyecto?'), '',
+  if (!oculta('cross')) h += group(t('avq_s5_cross', '¿Vas a necesitar algo más alrededor del proyecto?'), '',
     checks('cross', CROSS, [CROSS_NONE]));
   return h;
 }
@@ -537,7 +615,7 @@ function step6() {
   h += group('Tus datos', '', '<div class="q-fields">' + field('name', 'Nombre completo') +
     field('email', 'Correo', 'email') + field('phone', 'Teléfono', 'tel') +
     field('company', t('avq_s6_company', 'Empresa')) + '</div>', ['name', 'email', 'phone']);
-  h += group('¿Firmas a título personal o como empresa?', '', chips('signer', vals('signer')) +
+  if (!oculta('signer')) h += group('¿Firmas a título personal o como empresa?', '', chips('signer', vals('signer')) +
     (a.signer === COMPANY ? '<div class="q-fields" style="margin-top:12px">' + field('entName', 'Nombre legal de la empresa') +
       field('entState', 'Estado o país de registro') + field('entSigner', 'Quién firma') + field('entRole', 'Su cargo') + '</div>' : ''),
     ['entName', 'entState', 'entSigner', 'entRole']);
@@ -549,6 +627,7 @@ function step6() {
         ? '<p class="q-err">' + lbl('Menos de cuatro semanas: lo confirmamos en una llamada.') + '</p>' : '') + '</div>' : ''),
     ['launch', 'launchDate']);
   h += group(t('avq_s6_portfolio'), '', chips('portfolio', PORTFOLIO), 'portfolio');
+  h += extrasDe(6, 'final');
   h += '<div class="q-group' + (S.showErrors && MISSING.indexOf('privacy') > -1 ? ' q-invalid' : '') + '" data-fields="privacy">' +
     '<button type="button" class="q-card" data-privacy="1" aria-pressed="' + a.privacy + '">' +
     '<span class="q-box"></span><span>' + fill(t('qi_privacy_accept'), { link: '<a href="' + PRIV_URL + '" target="_blank" style="border-bottom:1px solid">' + esc(t('qi_privacy_link')) + '</a>' }) + '</span></button>' +
@@ -582,12 +661,13 @@ function summary() {
   add('Especificación', TR(a.spec));
   add(t('avq_sum_use', 'Uso de las imágenes'), L(a.uses, ', '));
   add('Tono', TR(a.tone));
-  add('Extras', a.extras.length ? L(a.extras, ', ') : TR('Ninguno'));
+  if (!oculta('extras')) add('Extras', a.extras.length ? L(a.extras, ', ') : TR('Ninguno'));
   add('Alrededor del proyecto', L(a.cross.filter(function (v) { return v !== CROSS_NONE; }), ', '));
   add(t('avq_sum_location', 'Ubicación'), [a.city, a.country].filter(Boolean).join(', '));
   add('Lanzamiento', a.launch === LAUNCH_FIXED ? a.launchDate : TR(a.launch));
   add('Portafolio', TR(a.portfolio));
   if (unsureCount() >= 4) add('Marcado', TR('Varias respuestas sin definir. Va a rango y a llamada.'));
+  resumenExtras(r);
   return r;
 }
 
@@ -657,7 +737,7 @@ function render() {
   main.innerHTML = '<div style="margin-bottom:clamp(28px,4vw,44px)">' +
     '<p style="font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(0,0,0,.45);margin:0 0 12px">' + lbl(STEPS[S.step-1][0]) + '</p>' +
     '<h1 style="margin:0;font-size:clamp(28px,4.4vw,44px);font-weight:600;letter-spacing:-.03em;line-height:1.05">' +
-    esc(t(STEPS[S.step-1][1], STEPS[S.step-1][1])) + '</h1></div>' + fn();
+    esc(t(STEPS[S.step-1][1], STEPS[S.step-1][1])) + '</h1></div>' + extrasDe(S.step, 'inicio') + fn() + (S.step === 6 ? '' : extrasDe(S.step, 'final'));
 
   document.getElementById('q-back').disabled = S.step === 1;
   document.getElementById('q-count').textContent = fill(t('step_counter'), { n: S.step });
