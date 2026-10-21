@@ -77,7 +77,7 @@ Borsoga Studio is a Miami-based architectural visualization and CGI studio. It p
 Architectural visualization is the process of turning architectural plans, sketches and 3D models into accurate, photorealistic images, animations and immersive tours. It lets developers, architects and buyers see and evaluate a space before it is built. Borsoga Studio focuses on natural light, true human scale and honest material representation to convey the real feeling of a space.
 
 ### Where is Borsoga Studio located?
-Borsoga Studio is based in Miami, Florida, USA, and works with clients globally. It can be reached at info@borsogastudio.com or +1 786-852-4847.
+Borsoga Studio is based in Miami, Florida, USA, and works with clients globally. It can be reached at info@borsogastudio.com, by phone at +1 786-852-4847 or on WhatsApp at +1 786-778-3409.
 
 ### Who does Borsoga Studio work with?
 Borsoga Studio works with three main client types: real estate developers and investors who need to sell pre-construction before it is built; architects and general contractors who need drawings translated into images every stakeholder understands; and custom millwork and carpentry specialists who need brand identity and renders that justify a premium quote.
@@ -91,7 +91,8 @@ Borsoga Studio's architectural visualization work is built primarily with V-Ray 
 ## Contact
 
 - Email: info@borsogastudio.com
-- Phone / WhatsApp: +1 786-852-4847
+- Phone: +1 786-852-4847
+- WhatsApp: +1 786-778-3409
 - Location: Miami, FL — working globally
 - Instagram: https://instagram.com/borsogastudio
 - LinkedIn: https://linkedin.com/company/borsogastudio

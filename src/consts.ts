@@ -23,12 +23,14 @@ export const SITE_TAGLINE = "Digital spaces for the unbuilt imagination.";
  *  1200×630 OG image is recommended long-term; this is a strong stand-in. */
 export const DEFAULT_OG_IMAGE = "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg";
 
-// Telephone and WhatsApp match the Google Business Profile (primary line
-// 786-778-3409). foundingYear matches the profile's opening date (2024-02-28).
+// Calls go to the cell line 786-852-4847 (the Google Business Profile's phone);
+// WhatsApp and everything else use 786-778-3409. foundingYear matches the
+// profile's opening date (2024-02-28).
 export const CONTACT = {
   email: "info@borsogastudio.com",
-  telephone: "+1-786-778-3409",
+  telephone: "+1-786-852-4847",
   whatsapp: "https://wa.me/17867783409",
+  whatsappDisplay: "+1-786-778-3409",
   city: "Miami",
   region: "FL",
   country: "US",
