@@ -1,0 +1,467 @@
+---
+// Press kit — bios (EN + ES), logo files, selected images, contact and a
+// ready-made credit line. English page; the Spanish bios are plain text blocks
+// for editors who publish in Spanish.
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import RightUpArrow from "../assets/icons/right_up.svg";
+import { BOOKING_URL, CONTACT, SITE_URL } from "../consts";
+import { responsiveImage } from "../data/thumbs";
+import "../styles/service-page.css";
+
+const bios = [
+  {
+    lang: "en",
+    label: "English",
+    short:
+      "Borsoga Studio is a Miami studio for real estate and construction. It works across four services: interior design, architectural visualization, branding, and web and app design. One team designs the space, renders it, names it and builds the platform that sells it, in English and Spanish.",
+    long: [
+      "Borsoga Studio is a Miami design studio focused on real estate and construction. Its four services follow the life of a project: the space is designed, then shown, then named, then sold.",
+      "Interior design covers kitchens, bathrooms, full homes and commercial interiors, from layout and millwork to materials and lighting, approved in photoreal 3D before construction. Architectural visualization turns drawings into exterior and interior renderings, animation and 360° tours for developers, architects, builders and homeowners. Branding creates identities, social media content and sales materials for developments and construction companies, and the web and app team designs and builds the sites and apps where projects are presented and sold.",
+      "The studio works without handoffs between vendors: the same team carries a project from the first layout to the final image. Interior design is offered in Miami-Dade and across Florida; visualization, branding and web projects are delivered remotely, anywhere, in English and Spanish. Its tagline: “Digital spaces for the unbuilt imagination.”",
+    ],
+  },
+  {
+    lang: "es",
+    label: "Español",
+    short:
+      "Borsoga Studio es un estudio de Miami para el sector inmobiliario y la construcción. Trabaja en cuatro servicios: diseño de interiores, visualización arquitectónica, branding y diseño web y de apps. Un mismo equipo diseña el espacio, lo visualiza, le da nombre y construye la plataforma que lo vende, en español y en inglés.",
+    long: [
+      "Borsoga Studio es un estudio de diseño con base en Miami enfocado en real estate y construcción. Sus cuatro servicios siguen la vida de un proyecto: el espacio se diseña, luego se muestra, luego se nombra y luego se vende.",
+      "El diseño de interiores abarca cocinas, baños, casas completas e interiores comerciales, desde la distribución y la carpintería hasta los materiales y la iluminación, aprobados en 3D fotorrealista antes de construir. La visualización arquitectónica convierte planos en renders de exteriores e interiores, animaciones y tours 360° para desarrolladores, arquitectos, constructores y propietarios. El área de branding crea identidades, contenido para redes y material de ventas para desarrollos y empresas de construcción, y el equipo web diseña y programa los sitios y las apps donde los proyectos se presentan y se venden.",
+      "El estudio trabaja sin traspasos entre proveedores: el mismo equipo lleva el proyecto desde la primera distribución hasta la imagen final. El diseño de interiores se ofrece en Miami-Dade y en toda Florida; la visualización, el branding y la web se entregan a distancia, para proyectos en cualquier lugar, en español y en inglés. Su lema: «Digital spaces for the unbuilt imagination».",
+    ],
+  },
+];
+
+const logos = [
+  {
+    name: "Symbol",
+    file: "/favicon.svg",
+    download: "borsoga-studio-symbol.svg",
+    format: "SVG · adapts to light and dark",
+    dark: false,
+  },
+  {
+    name: "Wordmark, black",
+    file: "/plans/assets/logo-negro.png",
+    download: "borsoga-studio-logo-black.png",
+    format: "PNG · 1629 × 333 · transparent",
+    dark: false,
+  },
+  {
+    name: "Wordmark, white",
+    file: "/plans/assets/logo-blanco.png",
+    download: "borsoga-studio-logo-white.png",
+    format: "PNG · 1629 × 333 · transparent",
+    dark: true,
+  },
+];
+
+// Ten selected images: the cover of each project, linked to the full file.
+const PRESS_PROJECTS = [
+  "RAL-8001-CURVED-WOOD-KITCHEN",
+  "RAL-8003-WOOD-VEIN-KITCHEN-CLOSET",
+  "RAL-7013-GARDEN-VIEW-KITCHEN-DINING",
+  "RAL-1002-DOUBLE-ISLAND-KITCHEN",
+  "RAL-1011-FIVE-PARK-APARTMENT",
+  "RAL-7022-UMBRA-STONE-KITCHEN",
+  "RAL-1015-POOL-PAVILION",
+  "RAL-9016-WATERFRONT-VILLA",
+  "RAL-7006-COCONUT-GROVE-RESIDENCE",
+  "RAL-9005-REFRAME",
+];
+const all = await getCollection("projects");
+const images = PRESS_PROJECTS.map((id) => {
+  const entry = all.find((p) => p.id.toLowerCase() === id.toLowerCase());
+  if (!entry) throw new Error(`press: unknown project ${id}`);
+  const d = entry.data;
+  const src = d.images[0];
+  const [code, name = d.title] = d.title.split(/\s*\/\/\s*/);
+  return {
+    code,
+    name,
+    full: src,
+    file: src.split("/").pop(),
+    alt: d.imageAlts?.[0] ?? d.title,
+    page: `/works/${entry.id.toLowerCase()}/`,
+    img: responsiveImage(src),
+  };
+});
+
+const creditHtml = `<a href="${SITE_URL}/" rel="noopener">Visualization by Borsoga Studio</a>`;
+const phoneLabel = CONTACT.telephone.replace(/^\+1-/, "+1 ");
+const whatsappLabel = CONTACT.whatsappDisplay.replace(/^\+1-/, "+1 ");
+---
+
+<Layout
+  title="Press Kit"
+  description="Borsoga Studio press kit: short and long studio bios in English and Spanish, logo files, selected project images and how to credit the studio."
+>
+  <main class="sp" id="press">
+    <!-- ── Hero ── -->
+    <header class="sp-hero">
+      <div class="sp-wrap">
+        <div class="sp-hero__top">
+          <nav class="sp-crumbs" aria-label="Breadcrumb">
+            <ol>
+              <li><a href="/">Home</a></li>
+              <li aria-current="page">Press</li>
+            </ol>
+          </nav>
+        </div>
+        <p class="sp-eyebrow">Press kit</p>
+        <h1 class="sp-h1">Press kit <span class="sp-ital">for editors and partners</span></h1>
+        <div class="sp-hero__row">
+          <p class="sp-lead">
+            Studio bios in English and Spanish, logo files, selected project images and
+            the credit line to use with our work. For anything else, write to us.
+          </p>
+          <div class="sp-ctas">
+            <a class="sp-btn sp-btn--solid" href={`mailto:${CONTACT.email}`}>
+              {CONTACT.email}
+              <RightUpArrow class="sp-btn__arrow" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Bios ── -->
+    <section class="sp-section" aria-labelledby="pr-bios">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">About the studio</p>
+        <h2 class="sp-h2" id="pr-bios">Studio bio</h2>
+        <div class="pr-bios">
+          {bios.map((b) => (
+            <div class="pr-bio" lang={b.lang}>
+              <p class="pr-bio__lang">{b.label}</p>
+
+              <div class="pr-block">
+                <div class="pr-block__head">
+                  <h3 class="sp-grid__title">{b.lang === "es" ? "Versión corta" : "Short bio"}</h3>
+                  <button class="pr-copy" type="button" data-copy={`bio-short-${b.lang}`} lang="en">
+                    Copy
+                  </button>
+                </div>
+                <div id={`bio-short-${b.lang}`}>
+                  <p class="sp-body">{b.short}</p>
+                </div>
+              </div>
+
+              <div class="pr-block">
+                <div class="pr-block__head">
+                  <h3 class="sp-grid__title">{b.lang === "es" ? "Versión larga" : "Long bio"}</h3>
+                  <button class="pr-copy" type="button" data-copy={`bio-long-${b.lang}`} lang="en">
+                    Copy
+                  </button>
+                </div>
+                <div id={`bio-long-${b.lang}`}>
+                  {b.long.map((p) => <p class="sp-body">{p}</p>)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Logos ── -->
+    <section class="sp-section" aria-labelledby="pr-logos">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">Brand assets</p>
+        <h2 class="sp-h2" id="pr-logos">Logos</h2>
+        <ul class="pr-logos">
+          {logos.map((l) => (
+            <li class="pr-logo">
+              <div class:list={["pr-logo__tile", { "pr-logo__tile--dark": l.dark }]}>
+                <img src={l.file} alt={`Borsoga Studio ${l.name.toLowerCase()}`} loading="lazy" decoding="async" />
+              </div>
+              <div class="pr-logo__meta">
+                <div>
+                  <h3 class="sp-grid__title">{l.name}</h3>
+                  <p class="sp-card__meta">{l.format}</p>
+                </div>
+                <a class="sp-btn" href={l.file} download={l.download}>Download</a>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p class="sp-body pr-note">
+          Please use the logos as supplied, without changing their colors or proportions.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── Images ── -->
+    <section class="sp-section" aria-labelledby="pr-images">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">Selected work</p>
+        <div class="sp-projects__head">
+          <h2 class="sp-h2" id="pr-images">Project images</h2>
+          <p class="sp-body">Each image opens at full size. Credit: Borsoga Studio.</p>
+        </div>
+        <ul class="sp-cards pr-images">
+          {images.map((im) => (
+            <li>
+              <a class="sp-card" href={im.full} target="_blank" rel="noopener">
+                <figure class="sp-card__media">
+                  <img
+                    src={im.img.src}
+                    srcset={im.img.srcset}
+                    sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 20vw"
+                    alt={im.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+                <span class="sp-card__code">{im.code}</span>
+                <h3 class="sp-card__name">{im.name}</h3>
+                <p class="sp-card__meta">Full size · {im.file}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── Credit us (dark band) ── -->
+    <section class="sp-section sp-dark" aria-labelledby="pr-credit" data-navbar-dark>
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">Credit us</p>
+        <h2 class="sp-h2" id="pr-credit">How to credit the studio</h2>
+        <div class="pr-snippet">
+          <pre id="credit-snippet"><code>{creditHtml}</code></pre>
+          <button class="pr-copy pr-copy--dark" type="button" data-copy="credit-snippet">Copy HTML</button>
+        </div>
+        <p class="sp-body">
+          Place it next to or below any of our images you publish online; in print, use the
+          text “Visualization by Borsoga Studio”.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── Contact ── -->
+    <section class="sp-section" aria-labelledby="pr-contact">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">Contact</p>
+        <h2 class="sp-h2" id="pr-contact">Press and partnerships</h2>
+        <ul class="sp-links">
+          <li>
+            <a href={`mailto:${CONTACT.email}`}>
+              <span>Email · {CONTACT.email}</span>
+              <RightUpArrow aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href={`tel:${CONTACT.telephone}`}>
+              <span>Call · {phoneLabel}</span>
+              <RightUpArrow aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href={CONTACT.whatsapp} target="_blank" rel="noopener">
+              <span>WhatsApp · {whatsappLabel}</span>
+              <RightUpArrow aria-hidden="true" />
+            </a>
+          </li>
+          <li>
+            <a href={BOOKING_URL} target="_blank" rel="noopener">
+              <span>Book a 30-minute discovery call</span>
+              <RightUpArrow aria-hidden="true" />
+            </a>
+          </li>
+        </ul>
+        <p class="sp-body pr-note">Borsoga Studio · {CONTACT.city}, {CONTACT.region} · English and Spanish</p>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .pr-bios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(3rem, 5vw, 8rem);
+  }
+  .pr-bio__lang {
+    margin: 0 0 1.6rem;
+    font-size: clamp(1.1rem, 0.85vw, 1.3rem);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  .pr-block {
+    padding: clamp(2rem, 2.6vw, 3.4rem) 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.16);
+  }
+  .pr-block:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  }
+  .pr-block__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  .pr-block__head .sp-grid__title {
+    margin: 0;
+  }
+
+  .pr-copy {
+    flex: none;
+    padding: 0.7rem 1.4rem;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 9999px;
+    background: transparent;
+    color: #0a0a0a;
+    font: 300 1.2rem/1.2 "Poppins", sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+  }
+  .pr-copy:hover {
+    background: #0a0a0a;
+    color: #fff;
+  }
+  .pr-copy--dark {
+    border-color: rgba(242, 242, 240, 0.32);
+    color: #f2f2f0;
+  }
+  .pr-copy--dark:hover {
+    background: #f2f2f0;
+    color: #0a0a0a;
+  }
+
+  .pr-logos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.6rem, 2vw, 3rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .pr-logo__tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 10;
+    padding: 12%;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    background: #fff;
+  }
+  .pr-logo__tile--dark {
+    background: #0a0a0a;
+    border-color: #0a0a0a;
+  }
+  .pr-logo__tile img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .pr-logo__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    margin-top: 1.6rem;
+  }
+  .pr-logo__meta .sp-grid__title {
+    margin-bottom: 0.2rem;
+  }
+  .pr-note {
+    margin-top: clamp(2rem, 3vw, 3.4rem);
+    font-size: clamp(1.4rem, 1vw, 1.6rem);
+  }
+
+  .pr-images {
+    --cols: 5;
+  }
+  .pr-images .sp-card__name {
+    font-size: clamp(1.6rem, 1.2vw, 2rem);
+  }
+
+  .pr-snippet {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    margin-bottom: clamp(2rem, 3vw, 3.4rem);
+    padding: clamp(1.6rem, 2vw, 2.4rem);
+    border: 1px solid rgba(242, 242, 240, 0.16);
+    border-radius: 4px;
+    background: #111;
+  }
+  .pr-snippet pre {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font: 400 clamp(1.3rem, 1vw, 1.6rem) / 1.6 ui-monospace, SFMono-Regular, Menlo, Consolas,
+      monospace;
+    color: #f2f2f0;
+  }
+
+  @media (max-width: 1024px) {
+    .pr-logos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pr-images {
+      --cols: 2 !important;
+    }
+  }
+  @media (max-width: 767px) {
+    .pr-bios,
+    .pr-logos {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pr-images {
+      --cols: 1 !important;
+    }
+    .pr-snippet {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>
+
+<script>
+  // Copy buttons: copy the text of the element named in data-copy.
+  function initCopy(): void {
+    document.querySelectorAll<HTMLButtonElement>("#press [data-copy]").forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      const label = btn.textContent?.trim() ?? "Copy";
+      btn.addEventListener("click", async () => {
+        const target = document.getElementById(btn.dataset.copy ?? "");
+        if (!target) return;
+        const text = Array.from(target.querySelectorAll("p"))
+          .map((p) => p.textContent?.trim() ?? "")
+          .filter(Boolean)
+          .join("\n\n") || (target.textContent ?? "").trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.textContent = "Copied";
+        } catch {
+          // Clipboard blocked (e.g. insecure context): select the text instead.
+          const range = document.createRange();
+          range.selectNodeContents(target);
+          const sel = window.getSelection();
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+          btn.textContent = "Selected";
+        }
+        window.setTimeout(() => (btn.textContent = label), 1800);
+      });
+    });
+  }
+  document.addEventListener("astro:page-load", initCopy);
+</script>

@@ -1,0 +1,69 @@
+---
+// Not-found page. Astro builds it to dist/404.html; the host serves it for
+// unknown URLs. Kept out of the index (and out of the sitemap, see
+// astro.config.mjs) but its links stay followable.
+import Layout from "../layouts/Layout.astro";
+import RightUpArrow from "../assets/icons/right_up.svg";
+import { SERVICE_PAGES } from "../data/service-pages";
+import "../styles/service-page.css";
+
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/projects", label: "Selected work" },
+  ...SERVICE_PAGES.map((p) => ({ href: p.en.path, label: p.en.label })),
+  { href: "/plans/", label: "Plans" },
+];
+const spanish = SERVICE_PAGES.map((p) => p.es);
+---
+
+<Layout
+  title="Page not found"
+  description="This page doesn't exist. Continue to Borsoga Studio's home page, selected work or services."
+  robots="noindex, follow"
+>
+  <main class="sp" id="not-found">
+    <header class="sp-hero">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">Error 404</p>
+        <h1 class="sp-h1">This page <span class="sp-ital">doesn't exist.</span></h1>
+        <div class="sp-hero__row">
+          <p class="sp-lead">
+            The link may be old or mistyped. These pages are a good place to continue.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <nav class="sp-section" aria-labelledby="nf-links">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow" id="nf-links">Continue to</p>
+        <ul class="sp-links">
+          {links.map((l) => (
+            <li>
+              <a href={l.href}>
+                <span>{l.label}</span>
+                <RightUpArrow aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+
+    <nav class="sp-section" aria-labelledby="nf-es" lang="es">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow" id="nf-es">En español</p>
+        <ul class="sp-links">
+          {spanish.map((s) => (
+            <li>
+              <a href={s.path}>
+                <span>{s.label}</span>
+                <RightUpArrow aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  </main>
+</Layout>
