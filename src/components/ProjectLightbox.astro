@@ -19,9 +19,11 @@
 interface Props {
   images: string[];
   title: string;
+  /** Optional alt text per image (same index as `images`). */
+  alts?: string[];
 }
 
-const { images, title } = Astro.props;
+const { images, title, alts } = Astro.props;
 const total = images.length;
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
@@ -50,7 +52,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
                   page doesn't download the whole gallery. */}
               <img
                 data-src={src}
-                alt={`${title} — image ${i + 1} of ${total}`}
+                alt={alts?.[i]
+                  ? `${alts[i]} (image ${i + 1} of ${total})`
+                  : `${title} — image ${i + 1} of ${total}`}
                 decoding="async"
                 draggable="false"
               />

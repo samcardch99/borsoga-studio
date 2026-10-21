@@ -3,6 +3,7 @@ import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import ProjectLightbox from "../../components/ProjectLightbox.astro";
 import RightUpArrow from "../../assets/icons/right_up.svg";
+import { getServicePage } from "../../data/service-pages";
 
 export async function getStaticPaths() {
   const all = (await getCollection("projects")).sort(
@@ -27,6 +28,17 @@ const { project, next } = Astro.props;
 const d = project.data;
 const imgs = d.images;
 const narrative = project.body?.trim() ?? "";
+// Blank-line separated paragraphs in the .md body.
+const paragraphs = narrative.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+// Alt text per image from `imageAlts` (same index as `images`); "" keeps an
+// image decorative; a missing entry falls back to the project title.
+const altFor = (i: number) => d.imageAlts?.[i] ?? d.title;
+
+// Related service landing pages (`services` in the .md), English versions.
+const related = (d.services ?? [])
+  .map((key) => getServicePage(key)?.en)
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
 
 // ── Per-project SEO / structured data ──
 const origin = Astro.site ?? new URL("https://borsogastudio.com");
@@ -60,7 +72,14 @@ const projectLd = {
 			...(d.client
 				? { sourceOrganization: { "@type": "Organization", name: d.client } }
 				: {}),
-			image: absImages,
+			mainEntityOfPage: canonical,
+			image: absImages.map((url, i) => ({
+				"@type": "ImageObject",
+				contentUrl: url,
+				url,
+				...(altFor(i) ? { caption: altFor(i) } : {}),
+				creator: { "@id": `${origin.origin}/#organization` },
+			})),
 			thumbnailUrl: absImages[0],
 		},
 		{
@@ -76,7 +95,7 @@ const projectLd = {
 ---
 
 <Layout
-  title={d.title}
+  title={d.seoTitle ?? d.title}
   description={d.description}
   image={imgs[0]}
   type="article"
@@ -113,7 +132,7 @@ const projectLd = {
              The vertical-pictures template has no hero image (Figma frame). -->
         {!d.verticalLayout && (
           <div class="pd-img pd-img--hero pd-par">
-            <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" data-lb-index="0" />
+            <img src={imgs[0]} alt={altFor(0)} loading="eager" decoding="async" data-lb-index="0" />
           </div>
         )}
 
@@ -124,6 +143,21 @@ const projectLd = {
             <p class="pd-meta__value">{d.discipline}</p>
             <p class="pd-meta__label pd-meta__label--mt">Scope</p>
             <p class="pd-meta__value">{d.scope}</p>
+            {related.length > 0 && (
+              <>
+                <p class="pd-meta__label pd-meta__label--mt">
+                  {related.length > 1 ? "Related services" : "Related service"}
+                </p>
+                <p class="pd-meta__value">
+                  {related.map((s, i) => (
+                    <>
+                      {i > 0 && " · "}
+                      <a class="pd-meta__link" href={s.path}>{s.label}</a>
+                    </>
+                  ))}
+                </p>
+              </>
+            )}
           </div>
           <!-- RIGHT: Client (optional) + Description -->
           <div class="pd-hero__meta-right">
@@ -151,10 +185,10 @@ const projectLd = {
         {imgs[0] && imgs[1] && (
           <div class="pdv-duo" data-reveal>
             <div class="pd-par pdv-img">
-              <img src={imgs[0]} alt={d.title} loading="eager" decoding="async" data-lb-index="0" />
+              <img src={imgs[0]} alt={altFor(0)} loading="eager" decoding="async" data-lb-index="0" />
             </div>
             <div class="pd-par pdv-img">
-              <img src={imgs[1]} alt={d.title} loading="eager" decoding="async" data-lb-index="1" />
+              <img src={imgs[1]} alt={altFor(1)} loading="eager" decoding="async" data-lb-index="1" />
             </div>
           </div>
         )}
@@ -163,12 +197,12 @@ const projectLd = {
         <div class="pdv-row pdv-row--narrative" data-reveal>
           {imgs[2] && (
             <div class="pd-par pdv-img">
-              <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" data-lb-index="2" />
+              <img src={imgs[2]} alt={altFor(2)} loading="lazy" decoding="async" data-lb-index="2" />
             </div>
           )}
           <div class="pdv-text">
             <p class="pd-section-label">Project Narrative</p>
-            <p class="pd-section-body">{narrative}</p>
+            {paragraphs.map((p) => <p class="pd-section-body">{p}</p>)}
           </div>
         </div>
 
@@ -176,7 +210,7 @@ const projectLd = {
         <div class="pdv-row pdv-row--closing" data-reveal>
           {imgs[3] && (
             <div class="pd-par pdv-img">
-              <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" data-lb-index="3" />
+              <img src={imgs[3]} alt={altFor(3)} loading="lazy" decoding="async" data-lb-index="3" />
             </div>
           )}
           <div class="pdv-text pdv-text--closing">
@@ -190,21 +224,21 @@ const projectLd = {
         {/* Split: image left + narrative right */}
         <div class="pd-split" data-reveal>
           <div class="pd-split__img pd-par">
-            <img src={imgs[1]} alt={d.title} loading="lazy" decoding="async" data-lb-index="1" />
+            <img src={imgs[1]} alt={altFor(1)} loading="lazy" decoding="async" data-lb-index="1" />
           </div>
           <div class="pd-split__text">
             <p class="pd-section-label">Project Narrative</p>
-            <p class="pd-section-body">{narrative}</p>
+            {paragraphs.map((p) => <p class="pd-section-body">{p}</p>)}
           </div>
         </div>
 
         {/* Duo: two equal images */}
         <div class="pd-duo" data-reveal>
           <div class="pd-par">
-            <img src={imgs[2]} alt={d.title} loading="lazy" decoding="async" data-lb-index="2" />
+            <img src={imgs[2]} alt={altFor(2)} loading="lazy" decoding="async" data-lb-index="2" />
           </div>
           <div class="pd-par">
-            <img src={imgs[3]} alt={d.title} loading="lazy" decoding="async" data-lb-index="3" />
+            <img src={imgs[3]} alt={altFor(3)} loading="lazy" decoding="async" data-lb-index="3" />
           </div>
         </div>
 
@@ -215,7 +249,7 @@ const projectLd = {
             class:list={["pd-img", "pd-img--full", "pd-par", { "pd-img--full--portrait": d.fullImageVertical }]}
             data-reveal
           >
-            <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" data-lb-index="4" />
+            <img src={imgs[4]} alt={altFor(4)} loading="lazy" decoding="async" data-lb-index="4" />
           </div>
         )}
 
@@ -225,7 +259,7 @@ const projectLd = {
         {d.layout === "pd3" && d.fullImageVertical && imgs[4] && (
           <div class="pd-portrait-row" data-reveal>
             <div class="pd-par pd-par--portrait">
-              <img src={imgs[4]} alt={d.title} loading="lazy" decoding="async" data-lb-index="4" />
+              <img src={imgs[4]} alt={altFor(4)} loading="lazy" decoding="async" data-lb-index="4" />
             </div>
             <div class="pd-portrait-closing">
               <p class="pd-section-label pd-section-label--right">Closing Line</p>
@@ -238,7 +272,7 @@ const projectLd = {
         {d.layout === "pd2" && imgs[5] && (
           <div class="pd-portrait-row" data-reveal>
             <div class="pd-par pd-par--portrait">
-              <img src={imgs[5]} alt={d.title} loading="lazy" decoding="async" data-lb-index="5" />
+              <img src={imgs[5]} alt={altFor(5)} loading="lazy" decoding="async" data-lb-index="5" />
             </div>
             <div class="pd-portrait-closing">
               <p class="pd-section-label pd-section-label--right">Closing Line</p>
@@ -305,7 +339,7 @@ const projectLd = {
   <!-- Full-screen gallery. Every project photo above carries a
        data-lb-index into `d.images`, which is what lets the viewer morph out
        of — and back into — the exact image on the page. -->
-  <ProjectLightbox images={imgs} title={d.title} />
+  <ProjectLightbox images={imgs} title={d.title} alts={imgs.map((_, i) => altFor(i))} />
 </Layout>
 
 <style>
@@ -584,6 +618,15 @@ const projectLd = {
     letter-spacing: -0.01em;
   }
   .pd-section-body--right { text-align: right; }
+  .pd-section-body + .pd-section-body { margin-top: 1em; }
+
+  .pd-meta__link {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    transition: opacity 0.25s ease;
+  }
+  .pd-meta__link:hover { opacity: 0.55; }
 
   /* ── NEXT PROJECT — 300svh pin zone ───────────────────────────── */
 

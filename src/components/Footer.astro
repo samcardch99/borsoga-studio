@@ -4,6 +4,10 @@ import wordmarkSrc from "../assets/footer-wordmark.svg?url";
 import logoStacked from "../assets/logo-stacked.svg?url";
 
 import arrowSrc from "../assets/icons/right_up.svg?url";
+import { SERVICE_PAGES } from "../data/service-pages";
+
+// The six service landing pages (English versions).
+const services = SERVICE_PAGES.map((p) => p.en);
 ---
 
 <!--
@@ -81,6 +85,19 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
         </div>
     </div>
 
+    <!-- ── SERVICES ── -->
+    <div class="footer__divider"></div>
+    <nav class="footer__services-row" aria-label="Services">
+        <p class="footer__lbl footer__lbl--services">SERVICES</p>
+        <ul class="footer__services-list">
+            {services.map((s) => (
+                <li>
+                    <a href={s.path} class="footer__service-link">{s.label}</a>
+                </li>
+            ))}
+        </ul>
+    </nav>
+
     <!-- ── ELSEWHERE ── -->
     <div class="footer__divider"></div>
     <div class="footer__social-row">
@@ -137,7 +154,10 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
     <!-- ── BOTTOM BAR ── -->
     <div class="footer__divider"></div>
     <div class="footer__bottom">
-        <a href="/privacy" class="footer__bottom-txt">PRIVACY TERMS</a>
+        <span class="footer__bottom-links">
+            <a href="/privacy" class="footer__bottom-txt">PRIVACY TERMS</a>
+            <a href="/press/" class="footer__bottom-txt">PRESS</a>
+        </span>
         <span class="footer__bottom-txt">EST. 2026 BORSOGA®STUDIO / GLOBAL</span
         >
     </div>
@@ -394,6 +414,36 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
         opacity: 0.6;
     }
 
+    /* ── SERVICES — same rows and type as the channel list ── */
+    .footer__services-row {
+        display: flex;
+        flex-direction: column;
+    }
+    .footer__lbl--services {
+        padding-bottom: 0;
+    }
+    .footer__services-list {
+        list-style: none;
+        margin: 0;
+        padding: 0 0 clamp(1rem, 2vw, 3rem);
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    .footer__service-link {
+        display: block;
+        padding: var(--row-py) 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        font-size: var(--f-ch);
+        font-weight: 500;
+        color: #fff;
+        text-decoration: none;
+        letter-spacing: 0.02em;
+        transition: opacity 0.2s;
+    }
+    .footer__service-link:hover {
+        opacity: 0.6;
+    }
+
     /* ── BOTTOM BAR ── */
     .footer__bottom {
         display: flex;
@@ -411,6 +461,11 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
     }
     a.footer__bottom-txt:hover {
         color: #fff;
+    }
+    .footer__bottom-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem 2.4rem;
     }
 
     /* ── WORDMARK ── */
@@ -519,10 +574,20 @@ import arrowSrc from "../assets/icons/right_up.svg?url";
             padding-top: 0;
         }
 
-        .footer__social-row {
+        .footer__social-row,
+        .footer__services-row {
             flex-direction: row;
             align-items: baseline;
             gap: clamp(1.5rem, 3vw, 5rem);
+        }
+        .footer__lbl--services {
+            padding-top: clamp(1rem, 2vw, 3rem);
+            flex-shrink: 0;
+        }
+        .footer__services-list {
+            flex: 1;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            column-gap: clamp(2rem, 4vw, 6rem);
         }
         .footer__lbl--social {
             padding-top: clamp(1rem, 2vw, 3rem);

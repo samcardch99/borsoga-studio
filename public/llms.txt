@@ -37,6 +37,19 @@ All four services — interior design, architectural visualization, branding, an
 - [Architectural visualization plans](https://borsogastudio.com/plans/av-plans/): Essential, Premium and Borsoga Edition
 - [Branding](https://borsogastudio.com/plans/graphic-design/): Brand Identity, Social Media Design, and Marketing & Graphic Design
 - [Web and app plans](https://borsogastudio.com/plans/web-design/): Web Essential, Web Premium and Web Borsoga Edition, plus Care / Care+ maintenance
+- [Interior design in Miami](https://borsogastudio.com/interior-design-miami/): Homes and commercial interiors in Miami-Dade and Florida, approved in photoreal 3D, with reference drawings
+- [Kitchen design in Miami](https://borsogastudio.com/kitchen-design-miami/): Kitchen layout, island, cabinetry, appliance planning, materials and lighting, seen in 3D first
+- [Custom millwork and cabinetry design in Miami](https://borsogastudio.com/custom-millwork-design-miami/): Built-ins, closets, vanities and paneling in standard shop dimensions
+- [3D rendering and architectural visualization](https://borsogastudio.com/3d-rendering-miami/): Exterior and interior renderings, animation and 360° tours, for projects anywhere
+- [Branding for real estate and construction](https://borsogastudio.com/real-estate-branding/): Brand identity, social media design and marketing pieces for developments and builders
+- [Websites and apps for real estate and construction](https://borsogastudio.com/real-estate-web-design/): Sales sites, web apps, iOS apps and Care / Care+ maintenance
+- [Diseño de interiores en Miami (Spanish)](https://borsogastudio.com/es/diseno-de-interiores-miami/): Interior design page in Spanish
+- [Diseño de cocinas en Miami (Spanish)](https://borsogastudio.com/es/diseno-de-cocinas-miami/): Kitchen design page in Spanish
+- [Carpintería a medida en Miami (Spanish)](https://borsogastudio.com/es/carpinteria-a-medida-miami/): Custom millwork page in Spanish
+- [Renders 3D y visualización arquitectónica (Spanish)](https://borsogastudio.com/es/renders-3d-miami/): 3D rendering page in Spanish
+- [Branding inmobiliario (Spanish)](https://borsogastudio.com/es/branding-inmobiliario/): Real estate branding page in Spanish
+- [Diseño web inmobiliario (Spanish)](https://borsogastudio.com/es/diseno-web-inmobiliario/): Real estate web and app page in Spanish
+- [Press kit](https://borsogastudio.com/press/): Studio bios in English and Spanish, logos, selected images and credit line
 - [Book a discovery call](https://borsogastudio.setmore.com): 30-minute first call
 - [Google Business Profile](https://maps.google.com/?cid=6420475614081383704): Reviews and contact details
 - [Contact](https://borsogastudio.com/#contact): Start a project
@@ -59,19 +72,19 @@ All four services — interior design, architectural visualization, branding, an
 ## Key facts
 
 - Name: Borsoga Studio (also "Borsoga")
-- Type: Architectural visualization and CGI studio
+- Type: Interior design and architectural visualization studio for real estate and construction
 - Location: Miami, Florida, USA — working globally
 - Founded: 2026
 - Core tools: V-Ray and Rhino for 3D rendering
 - Languages: English and Spanish
-- Primary services: photoreal 3D rendering, CGI, immersive 360° tours, cinematic and aerial video, architectural & interior photography, custom sales websites and iOS sales apps, brand identity and visual systems
+- Primary services: interior design (residential and commercial, kitchens, bathrooms, custom millwork), photoreal 3D rendering, CGI, immersive 360° tours, cinematic and aerial video, brand identity, social media design, marketing and graphic design, websites, web and iOS apps, and website care (Care / Care+)
 - Serves: real estate developers and investors, architects and general contractors, and custom millwork and carpentry specialists
 - Positioning: "Digital spaces for the unbuilt imagination" — letting people experience a building or interior before it is built
 
 ## Common questions
 
 ### What is Borsoga Studio?
-Borsoga Studio is a Miami-based architectural visualization and CGI studio. It produces photoreal 3D renders, immersive 360° tours, cinematic video, custom sales websites and brand identity that let people experience a building or interior before it is built. It works with real estate developers, architects, general contractors and custom millwork specialists, based in Miami and working globally.
+Borsoga Studio is a Miami interior design and architectural visualization studio for real estate and construction. It designs kitchens, bathrooms, full homes and commercial interiors, approved in photoreal 3D before construction, and produces renders, animation, 360° tours, brand identity, social media, marketing pieces, websites and apps for developers, builders and design businesses. One team handles all of it, in English and Spanish.
 
 ### What is architectural visualization?
 Architectural visualization is the process of turning architectural plans, sketches and 3D models into accurate, photorealistic images, animations and immersive tours. It lets developers, architects and buyers see and evaluate a space before it is built. Borsoga Studio focuses on natural light, true human scale and honest material representation to convey the real feeling of a space.

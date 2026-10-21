@@ -46,6 +46,9 @@ export const CONTACT = {
   foundingYear: "2024",
 } as const;
 
+/** 30-minute discovery call (Setmore). */
+export const BOOKING_URL = "https://borsogastudio.setmore.com";
+
 /** Social / external profiles — used for schema `sameAs`. */
 export const SOCIAL = [
   "https://instagram.com/borsogastudio",

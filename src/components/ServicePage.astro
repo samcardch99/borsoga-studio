@@ -1,0 +1,335 @@
+---
+// One service landing page (EN or ES), rendered entirely from
+// src/data/service-pages.ts. The page files under src/pages only pick the
+// service and the language.
+//
+// Head tags (hreflang pair + JSON-LD) go through Layout's `head` slot; Layout
+// itself already emits the title, description, canonical and Open Graph.
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import RightUpArrow from "../assets/icons/right_up.svg";
+import { BOOKING_URL, CONTACT, SITE_URL } from "../consts";
+import {
+  DISCIPLINE_ES,
+  SERVICE_PAGES,
+  SERVICE_UI,
+  getServicePage,
+  type ServiceLang,
+} from "../data/service-pages";
+import { responsiveImage } from "../data/thumbs";
+import "../styles/service-page.css";
+
+interface Props {
+  /** SERVICE_PAGES key (the English slug). */
+  page: string;
+  lang: ServiceLang;
+}
+
+const { page: key, lang } = Astro.props;
+const def = getServicePage(key);
+if (!def) throw new Error(`Unknown service page: ${key}`);
+
+const c = def[lang];
+const otherLang: ServiceLang = lang === "en" ? "es" : "en";
+const other = def[otherLang];
+const ui = SERVICE_UI[lang];
+
+const abs = (p: string) => new URL(p, SITE_URL).href;
+const pageUrl = abs(c.path);
+const enUrl = abs(def.en.path);
+const esUrl = abs(def.es.path);
+
+// Phone as dialled (tel:) and as read ("+1 786-852-4847").
+const phoneHref = `tel:${CONTACT.telephone}`;
+const phoneLabel = CONTACT.telephone.replace(/^\+1-/, "+1 ");
+
+// ── Featured projects, in the order given ──
+const all = await getCollection("projects");
+const projects = def.projects.map((id) => {
+  const entry = all.find((p) => p.id.toLowerCase() === id.toLowerCase());
+  if (!entry) throw new Error(`Service page ${key}: unknown project ${id}`);
+  const d = entry.data;
+  const [code, name = d.title] = d.title.split(/\s*\/\/\s*/);
+  const cover = d.images[0];
+  return {
+    href: `/works/${entry.id.toLowerCase()}/`,
+    code,
+    name,
+    discipline: lang === "es" ? (DISCIPLINE_ES[d.discipline] ?? d.discipline) : d.discipline,
+    // Alt texts are written in English; on Spanish pages the card's own
+    // heading names the project, so the image is left decorative there.
+    alt: lang === "en" ? (d.imageAlts?.[0] ?? "") : "",
+    img: responsiveImage(cover),
+  };
+});
+// 1–2 cards sit in a three-column grid; 3 or 4 fill a row.
+const cols = projects.length <= 2 ? 3 : projects.length;
+
+const hero = responsiveImage(c.hero.src);
+const others = SERVICE_PAGES.filter((p) => p.key !== key).map((p) => p[lang]);
+const pad = (n: number) => String(n + 1).padStart(2, "0");
+
+// ── Structured data: Service + FAQPage + BreadcrumbList ──
+const orgId = `${SITE_URL}/#organization`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "@id": `${pageUrl}#service`,
+      name: c.schema.name,
+      serviceType: c.schema.serviceType,
+      description: c.description,
+      url: pageUrl,
+      image: abs(c.hero.src),
+      provider: { "@id": orgId },
+      areaServed: def.areaServed,
+      availableChannel: {
+        "@type": "ServiceChannel",
+        serviceUrl: pageUrl,
+        servicePhone: CONTACT.telephone,
+        availableLanguage: ["en", "es"],
+      },
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${pageUrl}#faq`,
+      url: pageUrl,
+      inLanguage: lang,
+      mainEntity: c.faqs.map(({ q, a }) => ({
+        "@type": "Question",
+        name: q,
+        acceptedAnswer: { "@type": "Answer", text: a },
+      })),
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: ui.home, item: `${SITE_URL}/` },
+        { "@type": "ListItem", position: 2, name: c.label, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  title={c.title}
+  description={c.description}
+  image={c.hero.src}
+  lang={lang}
+>
+  <Fragment slot="head">
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="es" href={esUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+
+  <main class="sp" id="service">
+    <!-- ── Hero ── -->
+    <header class="sp-hero">
+      <div class="sp-wrap">
+        <div class="sp-hero__top">
+          <nav class="sp-crumbs" aria-label={ui.breadcrumb}>
+            <ol>
+              <li><a href="/">{ui.home}</a></li>
+              <li aria-current="page">{c.label}</li>
+            </ol>
+          </nav>
+          <a class="sp-lang" href={other.path} hreflang={otherLang} lang={otherLang}>
+            {ui.switchLabel}
+          </a>
+        </div>
+
+        <p class="sp-eyebrow">{c.eyebrow}</p>
+        <h1 class="sp-h1">{c.h1[0]} <span class="sp-ital">{c.h1[1]}</span></h1>
+
+        <div class="sp-hero__row">
+          <p class="sp-lead">{c.lead}</p>
+          <div class="sp-ctas">
+            <a class="sp-btn sp-btn--solid" href={BOOKING_URL} target="_blank" rel="noopener">
+              {ui.book}
+              <RightUpArrow class="sp-btn__arrow" aria-hidden="true" />
+            </a>
+            <a class="sp-btn" href={CONTACT.whatsapp} target="_blank" rel="noopener">{ui.whatsapp}</a>
+            <a class="sp-btn" href={phoneHref}>{ui.call} {phoneLabel}</a>
+          </div>
+        </div>
+
+        <figure class="sp-hero__media">
+          <img
+            src={hero.src}
+            srcset={hero.srcset}
+            sizes="(max-width: 767px) 100vw, 92vw"
+            alt={c.hero.alt}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </header>
+
+    <!-- ── Intro ── -->
+    <section class="sp-section" aria-labelledby="sp-studio">
+      <div class="sp-wrap sp-intro__grid">
+        <p class="sp-eyebrow" id="sp-studio">{ui.eyebrowStudio}</p>
+        <div>
+          {c.intro.map((p) => <p class="sp-body">{p}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <!-- ── What's included ── -->
+    <section class="sp-section" aria-labelledby="sp-included">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">{ui.eyebrowIncluded}</p>
+        <h2 class="sp-h2" id="sp-included">{c.includedTitle}</h2>
+        <ul class="sp-grid">
+          {c.included.map((it, i) => (
+            <li class="sp-grid__item">
+              <span class="sp-num" aria-hidden="true">{pad(i)}</span>
+              <div>
+                <h3 class="sp-grid__title">{it.title}</h3>
+                <p class="sp-body">{it.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── Process ── -->
+    <section class="sp-section" aria-labelledby="sp-process">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">{ui.eyebrowProcess}</p>
+        <h2 class="sp-h2" id="sp-process">{c.processTitle}</h2>
+        <ol class="sp-steps">
+          {c.process.map((st, i) => (
+            <li class="sp-step">
+              <span class="sp-step__num" aria-hidden="true">{pad(i)}</span>
+              <h3 class="sp-grid__title">{st.title}</h3>
+              <p class="sp-body">{st.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── Plans (dark band) ── -->
+    <section class="sp-section sp-dark" aria-labelledby="sp-plans" data-navbar-dark>
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">{ui.eyebrowPlans}</p>
+        <div class="sp-plans__head">
+          <h2 class="sp-h2" id="sp-plans">{c.plansTitle}</h2>
+          <p class="sp-body">{c.plansIntro}</p>
+        </div>
+        <ul class="sp-plans__list">
+          {c.plans.map((pl) => (
+            <li class="sp-plan">
+              <h3 class="sp-plan__name">{pl.name}</h3>
+              <p class="sp-body">{pl.text}</p>
+            </li>
+          ))}
+        </ul>
+        <div class="sp-plans__foot">
+          {c.plansNote ? <p class="sp-body">{c.plansNote}</p> : <span />}
+          <div class="sp-ctas">
+            {c.plansLinks.map((l) => (
+              <a class="sp-btn" href={l.href}>
+                {l.label}
+                <RightUpArrow class="sp-btn__arrow" aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Featured projects ── -->
+    <section class="sp-section" aria-labelledby="sp-projects">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow">{ui.eyebrowProjects}</p>
+        <div class="sp-projects__head">
+          <h2 class="sp-h2" id="sp-projects">{c.projectsTitle}</h2>
+          {c.projectsIntro && <p class="sp-body">{c.projectsIntro}</p>}
+        </div>
+        <ul class="sp-cards" style={`--cols:${cols}`}>
+          {projects.map((p) => (
+            <li>
+              <a class="sp-card" href={p.href}>
+                <figure class="sp-card__media">
+                  <img
+                    src={p.img.src}
+                    srcset={p.img.srcset}
+                    sizes="(max-width: 767px) 100vw, (max-width: 1024px) 50vw, 30vw"
+                    alt={p.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+                <span class="sp-card__code">{p.code}</span>
+                <h3 class="sp-card__name">{p.name}</h3>
+                <p class="sp-card__meta">{p.discipline}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="sp-section" aria-labelledby="sp-faq">
+      <div class="sp-wrap">
+        <h2 class="sp-h2" id="sp-faq">{ui.faqTitle}</h2>
+        <div class="sp-faq">
+          {c.faqs.map(({ q, a }, i) => (
+            <details class="sp-faq__item">
+              <summary class="sp-faq__q">
+                <span class="sp-num" aria-hidden="true">{pad(i)}</span>
+                <h3 class="sp-faq__text">{q}</h3>
+                <span class="sp-dash" aria-hidden="true" />
+              </summary>
+              <p class="sp-faq__a">{a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Other services ── -->
+    <nav class="sp-section" aria-labelledby="sp-others">
+      <div class="sp-wrap">
+        <p class="sp-eyebrow" id="sp-others">{ui.otherServices}</p>
+        <ul class="sp-links">
+          {others.map((o) => (
+            <li>
+              <a href={o.path}>
+                <span>{o.label}</span>
+                <RightUpArrow aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+
+    <!-- ── Closing CTA — same black as the footer below, read as one band ── -->
+    <section class="sp-section sp-dark sp-black sp-closing" aria-labelledby="sp-closing" data-navbar-dark>
+      <div class="sp-wrap">
+        <h2 class="sp-h2" id="sp-closing">{c.closingTitle}</h2>
+        <p class="sp-body">{c.closingText}</p>
+        <div class="sp-ctas">
+          <a class="sp-btn sp-btn--solid" href={BOOKING_URL} target="_blank" rel="noopener">
+            {ui.book}
+            <RightUpArrow class="sp-btn__arrow" aria-hidden="true" />
+          </a>
+          <a class="sp-btn" href={CONTACT.whatsapp} target="_blank" rel="noopener">{ui.whatsapp}</a>
+          <a class="sp-btn" href={phoneHref}>{ui.call} {phoneLabel}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>

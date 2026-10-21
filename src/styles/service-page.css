@@ -1,0 +1,627 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Service landing pages, /press and the 404 — shared, `sp-` prefixed.
+
+   Same visual language as the home sections (Faq.astro, ClearCommunication,
+   GoogleReviews) and /our-clients: Poppins, #f7f7f7 light bands, #0a0a0a /
+   #000 dark bands, 1px hairline rows, large tight headings, clamp() padding
+   and the dash toggle. Root is 1rem = 10px up to 1440px (global.css).
+   No JS-driven entrance states: everything is visible without scripts.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.sp {
+  background: #f7f7f7;
+  color: #0a0a0a;
+  font-family: "Poppins", sans-serif;
+}
+
+.sp-wrap {
+  max-width: 2120px;
+  margin: 0 auto;
+  padding-inline: clamp(2rem, 4vw, 6rem);
+}
+
+.sp-section {
+  padding-block: clamp(6rem, 9vw, 13rem);
+}
+.sp-section + .sp-section:not(.sp-dark) {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* ── Dark band ── */
+.sp-dark {
+  background: #0a0a0a;
+  color: #f2f2f0;
+}
+.sp-black {
+  background: #000;
+}
+
+/* ── Type ── */
+.sp-eyebrow {
+  margin: 0 0 clamp(1.6rem, 2vw, 2.6rem);
+  font-size: clamp(1.1rem, 0.85vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sp-dark .sp-eyebrow {
+  color: rgba(242, 242, 240, 0.62);
+}
+
+.sp-h1 {
+  margin: 0;
+  max-width: 22ch;
+  font-size: clamp(3.4rem, 5.2vw, 8rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.sp-ital {
+  font-weight: 200;
+  font-style: italic;
+}
+
+.sp-h2 {
+  margin: 0 0 clamp(2.4rem, 4vw, 5.4rem);
+  max-width: 22ch;
+  font-size: clamp(2.6rem, 3.6vw, 5.4rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.sp-lead {
+  margin: 0;
+  max-width: 52ch;
+  font-size: clamp(1.6rem, 1.35vw, 2.3rem);
+  font-weight: 300;
+  line-height: 1.6;
+  color: #2a2a2a;
+}
+
+.sp-body {
+  margin: 0;
+  max-width: 64ch;
+  font-size: clamp(1.5rem, 1.15vw, 1.9rem);
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.72);
+}
+.sp-body + .sp-body {
+  margin-top: 1.2em;
+}
+.sp-dark .sp-body {
+  color: rgba(242, 242, 240, 0.72);
+}
+.sp-body a,
+.sp-faq__a a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ── Buttons — pill CTAs, as the navbar / "View all cases" ── */
+.sp-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.sp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 1.1rem 2rem;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 9999px;
+  background: transparent;
+  color: #0a0a0a;
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    opacity 0.25s ease;
+}
+.sp-btn:hover {
+  background: #0a0a0a;
+  border-color: #0a0a0a;
+  color: #fff;
+}
+.sp-btn--solid {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+}
+.sp-btn--solid:hover {
+  background: #000;
+  opacity: 0.82;
+}
+.sp-dark .sp-btn {
+  border-color: rgba(242, 242, 240, 0.32);
+  color: #f2f2f0;
+}
+.sp-dark .sp-btn:hover {
+  background: #f2f2f0;
+  border-color: #f2f2f0;
+  color: #0a0a0a;
+}
+.sp-dark .sp-btn--solid {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+.sp-dark .sp-btn--solid:hover {
+  background: #fff;
+  color: #000;
+  opacity: 0.85;
+}
+.sp-btn__arrow {
+  flex: none;
+  width: 1em;
+  height: 1em;
+}
+.sp-btn:focus-visible,
+.sp a:focus-visible,
+.sp summary:focus-visible,
+.sp button:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ── Hero ── */
+.sp-hero {
+  padding-top: clamp(11rem, 13vw, 20rem);
+  padding-bottom: clamp(4rem, 6vw, 8rem);
+}
+.sp-hero__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: clamp(3rem, 4vw, 5.6rem);
+}
+.sp-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.62);
+}
+.sp-crumbs li + li::before {
+  content: "/";
+  margin-right: 0.6rem;
+  opacity: 0.5;
+}
+.sp-crumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+.sp-crumbs a:hover {
+  color: #0a0a0a;
+}
+.sp-crumbs [aria-current] {
+  color: #0a0a0a;
+}
+.sp-lang {
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+.sp-hero__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(2.4rem, 4vw, 6rem);
+  margin-top: clamp(2.4rem, 3.4vw, 4.6rem);
+}
+.sp-hero__media {
+  margin: clamp(4rem, 6vw, 8rem) 0 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e6e6e4;
+  aspect-ratio: 21 / 9;
+}
+.sp-hero__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Intro ── */
+.sp-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: clamp(2rem, 4vw, 6rem);
+}
+.sp-intro__grid .sp-body:first-child {
+  font-size: clamp(1.7rem, 1.6vw, 2.6rem);
+  color: #0a0a0a;
+  max-width: 48ch;
+}
+
+/* ── Numbered hairline grid (what's included) ── */
+.sp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(2.4rem, 4vw, 6rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-grid__item {
+  display: grid;
+  grid-template-columns: 3.2ch minmax(0, 1fr);
+  gap: 0 clamp(1rem, 1.6vw, 2.4rem);
+  padding: clamp(2rem, 2.6vw, 3.6rem) 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-num {
+  font-size: clamp(1.2rem, 1vw, 1.5rem);
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: 0.06em;
+  opacity: 0.62;
+}
+.sp-grid__title {
+  margin: 0 0 0.8rem;
+  font-size: clamp(1.8rem, 1.6vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.sp-grid__item .sp-body {
+  grid-column: 2;
+}
+
+/* ── Process — four columns with big numerals ── */
+.sp-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(2.4rem, 3vw, 4.4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sp-step {
+  padding-top: clamp(1.6rem, 2vw, 2.6rem);
+  border-top: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-step__num {
+  display: block;
+  margin-bottom: clamp(1.2rem, 2vw, 2.4rem);
+  font-size: clamp(4rem, 5vw, 7.2rem);
+  font-weight: 200;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: rgba(0, 0, 0, 0.45);
+}
+.sp-step .sp-grid__title {
+  font-size: clamp(1.7rem, 1.4vw, 2.3rem);
+}
+
+/* ── Plans — dark band, hairline rows ── */
+.sp-plans__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 6rem);
+  align-items: end;
+  margin-bottom: clamp(3rem, 5vw, 6.4rem);
+}
+.sp-plans__head .sp-h2 {
+  margin-bottom: 0;
+}
+.sp-plans__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid rgba(242, 242, 240, 0.16);
+}
+.sp-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 1rem clamp(2rem, 4vw, 6rem);
+  padding: clamp(2.2rem, 3vw, 4rem) 0;
+  border-top: 1px solid rgba(242, 242, 240, 0.16);
+}
+.sp-plan__name {
+  margin: 0;
+  font-size: clamp(2.2rem, 2.4vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.sp-plans__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.4rem;
+  margin-top: clamp(2.6rem, 4vw, 5rem);
+}
+.sp-plans__foot .sp-body {
+  font-size: clamp(1.4rem, 1vw, 1.7rem);
+  color: rgba(242, 242, 240, 0.55);
+}
+
+/* ── Project cards ── */
+.sp-projects__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 2rem 4rem;
+  margin-bottom: clamp(2.8rem, 4vw, 5.4rem);
+}
+.sp-projects__head .sp-h2 {
+  margin-bottom: 0;
+}
+.sp-cards {
+  --cols: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: clamp(2.4rem, 2.4vw, 4rem) clamp(1.4rem, 1.8vw, 3rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sp-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.sp-card__media {
+  margin: 0 0 1.6rem;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e6e6e4;
+  aspect-ratio: 4 / 5;
+}
+.sp-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.sp-card:hover .sp-card__media img {
+  transform: scale(1.03);
+}
+.sp-card__code {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+.sp-card__name {
+  margin: 0 0 0.6rem;
+  font-size: clamp(1.8rem, 1.6vw, 2.6rem);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.sp-card__meta {
+  margin: 0;
+  font-size: clamp(1.3rem, 0.95vw, 1.5rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* ── FAQ — the Faq.astro rows, dash toggle included ── */
+.sp-faq {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-faq__item {
+  border-top: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-faq__q {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 2.5rem);
+  padding: clamp(1.8rem, 2.4vw, 2.8rem) 0;
+  cursor: pointer;
+  list-style: none;
+}
+.sp-faq__q::-webkit-details-marker {
+  display: none;
+}
+.sp-faq__q .sp-num {
+  flex: none;
+  width: 2.5ch;
+}
+.sp-faq__text {
+  flex: 1;
+  margin: 0;
+  font-size: clamp(1.7rem, 1.7vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+.sp-faq__q:hover .sp-faq__text,
+.sp-faq__item[open] .sp-faq__text {
+  opacity: 1;
+}
+.sp-dash {
+  flex: none;
+  width: 22px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.3);
+  transition:
+    background 0.3s ease,
+    width 0.3s ease;
+}
+.sp-faq__item[open] .sp-dash {
+  background: #000;
+  width: 30px;
+}
+.sp-faq__a {
+  margin: 0;
+  max-width: 68ch;
+  padding: 0 0 clamp(2rem, 3vw, 3.4rem) calc(2.5ch + clamp(1rem, 2vw, 2.5rem));
+  font-size: clamp(1.5rem, 1.15vw, 1.9rem);
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+/* ── Cross-links (other services) ── */
+.sp-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-links li {
+  border-top: 1px solid rgba(0, 0, 0, 0.16);
+}
+.sp-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.6rem, 2vw, 2.4rem) 0;
+  color: inherit;
+  text-decoration: none;
+  font-size: clamp(1.8rem, 1.9vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.sp-links a span {
+  opacity: 0.62;
+  transition: opacity 0.3s ease;
+}
+.sp-links a:hover span {
+  opacity: 1;
+}
+.sp-links svg {
+  flex: none;
+  width: 0.8em;
+  height: 0.8em;
+  opacity: 0.55;
+}
+
+/* ── Closing band ── */
+.sp-closing .sp-h2 {
+  max-width: 18ch;
+  font-size: clamp(3rem, 5vw, 7.4rem);
+  margin-bottom: clamp(1.6rem, 2vw, 2.6rem);
+}
+.sp-closing .sp-body {
+  margin-bottom: clamp(3rem, 4vw, 5rem);
+}
+
+/* ── Tablet ── */
+@media (max-width: 1024px) {
+  .sp-hero__row {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+  .sp-intro__grid,
+  .sp-plans__head,
+  .sp-plan {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sp-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sp-cards {
+    --cols: 2 !important;
+  }
+  .sp-hero__media {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .sp-wrap {
+    padding-inline: clamp(1.5rem, 6vw, 2rem);
+  }
+  .sp-h1 {
+    font-size: clamp(3.2rem, 9vw, 4.6rem);
+  }
+  .sp-h2 {
+    font-size: clamp(2.6rem, 7.6vw, 3.6rem);
+  }
+  .sp-closing .sp-h2 {
+    font-size: clamp(3rem, 9vw, 4.4rem);
+  }
+  .sp-grid,
+  .sp-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sp-cards {
+    --cols: 1 !important;
+  }
+  .sp-hero__media {
+    aspect-ratio: 4 / 3;
+  }
+  .sp-card__media {
+    aspect-ratio: 1 / 1;
+  }
+  .sp-ctas {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sp-btn {
+    padding: 1.4rem 2rem;
+  }
+  .sp-faq__a {
+    padding-left: 0;
+  }
+  .sp-grid__item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sp-grid__item .sp-body {
+    grid-column: 1;
+  }
+  .sp-grid__item .sp-num {
+    margin-bottom: 0.4rem;
+  }
+  .sp-crumbs ol,
+  .sp-lang {
+    font-size: 1.3rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-card__media img {
+    transition: none;
+  }
+}

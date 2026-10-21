@@ -27,6 +27,15 @@ const projects = defineCollection({
     // fills the viewport width and is cropped by the fold, so it needs a
     // portrait/vertical photo; use this when images[0] is horizontal.
     nextPreviewImage: z.string().optional(),
+    // <title> for the project page (Layout appends " — Borsoga Studio").
+    // The RAL code stays visible on the page itself; falls back to `title`.
+    seoTitle: z.string().optional(),
+    // Alt text per image, aligned with `images` (same index). An empty
+    // string marks a decorative image; a missing entry falls back to `title`.
+    imageAlts: z.array(z.string()).optional(),
+    // Keys of the related service landing pages (src/data/service-pages.ts),
+    // e.g. ["kitchen-design-miami"]. Shown as "Related service" on the page.
+    services: z.array(z.string()).optional(),
   }),
 });
 

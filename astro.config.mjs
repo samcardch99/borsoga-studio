@@ -42,10 +42,15 @@ export default defineConfig({
       //    non-canonical, un-lowercased work URLs);
       //  · the funnel's four tool pages — the two configurators and the two
       //    briefs. They are tools, not entry pages, and they carry
-      //    noindex,follow. The retired generator excluded them too.
+      //    noindex,follow. The retired generator excluded them too;
+      //  · the 404 page (noindex).
       filter: (page) =>
         !page.includes('/projects-orbit') &&
+        !/\/404\/?$/.test(page) &&
         !/\/plans\/(es\/)?(configurator|configurador|av-configurator|configurador-av|web-brief|cuestionario-web|graphic-brief|cuestionario-grafico)\//.test(page),
+      // Every entry carries the build date as <lastmod>: the site is rebuilt
+      // and redeployed as a whole on each push to main.
+      lastmod: new Date(),
     }),
   ],
 });
