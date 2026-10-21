@@ -72,19 +72,19 @@ All four services — interior design, architectural visualization, branding, an
 ## Key facts
 
 - Name: Borsoga Studio (also "Borsoga")
-- Type: Architectural visualization and CGI studio
+- Type: Interior design and architectural visualization studio for real estate and construction
 - Location: Miami, Florida, USA — working globally
 - Founded: 2026
 - Core tools: V-Ray and Rhino for 3D rendering
 - Languages: English and Spanish
-- Primary services: photoreal 3D rendering, CGI, immersive 360° tours, cinematic and aerial video, architectural & interior photography, custom sales websites and iOS sales apps, brand identity and visual systems
+- Primary services: interior design (residential and commercial, kitchens, bathrooms, custom millwork), photoreal 3D rendering, CGI, immersive 360° tours, cinematic and aerial video, brand identity, social media design, marketing and graphic design, websites, web and iOS apps, and website care (Care / Care+)
 - Serves: real estate developers and investors, architects and general contractors, and custom millwork and carpentry specialists
 - Positioning: "Digital spaces for the unbuilt imagination" — letting people experience a building or interior before it is built
 
 ## Common questions
 
 ### What is Borsoga Studio?
-Borsoga Studio is a Miami-based architectural visualization and CGI studio. It produces photoreal 3D renders, immersive 360° tours, cinematic video, custom sales websites and brand identity that let people experience a building or interior before it is built. It works with real estate developers, architects, general contractors and custom millwork specialists, based in Miami and working globally.
+Borsoga Studio is a Miami interior design and architectural visualization studio for real estate and construction. It designs kitchens, bathrooms, full homes and commercial interiors, approved in photoreal 3D before construction, and produces renders, animation, 360° tours, brand identity, social media, marketing pieces, websites and apps for developers, builders and design businesses. One team handles all of it, in English and Spanish.
 
 ### What is architectural visualization?
 Architectural visualization is the process of turning architectural plans, sketches and 3D models into accurate, photorealistic images, animations and immersive tours. It lets developers, architects and buyers see and evaluate a space before it is built. Borsoga Studio focuses on natural light, true human scale and honest material representation to convey the real feeling of a space.
