@@ -15,6 +15,11 @@ Tagline: "Digital spaces for the unbuilt imagination."
 - Architectural & interior photography and material studies
 - Custom sales websites, web platforms and iOS sales apps
 - Brand identity, naming and visual systems
+- Social media design for real estate and construction brands — posts, carousels, stories, reels and motion, in monthly plans
+- Marketing and graphic design — pitch decks, company profiles, brochures, catalogs, digital ads, launch graphics, signage and event graphics
+- Website care and maintenance (Care / Care+) — updates, backups, monitoring, content changes and reports
+
+All four services — interior design, architectural visualization, branding, and web and app — are focused on real estate, development and construction. Interior design, visualization, brand identity, social media and web each come in three plans: Essential, Premium and Borsoga Edition.
 
 ## Who we work with
 
@@ -27,7 +32,11 @@ Tagline: "Digital spaces for the unbuilt imagination."
 - [Home](https://borsogastudio.com/): Studio overview, services and selected work
 - [Selected Work](https://borsogastudio.com/projects): Full portfolio of visualization and branding projects
 - [Who We Work With](https://borsogastudio.com/our-clients): Services broken down by client type
-- [Plans](https://borsogastudio.com/plans/): Interior design, architectural visualization, branding and web plans
+- [Plans](https://borsogastudio.com/plans/): The four services and their plans
+- [Interior design plans](https://borsogastudio.com/plans/interior-design/): Essential, Premium and Borsoga Edition
+- [Architectural visualization plans](https://borsogastudio.com/plans/av-plans/): Essential, Premium and Borsoga Edition
+- [Branding](https://borsogastudio.com/plans/graphic-design/): Brand Identity, Social Media Design, and Marketing & Graphic Design
+- [Web and app plans](https://borsogastudio.com/plans/web-design/): Web Essential, Web Premium and Web Borsoga Edition, plus Care / Care+ maintenance
 - [Book a discovery call](https://borsogastudio.setmore.com): 30-minute first call
 - [Google Business Profile](https://maps.google.com/?cid=6420475614081383704): Reviews and contact details
 - [Contact](https://borsogastudio.com/#contact): Start a project

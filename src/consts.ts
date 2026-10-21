@@ -63,5 +63,9 @@ export const SERVICES = [
   "Immersive 360° Tours & Virtual Environments",
   "Architectural & Interior Photography",
   "Custom Sales Websites & Web Platforms",
+  "Web & iOS Apps for Real Estate",
+  "Website Care & Maintenance",
   "Brand Identity & Visual Systems",
+  "Social Media Design for Real Estate & Construction",
+  "Marketing & Graphic Design",
 ];
