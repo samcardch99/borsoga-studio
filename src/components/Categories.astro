@@ -4,6 +4,8 @@ import RightUpArrow from "../assets/icons/right_up.svg";
 const categories = [
   {
     id: "interior-design",
+    // Service landing page the category title links to.
+    service: "/interior-design-miami/",
     filter: "visualization" as string | undefined,
     title: "Interior Design",
     description:
@@ -23,6 +25,8 @@ const categories = [
   },
   {
     id: "arch-viz",
+    // Service landing page the category title links to.
+    service: "/3d-rendering-miami/",
     filter: "visualization" as string | undefined,
     title: "Architectural Visualization",
     description:
@@ -42,6 +46,8 @@ const categories = [
   },
   {
     id: "immersive",
+    // Service landing page the category title links to.
+    service: "/3d-rendering-miami/",
     filter: undefined as string | undefined,
     title: "Interactive &\nImmersive Spaces",
     description:
@@ -64,6 +70,8 @@ const categories = [
   },
   {
     id: "web",
+    // Service landing page the category title links to.
+    service: "/real-estate-web-design/",
     filter: undefined as string | undefined,
     title: "Custom Web Platforms",
     description:
@@ -83,6 +91,8 @@ const categories = [
   },
   {
     id: "apps",
+    // Service landing page the category title links to.
+    service: "/real-estate-web-design/",
     filter: undefined as string | undefined,
     title: "Custom App Development",
     description:
@@ -102,6 +112,8 @@ const categories = [
   },
   {
     id: "brand",
+    // Service landing page the category title links to.
+    service: "/real-estate-branding/",
     filter: "branding" as string | undefined,
     title: "Brand Identity",
     description:
@@ -319,7 +331,9 @@ const mobileCategories = [
 
             <div class="cat__content">
               <h3 class="cat__title">
-                <span class="cat__title-inner">{cat.title}</span>
+                <span class="cat__title-inner">
+                  <a class="cat__title-link" href={cat.service}>{cat.title}</a>
+                </span>
               </h3>
               <p class="cat__desc">{cat.description}</p>
               <ul class="cat__tags">
@@ -376,7 +390,9 @@ const mobileCategories = [
           ))}
           <div class="catm__overlay" />
           <div class="catm__content">
-            <h3 class="catm__title">{cat.title}</h3>
+            <h3 class="catm__title">
+              <a class="cat__title-link" href={cat.service}>{cat.title}</a>
+            </h3>
             <div class="catm__stage">
               {cat.layers.filter(isStageLayer).map((layer, li) => (
                 <img
@@ -530,6 +546,21 @@ const mobileCategories = [
   }
   .cat__slide.is-active {
     opacity: 1;
+  }
+  /* Slides are stacked and the transparent inactive ones sit above the active
+     one in DOM order, so they must not catch its clicks (title link and
+     VIEW OUR WORK). */
+  .cat__slide:not(.is-active) {
+    pointer-events: none;
+  }
+  /* Category titles link to their service page and keep the title look. */
+  .cat__title-link {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .cat__title-link:hover {
+    opacity: 0.75;
   }
 
   .cat__slide--first .cat__content {
