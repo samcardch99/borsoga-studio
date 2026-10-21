@@ -44,10 +44,10 @@
   line-height: 1.3;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.45);
+  color: rgba(0, 0, 0, 0.6);
 }
 .sp-dark .sp-eyebrow {
-  color: rgba(242, 242, 240, 0.5);
+  color: rgba(242, 242, 240, 0.62);
 }
 
 .sp-h1 {
@@ -206,7 +206,7 @@
   font-weight: 300;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(0, 0, 0, 0.62);
 }
 .sp-crumbs li + li::before {
   content: "/";
@@ -287,7 +287,7 @@
   font-weight: 300;
   line-height: 2;
   letter-spacing: 0.06em;
-  opacity: 0.45;
+  opacity: 0.62;
 }
 .sp-grid__title {
   margin: 0 0 0.8rem;
@@ -320,7 +320,7 @@
   font-weight: 200;
   line-height: 0.9;
   letter-spacing: -0.04em;
-  color: rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.45);
 }
 .sp-step .sp-grid__title {
   font-size: clamp(1.7rem, 1.4vw, 2.3rem);
@@ -421,7 +421,7 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  opacity: 0.45;
+  opacity: 0.62;
 }
 .sp-card__name {
   margin: 0 0 0.6rem;
@@ -523,7 +523,7 @@
   line-height: 1.2;
 }
 .sp-links a span {
-  opacity: 0.55;
+  opacity: 0.62;
   transition: opacity 0.3s ease;
 }
 .sp-links a:hover span {
