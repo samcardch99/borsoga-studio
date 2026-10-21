@@ -98,6 +98,10 @@ export default function Form() {
         { publicKey: import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY }
       );
       toast.success("Message sent", { description: "We'll get back to you shortly." });
+      // GA4 conversion (Analytics.astro defines gtag in production only).
+      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+        window.gtag("event", "form_submit", { form_name: "contact", page_path: window.location.pathname });
+      }
       reset();
     } catch (err) {
       console.error(err);

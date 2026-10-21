@@ -4,6 +4,7 @@ import "lenis/dist/lenis.css";
 import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import Analytics from "../components/Analytics.astro";
 import {
 	SITE_NAME,
 	SITE_TITLE,
@@ -14,6 +15,7 @@ import {
 	SOCIAL,
 	SERVICES,
 } from "../consts";
+import { GOOGLE_PROFILE_URL } from "../data/reviews";
 import { IS_PREVIEW } from "../deploy-env";
 
 interface Props {
@@ -100,8 +102,10 @@ const jsonLd = {
 			areaServed: CONTACT.areaServed,
 			knowsAbout: SERVICES,
 			keywords:
-				"architectural visualization, 3D rendering, CGI, photorealistic renders, real estate visualization, immersive 360 tours, cinematic architectural video, sales websites, brand identity, Miami",
+				"interior design, kitchen design, bathroom design, millwork design, architectural visualization, 3D rendering, CGI, photorealistic renders, real estate visualization, immersive 360 tours, cinematic architectural video, sales websites, brand identity, Miami",
 			sameAs: SOCIAL,
+			// The Google Business Profile, by its stable CID link.
+			hasMap: GOOGLE_PROFILE_URL,
 			// Machine-readable service list — lets AI answer engines enumerate and
 			// cite exactly what the studio offers (GEO: "architectural
 			// visualization services in Miami" style queries).
@@ -147,6 +151,7 @@ const jsonLd = {
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<Analytics />
 
 		<!-- ── Primary meta ── -->
 		<title>{pageTitle}</title>

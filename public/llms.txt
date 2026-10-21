@@ -1,11 +1,13 @@
 # Borsoga Studio
 
-> Borsoga Studio is a Miami-based architectural visualization studio. We create photoreal 3D renders, CGI, immersive 360° tours, cinematic video, custom sales websites and brand identity that let people experience a building or interior before it is built. We work with real estate developers, architects, general contractors and custom millwork specialists — based in Miami, FL and working globally.
+> Borsoga Studio is a Miami interior design and architectural visualization studio. We design kitchens, bathrooms, living spaces, full homes and commercial interiors, and we create photoreal 3D renders, CGI, immersive 360° tours, cinematic video, custom sales websites and brand identity that let people experience a building or interior before it is built. We work with homeowners, businesses, real estate developers, architects, general contractors and custom millwork specialists — based in Miami, FL, serving Miami-Dade and Florida, and producing renderings for projects worldwide.
 
 Tagline: "Digital spaces for the unbuilt imagination."
 
 ## What we do
 
+- Interior design — residential and commercial, from one room to the whole house: layout, millwork, materials and lighting, approved in photoreal 3D before construction. Three plans: Essential, Premium and Borsoga Edition
+- Kitchen and bathroom design, millwork and custom cabinetry design, material and finish direction, reference floor plans and elevations (not permit or construction documents)
 - Architectural visualization & 3D rendering — exteriors, interiors, amenities
 - Photorealistic CGI and still renders
 - Immersive 360° virtual tours and walkthroughs
@@ -13,6 +15,11 @@ Tagline: "Digital spaces for the unbuilt imagination."
 - Architectural & interior photography and material studies
 - Custom sales websites, web platforms and iOS sales apps
 - Brand identity, naming and visual systems
+- Social media design for real estate and construction brands — posts, carousels, stories, reels and motion, in monthly plans
+- Marketing and graphic design — pitch decks, company profiles, brochures, catalogs, digital ads, launch graphics, signage and event graphics
+- Website care and maintenance (Care / Care+) — updates, backups, monitoring, content changes and reports
+
+All four services — interior design, architectural visualization, branding, and web and app — are focused on real estate, development and construction. Interior design, visualization, brand identity, social media and web each come in three plans: Essential, Premium and Borsoga Edition.
 
 ## Who we work with
 
@@ -25,6 +32,13 @@ Tagline: "Digital spaces for the unbuilt imagination."
 - [Home](https://borsogastudio.com/): Studio overview, services and selected work
 - [Selected Work](https://borsogastudio.com/projects): Full portfolio of visualization and branding projects
 - [Who We Work With](https://borsogastudio.com/our-clients): Services broken down by client type
+- [Plans](https://borsogastudio.com/plans/): The four services and their plans
+- [Interior design plans](https://borsogastudio.com/plans/interior-design/): Essential, Premium and Borsoga Edition
+- [Architectural visualization plans](https://borsogastudio.com/plans/av-plans/): Essential, Premium and Borsoga Edition
+- [Branding](https://borsogastudio.com/plans/graphic-design/): Brand Identity, Social Media Design, and Marketing & Graphic Design
+- [Web and app plans](https://borsogastudio.com/plans/web-design/): Web Essential, Web Premium and Web Borsoga Edition, plus Care / Care+ maintenance
+- [Book a discovery call](https://borsogastudio.setmore.com): 30-minute first call
+- [Google Business Profile](https://maps.google.com/?cid=6420475614081383704): Reviews and contact details
 - [Contact](https://borsogastudio.com/#contact): Start a project
 
 ## Selected projects
@@ -63,7 +77,7 @@ Borsoga Studio is a Miami-based architectural visualization and CGI studio. It p
 Architectural visualization is the process of turning architectural plans, sketches and 3D models into accurate, photorealistic images, animations and immersive tours. It lets developers, architects and buyers see and evaluate a space before it is built. Borsoga Studio focuses on natural light, true human scale and honest material representation to convey the real feeling of a space.
 
 ### Where is Borsoga Studio located?
-Borsoga Studio is based in Miami, Florida, USA, and works with clients globally. It can be reached at info@borsogastudio.com or +1 786-852-4847.
+Borsoga Studio is based in Miami, Florida, USA, and works with clients globally. It can be reached at info@borsogastudio.com, by phone at +1 786-852-4847 or on WhatsApp at +1 786-778-3409.
 
 ### Who does Borsoga Studio work with?
 Borsoga Studio works with three main client types: real estate developers and investors who need to sell pre-construction before it is built; architects and general contractors who need drawings translated into images every stakeholder understands; and custom millwork and carpentry specialists who need brand identity and renders that justify a premium quote.
@@ -77,7 +91,8 @@ Borsoga Studio's architectural visualization work is built primarily with V-Ray 
 ## Contact
 
 - Email: info@borsogastudio.com
-- Phone / WhatsApp: +1 786-852-4847
+- Phone: +1 786-852-4847
+- WhatsApp: +1 786-778-3409
 - Location: Miami, FL — working globally
 - Instagram: https://instagram.com/borsogastudio
 - LinkedIn: https://linkedin.com/company/borsogastudio
