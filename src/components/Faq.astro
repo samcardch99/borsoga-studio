@@ -1,0 +1,211 @@
+---
+// Frequently asked questions — sits between Clear Communication and the Google
+// reviews strip on /. Same visual language as ClearCommunication.astro (light
+// band, hairline rows, Poppins), built on native <details> so it needs no JS.
+//
+// Why it exists: Google retired the Q&A section of Business Profiles (Dec 2025)
+// and now answers customer questions with AI from the business's own
+// information. These answers give it (and other answer engines) the facts in
+// the studio's words. The same array feeds the FAQPage JSON-LD below, so the
+// visible text and the structured data can never drift apart.
+
+const BOOKING_URL = "https://borsogastudio.setmore.com";
+
+const faqs = [
+  {
+    q: "What does Borsoga Studio do?",
+    a: "We are a Miami interior design and architectural visualization studio. We design kitchens, bathrooms, living spaces, full homes and commercial interiors, and we produce photoreal renderings, animation, 360° tours, branding and websites for real estate projects. One team handles the whole project, with no handoffs between vendors.",
+  },
+  {
+    q: "Which areas do you serve?",
+    a: "Our Essential and Premium interior design plans cover Miami-Dade, with a travel option outside the county. Borsoga Edition covers all of Florida. Renderings and animation for developers and architects can be produced for projects anywhere.",
+  },
+  {
+    q: "What is included in each interior design plan?",
+    a: "Essential includes a site visit, measurements, an accurate 3D model and photoreal renderings, with two revision rounds. Premium adds four reference drawings, a material guide and a project presentation, with three revision rounds. Borsoga Edition adds a conceptual narrative, detailed drawings, a cinematic animation and an explainer video, on-site material selection with suppliers and furniture selection, with four revision rounds, two of them presented in person.",
+  },
+  {
+    q: "Can I hire you for a single room?",
+    a: "Yes. There is no minimum: every plan works from one room to the whole house, and commercial spaces use the same plans.",
+  },
+  {
+    q: "Are your drawings valid for permits?",
+    a: "No. Our drawings are reference drawings that communicate the design to contractors and fabricators; they are not permit or construction documents. Final construction documents are quoted separately.",
+  },
+  {
+    q: "What files will I receive?",
+    a: "Final deliverables only: images in JPG or PNG, drawings in PDF and videos in MP4. 3D models and editable files are not included.",
+  },
+  {
+    q: "How does pricing work for interior design?",
+    a: "Each project has a fixed fee by phases. After the questionnaire you receive an investment range, and the final price is set after the meeting and site visit. Payment is 50% to start and 50% on completion, by Zelle, wire transfer, ACH or check; we invoice companies and developers.",
+  },
+  {
+    q: "Do you work in Spanish?",
+    a: "Yes. We work in English and Spanish.",
+  },
+  {
+    q: "How do I get started?",
+    a: "Book a 30-minute discovery call, or answer the questionnaire on our plans page and we will follow up with next steps.",
+  },
+];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
+---
+
+<section class="faq" id="faq" aria-labelledby="faq-title">
+  <div class="faq__inner">
+    <h2 class="faq__title" id="faq-title">
+      <span class="faq__dim">Frequently asked </span><span
+        class="faq__dim faq__ital">questions.</span>
+    </h2>
+
+    <div class="faq__list">
+      {
+        faqs.map(({ q, a }, i) => (
+          <details class="faq__item">
+            <summary class="faq__q">
+              <span class="faq__num" aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span class="faq__q-text">{q}</span>
+              <span class="faq__dash" aria-hidden="true" />
+            </summary>
+            {i === faqs.length - 1 ? (
+              <p class="faq__a">
+                <a href={BOOKING_URL} target="_blank" rel="noopener">
+                  Book a 30-minute discovery call
+                </a>
+                , or answer the questionnaire on our{" "}
+                <a href="/plans/">plans page</a> and we will follow up with next
+                steps.
+              </p>
+            ) : (
+              <p class="faq__a">{a}</p>
+            )}
+          </details>
+        ))
+      }
+    </div>
+  </div>
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</section>
+
+<style>
+  .faq {
+    position: relative;
+    background: #f7f7f7;
+    color: #0a0a0a;
+    font-family: "Poppins", sans-serif;
+    padding: clamp(2rem, 4vh, 4rem) clamp(2rem, 4vw, 6rem)
+      clamp(6rem, 11vh, 12rem);
+  }
+  .faq__inner {
+    max-width: 2120px;
+    margin: 0 auto;
+  }
+
+  .faq__title {
+    margin: 0 0 clamp(2.5rem, 5vw, 6rem);
+    max-width: 22ch;
+    font-size: clamp(2.4rem, 4vw, 5.4rem);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+  .faq__dim {
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.22);
+  }
+  .faq__ital {
+    font-weight: 200;
+    font-style: italic;
+  }
+
+  .faq__list {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  }
+  .faq__item {
+    border-top: 1px solid rgba(0, 0, 0, 0.16);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 2.5rem);
+    padding: clamp(1.3rem, 2.4vw, 2.4rem) 0;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+  .faq__num {
+    flex: none;
+    width: 2.5ch;
+    font-size: clamp(0.95rem, 1.1vw, 1.25rem);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    opacity: 0.45;
+  }
+  .faq__q-text {
+    flex: 1;
+    font-size: clamp(1.25rem, 1.9vw, 2.4rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+  }
+  .faq__q:hover .faq__q-text,
+  .faq__item[open] .faq__q-text {
+    opacity: 1;
+  }
+  /* toggle dash — faded when closed, solid + wider when open (as in .cc__dash) */
+  .faq__dash {
+    flex: none;
+    width: 22px;
+    height: 4px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.3);
+    transition:
+      background 0.3s ease,
+      width 0.3s ease;
+  }
+  .faq__item[open] .faq__dash {
+    background: #000;
+    width: 30px;
+  }
+
+  .faq__a {
+    margin: 0;
+    max-width: 68ch;
+    padding: 0 0 clamp(1.8rem, 3.5vw, 3.5rem)
+      calc(2.5ch + clamp(1rem, 2vw, 2.5rem));
+    font-size: clamp(1rem, 1.15vw, 1.35rem);
+    font-weight: 300;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.72);
+  }
+  .faq__a a {
+    color: #0a0a0a;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 640px) {
+    .faq__a {
+      padding-left: 0;
+    }
+  }
+</style>

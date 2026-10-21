@@ -37,9 +37,10 @@ export interface GoogleReview {
 export const GOOGLE_PROFILE_URL = "https://maps.google.com/?cid=6420475614081383704";
 
 /** The profile's REAL average and total, not the figures of the subset below —
- *  so "BASED ON 43 GOOGLE REVIEWS" stays truthful while the strip shows 14. */
+ *  so "BASED ON 48 GOOGLE REVIEWS" stays truthful while the strip shows 14.
+ *  Total last checked against the profile on 2026-10-21: 48 reviews, 5.0. */
 export const GOOGLE_RATING = 5.0;
-export const GOOGLE_REVIEW_COUNT = 43;
+export const GOOGLE_REVIEW_COUNT = 48;
 
 /** Google's own phrasing for a review's age, rebuilt at build time. */
 function relativeAge(publishedAt: string): string {
