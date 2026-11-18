@@ -29,6 +29,7 @@ Tagline: "Digital spaces for the unbuilt imagination."
 
 ## Selected projects
 
+- [RAL 6007 // West Palm Beach Kitchen](https://borsogastudio.com/works/ral-6007-west-palm-beach-kitchen/): Kitchen remodel with arched wood millwork, a racetrack island and green stone
 - [RAL 1011 // Five Park Apartment](https://borsogastudio.com/works/ral-1011-five-park-apartment/): Interior CGI of an open-plan apartment in Five Park, Miami Beach
 - [RAL 8003 // Wood Vein Kitchen & Closet](https://borsogastudio.com/works/ral-8003-wood-vein-kitchen-closet/): Interior space, photography and material study
 - [RAL 8001 // Curved Wood Kitchen](https://borsogastudio.com/works/ral-8001-curved-wood-kitchen/): Residential kitchen with warm wood millwork, a curved ribbed island and black veined stone
