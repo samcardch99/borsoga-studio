@@ -48,15 +48,25 @@ import DecorSpiral from "../assets/decor-spiral.svg";
       <div
         class="flex flex-col items-end gap-[2.4rem] md:gap-[3rem] w-full lg:flex-row lg:items-center lg:justify-center lg:gap-8"
       >
+        <!-- Two stacked layers in one grid cell: the invisible ghost holds the
+             final size so the block doesn't jump while the text decodes. -->
         <p
-          class="m-0 font-light leading-[1.9] text-white/55 text-right lg:text-left text-[1.3rem] md:text-[2rem] lg:text-[1.25rem] max-w-[30rem] md:max-w-[46rem] lg:max-w-184"
+          class="grid m-0 font-light leading-[1.9] text-white/55 text-right lg:text-left text-[1.3rem] md:text-[2rem] lg:text-[1.25rem] max-w-[30rem] md:max-w-[46rem] lg:max-w-184"
         >
-          <span class="text-white">We design architecture and interiors, down to the
-          millwork and the materials.</span>
-          <span id="cover-decode" data-decode
-            >Visualization, brand identity, and digital platforms carry each
-            project the rest of the way.</span
-          ><span class="cover-cursor" aria-hidden="true"></span>
+          <span class="invisible [grid-area:1/1]" aria-hidden="true"
+            >We design architecture and interiors, down to the millwork and the
+            materials. Visualization, brand identity, and digital platforms
+            carry each project the rest of the way.<span class="cover-cursor"
+            ></span></span
+          >
+          <span class="[grid-area:1/1]">
+            <span class="text-white">We design architecture and interiors, down to the
+            millwork and the materials.</span>
+            <span id="cover-decode" data-decode
+              >Visualization, brand identity, and digital platforms carry each
+              project the rest of the way.</span
+            ><span class="cover-cursor" aria-hidden="true"></span>
+          </span>
         </p>
         <a
           href="#selected-work"
