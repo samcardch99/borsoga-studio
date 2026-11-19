@@ -16,6 +16,11 @@ export default defineConfig({
   // next-project HTML ahead of the scroll-driven transition.
   prefetch: true,
 
+  // Retired project pages → their replacement, so old links keep working.
+  redirects: {
+    "/works/ral-8001-curved-wood-kitchen": "/works/ral-6009-west-palm-beach-kitchen/",
+  },
+
   vite: {
     plugins: [tailwindcss()],
     // Where this build will be served. Production is Hostinger, built by
