@@ -15,7 +15,7 @@ export const SITE_DESCRIPTION =
   "Miami-based architectural visualization studio: photoreal 3D renders, CGI, immersive 360° tours, sales websites and branding for developers and architects.";
 
 /** One-line positioning statement reused in schema and llms.txt. */
-export const SITE_TAGLINE = "Digital spaces for the unbuilt imagination.";
+export const SITE_TAGLINE = "Unbuilt imagination for the physical world.";
 
 /** Default social-share image (absolute path from site root). A dedicated
  *  1200×630 OG image is recommended long-term; this is a strong stand-in. */
