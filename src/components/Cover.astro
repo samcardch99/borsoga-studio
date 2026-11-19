@@ -38,7 +38,7 @@ import DecorSpiral from "../assets/decor-spiral.svg";
       <!-- headline — mobile ≈43px · tablet 64px · desktop 90px -->
       <h1
         id="cover-h1"
-        class="z-120 m-0 font-semibold leading-[1.13] text-white/19 text-[clamp(3.6rem,10.8vw,4.8rem)] md:text-[6.4rem] lg:text-[6.25vw]"
+        class="z-120 m-0 font-semibold leading-[1.13] text-white/19 text-[clamp(3.6rem,10.8vw,4.8rem)] md:text-[6.4rem] lg:text-[6.25vw] lg:whitespace-nowrap"
       ><em class="font-extralight italic">Unbuilt</em> imagination<br />for the physical world.</h1>
     </div>
 
@@ -137,7 +137,7 @@ import DecorSpiral from "../assets/decor-spiral.svg";
   gsap.registerPlugin(SplitText);
 
   const h1 = document.getElementById("cover-h1");
-  const split = new SplitText(h1, { type: "chars", charsClass: "char" });
+  const split = new SplitText(h1, { type: "words,chars", charsClass: "char" });
 
   gsap.to(split.chars, {
     color: "white",
