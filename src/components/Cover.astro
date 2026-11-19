@@ -48,24 +48,12 @@ import DecorSpiral from "../assets/decor-spiral.svg";
       <div
         class="flex flex-col items-end gap-[2.4rem] md:gap-[3rem] w-full lg:flex-row lg:items-center lg:justify-center lg:gap-8"
       >
-        <!-- Two stacked layers in one grid cell: the invisible ghost holds the
-             final size so the block doesn't jump while the text decodes. -->
         <p
-          class="grid m-0 font-light leading-[1.9] text-white/55 text-right lg:text-left text-[1.3rem] md:text-[2rem] lg:text-[1.25rem] max-w-[30rem] md:max-w-[46rem] lg:max-w-184"
+          class="m-0 font-light leading-[1.9] text-white/55 text-right lg:text-left text-[1.3rem] md:text-[2rem] lg:text-[1.25rem] max-w-[30rem] md:max-w-[46rem] lg:max-w-184"
         >
-          <span class="invisible [grid-area:1/1]" aria-hidden="true"
-            >We design architecture and interiors, and everything that presents
-            them to the world: the plans, the renders, the identity, and the
-            website of each project.<span class="cover-cursor"
-            ></span></span
-          >
-          <span class="[grid-area:1/1]">
-            <span class="text-white">We design architecture and interiors,</span>
-            <span id="cover-decode" data-decode
-              >and everything that presents them to the world: the plans, the
-              renders, the identity, and the website of each project.</span
-            ><span class="cover-cursor" aria-hidden="true"></span>
-          </span>
+          <span class="text-white">We design architecture and interiors,</span>
+          and everything that presents them to the world: the plans, the renders,
+          the identity, and the website of each project.
         </p>
         <a
           href="#selected-work"
@@ -140,35 +128,13 @@ import DecorSpiral from "../assets/decor-spiral.svg";
     color: rgba(255, 255, 255, 0.19);
     display: inline-block;
   }
-
-  /* Tech touch: the support sentence decodes in (GSAP ScrambleText)
-     and ends on a blinking terminal-style cursor. Hidden until the
-     script starts the decode so the final text never flashes first. */
-  #cover-decode[data-decode] {
-    visibility: hidden;
-  }
-  .cover-cursor {
-    display: inline-block;
-    width: 0.5em;
-    height: 1.05em;
-    margin-left: 0.25em;
-    vertical-align: -0.18em;
-    background: currentColor;
-    animation: cover-cursor-blink 1s steps(1) infinite;
-  }
-  @keyframes cover-cursor-blink {
-    50% {
-      opacity: 0;
-    }
-  }
 </style>
 
 <script>
   import { gsap } from "gsap";
   import { SplitText } from "gsap/SplitText";
-  import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 
-  gsap.registerPlugin(SplitText, ScrambleTextPlugin);
+  gsap.registerPlugin(SplitText);
 
   const h1 = document.getElementById("cover-h1");
   const split = new SplitText(h1, { type: "words,chars", charsClass: "char" });
@@ -183,34 +149,6 @@ import DecorSpiral from "../assets/decor-spiral.svg";
     ease: "none",
     delay: 0.3,
   });
-
-  // ── Decode-in support sentence ────────────────────────────────────
-  // Starts while the headline is still lighting up; characters scramble
-  // through a code-like set and resolve left to right.
-  const decode = document.getElementById("cover-decode");
-  if (decode) {
-    const finalText = (decode.textContent ?? "").replace(/\s+/g, " ").trim();
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) {
-      decode.removeAttribute("data-decode");
-    } else {
-      decode.textContent = "";
-      decode.removeAttribute("data-decode");
-      gsap.to(decode, {
-        duration: 2.2,
-        delay: 1.6,
-        ease: "none",
-        scrambleText: {
-          text: finalText,
-          chars: "01<>/_#",
-          speed: 0.5,
-          revealDelay: 0.3,
-        },
-      });
-    }
-  }
 
   // ── Heartbeat spiral ──────────────────────────────────────────────
   // The concentric lines (paths) expand & contract about the spiral's
