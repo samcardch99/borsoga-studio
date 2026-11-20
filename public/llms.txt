@@ -1,11 +1,13 @@
 # Borsoga Studio
 
-> Borsoga Studio is a Miami-based architectural visualization studio. We create photoreal 3D renders, CGI, immersive 360° tours, cinematic video, custom sales websites and brand identity that let people experience a building or interior before it is built. We work with real estate developers, architects, general contractors and custom millwork specialists — based in Miami, FL and working globally.
+> Borsoga Studio is a Miami-based architecture and interior design studio. We design architecture and interiors, and everything that presents them to the world: the plans, the renders, the identity, and the website of each project. We work with real estate developers, architects, general contractors and custom millwork specialists — based in Miami, FL and working globally.
 
-Tagline: "Digital spaces for the unbuilt imagination."
+Tagline: "Unbuilt imagination for the physical world."
 
 ## What we do
 
+- Architectural design and interior design
+- Millwork, custom elements and material direction
 - Architectural visualization & 3D rendering — exteriors, interiors, amenities
 - Photorealistic CGI and still renders
 - Immersive 360° virtual tours and walkthroughs

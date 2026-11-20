@@ -8,11 +8,11 @@ export const SITE_NAME = "Borsoga Studio";
 
 /** Default (home) <title> — brand + primary service + market. */
 export const SITE_TITLE =
-  "Borsoga Studio — Architectural Visualization & 3D Rendering | Miami";
+  "Borsoga Studio — Architecture & Interior Design | Miami";
 
 /** Default meta description (~155 chars) used on the home page and as fallback. */
 export const SITE_DESCRIPTION =
-  "Miami-based architectural visualization studio: photoreal 3D renders, CGI, immersive 360° tours, sales websites and branding for developers and architects.";
+  "Architecture and interior design studio in Miami. We design spaces and everything that presents them: the plans, the renders, the identity, and the website.";
 
 /** One-line positioning statement reused in schema and llms.txt. */
 export const SITE_TAGLINE = "Unbuilt imagination for the physical world.";
@@ -41,6 +41,10 @@ export const SOCIAL = [
 
 /** Services offered — reused for schema `makesOffer` and GEO copy. */
 export const SERVICES = [
+  "Architectural Design",
+  "Interior Design",
+  "Millwork & Custom Elements",
+  "Material Direction",
   "Architectural Visualization & 3D Rendering",
   "CGI & Photorealistic Renders",
   "Immersive 360° Tours & Virtual Environments",
