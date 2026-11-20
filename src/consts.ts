@@ -17,9 +17,10 @@ export const SITE_DESCRIPTION =
 /** One-line positioning statement reused in schema and llms.txt. */
 export const SITE_TAGLINE = "Unbuilt imagination for the physical world.";
 
-/** Default social-share image (absolute path from site root). A dedicated
- *  1200×630 OG image is recommended long-term; this is a strong stand-in. */
-export const DEFAULT_OG_IMAGE = "/projects/RAL-7006-COCONUT-GROVE-RESIDENCE/1.jpg";
+/** Default social-share image (absolute path from site root), cut at the
+ *  1200×630 size link previews use (West Palm Beach Kitchen). Give it a new
+ *  file name when it changes, so apps that cache previews fetch it again. */
+export const DEFAULT_OG_IMAGE = "/og/borsoga-studio-share.jpg";
 
 export const CONTACT = {
   email: "info@borsogastudio.com",
